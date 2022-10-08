@@ -679,11 +679,28 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 
 		case 208:
 			sft = *src++;
-			mrk = (const unsigned char *)gfasft[sft];
+			mrk = (const unsigned char *)gfasft_208[sft];
+			if (mrk == NULL)
+			{
+				gf4tp_output("gf4tp_tp() Error at line %u:%lu: %u/%u is an unknown sft code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft, sft);
+			} else
+			{
+				while (*mrk != 0x00)
+					*dst++ = *mrk++;
+			}
+			break;
 
-			while (*mrk != 0x00)
-				*dst++ = *mrk++;
-
+		case 209:
+			sft = *src++;
+			mrk = (const unsigned char *)gfasft_209[sft];
+			if (mrk == NULL)
+			{
+				gf4tp_output("gf4tp_tp() Error at line %u:%lu: %u/%u is an unknown sft code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft, sft);
+			} else
+			{
+				while (*mrk != 0x00)
+					*dst++ = *mrk++;
+			}
 			break;
 
 		case 215:
@@ -872,11 +889,6 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 			break;
 
 		case 55:                                      /* NUMBER: */
-			break;
-
-		case 209:
-			sft = *src++;
-			gf4tp_output("gf4tp_tp() Error at line %u:%lu: %u/%u is an unknown sft code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft, sft);
 			break;
 
 		case 46:
