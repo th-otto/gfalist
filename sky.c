@@ -703,6 +703,19 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 			}
 			break;
 
+		case 210:
+			sft = *src++;
+			mrk = (const unsigned char *)gfasft_210[sft];
+			if (mrk == NULL)
+			{
+				gf4tp_output("gf4tp_tp() Error at line %u:%lu: %u/%u is an unknown sft code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft, sft);
+			} else
+			{
+				while (*mrk != 0x00)
+					*dst++ = *mrk++;
+			}
+			break;
+
 		case 215:
 			src++;
 			/* FALLTROUGH */
@@ -894,7 +907,6 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 		case 46:
 		case 64:
 		case 68:
-		case 210:
 		case 211:
 		case 212:
 		case 213:
