@@ -1,6 +1,7 @@
 #ifndef CHARSET_H
 #define CHARSET_H
 
-extern const char charset[256];
+extern unsigned char const charset[256];
+extern unsigned short const charset_w[256];
 
 #endif

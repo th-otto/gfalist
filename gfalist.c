@@ -120,7 +120,7 @@ static void process(char *name, FILE * ost, char *file, unsigned int flags)
 	unsigned char libuf[2];				/* Line info block buffer */
 	unsigned char gibuf[2];				/* General info block buffer */
 	unsigned char dibuf[162];
-	unsigned char txt[1025] = { };
+	unsigned char txt[1025];
 	unsigned char slb[256];				/* Preallocated buffer for small lines */
 	unsigned int line = 0;
 	int cnt;
@@ -228,15 +228,29 @@ static void process(char *name, FILE * ost, char *file, unsigned int flags)
 
 		bot = gf4tp_tp(txt, &gi, &gl, flags);
 
-		assert(txt[256] == 0x00);
-
 		if (bot != NULL)
 		{
 			src = txt;
 			if ((flags & TP_CONV) != 0x00)
 			{
 				while (src < bot)
-					putc(charset[*src++], ost);
+				{
+					unsigned short wc = charset_w[*src++];
+
+					if (wc < 0x80)
+					{
+						putc(wc, ost);
+					} else if (wc < 0x800)
+					{
+						putc((wc >> 6) | 0xc0, ost);
+						putc((wc & 0x3f) | 0x80, ost);
+					} else
+					{
+						putc((wc >> 12) | 0xe0, ost);
+						putc(((wc >> 6) & 0x3f) | 0x80, ost);
+						putc((wc & 0x3f) | 0x80, ost);
+					}
+				}
 				putc('\n', ost);
 			} else
 			{
