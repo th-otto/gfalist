@@ -60,11 +60,11 @@ libsky.a: $(SKY_OBJS)
 #	rm $*.o
 
 gfalist: $(GFALIST_OBJS)
-	$(CC) $(LFLAGS) $+ -o $@ -lsky
+	$(CC) $(LFLAGS) $+ -o $@ -lsky -lm
 gfalist.exe: $(CSRC)
-	$(WINCC)  $+ -o $@ 
+	$(WINCC)  $+ -o $@ -lm
 gfalist.ttp: $(CSRC)
-	$(TOSCC)  $+ -o $@ 
+	$(TOSCC)  $+ -o $@ -lm
 
 version.h: HISTORY verextr.sh $(SKY_OBJS)
 	sh verextr.sh -g $< $@

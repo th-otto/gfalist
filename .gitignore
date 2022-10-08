@@ -1,0 +1,5 @@
+version.h
+gfalist
+*.o
+*.a
+*.exe

@@ -7,6 +7,7 @@
 #include <unistd.h> /* open() */
 #include <errno.h> /* write() */
 #include <fcntl.h> /* open() */
+#include <math.h>
 
 #ifndef O_BINARY
 #define O_BINARY 0
@@ -28,7 +29,7 @@ static void io_error(int e,char *n) { gf4tp_output("IO-ERROR #%d  %s\n",e,n); }
    with filename name.  MH 2016, taken from X11-Basic
    RETURNS: 0 on success and -1 on error */
 
-static int bsave(const char *name, char *adr, size_t len) { 
+static int bsave(const char *name, const char *adr, size_t len) { 
   int fdis=open(name,O_CREAT|O_BINARY|O_WRONLY|O_TRUNC,S_IRUSR|S_IWUSR|S_IRGRP);
   if(fdis==-1) return(-1);
   if(write(fdis,adr,len)==-1) io_error(errno,"write");
@@ -410,15 +411,15 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi,
 			    }
 			    *d++='i';*d++='n';*d++='l';
 			    *d=0;
-			    bsave(filename,src,(size_t)(bot-src));
+			    bsave((const char *)filename,(const char *)src,(size_t)(bot-src));
 			    gf4tp_output("Saved INLINE data into file --> %s (%d bytes.)\n",filename,bot-src);
 			  } else {
 			    /* Added hex printing of INLINE data / Markus Hoffmann 2013 */
 			    printf("' ## INLINE:");
 			    for (mrk = src; mrk < bot; mrk++) {
-			      if((mrk-src)%16==0) printf("\n' $%04x: ",mrk-src);
+			      if((mrk-src)%16==0) printf("\n' $%04lx: ",(long)(mrk-src));
 			      printf("%02x ",*mrk);
-			    } printf("\n' %d  Bytes.\n",mrk-src);
+			    } printf("\n' %ld  Bytes.\n",(long)(mrk-src));
 			  }
 			  src = bot; 
 			}
@@ -570,8 +571,11 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi,
 			src += 8;
 			copy64b(u.ull, dcb);
 
-			dcs = dst;
-			sprintf(dcs, "%G", u.d);
+			dcs = (char *)dst;
+			if (isfinite(u.d) && rint(u.d) == u.d)
+				sprintf(dcs, "%lld", llrint(u.d));
+			else
+				sprintf(dcs, "%G", u.d);
 			while (*dcs != '\0')
 				switch (*dcs++) {
 				case '0': *dst++ = 0x30; break;
@@ -646,7 +650,8 @@ void gf4tp_getgi(struct gfainf *gi, unsigned char *src)
 void gf4tp_getdi(struct gfainf *gi, unsigned char *src)
 {
 	/* Current and upper pointers */
-	register int *cp = gi->hdr->sep, *up = gi->hdr->sep;
+	int *cp = (int *)gi->hdr->sep;
+	int *up = (int *)gi->hdr->sep;
 	/* Record lengths (for magic and memory separator field) */
 
 	assert(gi->hdr->vers == 0x01 || gi->hdr->vers == 0x02
