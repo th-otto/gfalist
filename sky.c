@@ -20,7 +20,7 @@
 #include "tables.h"
 
 static int (*gf4tp_output)(const char *format, ...);
-static unsigned char *(*gf4tp_resvar)(struct gfainf * gi, unsigned short type, unsigned short var);
+static unsigned char *(*gf4tp_resvar)(struct gfainf *gi, unsigned short type, unsigned short var);
 
 static void io_error(int e, const char *n)
 {
@@ -32,7 +32,7 @@ static void io_error(int e, const char *n)
    with filename name.  MH 2016, taken from X11-Basic
    RETURNS: 0 on success and -1 on error */
 
-static int bsave(const char *name, const char *adr, size_t len)
+static int bsave(const char *name, const void *adr, size_t len)
 {
 	int fdis = open(name, O_CREAT | O_BINARY | O_WRONLY | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP);
 
@@ -50,13 +50,12 @@ void gf4tp_init(int (*output)(const char *format, ...), unsigned char *(*resvar)
 }
 
 
-unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl, unsigned int flags)
+unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct gfalin *gl, unsigned int flags)
 {
 	/* Current source, marker, top and bottom pointers */
 	const unsigned char *src = gl->line;
 	const unsigned char *mrk;
-	const unsigned char *top = gl->line;
-	const unsigned char *bot = gl->line + gl->size;
+	const unsigned char *srcend = gl->line + gl->size;
 
 	/* line command pointer, line command token, primary function token,
 	 * secondary function token
@@ -160,7 +159,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 
 		if (gl->depth > 0)				/* Required because i is unsigned */
 			for (i = 0; i < gl->depth; i++)
-				*dst++ = 0x20, *dst++ = 0x20;
+				*dst++ = ' ', *dst++ = ' ';
 
 		gl->depth += (flags & TP_BACKW) == 0;
 		break;
@@ -169,7 +168,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 
 		if (gl->depth > 0)
 			for (i = 0; i < gl->depth; i++)
-				*dst++ = 0x20, *dst++ = 0x20;
+				*dst++ = ' ', *dst++ = ' ';
 
 		gl->depth += (flags & TP_BACKW) == 0 && (flags & TP_BUGEM) == 0;
 		break;
@@ -198,7 +197,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 
 		if (gl->depth > 0)
 			for (i = 0; i < gl->depth; i++)
-				*dst++ = 0x20, *dst++ = 0x20;
+				*dst++ = ' ', *dst++ = ' ';
 
 		gl->depth += (flags & TP_BACKW) != 0;
 		break;
@@ -209,12 +208,12 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 	case 252:
 		if (gl->depth > 0)
 			for (i = 1; i < gl->depth; i++)
-				*dst++ = 0x20, *dst++ = 0x20;
+				*dst++ = ' ', *dst++ = ' ';
 		break;
 	default:
 		if (gl->depth > 0)
 			for (i = 0; i < gl->depth; i++)
-				*dst++ = 0x20, *dst++ = 0x20;
+				*dst++ = ' ', *dst++ = ' ';
 		break;
 	}
 
@@ -231,7 +230,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 	case 464:
 	case 468:							/* REM, ', ==>, DATA */
 		if (*src != 0x0D)
-			*dst++ = 0x20;
+			*dst++ = ' ';
 		/* FALLTROUGH */
 	case 1644:
 	case 1016:							/* $, . */
@@ -239,7 +238,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 		while (*src != 0x0D)
 			*dst++ = *src++;
 		src++;
-		src += (src - top) & 0x01;
+		src += (src - gl->line) & 0x01;
 		break;
 	case 180:							/* End of program */
 		return NULL;
@@ -261,7 +260,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 	case 1420:							/* SYSTEM, SOUND, WAVE, */
 	case 1592:							/* DUMP */
 		if (*src != 0x46)
-			*dst++ = 0x20;
+			*dst++ = ' ';
 		break;
 	case 124:
 	case 128:
@@ -299,13 +298,13 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 		/* FOR x#= / LET x#= */
 		pop16b(v, src);
 		pushvar(dst, mrk, 0, v, gi, gf4tp_resvar);
-		*dst++ = 0x3D;					/* '=' */
+		*dst++ = '=';
 		break;
 	case 308:
 	case 260:							/* x$= / LET x$= */
 		pop16b(v, src);
 		pushvar(dst, mrk, 1, v, gi, gf4tp_resvar);
-		*dst++ = 0x3D;
+		*dst++ = '=';
 		break;
 	case 312:
 	case 88:
@@ -315,13 +314,13 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 		/* FOR x%= / LET x%= */
 		pop16b(v, src);
 		pushvar(dst, mrk, 2, v, gi, gf4tp_resvar);
-		*dst++ = 0x3D;
+		*dst++ = '=';
 		break;
 	case 316:
 	case 268:							/* x!= / LET x!= */
 		pop16b(v, src);
 		pushvar(dst, mrk, 3, v, gi, gf4tp_resvar);
-		*dst++ = 0x3D;
+		*dst++ = '=';
 		break;
 	case 320:
 	case 100:
@@ -331,7 +330,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 		/* FOR x&= / LET x&= */
 		pop16b(v, src);
 		pushvar(dst, mrk, 8, v, gi, gf4tp_resvar);
-		*dst++ = 0x3D;
+		*dst++ = '=';
 		break;
 	case 324:
 	case 112:
@@ -341,7 +340,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 		/* FOR x|= / LET x|= */
 		pop16b(v, src);
 		pushvar(dst, mrk, 9, v, gi, gf4tp_resvar);
-		*dst++ = 0x3D;
+		*dst++ = '=';
 		break;
 	case 328:
 	case 280:
@@ -411,7 +410,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 		pop16b(v, src);
 		pushvar(dst, mrk, 11, v, gi, gf4tp_resvar);
 		if (*src != 0x46)
-			*dst++ = 0x28;				/* '(' */
+			*dst++ = '(';
 		break;
 	case 240:
 	case 244:
@@ -426,7 +425,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 	case 1260:							/* PRINT / LPRINT */
 		/* CLS */
 		if (*src != 0x46)
-			*dst++ = 0x20;				/* ' ' */
+			*dst++ = ' ';
 		break;
 	case 640:
 	case 672:							/* INC x# / DEC x# */
@@ -455,7 +454,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 		/* MUL x#, / DIV x#, */
 		pop16b(v, src);
 		pushvar(dst, mrk, 0, v, gi, gf4tp_resvar);
-		*dst++ = 0x2C;					/* ',' */
+		*dst++ = ',';
 		break;
 	case 708:
 	case 740:
@@ -464,7 +463,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 		/* MUL x%, / DIV x%, */
 		pop16b(v, src);
 		pushvar(dst, mrk, 2, v, gi, gf4tp_resvar);
-		*dst++ = 0x2C;
+		*dst++ = ',';
 		break;
 	case 712:
 	case 744:
@@ -473,7 +472,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 		/* MUL x&, / DIV x&, */
 		pop16b(v, src);
 		pushvar(dst, mrk, 8, v, gi, gf4tp_resvar);
-		*dst++ = 0x2C;
+		*dst++ = ',';
 		break;
 	case 716:
 	case 748:
@@ -482,7 +481,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 		/* MUL x|, / DIV x|, */
 		pop16b(v, src);
 		pushvar(dst, mrk, 9, v, gi, gf4tp_resvar);
-		*dst++ = 0x2C;
+		*dst++ = ',';
 		break;
 	case 4:
 	case 12:
@@ -524,46 +523,47 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 	}
 
 
-	while (src < bot)
+	while (src < srcend)
 	{
 		switch (pft = *src++)
 		{
 		case 70:
-			src += (src - top) & 0x01;
+			src += (src - gl->line) & 0x01;
 
-			if (src == bot)
+			if (src == srcend)
 				break;
 			if (lcp != 1668)
 			{
 				for (i = *src++; i > 0; i--)
-					*dst++ = 0x20;
+					*dst++ = ' ';
 
-				*dst++ = 0x21;			/* '!' */
+				*dst++ = '!';
 
-				for (mrk = src; mrk < bot && *mrk != 0x0D; mrk++)
+				for (mrk = src; mrk < srcend && *mrk != 0x0D; mrk++)
 					;
 
-				if (mrk < bot)
+				if (mrk < srcend)
 				{
 					while (src < mrk)
 						*dst++ = *src++;
 					src++;				/* 0x0D */
-					src += (src - top) & 0x01;
+					src += (src - gl->line) & 0x01;
 				} else
+				{
 					/* FIXME Is there padding in this case?  Is this case
 					 * legal at all?
 					 */
 					src = mrk;
-
+				}
 			} else
 			{
 				/* treat INLINE data... */
 				if (flags & TP_SAVEINLINE)
 				{
 					/* find out pointer name and save the data into file.... */
-					unsigned char filename[256];
+					char filename[256];
 					unsigned char *p = linestart;
-					unsigned char *d = filename;
+					char *d = filename;
 
 					while (p < dst && *p == ' ')
 						p++;
@@ -585,27 +585,54 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 					*d++ = 'n';
 					*d++ = 'l';
 					*d = 0;
-					bsave((const char *) filename, (const char *) src, (size_t) (bot - src));
-					gf4tp_output("Saved INLINE data into file --> %s (%d bytes.)\n", filename, bot - src);
+					bsave(filename, src, (size_t) (srcend - src));
+					gf4tp_output("Saved INLINE data into file --> %s (%d bytes.)\n", filename, srcend - src);
 				} else
 				{
 					/* Added hex printing of INLINE data / Markus Hoffmann 2013 */
-					printf("' ## INLINE:");
-					for (mrk = src; mrk < bot; mrk++)
+					fprintf(ost, "' ## INLINE:");
+					for (mrk = src; mrk < srcend; mrk++)
 					{
 						if ((mrk - src) % 16 == 0)
-							printf("\n' $%04lx: ", (long) (mrk - src));
-						printf("%02x ", *mrk);
-					} printf("\n' %ld  Bytes.\n", (long) (mrk - src));
+						{
+							if (flags & TP_CONV)
+							{
+								putc('\n', ost);
+							} else
+							{
+								putc(0x0d, ost);
+								putc(0x0a, ost);
+							}
+							fprintf(ost, "' $%04lx: ", (long) (mrk - src));
+						}
+						fprintf(ost, "%02x ", *mrk);
+					}
+					if (flags & TP_CONV)
+					{
+						putc('\n', ost);
+					} else
+					{
+						putc(0x0d, ost);
+						putc(0x0a, ost);
+					}
+					fprintf(ost, "' %ld  Bytes.", (long) (mrk - src));
+					if (flags & TP_CONV)
+					{
+						putc('\n', ost);
+					} else
+					{
+						putc(0x0d, ost);
+						putc(0x0a, ost);
+					}
 				}
-				src = bot;
+				src = srcend;
 			}
 			break;
 		case 199:
 			src++;
 			/* FALLTROUGH */
 		case 198:
-			*dst++ = 0x22;				/* '"' */
+			*dst++ = '"';
 
 			for (mrk = src + 4; src < mrk && *src == 0x00; src++)
 				;
@@ -613,7 +640,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 			while (src < mrk)
 				*dst++ = *src++;
 
-			*dst++ = 0x22;
+			*dst++ = '"';
 			break;
 		case 201:
 			src++;
@@ -628,8 +655,8 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 			src++;
 			/* FALLTROUGH */
 		case 202:
-			*dst++ = 0x26;
-			*dst++ = 0x48;				/* "&H" */
+			*dst++ = '&';
+			*dst++ = 'H';
 			pop32b(i, src);
 			pushnum(dst, i, 16, bin, i, j, c);
 			break;
@@ -637,8 +664,8 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 			src++;
 			/* FALLTROUGH */
 		case 204:
-			*dst++ = 0x26;
-			*dst++ = 0x4F;				/* "&O" */
+			*dst++ = '&';
+			*dst++ = 'O';
 			pop32b(i, src);
 			pushnum(dst, i, 8, bin, i, j, c);
 			break;
@@ -646,8 +673,8 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 			src++;
 			/* FALLTROUGH */
 		case 206:
-			*dst++ = 0x26;
-			*dst++ = 0x58;				/* "&X" */
+			*dst++ = '&';
+			*dst++ = 'X';
 			pop32b(i, src);
 			pushnum(dst, i, 2, bin, i, j, c);
 
@@ -690,9 +717,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 		case 212:
 		case 213:
 		case 214:						/* !! */
-#ifdef DEBUG
-			gf4tp_output("201 gf4tp_tp() Error at %hu: " "%02hhX is an unknown token code to me\n", src - top, *src);
-#endif
+			gf4tp_output("201 gf4tp_tp() Error at %lu: %02X is an unknown token code to me\n", (unsigned long)(src - gl->line), *src);
 			src++;
 			break;
 		case 215:
@@ -700,8 +725,8 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 			/* FALLTROUGH */
 		case 216:
 			/* binary 8byte double -> ASCII Octal */
-			*dst++ = 0x26;
-			*dst++ = 0x4F;				/* "&O" */
+			*dst++ = '&';
+			*dst++ = 'O';
 
 			/* We cannot abuse dst as dcb here via bin = dst because
 			 * there might be a constant at the 256 byte line length
@@ -734,8 +759,8 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 			/* FALLTROUGH */
 		case 218:
 			/* binary 8byte double -> ASCII binary */
-			*dst++ = 0x26;
-			*dst++ = 0x58;				/* "&X" */
+			*dst++ = '&';
+			*dst++ = 'X';
 
 			dgfabintoieee(dcb, src);
 			src += 8;
@@ -750,8 +775,8 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 			/* FALLTROUGH */
 		case 220:
 			/* binary 8byte double -> ASCII hexa */
-			*dst++ = 0x26;
-			*dst++ = 0x48;				/* "&H" */
+			*dst++ = '&';
+			*dst++ = 'H';
 
 			dgfabintoieee(dcb, src);
 			src += 8;
@@ -776,61 +801,63 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 			else
 				sprintf(dcs, "%G", u.d);
 			while (*dcs != '\0')
+			{
 				switch (*dcs++)
 				{
 				case '0':
-					*dst++ = 0x30;
+					*dst++ = '0';
 					break;
 				case '1':
-					*dst++ = 0x31;
+					*dst++ = '1';
 					break;
 				case '2':
-					*dst++ = 0x32;
+					*dst++ = '2';
 					break;
 				case '3':
-					*dst++ = 0x33;
+					*dst++ = '3';
 					break;
 				case '4':
-					*dst++ = 0x34;
+					*dst++ = '4';
 					break;
 				case '5':
-					*dst++ = 0x35;
+					*dst++ = '5';
 					break;
 				case '6':
-					*dst++ = 0x36;
+					*dst++ = '6';
 					break;
 				case '7':
-					*dst++ = 0x37;
+					*dst++ = '7';
 					break;
 				case '8':
-					*dst++ = 0x38;
+					*dst++ = '8';
 					break;
 				case '9':
-					*dst++ = 0x39;
+					*dst++ = '9';
 					break;
 				case '.':
-					*dst++ = 0x2E;
+					*dst++ = '.';
 					break;
 				case 'E':
-					*dst++ = 0x45;
+					*dst++ = 'E';
 					break;
 				case '+':
-					*dst++ = 0x2B;
+					*dst++ = '+';
 					break;
 				case '-':
-					*dst++ = 0x2D;
+					*dst++ = '-';
 					break;
 				default:
-					*dst++ = 0x3F;
+					*dst++ = '?';
 					break;
 				}
+			}
 			break;
 		case 222:						/* " */
-			*dst++ = 0x22;				/* '"' */
+			*dst++ = '"';
 			for (i = *src++; i > 0; i--)
-				if ((*dst++ = *src++) == 0x22)
-					*dst++ = 0x22;
-			*dst++ = 0x22;
+				if ((*dst++ = *src++) == '"')
+					*dst++ = '"';
+			*dst++ = '"';
 			break;
 		case 224:
 		case 225:
@@ -848,7 +875,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, struct gfalin *gl
 		case 237:
 		case 238:
 		case 239:
-			// varstart=dst;  /*  save marker for variable name for INLINE*/
+			/* varstart=dst; */  /* save marker for variable name for INLINE */
 			i = pft - 224;
 			v = *src++;
 			pushvar(dst, mrk, i, v, gi, gf4tp_resvar);

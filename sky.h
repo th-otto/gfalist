@@ -46,8 +46,7 @@ struct gfalin {
 	unsigned char *line;                        /* Pointer to line buffer */
 };
 
-unsigned char *gf4tp_tp(unsigned char *dst, struct gfainf *gi, 
-                        struct gfalin *gl, unsigned int flags);
+unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct gfalin *gl, unsigned int flags);
 void gf4tp_getgi(struct gfainf *gi, unsigned char *src);
 void gf4tp_getdi(struct gfainf *gi, unsigned char *src);
 void gf4tp_getii(struct gfainf *gi, unsigned char *src,

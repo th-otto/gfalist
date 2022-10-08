@@ -110,7 +110,7 @@ static void measure(int stop)
 		output("001 measure(): timer %d\n", time(NULL) - timer);
 }
 
-static void process(char *name, FILE * ost, char *file, unsigned int flags)
+static void process(char *name, FILE *ost, char *file, unsigned int flags)
 {
 	struct gfainf gi;
 	struct gfahdr gh;
@@ -226,7 +226,7 @@ static void process(char *name, FILE * ost, char *file, unsigned int flags)
 
 		fread(gl.line, 1, gl.size, ist);
 
-		bot = gf4tp_tp(txt, &gi, &gl, flags);
+		bot = gf4tp_tp(txt, ost, &gi, &gl, flags);
 
 		if (bot != NULL)
 		{
@@ -281,6 +281,7 @@ static void process(char *name, FILE * ost, char *file, unsigned int flags)
 	if (ist != stdin)
 		fclose(ist);
 }
+
 
 int main(int argc, char *argv[])
 {
@@ -337,8 +338,9 @@ int main(int argc, char *argv[])
 	}
 
 	if (outfile == NULL || (outfile[0] == '-' && outfile[1] == '\0'))
+	{
 		ost = stdout;
-	else if ((ost = fopen(outfile, flags & TP_CONV ? "w" : "wb")) == NULL)
+	} else if ((ost = fopen(outfile, flags & TP_CONV ? "w" : "wb")) == NULL)
 	{
 		output("%s: cannot open %s for output\n", argv[0], outfile);
 		return 1;
