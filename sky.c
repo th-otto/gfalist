@@ -121,8 +121,6 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 
 	pop16b(lcp, src);
 
-	lct = lcp / 4;
-
 #ifdef DEBUG
 	gf4tp_output("  pointer= %hu  depth= %hd\n", lcp, gl->depth);
 #endif
@@ -217,11 +215,19 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 		break;
 	}
 
-	mrk = (const unsigned char *)gfalct[lct];
-
-	while (*mrk != 0x00)
-		*dst++ = *mrk++;
-
+	lct = lcp / 4;
+	if (lct < 512)
+		mrk = (const unsigned char *)gfalct[lct];
+	else
+		mrk = NULL;
+	if (mrk == NULL)
+	{
+		gf4tp_output("gf4tp_tp() Error at line %u:%lu: %u is an unknown control code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), lcp);
+	} else
+	{
+		while (*mrk != 0x00)
+			*dst++ = *mrk++;
+	}	
 
 	switch (lcp)
 	{									/* TYPE */
@@ -868,16 +874,20 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 		case 55:                                      /* NUMBER: */
 			break;
 
+		case 209:
+			sft = *src++;
+			gf4tp_output("gf4tp_tp() Error at line %u:%lu: %u/%u is an unknown sft code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft, sft);
+			break;
+
 		case 46:
 		case 64:
 		case 68:
-		case 209:
 		case 210:
 		case 211:
 		case 212:
 		case 213:
 		case 214:
-			gf4tp_output("gf4tp_tp() Error at line %u:%lu: 0x%02X(%u) is an unknown token code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft, pft);
+			gf4tp_output("gf4tp_tp() Error at line %u:%lu: %u is an unknown token code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft);
 			break;
 
 		default:

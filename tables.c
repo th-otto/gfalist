@@ -475,7 +475,7 @@ const char *const gfalct[512] = {
 	/* 1836 */ NULL,
 	/* 1840 */ NULL,
 	/* 1844 */ NULL,
-	/* 1848 */ NULL,
+	/* 1848 */ "BCLEAR ",
 	/* 1852 */ NULL,
 	/* 1856 */ NULL,
 	/* 1860 */ NULL,

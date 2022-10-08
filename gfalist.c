@@ -340,6 +340,7 @@ int main(int argc, char *argv[])
 	if (outfile == NULL || (outfile[0] == '-' && outfile[1] == '\0'))
 	{
 		ost = stdout;
+		setvbuf(ost, NULL, _IONBF, 0);
 	} else if ((ost = fopen(outfile, flags & TP_CONV ? "w" : "wb")) == NULL)
 	{
 		output("%s: cannot open %s for output\n", argv[0], outfile);
