@@ -4,6 +4,6 @@
 extern const char *const gfalct[512];
 extern const char *const gfapft[256];
 extern const char *const gfasft[256];
-extern const short gfarecl[5][2];
+extern short const gfarecl[71][2];
 
 #endif

@@ -483,34 +483,23 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 		pushvar(dst, mrk, 9, v, gi, gf4tp_resvar);
 		*dst++ = ',';
 		break;
-	case 4:
-	case 12:
-	case 16:
-	case 20:							/* UNTIL (12) / */
-	case 32:
-	case 48:
-	case 56:
-	case 60:							/* EXIT IF (172, 220) / */
-	case 64:
-	case 172:
-	case 176:
+	case 4:								/* LOOP (4) / */
+	case 12:							/* UNTIL (12) / */
+	case 16:							/* WHILE (16) / */
+	case 20:							/* WEND (20) / */
+	case 32:							/* IF (32) / */
+	case 48:							/* SELECT (48) / */
+	case 56:							/* ELSE (56) / */
+	case 60:							/* DEFAULT (60) / */
+	case 64:							/* ELSE IF (64) / */
+	case 172:							/* EXIT IF (172) / */
+	case 176:							/* SELECT (176) / */
 	case 196:							/* DO WHILE (196) / */
-	case 200:
-	case 204:
-	case 208:
-	case 220:							/* DO UNTIL (200) / */
-	case 224:							/* LOOP WHILE (204) / */
-		/* LOOP (4) / */
-		/* LOOP UNTIL (208) / */
-		/* IF (32) / */
-		/* ELSE IF (64) / */
-		/* ELSE (56) / */
-		/* SELECT (48) / */
-		/* CASE (224) /  */
-		/* WHILE (16) / */
-		/* WEND (20) / */
-		/* DEFAULT (60) / */
-		/* SELECT (176) / */
+	case 200:							/* DO UNTIL (200) / */
+	case 204:							/* LOOP WHILE (204) / */
+	case 208:							/* LOOP UNTIL (208) / */
+	case 220:							/* EXIT IF (220) / */
+	case 224:							/* CASE (224) /  */
 		src += 4;
 		/*
 		   ' CASE 76,80,84,88,92,96,100,104,108,112,116,120
@@ -521,7 +510,6 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 		 */
 		break;
 	}
-
 
 	while (src < srcend)
 	{
@@ -628,6 +616,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 				src = srcend;
 			}
 			break;
+
 		case 199:
 			src++;
 			/* FALLTROUGH */
@@ -642,6 +631,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 
 			*dst++ = '"';
 			break;
+
 		case 201:
 			src++;
 			/* FALLTROUGH */
@@ -649,8 +639,8 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 			pop32b(num, src);
 			pushsig(dst, num);
 			pushnum(dst, num, 10, bin, i, j, c);
-
 			break;
+
 		case 203:
 			src++;
 			/* FALLTROUGH */
@@ -669,6 +659,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 			pop32b(i, src);
 			pushnum(dst, i, 8, bin, i, j, c);
 			break;
+
 		case 207:
 			src++;
 			/* FALLTROUGH */
@@ -679,6 +670,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 			pushnum(dst, i, 2, bin, i, j, c);
 
 			break;
+
 		case 208:
 			sft = *src++;
 			mrk = (const unsigned char *)gfasft[sft];
@@ -687,39 +679,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 				*dst++ = *mrk++;
 
 			break;
-		case 46:						/* !! */
-			/* case 55:                                      NUMBER: */
-		case 64:						/* !! */
-		case 68:						/* !! */
-		case 136:
-		case 137:						/* !! */
-		case 144:
-		case 145:
-		case 146:
-		case 147:						/* !! */
-		case 148:
-		case 149:
-		case 150:
-		case 164:
-		case 165:
-		case 166:						/* !! */
-		case 142:						/* !! */
-		case 169:						/* !! */
-		case 177:
-		case 178:
-		case 179:
-		case 180:
-		case 181:						/* !! */
-		case 197:						/* !! */
-		case 209:
-		case 210:
-		case 211:
-		case 212:
-		case 213:
-		case 214:						/* !! */
-			gf4tp_output("gf4tp_tp() Error at line %u:%lu: %02X is an unknown token code to me\n", gl->lineno, (unsigned long)(src - gl->line), *src);
-			src++;
-			break;
+
 		case 215:
 			src++;
 			/* FALLTROUGH */
@@ -754,6 +714,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 			 */
 			pushnum(dst, u.ull, 8, bin, i, j, c);
 			break;
+
 		case 217:
 			src++;
 			/* FALLTROUGH */
@@ -768,8 +729,8 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 			u.ull = (unsigned long long int) u.d;
 
 			pushnum(dst, u.ull, 2, bin, i, j, c);
-
 			break;
+
 		case 219:
 			src++;
 			/* FALLTROUGH */
@@ -782,9 +743,9 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 			src += 8;
 			copy64b(u.ull, dcb);
 			u.ull = (unsigned long long int) u.d;
-
 			pushnum(dst, u.ull, 16, bin, i, j, c);
 			break;
+
 		case 221:
 			src++;
 			/* FALLTROUGH */
@@ -852,6 +813,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 				}
 			}
 			break;
+
 		case 222:						/* " */
 			*dst++ = '"';
 			for (i = *src++; i > 0; i--)
@@ -859,8 +821,9 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 					*dst++ = '"';
 			*dst++ = '"';
 			break;
-		case 224:
-		case 225:
+
+		case 224: /* FIXME: seems to be wrong, GFA3 translates that to vsl_color */
+		case 225: /* FIXME: seems to be wrong, GFA3 translates that to vsl_ends */
 		case 226:
 		case 227:
 		case 228:
@@ -880,6 +843,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 			v = *src++;
 			pushvar(dst, mrk, i, v, gi, gf4tp_resvar);
 			break;
+
 		case 240:
 		case 241:
 		case 242:
@@ -900,6 +864,22 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 			pop16b(v, src);
 			pushvar(dst, mrk, i, v, gi, gf4tp_resvar);
 			break;
+
+		case 55:                                      /* NUMBER: */
+			break;
+
+		case 46:
+		case 64:
+		case 68:
+		case 209:
+		case 210:
+		case 211:
+		case 212:
+		case 213:
+		case 214:
+			gf4tp_output("gf4tp_tp() Error at line %u:%lu: 0x%02X(%u) is an unknown token code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft, pft);
+			break;
+
 		default:
 			mrk = (const unsigned char *)gfapft[pft];
 

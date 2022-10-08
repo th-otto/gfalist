@@ -11,7 +11,7 @@ WINCC=i586-mingw32msvc-gcc
 # Cross-Compiler fuer ATARI ST TOS
 TOSCC=m68k-atari-mint-gcc
 
-CFLAGS = -g3 -O2 -Wall 
+CFLAGS = -g -O0 -Wall 
 LFLAGS = -L.
 
 # Directories
