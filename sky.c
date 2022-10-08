@@ -947,13 +947,13 @@ void gf4tp_getgi(struct gfainf *gi, unsigned char *src)
 void gf4tp_getdi(struct gfainf *gi, unsigned char *src)
 {
 	/* Current and upper pointers */
-	int *cp = (int *) gi->hdr->sep;
-	int *up = (int *) gi->hdr->sep;
+	uint32_t *cp = gi->hdr->sep;
+	uint32_t *up = gi->hdr->sep;
 
 	/* Record lengths (for magic and memory separator field) */
 
-	assert(gi->hdr->vers == 0x01 || gi->hdr->vers == 0x02
-		   || gi->hdr->vers == 0x03 || gi->hdr->vers == 0x04 || gi->hdr->vers == 0x46);
+	assert(gi->hdr->vers == 1 || gi->hdr->vers == 2
+		   || gi->hdr->vers == 3 || gi->hdr->vers == 4 || gi->hdr->vers == 70);
 
 	memcpy(gi->hdr->mag, src, gfarecl[gi->hdr->vers][0]);
 	src += gfarecl[gi->hdr->vers][0];

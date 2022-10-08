@@ -4,11 +4,18 @@
 #include <assert.h>						/* assert() */
 #include <stdlib.h>						/* malloc(), free() */
 #include <unistd.h>						/* getopt() */
+#include <string.h>
 
 #include "sky.h"
 #include "tables.h"						/* gfarecl */
 #include "version.h"					/* VERSION */
 #include "charset.h"					/* charset */
+
+#ifndef FALSE
+# define FALSE 0
+# define TRUE 1
+#endif
+
 
 static int output(const char *format, ...)
 {
@@ -110,7 +117,8 @@ static void measure(int stop)
 		output("001 measure(): timer %d\n", time(NULL) - timer);
 }
 
-static void process(char *name, FILE *ost, char *file, unsigned int flags)
+
+static int process(char *name, FILE *ost, char *file, unsigned int flags)
 {
 	struct gfainf gi;
 	struct gfahdr gh;
@@ -119,12 +127,16 @@ static void process(char *name, FILE *ost, char *file, unsigned int flags)
 	unsigned char *src;
 	unsigned char libuf[2];				/* Line info block buffer */
 	unsigned char gibuf[2];				/* General info block buffer */
-	unsigned char dibuf[162];
+	unsigned char dibuf[4 * 38 + 10];
 	unsigned char txt[1025];
 	unsigned char slb[256];				/* Preallocated buffer for small lines */
-	int cnt;
+	int32_t poolsize;
+	int32_t fldsize;
+	int32_t tokensize;
 	FILE *ist;
 
+	memset(&gi, 0, sizeof(gi));
+	memset(&gh, 0, sizeof(gh));
 	gi.hdr = &gh;
 	gl.depth = 0;						/* Start with zero depth */
 
@@ -134,7 +146,7 @@ static void process(char *name, FILE *ost, char *file, unsigned int flags)
 	} else if ((ist = fopen(file, "rb")) == NULL)
 	{
 		output("%s: Unable to open %s for reading.\n", name, file);
-		return;
+		return FALSE;
 	}
 
 	if ((flags & TP_VERB) != 0x00)
@@ -165,29 +177,29 @@ static void process(char *name, FILE *ost, char *file, unsigned int flags)
 		output("Version %d files not supported yet.\n", gh.vers);
 		if (ist != stdin)
 			fclose(ist);
-		return;
+		return FALSE;
 	case 70:
 		output("GF%.14s files not supported yet.\n", gh.mag);
 		if (ist != stdin)
 			fclose(ist);
-		return;
+		return FALSE;
 	}
 
-	cnt = gh.sep[16] - gh.sep[0];
+	poolsize = gh.sep[16] - gh.sep[0];
 
-	if (cnt != 0)
-		gi.pool = malloc(cnt);
+	if (poolsize > 0)
+		gi.pool = malloc(poolsize);
 
 	if ((flags & TP_VERB) != 0x00)
-		output("  Reading identifiers (%i Bytes)\n", cnt);
+		output("  Reading identifiers (%i Bytes)\n", poolsize);
 
 	/* Read identifier information block consisting of cnt characters */
-	fread(gi.pool, 1, cnt, ist);
+	fread(gi.pool, 1, poolsize, ist);
 
-	cnt = gh.sep[35] - gh.sep[19];
+	fldsize = gh.sep[35] - gh.sep[19];
 
-	if (cnt != 0)
-		gi.fld = malloc(cnt * sizeof(char *));
+	if (fldsize > 0)
+		gi.fld = malloc(fldsize * sizeof(char *));
 
 	if ((flags & TP_VERB) != 0x00)
 		output("  Processing II-Block\n");
@@ -199,10 +211,10 @@ static void process(char *name, FILE *ost, char *file, unsigned int flags)
 	 *            gh.sep[16] + 2, SEEK_SET);
 	 */
 
-	cnt = gh.sep[19] - gh.sep[16];
+	tokensize = gh.sep[19] - gh.sep[16];
 
 	if ((flags & TP_VERB) != 0x00)
-		output("Analyzing listing (%i)\n", cnt);
+		output("Analyzing listing (%i)\n", tokensize);
 
 	if ((flags & TP_TIME) != 0x00)
 		measure(0);
@@ -210,13 +222,13 @@ static void process(char *name, FILE *ost, char *file, unsigned int flags)
 	gl.line = slb;
 	gl.lineno = 0;
 
-	while (cnt > 0)
+	while (tokensize > 0)
 	{
 		fread(libuf, 2, 1, ist);
 
 		copy16b(gl.size, libuf);
 
-		cnt -= gl.size;
+		tokensize -= gl.size;
 
 		gl.size -= 2;
 
@@ -272,14 +284,16 @@ static void process(char *name, FILE *ost, char *file, unsigned int flags)
 	if ((flags & TP_TIME) != 0x00)
 		measure(1);
 
-	if (gh.sep[16] - gh.sep[0] != 0)
+	if (poolsize > 0)
 		free(gi.pool);
 
-	if (gh.sep[35] - gh.sep[19] != 0)
+	if (fldsize > 0)
 		free(gi.fld);
 
 	if (ist != stdin)
 		fclose(ist);
+
+	return TRUE;
 }
 
 
@@ -289,7 +303,8 @@ int main(int argc, char *argv[])
 	unsigned int flags = 0;
 	int opt;
 	FILE *ost;							/* Input and output stream */
-
+	int exitcode = EXIT_SUCCESS;
+	
 	gf4tp_init(output, rvsimp);
 
 	while ((opt = getopt(argc, argv, "o:vctVbih")) != -1)
@@ -349,15 +364,17 @@ int main(int argc, char *argv[])
 
 	if (optind >= argc)
 	{
-		process(argv[0], ost, NULL, flags);
+		if (!process(argv[0], ost, NULL, flags))
+			exitcode = EXIT_FAILURE;
 	} else
 	{
 		for (; optind < argc; optind++)
-			process(argv[0], ost, argv[optind], flags);
+			if (!process(argv[0], ost, argv[optind], flags))
+				exitcode = EXIT_FAILURE;
 	}
 
 	if (ost != stdout)
 		fclose(ost);
 
-	return 0;
+	return exitcode;
 }

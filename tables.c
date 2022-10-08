@@ -585,10 +585,10 @@ const char *const gfapft[256] = {
 	/*   53 */ "VAL(",
 	/*   54 */ "INPMID$",
 	/*   55 */ "",  /* Precedes functions that return a numeric value in PRINT statements */
-	/*   56 */ "TIME$", /* FIXME: can also be STIK_INIT( */
+	/*   56 */ "TIME$",
 	/*   57 */ ")=",
 	/*   58 */ "LEFT$(",
-	/*   59 */ "STIK_KRGETFREE(",
+	/*   59 */ "LEFT$(",
 	/*   60 */ "RIGHT$(",
 	/*   61 */ "RIGHT$(",
 	/*   62 */ "MID$(",

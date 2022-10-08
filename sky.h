@@ -1,6 +1,8 @@
 #ifndef SKY_H
 #define SKY_H
 
+#include <stdint.h>
+
 #define TP_MAGIC1 "GfABASIC"   /* Magic for version 1 and 2 files */
 #define TP_MAGIC3 "GFA-BASIC3" /* Magic for version 3 and 4 files */
 #define TP_MAGICA "GFA-AMIGAB" /* Magic for Amiga files */
@@ -27,7 +29,7 @@ struct gfahdr {
 	                                            /* 70: MS-DOS */
 	                                            /*     Windows */
 	unsigned char mag[18];                      /* Magic */
-	unsigned int sep[38];                       /* 38 x 32 Bit Memory
+	uint32_t sep[38];                           /* 38 x 32 Bit Memory
 	                                             * Separators
 	                                             */
 };
