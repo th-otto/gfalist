@@ -306,18 +306,12 @@ int main(int argc, char *argv[])
 			break;
 		case 'h':						/* display short help and exit */
 		case 'V':						/* display Version and exit */
-#ifdef PAPAYA
-			output("GF4TP     Part of OUR NEXT STEP, the GFABASIC4 devel package.\n"
-				   "SKY version " VERSION " " FRUIT " #%d built " BUILDDATE "\n"
-				   "(c) 1992-2001 by the PLASMA ORGANIZATION\n", GENERATION);
-#else
 			output("GFALIST, Copyright (C) 2001 by Peter Backes\n"
 				   "Based on SKY version " VERSION " (c) 1992-2001 by Peter Backes\n"
 				   "GFALIST comes with ABSOLUTELY NO WARRANTY.\n"
 				   "This is free software, and you are welcome to redistribute it\n"
 				   "under certain conditions; see the GNU GPL for details.\n");
 
-#endif
 			return 0;
 		}
 	}

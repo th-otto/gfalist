@@ -21,7 +21,6 @@ BINDIR=${exec_prefix}/bin
 MANDIR=${prefix}/share/man
 
 # Precious targets
-PRECIOUS = version.h
 TARGETS = libsky.a gfalist
 
 SKY_ARC = libsky.a(sky.o) libsky.a(tables.o)
@@ -66,9 +65,6 @@ gfalist.exe: $(CSRC)
 gfalist.ttp: $(CSRC)
 	$(TOSCC)  $+ -o $@ -lm
 
-version.h: HISTORY verextr.sh $(SKY_OBJS)
-	sh verextr.sh -g $< $@
-
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
@@ -82,7 +78,7 @@ clobber: realclean
 	rm -f $(PRECIOUS)
 
 dist: MANIFEST HISTORY packdist.sh
-	sh packdist.sh -t $(DISTRIB) -m $< -v HISTORY,version.h -s ons.spec ck md
+	sh packdist.sh -t $(DISTRIB) -m $< -v HISTORY -s ons.spec ck md
 
 
 # For the debin package (created with checkinstall)
@@ -112,10 +108,10 @@ deb :	$(BINDIST) doc-pak
 	rm -rf backup-*.tgz doc-pak
 
 rpms: dist
-	sh packdist.sh -t $(DISTRIB) -v HISTORY,version.h mr
+	sh packdist.sh -t $(DISTRIB) -v HISTORY mr
 
 ons.spec: README HISTORY packdist.sh
-	sh packdist.sh -a README -v HISTORY,version.h -t $(DISTRIB) -s ons.spec fs
+	sh packdist.sh -a README -v HISTORY -t $(DISTRIB) -s ons.spec fs
 
 #DEPEND
 gfalist: libsky.a
