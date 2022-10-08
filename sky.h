@@ -44,6 +44,7 @@ struct gfalin {
 	unsigned short size;                        /* Length of the line */
 	short depth;                                /* Indent depth */
 	unsigned char *line;                        /* Pointer to line buffer */
+	unsigned int lineno;
 };
 
 unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct gfalin *gl, unsigned int flags);

@@ -717,7 +717,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 		case 212:
 		case 213:
 		case 214:						/* !! */
-			gf4tp_output("201 gf4tp_tp() Error at %lu: %02X is an unknown token code to me\n", (unsigned long)(src - gl->line), *src);
+			gf4tp_output("gf4tp_tp() Error at line %u:%lu: %02X is an unknown token code to me\n", gl->lineno, (unsigned long)(src - gl->line), *src);
 			src++;
 			break;
 		case 215:

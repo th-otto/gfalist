@@ -122,7 +122,6 @@ static void process(char *name, FILE *ost, char *file, unsigned int flags)
 	unsigned char dibuf[162];
 	unsigned char txt[1025];
 	unsigned char slb[256];				/* Preallocated buffer for small lines */
-	unsigned int line = 0;
 	int cnt;
 	FILE *ist;
 
@@ -209,10 +208,10 @@ static void process(char *name, FILE *ost, char *file, unsigned int flags)
 		measure(0);
 
 	gl.line = slb;
+	gl.lineno = 0;
 
 	while (cnt > 0)
 	{
-		line++;
 		fread(libuf, 2, 1, ist);
 
 		copy16b(gl.size, libuf);
@@ -266,8 +265,9 @@ static void process(char *name, FILE *ost, char *file, unsigned int flags)
 			free(gl.line);
 			gl.line = slb;
 		}
-		if ((flags & TP_VERB) != 0x00 && line % 0x100 == 0x00)
-			output("Reached line %u\n", line);
+		gl.lineno++;
+		if ((flags & TP_VERB) != 0x00 && gl.lineno % 0x100 == 0x00)
+			output("Reached line %u\n", gl.lineno);
 	}
 	if ((flags & TP_TIME) != 0x00)
 		measure(1);
