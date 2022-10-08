@@ -1,7 +1,7 @@
-#include <stdio.h> /* NULL */
+#include <stdio.h>
 
 /* Line command text */
-const unsigned char *gfalct[512] = {
+const char *const gfalct[512] = {
 	/*    0 "DO"       */ "\x44\x4F", 
 	/*    4 "LOOP"     */ "\x4C\x4F\x4F\x50", 
 	/*    8 "REPEAT"   */ "\x52\x45\x50\x45\x41\x54", 
@@ -527,7 +527,7 @@ const unsigned char *gfalct[512] = {
 };
 
 /* Primary function text */
-const unsigned char *gfapft[256] = {
+const char *const gfapft[256] = {
 	/*    0 " AND "    */ "\x20\x41\x4E\x44\x20", 
 	/*    1 " OR "     */ "\x20\x4F\x52\x20", 
 	/*    2 " XOR "    */ "\x20\x58\x4F\x52\x20", 
@@ -790,7 +790,7 @@ const unsigned char *gfapft[256] = {
 };
 
 /* Secondary function text */
-const unsigned char *gfasft[256] = {
+const char *const gfasft[256] = {
 	/*    0 "MUL("     */ "\x4D\x55\x4C\x28", 
 	/*    1 "DIV("     */ "\x44\x49\x56\x28", 
 	/*    2 "ADD("     */ "\x41\x44\x44\x28", 
@@ -1067,4 +1067,3 @@ const short gfarecl[71][2] = {
 	{ 0,  0}, { 0,  0},
 	{18,  0}
 };
-

@@ -209,4 +209,3 @@ void gf4tp_init(int (*output)(const char *format, ...),
 
 
 #endif
-
