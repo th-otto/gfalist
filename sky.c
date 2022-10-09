@@ -257,22 +257,16 @@ int gf4tp_tp(FILE *ost, struct gfainf *gi, struct gfalin *gl, unsigned int flags
 	case 196:
 	case 200:
 	case 216:
-		gl->depth -= (flags & TP_BACKW) != 0;
-
 		if (gl->depth > 0)				/* Required because i is unsigned */
 			for (i = 0; i < gl->depth; i++)
 				putc(' ', ost), putc(' ', ost);
-
-		gl->depth += (flags & TP_BACKW) == 0;
+		gl->depth += 1;
 		break;
-	case 1796:
-		gl->depth -= (flags & TP_BACKW) != 0;
-
+	case 1796: /* "> FUNCTION " */
 		if (gl->depth > 0)
 			for (i = 0; i < gl->depth; i++)
 				putc(' ', ost), putc(' ', ost);
-
-		gl->depth += (flags & TP_BACKW) == 0 && (flags & TP_BUGEM) == 0;
+		gl->depth += 1;
 		break;
 	case 4:
 	case 12:
@@ -295,13 +289,10 @@ int gf4tp_tp(FILE *ost, struct gfainf *gi, struct gfalin *gl, unsigned int flags
 	case 168:
 	case 204:
 	case 208:
-		gl->depth -= (flags & TP_BACKW) == 0;
-
+		gl->depth -= 1;
 		if (gl->depth > 0)
 			for (i = 0; i < gl->depth; i++)
 				putc(' ', ost), putc(' ', ost);
-
-		gl->depth += (flags & TP_BACKW) != 0;
 		break;
 	case 56:
 	case 60:

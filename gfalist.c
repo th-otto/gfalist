@@ -255,7 +255,7 @@ int main(int argc, char *argv[])
 	
 	gf4tp_init(output, rvsimp);
 
-	while ((opt = getopt(argc, argv, "o:vcVbih")) != -1)
+	while ((opt = getopt(argc, argv, "o:vcVih")) != -1)
 	{
 		switch (opt)
 		{
@@ -267,17 +267,11 @@ int main(int argc, char *argv[])
 			}
 			outfile = optarg;
 			break;
-		case 'b':						/* Bug emulation */
-			flags |= TP_BUGEM;
-			break;
 		case 'v':						/* Verbose */
 			flags |= TP_VERB;
 			break;
 		case 'c':						/* Conversion */
 			flags |= TP_CONV;
-			break;
-		case 't':						/* Timer */
-			/* flags |= TP_TIME; */
 			break;
 		case 'i':						/* save INLINE data into .inl files */
 			flags |= TP_SAVEINLINE;
@@ -291,6 +285,8 @@ int main(int argc, char *argv[])
 				   "under certain conditions; see the GNU GPL for details.\n");
 
 			return 0;
+		default:
+			return EXIT_FAILURE;
 		}
 	}
 

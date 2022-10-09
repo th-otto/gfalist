@@ -10,11 +10,9 @@
 #define TP_MAGIW3 "A-BASIC WIN300" /* Magic for WIN BASIC files */
 
 /* gf4tp_tp flags */
-#define TP_BACKW  0x01 /* Scan backwards */
 #define TP_CONV   0x02 /* Convert charset */
 #define TP_VERB   0x04 /* Be verbose */
 #define TP_TIME   0x08 /* Measure time */
-#define TP_BUGEM  0x10 /* Emulate bugs */
 #define TP_SAVEINLINE  0x20 /* Save INLINE data into .inl files */
 
 struct gfahdr {
