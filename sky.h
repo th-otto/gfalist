@@ -143,6 +143,10 @@ void gf4tp_init(int (*output)(const char *format, ...),
  * dst >>= 11;
  * tmp <<= 52;
  * dst  |= tmp;
+ *
+ *     x0000000 11111111 22222222 33333333 44444444 55555555 S6666666 77777777
+ * ->
+ *     x6667777 77770000 00011111 11122222 22233333 33344444 44455555 55566666
  */
 #define dgfabintoieee(dst, src) \
 	/* copy src to dst, masking out the leftmost bit and \

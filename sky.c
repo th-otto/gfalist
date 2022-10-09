@@ -818,10 +818,6 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 			src++; /* skip filler byte at odd address */
 			/* FALLTROUGH */
 		case 223:						/* 1234567890.1234567890E+1234567890 */
-			{
-			/* double conversion string */
-			char *dcs;
-
 			/* binary 8byte double -> ASCII decimal */
 			/* We cannot abuse dst as dcb here via bin = dst because
 			 * there might be a constant at the 256 byte line length
@@ -833,64 +829,11 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 			dcb[0] &= 0x7f;
 			src += 8;
 			copy64b(u.ull, dcb);
-			dcs = (char *) dst;
 			l = llrint(u.d);
 			if (isfinite(u.d) && l == u.d)
-				sprintf(dcs, "%lld", (long long)l);
+				dst += sprintf((char *) dst, "%lld", (long long)l);
 			else
-				sprintf(dcs, "%G", u.d);
-			while (*dcs != '\0')
-			{
-				switch (*dcs++)
-				{
-				case '0':
-					*dst++ = '0';
-					break;
-				case '1':
-					*dst++ = '1';
-					break;
-				case '2':
-					*dst++ = '2';
-					break;
-				case '3':
-					*dst++ = '3';
-					break;
-				case '4':
-					*dst++ = '4';
-					break;
-				case '5':
-					*dst++ = '5';
-					break;
-				case '6':
-					*dst++ = '6';
-					break;
-				case '7':
-					*dst++ = '7';
-					break;
-				case '8':
-					*dst++ = '8';
-					break;
-				case '9':
-					*dst++ = '9';
-					break;
-				case '.':
-					*dst++ = '.';
-					break;
-				case 'E':
-					*dst++ = 'E';
-					break;
-				case '+':
-					*dst++ = '+';
-					break;
-				case '-':
-					*dst++ = '-';
-					break;
-				default:
-					*dst++ = '?';
-					break;
-				}
-			}
-			}
+				dst += sprintf((char *) dst, "%.12G", u.d);
 			break;
 
 		case 222:						/* " */
@@ -901,8 +844,8 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 			*dst++ = '"';
 			break;
 
-		case 224: /* FIXME: seems to be wrong, GFA3 translates that to vsl_color */
-		case 225: /* FIXME: seems to be wrong, GFA3 translates that to vsl_ends */
+		case 224:
+		case 225:
 		case 226:
 		case 227:
 		case 228:
