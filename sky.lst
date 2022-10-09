@@ -1,0 +1,1738 @@
+$m1000000
+.ifndef __INTERPRETER__
+RESERVE 1000000
+.endif
+OPEN "I",#1,"SKY.CNF"
+LINE INPUT #1,file$
+LINE INPUT #1,outfile$
+CLOSE #1
+' file$="E:\HELL_OUT.GFA"
+' outfile$="STD:"
+' file$="E:\gfasrc\jedi\test.gfa"
+' file$="E:\gfasrc\jedi\jedi.gfa"
+file$="E:\gfasrc\ERGO_PRO\ERGO_SYS\ERGO_TP.GFA"
+outfile$="E:\gfasrc\jedi\texte\sky.out"
+ON ERROR GOSUB gf4tp_err                ! -DBG
+'
+@gf4tp(file$,outfile$)
+> PROCEDURE gf4tp(file$,outfile$)
+  LOCAL len&,lines%,line%,location%,lst_adr%,lst_len%
+  '
+  @gf4tp_init
+  @gf4tp_debug("050 gf4tp() Eingabe="+file$+", Ausgabe="+outfile$)
+  @gf4tp_output("GF4TP (Codename SKY) Version 0.00‡ PL4 (c) by PLASMA SOFTWARE (rtc'Soft)")
+  @gf4tp_output("Dieses Programm ist Teil des GFABASIC4 Entwicklungspakets 'OUR NEXT STEP'.")
+  @gf4tp_output("")
+  ' Los gehts...
+  @stoppuhr(TRUE)
+  OPEN "I",#1,file$
+  @gf4tp_output("Scanne Haeder")
+  @gf4tp_scan_header(1)
+  @gf4tp_output("Suche Zeilen")
+  '
+  SEEK #1,ADD(p%(17),164)
+  lst_len%=SUB(LOF(#1),ADD(p%(17),168))
+  lines%=@gf4tp_get_lines(1,lst_len%)
+  DIM ascii$(lines%)
+  '
+  @gf4tp_output("Analysiere Listing")
+  SEEK #1,ADD(p%(17),164)
+  '
+  lst_adr%=MALLOC(lst_len%)
+  IF lst_adr%>0
+    BGET #1,lst_adr%,lst_len%
+    CLR locaton%,len&
+    location%=lst_adr%                                  ! Aktuelle Position
+    FOR line%=1 TO lines%
+      len&=WORD{location%}                              ! LÑnge der Zeile
+      '
+      line$=SPACE$(SUB(len&,2))                         ! Buffer vorbereiten
+      BMOVE ADD(location%,2),V:line$,SUB(len&,2)        ! In String kopieren
+      '
+      ADD location%,len&                                ! NÑchste Zeile
+      '
+      ' @gf4tp_rawecho(line$)
+      ascii$(line%)=@gf4tp_tp$(line$)                   ! Umwandlung
+      ' @gf4tp_debug(ascii$(line%))
+      '
+      IF MOD(line%,64)=0                                ! Eventuell Zeilen-
+        @gf4tp_line(line%)                              ! nummer aktualisieren
+      ENDIF
+      EXIT IF INKEY$<>""
+    NEXT line%
+    ~MFREE(lst_adr%)                                    ! Speicher freigeben
+    '
+    @gf4tp_output("Schreibe ASCII")
+    OPEN "O",#3,outfile$
+    FOR line%=1 TO lines%                               ! Alles auf einmal
+      PRINT #3,ascii$(line%)
+    NEXT line%
+    CLOSE #3
+  ELSE
+    @gf4tp_output("Zu wenig Speicher")
+  ENDIF
+  CLOSE #1
+  @gf4tp_output("Fertig.")
+  @stoppuhr(FALSE)
+  @gf4tp_exit
+RETURN
+'
+> PROCEDURE gf4tp_scan_header(channel|)
+  LOCAL i&,char%,len|,anzahl&,n&
+  @gf4tp_output("  Lese GI-Block")
+  psve|=INP(#channel|)                          ! GeschÅtzt
+  version|=INP(#channel|)                       ! Datei-Version
+  ' Kommando-Teiler: falsch. Es ist die Datei-Version.
+  ' GFA-1.00: 1 / GFA-2.00: 2 / GFA-3.00: 3 / GFA-3.50: 4
+  magic$=INPUT$(10,#channel|)                   ! Magic (GFA-BASIC3)
+  '
+  @gf4tp_output("  Lese DI-Block")
+  DIM p%(38)
+  '
+  BGET #channel|,V:p%(1),152                    ! 38*LONG (4) lesen
+  DIM var$(16,SUCC(@gf4tp_getmax))
+  '            ^ Incl. evtl. Nullvariable, bei FÅllbyte
+  '
+  @gf4tp_output("  Lese Namen")
+  FOR i&=1 TO 16                                ! 16 Variablentypen
+    IF p%(SUCC(i&))>p%(i&)                      ! Mehr als eine Variable?
+      ' SEEK #channel|,ADD(p%(i&),164)
+      CLR anzahl&
+      FOR char%=1 TO SUB(p%(SUCC(i&)),p%(i&))   ! Variablen suchen
+        INC anzahl&                             ! Variablenanzahl erhîhen
+        len|=INP(#channel|)                     ! LÑnge des Namens
+        ADD char%,len|                          ! NÑchste Variable
+        var$(i&,anzahl&)=@lower$(INPUT$(len|,#channel|))  ! Variable auslesen
+      NEXT char%
+    ELSE IF psve|                               ! GeschÅtzt gesichert
+    ENDIF
+  NEXT i&
+RETURN
+> FUNCTION gf4tp_getmax
+  LOCAL i&,m&
+  FOR i&=21 TO 36
+    m&=MAX(m&,DIV(SUB(p%(i&),p%(PRED(i&))),4))
+  NEXT i&
+  RETURN m&
+ENDFUNC
+'
+> PROCEDURE gf4tp_init
+  LOCAL i&
+  DIM tok&(1024),cmd$(1024),fnk$(255),fnk2$(255),cache|(32767),vs$(16)
+  '
+  DEFFN varw(a&)=SUCC(OR(SHL(cache|(a&),8),cache|(SUCC(a&))))
+  DEFFN varb(a&)=SUCC(cache|(a&))
+  '
+  CLS                                   ! -!TP
+  '
+  @gf4tp_token
+  RESTORE cmd_token
+  CLR i&
+  DO
+    INC i&
+    READ tok&(i&)
+    EXIT IF tok&(i&)=-1
+    READ cmd$(i&)
+  LOOP
+  cnt&=PRED(i&)
+  '
+  ' Variablen-Suffix (VS)
+  RESTORE vs
+  FOR i&=1 TO 16
+    READ vs$(i&)
+  NEXT i&
+vs:
+  DATA "#","$","%","!","#(","$(","%(","!(","&","|","","","&(","|(","","$"
+  ' #,$,%,!,#(,$(,%(,!(,&,|,,,&(,|(,,$
+  '
+  '
+  ' OPEN "O",#9,"VID:"
+RETURN
+> PROCEDURE gf4tp_exit
+  ' CLOSE #9
+RETURN
+> PROCEDURE gf4tp_token
+cmd_token:
+  DATA 0,"DO"
+  DATA 4,"LOOP"
+  DATA 8,"REPEAT"
+  DATA 12,"UNTIL "
+  DATA 16,"WHILE "
+  DATA 20,"WEND"
+  DATA 24,"PROCEDURE "
+  DATA 28,"RETURN"
+  DATA 32,"IF "
+  DATA 36,"ENDIF"
+  DATA 40,"FUNCTION "
+  DATA 44,"ENDFUNC"
+  DATA 48,"SELECT "
+  DATA 52,"ENDSELECT"
+  DATA 56,"ELSE"
+  DATA 60,"DEFAULT"
+  DATA 64,"ELSE IF "
+  DATA 68,"RETURN "
+  DATA 72,"RETURN "
+  DATA 76,"FOR "
+  DATA 80,"FOR "
+  DATA 84,"FOR "
+  DATA 88,"FOR "
+  DATA 92,"FOR "
+  DATA 96,"FOR "
+  DATA 100,"FOR "
+  DATA 104,"FOR "
+  DATA 108,"FOR "
+  DATA 112,"FOR "
+  DATA 116,"FOR "
+  DATA 120,"FOR "
+  DATA 124,"NEXT "
+  DATA 128,"NEXT "
+  DATA 132,"NEXT "
+  DATA 136,"NEXT "
+  DATA 140,"NEXT "
+  DATA 144,"NEXT "
+  DATA 148,"NEXT "
+  DATA 152,"NEXT "
+  DATA 156,"NEXT "
+  DATA 160,"NEXT "
+  DATA 164,"NEXT "
+  DATA 168,"NEXT "
+  DATA 172,"EXIT IF "
+  DATA 176,"SELECT "
+  DATA 180,""
+  DATA 184,""
+  DATA 188,""
+  DATA 192,""
+  DATA 196,"DO WHILE "
+  DATA 200,"DO UNTIL "
+  DATA 204,"LOOP WHILE "
+  DATA 208,"LOOP UNTIL "
+  DATA 212,"LOCAL "
+  DATA 216,"> PROCEDURE "
+  DATA 220,"EXIT IF "
+  DATA 224,"CASE "
+  DATA 228,"DEFFN "
+  DATA 232,"GOTO "
+  DATA 236,"RESTORE "
+  DATA 240,""
+  DATA 244,"GOSUB "
+  DATA 248,"@"
+  DATA 252,""
+  DATA 256,"LET "
+  DATA 260,"LET "
+  DATA 264,"LET "
+  DATA 268,"LET "
+  DATA 272,"LET "
+  DATA 276,"LET "
+  DATA 280,"LET "
+  DATA 284,"LET "
+  DATA 288,"LET "
+  DATA 292,"LET "
+  DATA 296,"LET "
+  DATA 300,"LET "
+  DATA 304,""
+  DATA 308,""
+  DATA 312,""
+  DATA 316,""
+  DATA 320,""
+  DATA 324,""
+  DATA 328,""
+  DATA 332,""
+  DATA 336,""
+  DATA 340,""
+  DATA 344,""
+  DATA 348,""
+  DATA 352,"PLOT "
+  DATA 356,"PSET "
+  DATA 360,"ALINE "
+  DATA 364,"HLINE "
+  DATA 368,"ARECT "
+  DATA 372,"APOLY "
+  DATA 376,"ACHAR "
+  DATA 380,"ACLIP "
+  DATA 384,"COLOR "
+  DATA 388,"POKE "
+  DATA 392,"DPOKE "
+  DATA 396,"LPOKE "
+  DATA 400,"SPOKE "
+  DATA 404,"SDPOKE "
+  DATA 408,"SLPOKE "
+  DATA 412,"RESERVE"
+  DATA 416,"RESERVE "
+  DATA 420,"RESUME "
+  DATA 424,"RESUME "
+  DATA 428,"RESUME "
+  DATA 432,""
+  DATA 436,"RECORD "
+  DATA 440,"DELAY "
+  DATA 444,"BGET "
+  DATA 448,"BPUT "
+  DATA 452,"ATEXT "
+  DATA 456,"REM "
+  DATA 460,"' "
+  DATA 464,"==> "
+  DATA 468,"DATA "
+  DATA 472,"SWAP "
+  DATA 476,"SWAP "
+  DATA 480,"SWAP "
+  DATA 484,"*"
+  DATA 488,"*"
+  DATA 492,"SINGLE{"
+  DATA 496,"END"
+  DATA 500,"LOCATE "
+  DATA 504,"ON "
+  DATA 508,""
+  DATA 512,"ON ERROR"
+  DATA 516,"ON ERROR GOSUB "
+  DATA 520,"ON BREAK"
+  DATA 524,"ON BREAK CONT"
+  DATA 528,"ON BREAK GOSUB "
+  DATA 532,"ON MENU GOSUB "
+  DATA 536,"ON MENU MESSAGE GOSUB "
+  DATA 540,"ON MENU KEY GOSUB "
+  DATA 544,"ON MENU BUTTON "
+  DATA 548,"ON MENU"
+  DATA 552,"ON MENU "
+  DATA 556,"MENU "
+  DATA 560,"MENU OFF"
+  DATA 564,"MENU KILL"
+  DATA 568,"MENU "
+  DATA 572,"TRON "
+  DATA 576,"TRON "
+  DATA 580,"TRON "
+  DATA 584,"TROFF"
+  DATA 588,"PRINT "
+  DATA 592,"PRINT "
+  DATA 596,"TEXT "
+  DATA 600,"TEXT "
+  DATA 604,"RCALL "
+  DATA 608,"CALL "
+  DATA 612,"FORM INPUT "
+  DATA 616,"LINE INPUT "
+  DATA 620,"LINE "
+  DATA 624,""
+  DATA 628,""
+  DATA 632,""
+  DATA 636,""
+  DATA 640,"INC "
+  DATA 644,"INC "
+  DATA 648,"INC "
+  DATA 652,"INC "
+  DATA 656,"INC "
+  DATA 660,"INC "
+  DATA 664,"INC "
+  DATA 668,"INC "
+  DATA 672,"DEC "
+  DATA 676,"DEC "
+  DATA 680,"DEC "
+  DATA 684,"DEC "
+  DATA 688,"DEC "
+  DATA 692,"DEC "
+  DATA 696,"DEC "
+  DATA 700,"DEC "
+  DATA 704,"ADD "
+  DATA 708,"ADD "
+  DATA 712,"ADD "
+  DATA 716,"ADD "
+  DATA 720,"ADD "
+  DATA 724,"ADD "
+  DATA 728,"ADD "
+  DATA 732,"ADD "
+  DATA 736,"SUB "
+  DATA 740,"SUB "
+  DATA 744,"SUB "
+  DATA 748,"SUB "
+  DATA 752,"SUB "
+  DATA 756,"SUB "
+  DATA 760,"SUB "
+  DATA 764,"SUB "
+  DATA 768,"MUL "
+  DATA 772,"MUL "
+  DATA 776,"MUL "
+  DATA 780,"MUL "
+  DATA 784,"MUL "
+  DATA 788,"MUL "
+  DATA 792,"MUL "
+  DATA 796,"MUL "
+  DATA 800,"DIV "
+  DATA 804,"DIV "
+  DATA 808,"DIV "
+  DATA 812,"DIV "
+  DATA 816,"DIV "
+  DATA 820,"DIV "
+  DATA 824,"DIV "
+  DATA 828,"DIV "
+  DATA 832,"SEEK #"
+  DATA 836,"RELSEEK #"
+  DATA 840,"DIM "
+  DATA 844,"SETCOLOR "
+  DATA 848,"SETCOLOR "
+  DATA 852,"BMOVE "
+  DATA 856,"VDISYS "
+  DATA 860,"VDISYS "
+  DATA 864,"VDISYS "
+  DATA 868,"VDISYS "
+  DATA 872,"GEMSYS"
+  DATA 876,"GEMSYS "
+  DATA 880,"PTSIN("
+  DATA 884,"PTSOUT("
+  DATA 888,"INTIN("
+  DATA 892,"INTOUT("
+  DATA 896,"ADDRIN("
+  DATA 900,"ADDROUT("
+  DATA 904,"GINTIN("
+  DATA 908,"GINTOUT("
+  DATA 912,"CONTRL("
+  DATA 916,"GCONTRL("
+  DATA 920,"{"
+  DATA 924,"LONG{"
+  DATA 928,"INT{"
+  DATA 932,"CARD{"
+  DATA 936,"BYTE{"
+  DATA 940,"CHAR{"
+  DATA 944,"FLOAT{"
+  DATA 948,"DOUBLE{"
+  DATA 952,"ON MENU IBOX "
+  DATA 956,"ON MENU OBOX "
+  DATA 960,"VOID "
+  DATA 964,"~"
+  DATA 968,"OB_NEXT("
+  DATA 972,"OB_HEAD("
+  DATA 976,"OB_TAIL("
+  DATA 980,"OB_TYPE("
+  DATA 984,"OB_FLAGS("
+  DATA 988,"OB_STATE("
+  DATA 992,"OB_SPEC("
+  DATA 996,"OB_X("
+  DATA 1000,"OB_Y("
+  DATA 1004,"OB_W("
+  DATA 1008,"OB_H("
+  DATA 1012,"ABSOLUTE "
+  DATA 1016,"."
+  DATA 1020,"RANDOMIZE "
+  DATA 1024,"ALERT "
+  DATA 1028,"GET "
+  DATA 1032,"GET "
+  DATA 1036,"GET "
+  DATA 1040,"PUT "
+  DATA 1044,"PUT "
+  DATA 1048,"PUT "
+  DATA 1052,"PUT "
+  DATA 1056,""
+  DATA 1060,"OPEN "
+  DATA 1064,"OPENW "
+  DATA 1068,"OPENW #"
+  DATA 1072,"CLOSE "
+  DATA 1076,"CLOSEW "
+  DATA 1080,"CLOSEW #"
+  DATA 1084,"CLEAR"
+  DATA 1088,"CLEARW "
+  DATA 1092,"CLEARW #"
+  DATA 1096,"TOPW #"
+  DATA 1100,"TITLEW #"
+  DATA 1104,"INFOW #"
+  DATA 1108,"DEFLINE "
+  DATA 1112,"GRAPHMODE "
+  DATA 1116,"DEFMOUSE "
+  DATA 1120,"DEFMOUSE "
+  DATA 1124,"DEFLIST "
+  DATA 1128,"DEFMARK "
+  DATA 1132,"DEFNUM "
+  DATA 1136,"DEFTEXT "
+  DATA 1140,"DEFFILL "
+  DATA 1144,"DEFFILL "
+  DATA 1148,"BOX "
+  DATA 1152,"PBOX "
+  DATA 1156,"RBOX "
+  DATA 1160,"PRBOX "
+  DATA 1164,"CIRCLE "
+  DATA 1168,"CIRCLE "
+  DATA 1172,"PCIRCLE "
+  DATA 1176,"PCIRCLE "
+  DATA 1180,"ELLIPSE "
+  DATA 1184,"ELLIPSE "
+  DATA 1188,"PELLIPSE "
+  DATA 1192,"PELLIPSE "
+  DATA 1196,"ERROR "
+  DATA 1200,"FILL "
+  DATA 1204,"FILL "
+  DATA 1208,"HIDEM"
+  DATA 1212,"LPRINT "
+  DATA 1216,"LSET "
+  DATA 1220,"MID$("
+  DATA 1224,"NEW"
+  DATA 1228,"OUT "
+  DATA 1232,"OUT "
+  DATA 1236,"QUIT "
+  DATA 1240,""
+  DATA 1244,"CHDIR "
+  DATA 1248,"CHDRIVE "
+  DATA 1252,"CHDRIVE "
+  DATA 1256,"CLR "
+  DATA 1260,"CLS "
+  DATA 1264,""
+  DATA 1268,"CONT"
+  DATA 1272,""
+  DATA 1276,"DIR "
+  DATA 1280,"HTAB "
+  DATA 1284,"VTAB "
+  DATA 1288,"ERASE "
+  DATA 1292,"EXEC "
+  DATA 1296,"FIELD "
+  DATA 1300,"FILES "
+  DATA 1304,"TOUCH #"
+  DATA 1308,""
+  DATA 1312,"EDIT"
+  DATA 1316,"FILESELECT "
+  DATA 1320,"NAME "
+  DATA 1324,"MKDIR "
+  DATA 1328,"MOUSE "
+  DATA 1332,"KILL "
+  DATA 1336,"RMDIR "
+  DATA 1340,"RSET "
+  DATA 1344,"SETTIME "
+  DATA 1348,"SGET "
+  DATA 1352,"SHOWM"
+  DATA 1356,"SPUT "
+  DATA 1360,"STOP"
+  DATA 1364,"SYSTEM "
+  DATA 1368,"VSYNC"
+  DATA 1372,"HARDCOPY"
+  DATA 1376,"PAUSE "
+  DATA 1380,"QSORT "
+  DATA 1384,"SSORT "
+  DATA 1388,"POLYLINE "
+  DATA 1392,"POLYFILL "
+  DATA 1396,"POLYMARK "
+  DATA 1400,"INSERT "
+  DATA 1404,"DELETE "
+  DATA 1408,"RENAME "
+  DATA 1412,"STICK "
+  DATA 1416,"SOUND "
+  DATA 1420,"WAVE "
+  DATA 1424,"CLIP "
+  DATA 1428,"CLIP "
+  DATA 1432,"CLIP "
+  DATA 1436,"CLIP "
+  DATA 1440,"CLIP "
+  DATA 1444,"FULLW "
+  DATA 1448,"EVERY "
+  DATA 1452,"EVERY "
+  DATA 1456,"EVERY "
+  DATA 1460,"AFTER "
+  DATA 1464,"AFTER "
+  DATA 1468,"AFTER "
+  DATA 1472,"INPUT "
+  DATA 1476,"INPUT "
+  DATA 1480,"DRAW "
+  DATA 1484,"DRAW "
+  DATA 1488,"READ "
+  DATA 1492,""
+  DATA 1496,"SETMOUSE "
+  DATA 1500,"KEYPAD "
+  DATA 1504,"KEYTEST "
+  DATA 1508,"KEYGET "
+  DATA 1512,"KEYLOOK "
+  DATA 1516,"KEYPRESS "
+  DATA 1520,"KEYDEF "
+  DATA 1524,"DEFINT "
+  DATA 1528,"DEFFLT "
+  DATA 1532,"DEFBYT "
+  DATA 1536,"DEFWRD "
+  DATA 1540,"DEFBIT "
+  DATA 1544,"DEFSTR "
+  DATA 1548,"BOUNDARY "
+  DATA 1552,"LIST "
+  DATA 1556,"LLIST "
+  DATA 1560,"SAVE "
+  DATA 1564,"PSAVE "
+  DATA 1568,"CHAIN "
+  DATA 1572,"RUN"
+  DATA 1576,"RUN "
+  DATA 1580,"LOAD "
+  DATA 1584,"SETDRAW "
+  DATA 1588,"ARRAYFILL "
+  DATA 1592,"DUMP "
+  DATA 1596,"BITBLT "
+  DATA 1600,"BITBLT "
+  DATA 1604,"BITBLT "
+  DATA 1608,"STORE "
+  DATA 1612,"RECALL "
+  DATA 1616,"BSAVE "
+  DATA 1620,"BLOAD "
+  DATA 1624,"V~H="
+  DATA 1628,"TIME$="
+  DATA 1632,"DATE$="
+  DATA 1636,"SPRITE "
+  DATA 1640,"OPTION "
+  DATA 1644,"$"
+  DATA 1648,"WINDTAB("
+  DATA 1652,"RC_COPY "
+  DATA 1656,"MODE "
+  DATA 1660,""
+  DATA 1664,"WRITE "
+  DATA 1668,"INLINE "
+  DATA 1672,"WORD{"
+  DATA 1676,"VSETCOLOR "
+  DATA 1680,"OUT& "
+  DATA 1684,"OUT% "
+  DATA 1688,"CURVE "
+  DATA 1692,"_DATA= "
+  DATA 1696,"MAT ADD "
+  DATA 1700,"MAT ADD "
+  DATA 1704,"MAT SUB "
+  DATA 1708,"MAT SUB "
+  DATA 1712,"MAT CPY "
+  DATA 1716,"MAT XCPY "
+  DATA 1720,"MAT DET "
+  DATA 1724,""
+  DATA 1728,""
+  DATA 1732,"MAT NORM "
+  DATA 1736,"MAT READ "
+  DATA 1740,"MAT PRINT "
+  DATA 1744,"MAT TRANS "
+  DATA 1748,"MAT CLR "
+  DATA 1752,"MAT SET "
+  DATA 1756,"MAT ONE "
+  DATA 1760,"MAT BASE "
+  DATA 1764,"MAT QDET "
+  DATA 1768,"MAT INPUT "
+  DATA 1772,"MAT RANG "
+  DATA 1776,"MAT MUL "
+  DATA 1780,"MAT MUL "
+  DATA 1784,"MAT MUL "
+  DATA 1788,"MAT MUL "
+  DATA 1792,"MAT INV "
+  DATA 1796,"> FUNCTION "
+  DATA 1800,"DMASOUND "
+  DATA 1804,"DMACONTROL "
+  DATA 1808,"MW_OUT "
+  DATA -1
+  ' -----
+  fnk$(0)=" AND "
+  fnk$(1)=" OR "
+  fnk$(2)=" XOR "
+  fnk$(3)=" IMP "
+  fnk$(4)=" EQV "
+  fnk$(5)="-"
+  fnk$(6)="+"
+  fnk$(7)="*"
+  fnk$(8)="/"
+  fnk$(9)="^"
+  fnk$(10)=" MOD "
+  fnk$(11)=" DIV "
+  fnk$(12)="<>"
+  fnk$(13)="<="
+  fnk$(14)="=<"
+  fnk$(15)=">="
+  fnk$(16)="=>"
+  fnk$(17)="<"
+  fnk$(18)=">"
+  fnk$(19)="="
+  fnk$(20)="<>"
+  fnk$(21)="<="
+  fnk$(22)="=<"
+  fnk$(23)=">="
+  fnk$(24)="=>"
+  fnk$(25)="<"
+  fnk$(26)=">"
+  fnk$(27)="="
+  fnk$(28)="+"
+  fnk$(29)="+"
+  fnk$(30)="-"
+  fnk$(31)="NOT "
+  fnk$(32)=")"
+  fnk$(33)=","
+  fnk$(34)=";"
+  fnk$(35)="("
+  fnk$(36)="ERR$("
+  fnk$(37)="INT("
+  fnk$(38)="TRUNC("
+  fnk$(39)="FRAC("
+  fnk$(40)="ABS("
+  fnk$(41)="SIN("
+  fnk$(42)="COS("
+  fnk$(43)="TAN("
+  fnk$(44)="ATN("
+  fnk$(45)="=="
+  fnk$(47)="EXP("
+  fnk$(48)="LOG("
+  fnk$(49)="LOG10("
+  fnk$(50)="VAR "
+  fnk$(51)=")"
+  fnk$(52)="INPAUX$"
+  fnk$(53)="VAL("
+  fnk$(54)="INPMID$"
+  fnk$(56)="TIME$"
+  fnk$(57)=")="
+  fnk$(58)="LEFT$("
+  fnk$(59)="LEFT$("
+  fnk$(60)="RIGHT$("
+  fnk$(61)="RIGHT$("
+  fnk$(62)="MID$("
+  fnk$(63)="MID$("
+  fnk$(65)="ASIN("
+  fnk$(66)="CHR$("
+  fnk$(67)="}="
+  fnk$(69)="="
+  fnk$(71)=" TO "
+  fnk$(72)=" STEP "
+  fnk$(73)=" DOWNTO "
+  fnk$(74)=" THEN"
+  fnk$(75)=" GOTO "
+  fnk$(76)=" GOSUB "
+  fnk$(77)="#"
+  fnk$(78)="SQR("
+  fnk$(79)="PI"
+  fnk$(80)="["
+  fnk$(81)="]"
+  fnk$(82)="ACOS("
+  fnk$(83)="INKEY$"
+  fnk$(84)="RND("
+  fnk$(85)="RND"
+  fnk$(86)="RANDOM("
+  fnk$(87)="'"
+  fnk$(88)="}"
+  fnk$(89)="AT("
+  fnk$(90)="IF"
+  fnk$(91)="\"
+  fnk$(92)="FLOAT{"
+  fnk$(93)="DOUBLE{"
+  fnk$(94)="INPUT$("
+  fnk$(95)="INPUT$("
+  fnk$(96)="INPUT"
+  fnk$(97)="CHAR{"
+  fnk$(98)="MKI$("
+  fnk$(99)="MKL$("
+  fnk$(100)="MKS$("
+  fnk$(101)="MKF$("
+  fnk$(102)="MKD$("
+  fnk$(103)="DEG("
+  fnk$(104)="RAD("
+  fnk$(105)="CVS("
+  fnk$(106)="CVF("
+  fnk$(107)="CVD("
+  fnk$(108)=" AS "
+  fnk$(109)=" OFFSET "
+  fnk$(110)="CFLOAT("
+  fnk$(111)="TRACE$"
+  fnk$(112)="ROUND("
+  fnk$(113)="ROUND("
+  fnk$(114)=" WITH "
+  fnk$(115)="BIN$("
+  fnk$(116)="BIN$("
+  fnk$(117)="MIN("
+  fnk$(118)="MIN("
+  fnk$(119)="MAX("
+  fnk$(120)="MAX("
+  fnk$(121)="SINGLE{"
+  fnk$(122)=" AT("
+  fnk$(123)="SINQ("
+  fnk$(124)=":"
+  fnk$(125)="COSQ("
+  fnk$(126)="DATE$"
+  fnk$(127)="UPPER$("
+  fnk$(128)="SPACE$("
+  fnk$(129)="STRING$("
+  fnk$(130)="STRING$("
+  fnk$(131)="SUCC("
+  fnk$(132)="DIR$("
+  fnk$(133)="PRED("
+  fnk$(134)="DRAW("
+  fnk$(135)="TRIM$("
+  fnk$(138)="L:"
+  fnk$(139)="W:"
+  fnk$(140)="FACT("
+  fnk$(141)="COMBIN("
+  fnk$(143)="VARIAT("
+  fnk$(151)="ERROR"
+  fnk$(152)="STOP"
+  fnk$(153)="BREAK"
+  fnk$(154)=" CONT"
+  fnk$(155)="FIX("
+  fnk$(156)=","
+  fnk$(157)="("
+  fnk$(158)="FN "
+  fnk$(159)="@"
+  fnk$(161)="TAB("
+  fnk$(162)="SPC("
+  fnk$(163)="USING "
+  fnk$(167)="MENU"
+  fnk$(168)="NEXT"
+  fnk$(170)="KEY"
+  fnk$(171)="BUTTON"
+  fnk$(172)="IBOX"
+  fnk$(173)="OBOX"
+  fnk$(174)="MESSAGE"
+  fnk$(175)="OFF"
+  fnk$(176)="KILL"
+  fnk$(182)="BASE "
+  fnk$(184)="0"
+  fnk$(185)="1"
+  fnk$(188)="TRUE"
+  fnk$(189)="FALSE"
+  fnk$(190)="STR$("
+  fnk$(191)="STR$("
+  fnk$(192)="STR$("
+  fnk$(193)="HEX$("
+  fnk$(194)="HEX$("
+  fnk$(195)="OCT$("
+  fnk$(196)="OCT$("
+  ' -----
+  fnk2$(0)="MUL("
+  fnk2$(1)="DIV("
+  fnk2$(2)="ADD("
+  fnk2$(3)="SUB("
+  fnk2$(4)="MOD("
+  fnk2$(5)="AND("
+  fnk2$(6)="OR("
+  fnk2$(7)="XOR("
+  fnk2$(8)="EQV("
+  fnk2$(9)="IMP("
+  fnk2$(10)="SHL("
+  fnk2$(11)="SHR("
+  fnk2$(12)="ROL("
+  fnk2$(13)="ROR("
+  fnk2$(14)="WORD("
+  fnk2$(15)="CARD("
+  fnk2$(16)="BYTE("
+  fnk2$(17)="SWAP("
+  fnk2$(18)="ADDRIN("
+  fnk2$(19)="ADDRIN"
+  fnk2$(20)="ADDROUT("
+  fnk2$(21)="ADDROUT"
+  fnk2$(22)="CONTRL("
+  fnk2$(23)="CONTRL"
+  fnk2$(24)="GCONTRL("
+  fnk2$(25)="GCONTRL"
+  fnk2$(26)="GINTIN("
+  fnk2$(27)="GINTIN"
+  fnk2$(28)="GINTOUT("
+  fnk2$(29)="GINTOUT"
+  fnk2$(30)="HIMEM"
+  fnk2$(31)="BASEPAGE"
+  fnk2$(32)="INTIN("
+  fnk2$(33)="INTIN"
+  fnk2$(34)="INTOUT("
+  fnk2$(35)="INTOUT"
+  fnk2$(36)="PTSIN("
+  fnk2$(37)="PTSIN"
+  fnk2$(38)="PTSOUT("
+  fnk2$(39)="PTSOUT"
+  fnk2$(40)="VDIBASE"
+  fnk2$(41)="WINDTAB("
+  fnk2$(42)="WINDTAB"
+  fnk2$(43)="PTST("
+  fnk2$(44)="BTST("
+  fnk2$(45)="BSET("
+  fnk2$(46)="BCLR("
+  fnk2$(47)="BCHG("
+  fnk2$(48)="SHL&("
+  fnk2$(49)="SHR&("
+  fnk2$(50)="ROL&("
+  fnk2$(51)="ROR&("
+  fnk2$(52)="SHL|("
+  fnk2$(53)="SHR|("
+  fnk2$(54)="ROL|("
+  fnk2$(55)="ROR|("
+  fnk2$(56)="CRSLIN"
+  fnk2$(57)="CRSCOL"
+  fnk2$(58)="MOUSEX"
+  fnk2$(59)="MOUSEY"
+  fnk2$(60)="MOUSEK"
+  fnk2$(61)="GB"
+  fnk2$(62)="TIMER"
+  fnk2$(63)="PEEK("
+  fnk2$(64)="DPEEK("
+  fnk2$(65)="LPEEK("
+  fnk2$(66)="LEN("
+  fnk2$(67)="ASC("
+  fnk2$(68)="INSTR("
+  fnk2$(69)="INSTR("
+  fnk2$(70)="INSTR("
+  fnk2$(71)="FRE("
+  fnk2$(72)="POINT("
+  fnk2$(73)="VAL?("
+  fnk2$(74)="INP("
+  fnk2$(75)="CVI("
+  fnk2$(76)="CVL("
+  fnk2$(77)="INP(#"
+  fnk2$(78)="EOF(#"
+  fnk2$(79)="LOF(#"
+  fnk2$(80)="LOC(#"
+  fnk2$(81)="DIM?("
+  fnk2$(82)="RAND("
+  fnk2$(83)="DFREE("
+  fnk2$(84)="EXIST("
+  fnk2$(85)="BIOS("
+  fnk2$(86)="XBIOS("
+  fnk2$(87)="GEMDOS("
+  fnk2$(88)="ERR"
+  fnk2$(89)="FATAL"
+  fnk2$(90)="POS("
+  fnk2$(91)="LPOS("
+  fnk2$(92)="MENU("
+  fnk2$(93)="INP?("
+  fnk2$(94)="OUT?("
+  fnk2$(95)="EXEC("
+  fnk2$(96)="SUCC("
+  fnk2$(97)="PRED("
+  fnk2$(98)="W_HAND(#"
+  fnk2$(99)="W_INDEX(#"
+  fnk2$(100)="SGN("
+  fnk2$(101)="EVEN("
+  fnk2$(102)="ODD("
+  fnk2$(103)="CINT("
+  fnk2$(104)="GDOS?"
+  fnk2$(105)="V_OPNWK("
+  fnk2$(106)="V_CLSWK()"
+  fnk2$(107)="V_OPNVWK("
+  fnk2$(108)="V_CLSVWK()"
+  fnk2$(109)="V_UPDWK()"
+  fnk2$(110)="VST_LOAD_FONTS("
+  fnk2$(111)="VST_UNLOAD_FONTS("
+  fnk2$(112)="{"
+  fnk2$(113)="LONG{"
+  fnk2$(114)="INT{"
+  fnk2$(115)="CARD{"
+  fnk2$(116)="BYTE{"
+  fnk2$(117)="C:"
+  fnk2$(118)="EVNT_KEYBD()"
+  fnk2$(119)="EVNT_BUTTON("
+  fnk2$(120)="EVNT_MOUSE("
+  fnk2$(121)="EVNT_MESAG("
+  fnk2$(122)="EVNT_TIMER("
+  fnk2$(123)="EVNT_MULTI("
+  fnk2$(124)="RSRC_LOAD("
+  fnk2$(125)="RSRC_FREE()"
+  fnk2$(126)="RSRC_GADDR("
+  fnk2$(127)="RSRC_SADDR("
+  fnk2$(128)="RSRC_OBFIX("
+  fnk2$(129)="SHEL_READ("
+  fnk2$(130)="SHEL_WRITE("
+  fnk2$(131)="SHEL_GET("
+  fnk2$(132)="SHEL_PUT("
+  fnk2$(133)="SHEL_FIND("
+  fnk2$(134)="SHEL_ENVRN("
+  fnk2$(135)="APPL_INIT()"
+  fnk2$(136)="APPL_READ("
+  fnk2$(137)="APPL_WRITE("
+  fnk2$(138)="APPL_FIND("
+  fnk2$(139)="APPL_TPLAY("
+  fnk2$(140)="APPL_TRECORD("
+  fnk2$(141)="APPL_EXIT()"
+  fnk2$(142)="EVNT_DCLICK("
+  fnk2$(143)="MENU_BAR("
+  fnk2$(144)="MENU_ICHECK("
+  fnk2$(145)="MENU_IENABLE("
+  fnk2$(146)="MENU_TNORMAL("
+  fnk2$(147)="MENU_TEXT("
+  fnk2$(148)="MENU_REGISTER("
+  fnk2$(149)="OBJC_ADD("
+  fnk2$(150)="OBJC_DELETE("
+  fnk2$(151)="OBJC_DRAW("
+  fnk2$(152)="OBJC_FIND("
+  fnk2$(153)="OBJC_OFFSET("
+  fnk2$(154)="OBJC_ORDER("
+  fnk2$(155)="OBJC_EDIT("
+  fnk2$(156)="OBJC_CHANGE("
+  fnk2$(157)="FORM_DO("
+  fnk2$(158)="FORM_DIAL("
+  fnk2$(159)="FORM_ALERT("
+  fnk2$(160)="FORM_ERROR("
+  fnk2$(161)="FORM_CENTER("
+  fnk2$(162)="GRAF_RUBBERBOX("
+  fnk2$(163)="GRAF_DRAGBOX("
+  fnk2$(164)="GRAF_MOVEBOX("
+  fnk2$(165)="GRAF_GROWBOX("
+  fnk2$(166)="GRAF_SHRINKBOX("
+  fnk2$(167)="GRAF_WATCHBOX("
+  fnk2$(168)="GRAF_SLIDEBOX("
+  fnk2$(169)="GRAF_HANDLE("
+  fnk2$(170)="GRAF_MOUSE("
+  fnk2$(171)="GRAF_MKSTATE("
+  fnk2$(172)="SCRP_READ("
+  fnk2$(173)="SCRP_WRITE("
+  fnk2$(174)="FSEL_INPUT("
+  fnk2$(175)="WIND_CREATE("
+  fnk2$(176)="WIND_OPEN("
+  fnk2$(177)="WIND_CLOSE("
+  fnk2$(178)="WIND_DELETE("
+  fnk2$(179)="WIND_GET("
+  fnk2$(180)="WIND_SET("
+  fnk2$(181)="WIND_FIND("
+  fnk2$(182)="WIND_UPDATE("
+  fnk2$(183)="WIND_CALC("
+  fnk2$(184)="MALLOC("
+  fnk2$(185)="MFREE("
+  fnk2$(186)="MSHRINK("
+  fnk2$(187)="VARPTR("
+  fnk2$(188)="ARRPTR("
+  fnk2$(189)="*"
+  fnk2$(190)="TYPE("
+  fnk2$(191)="OB_ADR("
+  fnk2$(192)="OB_NEXT("
+  fnk2$(193)="OB_HEAD("
+  fnk2$(194)="OB_TAIL("
+  fnk2$(195)="OB_TYPE("
+  fnk2$(196)="OB_FLAGS("
+  fnk2$(197)="OB_STATE("
+  fnk2$(198)="OB_SPEC("
+  fnk2$(199)="OB_X("
+  fnk2$(200)="OB_Y("
+  fnk2$(201)="OB_W("
+  fnk2$(202)="OB_H("
+  fnk2$(203)="V:"
+  fnk2$(204)="FORM_KEYBD("
+  fnk2$(205)="FORM_BUTTON("
+  fnk2$(206)="STICK("
+  fnk2$(207)="STRIG("
+  fnk2$(208)="WORK_OUT("
+  fnk2$(209)="RINSTR("
+  fnk2$(210)="RINSTR("
+  fnk2$(211)="RINSTR("
+  fnk2$(212)="L~A"
+  fnk2$(213)="V~H"
+  fnk2$(214)="V_CLRWK()"
+  fnk2$(215)="VQT_NAME("
+  fnk2$(216)="VQT_EXTENT("
+  fnk2$(217)="RC_INTERSECT("
+  fnk2$(218)="FSFIRST("
+  fnk2$(219)="FSNEXT()"
+  fnk2$(220)="FSETDTA("
+  fnk2$(221)="FGETDTA()"
+  fnk2$(222)="WORD{"
+  fnk2$(223)="INP&("
+  fnk2$(224)="INP&(#"
+  fnk2$(225)="INP%("
+  fnk2$(226)="INP%(#"
+  fnk2$(227)="_DATA"
+  fnk2$(228)="PADX("
+  fnk2$(229)="PADY("
+  fnk2$(230)="PADT("
+  fnk2$(231)="LPENX"
+  fnk2$(232)="LPENY"
+  fnk2$(233)="STE?"
+  fnk2$(234)="TT?"
+  fnk2$(235)="SCALE("
+  fnk2$(236)="_X"
+  fnk2$(237)="_Y"
+  fnk2$(238)="_C"
+  fnk2$(239)="GETSIZE("
+  fnk2$(240)=""
+  fnk2$(241)=""
+  fnk2$(242)=""
+  fnk2$(243)=""
+  fnk2$(244)=""
+  fnk2$(245)=""
+  fnk2$(246)=""
+  fnk2$(247)=""
+  fnk2$(248)=""
+  fnk2$(249)=""
+  fnk2$(250)=""
+  fnk2$(251)=""
+  fnk2$(252)=""
+  fnk2$(253)=""
+  fnk2$(254)=""
+RETURN
+> PROCEDURE gf4tp_err
+  @gf4tp_debug("Error in line "+STR$(line%)+", Aussehen: |"+n$+"|, Grund: "+ERR$(ERR))
+  IF lst_adr%>0
+    ~MFREE(lst_adr%)
+  ENDIF
+RETURN
+'
+> PROCEDURE gf4tp_output(string$)
+  PRINT string$
+  ' OPEN "O",#77,"STD:"
+  ' PRINT #77,string$
+  ' CLOSE #77
+RETURN
+> PROCEDURE gf4tp_debug(string$)
+  PRINT "pDEBUGq "+string$
+RETURN
+> PROCEDURE gf4tp_rawecho(string$)
+  OPEN "O",#9,"VID:"
+  PRINT AT(1,9);
+  PRINT #9,string$,,
+  CLOSE #9
+RETURN
+> PROCEDURE gf4tp_line(line%)
+  PRINT CHR$(27)+"j";
+  PRINT AT(40,8);STR$(line%);
+  PRINT CHR$(27)+"k";
+RETURN
+'
+' ------------------------------------------------------------------------------
+> FUNCTION gf4tp_get_lines(channel|,len%)
+  LOCAL lines%,i%,len&,dummy$
+  CLR i%
+  @stoppuhr(TRUE)
+  WHILE i%<len%
+    len&=INP&(#channel|)
+    ' dummy$=INPUT$(SUB(len&,2),#channel|) ! Verschwendet Zeit?
+    RELSEEK #channel|,SUB(len&,2)
+    ADD i%,len&
+    INC lines%
+  WEND
+  @stoppuhr(FALSE)
+  RETURN lines%
+ENDFUNC
+> FUNCTION gf4tp_tp$(l$)
+  $F%
+  $S>
+  $S&
+  ' IF FRE()<3000
+  '  ~FRE(0)
+  ' ENDIF
+  ' $F%S>S&
+  LOCAL a&,i&,n$,cmd&,rcmd&,some$,c|
+  BMOVE V:l$,V:cache|(1),LEN(l$)
+  '
+  rcmd&=OR(SHL(cache|(1),8),cache|(2))
+  cmd&=SUCC(DIV(rcmd&,4))
+  '
+  SELECT rcmd&
+    ' 0+ 4- 8+ 12- 16+ 20- 24+ 28- 32+ 36- 40+ 44- 48+ 52- 56* 60* 64* 76-120+ 124-168-
+    ' 176+ 196+ 200+ 204- 208- 216+ 224* 1796+
+  CASE 0,8,16,24,32,40,48,76,80,84,88,92,96,100,104,108,112,116,120,176,196,200,216,1796
+    n$=SPACE$(MUL(sdepth&,2))+cmd$(cmd&)
+    INC sdepth&
+  CASE 4,12,20,28,36,44,52,124,128,132,136,140,144,148,152,156,160,164,168,204,208
+    IF sdepth&>0
+      DEC sdepth&
+    ENDIF
+    n$=SPACE$(MUL(sdepth&,2))+cmd$(cmd&)
+  CASE 56,60,64,224
+    n$=SPACE$(MUL(PRED(sdepth&),2))+cmd$(cmd&)
+  DEFAULT
+    n$=SPACE$(MUL(sdepth&,2))+cmd$(cmd&)
+  ENDSELECT
+  a&=3
+  SELECT rcmd& ! TYPE
+  CASE 456,460,464,468,1016,1644 ! (1640(OPTION ))
+    ' "' " "$" "." "DATA " "REM" "==> "
+    n$=n$+MID$(l$,3,SUB(INSTR(3,l$,CHR$(13)),3))
+    a&=LEN(l$)
+    GOTO n_end
+  CASE 124,128,132                            ! NEXT x#
+    n$=n$+var$(1,@varw(ADD(a&,4)))+"#"
+  CASE 136,140,144                            ! NEXT x%
+    n$=n$+var$(3,@varw(ADD(a&,4)))+"%"
+  CASE 148,152,156                            ! NEXT x&
+    n$=n$+var$(9,@varw(ADD(a&,4)))+"&"
+  CASE 160,164,168                            ! NEXT x|
+    n$=n$+var$(10,@varw(ADD(a&,4)))+"|"
+  CASE 304,76,80,84,256                       ! x#= / FOR x#= / LET x#
+    n$=n$+var$(1,@varw(a&))+"#="
+  CASE 308,260                                ! x$= / LET x$=
+    n$=n$+var$(2,@varw(a&))+"$="
+  CASE 312,88,92,96,264                       ! x%= / FOR x%= / LET x%=
+    n$=n$+var$(3,@varw(a&))+"%="
+  CASE 316,268                                ! x!= / LET x!=
+    n$=n$+var$(4,@varw(a&))+"!="
+  CASE 320,100,104,108,272                    ! x&= / FOR x&= / LET x&=
+    n$=n$+var$(9,@varw(a&))+"&="
+  CASE 324,112,116,120,276                    ! x|= / FOR x|= / LET x|=
+    n$=n$+var$(10,@varw(a&))+"|="
+  CASE 328,280,656,688,720,752,784,816        ! x#()= / LET x#()=
+    '                                         | INC x#() / DEC x#()
+    '                                         | ADD x#() / SUB x#()
+    '                                         | MUL x#() / DIV x#()
+    n$=n$+var$(5,@varw(a&))+"#("
+  CASE 332,284                                ! x$()= / LET x$()=
+    n$=n$+var$(6,@varw(a&))+"$("
+  CASE 336,288,660,692,724,756,788,820        ! x%()= / LET x%()=
+    '                                         | INC x%() / DEC x%()
+    '                                         | ADD x%() / SUB x%()
+    '                                         | MUL x%() / DIV x%()
+    n$=n$+var$(7,@varw(a&))+"%("
+  CASE 340,292                                ! x!()= / LET x!()=
+    n$=n$+var$(8,@varw(a&))+"!("
+  CASE 344,296,664,696,728,760,792,824        ! x&()= / LET x&()=
+    '                                         | INC x&() / DEC x&()
+    '                                         | ADD x&() / SUB x&()
+    '                                         | MUL x&() / DIV x&()
+    n$=n$+var$(13,@varw(a&))+"&("
+  CASE 348,300,668,700,732,764,796,828        ! x|()= / LET x|()=
+    '                                         | INC x|() / DEC x|()
+    '                                         | ADD x|() / SUB x|()
+    '                                         | MUL x|() / DIV x|()
+    n$=n$+var$(14,@varw(a&))+"|("
+  CASE 240,248,24,244                         !  / @ / PROCEDURE / GOSUB
+    n$=n$+var$(12,@varw(a&))
+  CASE 216                                    ! > PROCEDURE
+    IF ASC(MID$(l$,5,1))=70
+      n$=n$+var$(12,@varw(a&))
+    ELSE
+      n$=n$+var$(12,@varw(a&))+"("
+    ENDIF
+    ' CASE 1796                                   ! > FUNCTION
+  CASE 640,672                                ! INC x# / DEC x#
+    n$=n$+var$(1,@varw(a&))+"#"
+  CASE 644,676                                ! INC x% / DEC x%
+    n$=n$+var$(3,@varw(a&))+"%"
+  CASE 648,680                                ! INC x& / DEC x&
+    n$=n$+var$(9,@varw(a&))+"&"
+  CASE 652,684                                ! INC x| / DEC x|
+    n$=n$+var$(10,@varw(a&))+"|"
+  CASE 704,736,768,800                        ! ADD x#, / SUB x#, / MUL x#,
+    '                                         | DIV x#,
+    n$=n$+var$(1,@varw(a&))+"#,"
+  CASE 708,740,772,804                        ! ADD x%, / SUB x%, / MUL x%,
+    '                                         | DIV x%,
+    n$=n$+var$(3,@varw(a&))+"%,"
+  CASE 712,744,776,808                        ! ADD x&, / SUB x&, / MUL x&,
+    '                                         | DIV x&,
+    n$=n$+var$(9,@varw(a&))+"&,"
+  CASE 716,748,780,812                        ! ADD x|, / SUB x|, / MUL x|,
+    '                                         | DIV x|,
+    n$=n$+var$(10,@varw(a&))+"|,"
+  ENDSELECT
+  '
+  SELECT rcmd&
+  CASE 76,80,84,88,92,96,100,104,108,112,116,120        ! FOR
+    ADD a&,2
+  CASE 24,216,240,244,248,304,308,312,316,320,324,328,332,336,340,344,348
+    ADD a&,2
+  CASE 640,644,648,652,656,660,664,668,672,676,680,684,688,692,696,700
+    ADD a&,2
+  CASE 704,708,712,716,720,724,728,732        ! ADD x#, / ADD x%, / ADD x&,
+    '                                         | ADD x|, / ADD x#( / ADD x%(
+    '                                         | ADD x&( / ADD x|(
+    ADD a&,2
+  CASE 736,740,744,748,752,756,760,764        ! SUB x#, / SUB x%, / SUB x&,
+    '                                         | SUB x|, / SUB x#( / SUB x%(
+    '                                         | SUB x&( / SUB x|(
+    ADD a&,2
+  CASE 768,772,776,780,784,788,792,796        ! MUL x#, / MUL x%, / MUL x&,
+    '                                         | MUL x|, / MUL x#( / MUL x%(
+    '                                         | MUL x&( / MUL x|(
+    ADD a&,2
+  CASE 800,804,808,812,816,820,824,828        ! DIV x#, / DIV x%, / DIV x&,
+    '                                         | DIV x|, / DIV x#( / DIV x%,
+    '                                         | DIV x&( / DIV x|(
+    ADD a&,2
+  CASE 256,260,264,268,272,276,280,284,288,292,296,300  ! 256 to 300
+    '                                         ! LET x#= / LET x$= / LET x%=
+    '                                         ! LET x!= / LET x&= / LET x|=
+    '                                         ! LET x#( / LET x$( / LET x%(
+    '                                         ! LET x!( / LET x&( / LET x|(
+    ADD a&,2
+  CASE 4,12,16,20,32,48,56,60,64,172,176,196,200,204,208,220,224
+    '                                         | UNTIL (12) / EXIT IF (172,220)
+    '                                         | DO WHILE (196) / DO UNTIL (200)
+    '                                         | LOOP WHILE (204) / LOOP (4)
+    '                                         | LOOP UNTIL (208) / IF (32)
+    '                                         | ELSE IF (32) / ELSE (56)
+    '                                         | SELECT (48) / CASE (224)
+    '                                         | WHILE (16) / WEND (20)
+    '                                         | DEFAULT (60) / SELECT (176)
+    ADD a&,4
+    ' CASE 76,80,84,88,92,96,100,104,108,112,116,120
+    ' CASE 124,128,132,136,140,144,148,152,156,160,164,168
+    ' CASE 76,88,100,112,124,136,148,160    ! FOR / NEXT
+  CASE 124,128,132,136,140,144,148,152,156,160,164,168          ! NEXT
+    ADD a&,6
+  ENDSELECT
+  '
+  FOR a&=a& TO PRED(LEN(l$))
+    SELECT cache|(a&)
+    CASE 70
+      IF rcmd&<>1668
+        IF INSTR(a&,l$,CHR$(13))>0 AND cache|(SUCC(a&))<>13
+          IF EVEN(a&)     ! EVEN(LEN(l$))
+            n$=n$+SPACE$(cache|(SUCC(a&)))+"!"
+            n$=n$+MID$(l$,ADD(a&,2),SUB(INSTR(ADD(a&,2),l$,CHR$(13)),ADD(a&,2)))
+            ADD a&,SUB(INSTR(ADD(a&,3),l$,CHR$(13)),ADD(a&,3))
+          ELSE IF ODD(a&) ! ODD (LEN(l$))
+            n$=n$+SPACE$(cache|(ADD(a&,2)))+"!"
+            n$=n$+MID$(l$,ADD(a&,3),SUB(INSTR(ADD(a&,3),l$,CHR$(13)),ADD(a&,3)))
+            ADD a&,SUB(INSTR(ADD(a&,4),l$,CHR$(13)),4)
+          ENDIF
+        ENDIF
+      ENDIF
+      a&=LEN(l$)
+      GOTO n_end2
+    CASE 198
+      n$=n$+" "+MID$(l$,SUCC(a&),4)+" "
+      ADD a&,4
+    CASE 199
+      n$=n$+" "+MID$(l$,ADD(a&,2),4)+" "
+      ADD a&,5
+    CASE 200
+      n$=n$+STR$(CVL(MID$(l$,SUCC(a&),4)))
+      ADD a&,4
+    CASE 201
+      n$=n$+STR$(CVL(MID$(l$,ADD(a&,2),4)))
+      ADD a&,5
+    CASE 202
+      n$=n$+"&H"+HEX$(CVL(MID$(l$,SUCC(a&),4)))
+      ADD a&,4
+    CASE 203
+      n$=n$+"&H"+HEX$(CVL(MID$(l$,ADD(a&,2),4)))
+      ADD a&,5
+    CASE 204
+      n$=n$+"&O"+OCT$(CVL(MID$(l$,SUCC(a&),4)))
+      ADD a&,4
+    CASE 205
+      n$=n$+"&O"+OCT$(CVL(MID$(l$,ADD(a&,2),4)))
+      ADD a&,5
+    CASE 206
+      n$=n$+"&X"+BIN$(CVL(MID$(l$,SUCC(a&),4)))
+      ADD a&,4
+    CASE 207
+      n$=n$+"&X"+BIN$(CVL(MID$(l$,ADD(a&,2),4)))
+      ADD a&,5
+    CASE 208
+      INC a&
+      n$=n$+fnk2$(cache|(a&))
+    CASE 46                     ! !!
+      CONT
+      ' CASE 55                     ! NUMBER:
+    CASE 64                     ! !!
+      CONT
+    CASE 68                     ! !!
+      CONT
+    CASE 144 TO 150             ! !!
+      CONT
+    CASE 164 TO 166             ! !!
+      CONT
+    CASE 169                    ! !!
+      CONT
+    CASE 177 TO 181             ! !!
+      ' CASE 197 TO 199             ! !!
+      CONT
+    CASE 197                    ! !!
+      CONT
+    CASE 209 TO 214
+      @gf4tp_debug("201 gf4tp_tp$() Error: "+STR$(cache|(a&))+" is a unknown token code to me ("+STR$(line%)+","+STR$(a&)+")")
+      ' PRINT AT(a&,10),"^"
+      ' PRINT AT(1,11),n$;
+    CASE 215
+      n$=n$+"&O"+OCT$(CVD(MID$(l$,ADD(a&,2),8)))
+      ADD a&,9
+    CASE 216
+      n$=n$+"&O"+OCT$(CVD(MID$(l$,SUCC(a&),8)))
+      ADD a&,8
+    CASE 217
+      n$=n$+"&X"+BIN$(CVD(MID$(l$,ADD(a&,2),8)))
+      ADD a&,9
+    CASE 218
+      n$=n$+"&X"+BIN$(CVD(MID$(l$,SUCC(a&),8)))
+      ADD a&,8
+    CASE 219
+      n$=n$+"&H"+HEX$(CVD(MID$(l$,ADD(a&,2),8)))
+      ADD a&,9
+    CASE 220
+      n$=n$+"&H"+HEX$(CVD(MID$(l$,SUCC(a&),8)))
+      ADD a&,8
+    CASE 221
+      n$=n$+STR$(CVD(MID$(l$,ADD(a&,2),8)))
+      ADD a&,9
+    CASE 222                                  ! "
+      n$=n$+CHR$(34)+MID$(l$,ADD(a&,2),ASC(MID$(l$,SUCC(a&),1)))+CHR$(34)
+      ADD a&,SUCC(ASC(MID$(l$,SUCC(a&))))
+    CASE 223                                  ! 1234567890.1234567890E+1234567890
+      n$=n$+STR$(CVD(MID$(l$,SUCC(a&),8)))
+      ADD a&,8
+      ' 224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239
+    CASE 224 TO 239
+      c|=SUB(cache|(a&),223)
+      INC a&
+      n$=n$+var$(c|,SUCC(cache|(a&)))+vs$(c|)
+      ' 240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255
+    CASE 240 TO 255
+      c|=SUB(cache|(a&),239)
+      n$=n$+var$(c|,SUCC(@varw(SUCC(a&))))+vs$(c|)
+      ADD a&,2
+    DEFAULT
+      n$=n$+fnk$(cache|(a&))
+    ENDSELECT
+  n_end2:
+  NEXT a&
+n_end:
+  RETURN n$
+ENDFUNC
+> FUNCTION gf4tp_var$(x&,y&)
+  RETURN "v"+STR$(x&)+"_"+STR$(y&)
+ENDFUNC
+'
+> PROCEDURE stoppuhr(stop!)
+  .STATIC stoppuhr#
+  IF stop!=TRUE         ! --TIM
+    stoppuhr#=TIMER
+  ELSE
+    gf4tp_debug("001 stoppuhr Stoppuhr: "+STR$(TIMER-stoppuhr#))
+  ENDIF                 ! ++TIM
+RETURN
+'
+> PROCEDURE bloedsinn_1(c&,len%,VAR field$())
+  LOCAL l|,i%,j%,k%,n%,m%,b%
+  CLR i%,j%,k%,m%
+  ERASE field$()
+  DIM field$(0)
+  DIM buf|(256)
+  '
+  ~FRE(0)
+  DIM a|(FRE()-620)
+  '
+  WHILE i%<len%                 !j%<len%+k%*5
+    l|=PRED(INP(#c&))
+    BGET #c&,V:buf|(1),l|
+    a|(j%)=l|
+    BMOVE V:buf|(1),V:a|(SUCC(j%)),l|
+    ADD j%,ADD(l|,ADD(5,-EVEN(l|)))                          ! LEN+STRING+FILL+BACKTAILER
+    ADD i%,SUCC(l|)
+    INC k%
+  WEND
+  {{*a|()}}=SUCC(j%)
+  ~FRE(0)
+  '
+  DIM ds|(ADD(MUL(k%,6),4))                            ! Deskriptoren anfordern
+  DIM h!(0)
+  '
+  {V:ds|(0)}=k%
+  FOR n%=1 TO k%
+    l|=SUCC(a|(m%))
+    CARD{ADD(V:ds|(4),ADD(MUL(PRED(n%),6),4))}=l|
+    {V:a|(ADD(m%,ADD(l|,ADD(-ODD(l|),2))))}=ADD(V:ds|(4),MUL(PRED(n%),6))
+    {ADD(V:ds|(4),MUL(PRED(n%),6))}=V:a|(ADD(m%,ADD(l|,ADD(-ODD(l|),2))))
+    ADD m%,ADD(a|(m%),ADD(5,-ODD(l|)))
+  NEXT n%
+  ' Felder werden endgÅltig geswappt...
+  b%={*field$()}
+  {*field$()}=V:ds|(0)
+  ERASE h!(),a|(),ds|()
+  ~FRE(0)
+RETURN
+> PROCEDURE comments
+  ' x#= (304) [TYPE(*x#)]   (1)
+  ' x$= (308) [TYPE(*x$)]   (2)
+  ' x%= (312) [TYPE(*x%)]   (3)
+  ' x!= (316) [TYPE(*x!)]   (4)
+  ' x&= (320) [TYPE(*x&)]   (9)
+  ' x|= (324) [TYPE(*x|)]   (10)
+  ' x#( (328) [TYPE(*x#())] (5)
+  ' x$( (332) [TYPE(*x$())] (6)
+  ' x%( (336) [TYPE(*x%())] (7)
+  ' x!( (340) [TYPE(*x!())] (8)
+  ' x&( (344) [TYPE(*x&())] (13)
+  ' x|( (348) [TYPE(*x|())] (14)
+RETURN
+' ------------------------------------------------------------------------------
+> FUNCTION rt1$(string$)
+  RETURN MID$(string$,2)
+ENDFUNC
+> FUNCTION lt1$(string$)
+  RETURN MID$(string$,2)
+  ' RETURN LEFT$(string$,PRED(LEN(string$)))
+ENDFUNC
+> FUNCTION rtx$(string$,anz&)
+  RETURN MID$(string$,SUCC(anz&))
+ENDFUNC
+> FUNCTION ltx$(string$,anz&)
+  RETURN LEFT$(string$,SUB(LEN(string$),anz&))
+ENDFUNC
+> FUNCTION dchar$(adr%)
+  LOCAL str$,i%
+  IF adr%>0
+    REPEAT
+      str$=str$+CHR$(PEEK(adr%+i%))
+      INC i%
+    UNTIL RIGHT$(str$,2)=CHR$(0)+CHR$(0)
+  ENDIF
+  RETURN str$
+ENDFUNC
+> FUNCTION getenv$(name$)
+  LOCAL s&,e&
+  s&=ADD(ADD(INSTR(env_string$,CHR$(0)+name$+"="),LEN(name$)),2)
+  IF s&=ADD(LEN(name$),2)
+    RETURN ""
+  ENDIF
+  e&=SUB(INSTR(s%,env_string$,CHR$(0)),s&)
+  RETURN MID$(env_string$,s&,e&)
+ENDFUNC
+> FUNCTION patch$(srch$,ers$,string$)
+  LOCAL stl&,sl$,sr$,ns$
+  ns$=string$
+  stl&=-LEN(ers$)
+  REPEAT
+    stl&=INSTR(ADD(stl&,LEN(ers$)),ns$,srch$)
+    IF stl&<>0
+      sl$=LEFT$(ns$,PRED(stl&))
+      sr$=MID$(ns$,ADD(stl&,LEN(srch$)))
+      ns$=sl$+ers$+sr$
+    ENDIF
+  UNTIL stl&=0
+  RETURN ns$
+ENDFUNC
+> FUNCTION strtok$(string$,ifs$)
+  LOCAL ns$
+  IF strtok_z&=0
+    strtok_z&=1
+  ELSE IF strtok_z&<LEN(string$)
+    INC strtok_z&
+  ENDIF
+  strtok_oz&=strtok_z&
+  IF ifs$=""
+    ns$=MID$(string$,strtok_oz&)
+    strtok_z&=0
+    strtok_oz&=0
+    RETURN ns$
+  ELSE
+    strtok_z&=INSTR(strtok_oz&,string$,ifs$)
+    IF strtok_z&=0
+      strtok_z&=SUCC(LEN(string$))
+    ENDIF
+    RETURN MID$(string$,strtok_oz&,SUB(strtok_z&,strtok_oz&))
+  ENDIF
+ENDFUNC
+> FUNCTION ldesp$(x$)
+  LOCAL x&
+  REPEAT
+    INC x&
+  UNTIL MID$(x$,x&,1)<>" "
+  RETURN MID$(x$,x&)
+ENDFUNC
+> FUNCTION map$(string$)
+  LOCAL i&,map$,lv|,ch$,m1!,m2!,m3!,m$,dit!,och$
+  IF string$=""
+    RETURN ""
+  ENDIF
+  FOR i&=1 TO LEN(string$)
+    och$=ch$
+    ch$=MID$(string$,i&,1)
+    IF och$<>"\"
+      IF ch$=CHR$(34)
+        IF m1!=FALSE
+          dit!=TRUE
+          m1!=TRUE
+        ELSE IF m1!=TRUE
+          DEC lv|
+          m1!=FALSE
+        ENDIF
+      ELSE IF ch$="'"
+        IF m2!=FALSE
+          dit!=TRUE
+          m2!=TRUE
+        ELSE IF m2!=TRUE
+          DEC lv|
+          m2!=FALSE
+        ENDIF
+      ELSE IF ch$="`"
+        IF m3!=FALSE
+          dit!=TRUE
+          m3!=TRUE
+        ELSE IF m3!=TRUE
+          DEC lv|
+          m3!=FALSE
+        ENDIF
+      ELSE IF ch$="{"
+        dit!=TRUE
+      ELSE IF ch$="}"
+        DEC lv|
+      ELSE IF ch$="["
+        dit!=TRUE
+      ELSE IF ch$="]"
+        DEC lv|
+      ELSE IF ch$="<"
+        dit!=TRUE
+      ELSE IF ch$=">"
+        DEC lv|
+      ELSE IF ch$="|"
+        m$="|"
+      ELSE IF ch$=","
+        m$=","
+      ELSE IF ch$=";"
+        m$=";"
+      ELSE IF ch$=":"
+        m$=":"
+      ENDIF
+    ENDIF
+    IF ch$<>"\"
+      IF m$<>""
+        map$=map$+m$
+        m$=""
+      ELSE
+        map$=map$+STR$(lv|)
+      ENDIF
+    ENDIF
+    IF dit!=TRUE
+      INC lv|
+      dit!=FALSE
+    ENDIF
+  NEXT i&
+  RETURN map$
+ENDFUNC
+> FUNCTION ccount(string$,sstring$)
+  LOCAL i&,a&
+  a&=0
+  FOR i&=1 TO LEN(string$)
+    IF MID$(string$,i&,1)=sstring$
+      INC a&
+    ENDIF
+  NEXT i&
+  RETURN a&
+ENDFUNC
+> FUNCTION delch$(string$)
+  LOCAL m$,s$,c$
+  LOCAL i&
+  m$=@map$(string$)
+  c$=LEFT$(m$)
+  m$=m$+"0"
+  FOR i&=1 TO LEN(string$)
+    IF @no_in(",:;|",MID$(m$,SUCC(i&),1))=FALSE
+      MID$(m$,i&+1,1)=MID$(m$,i&,1)
+    ENDIF
+    IF MID$(m$,i&,1)=c$ AND NOT (MID$(m$,SUCC(i&),1)<>c$ OR MID$(m$,PRED(i&),1)<>c$)
+      s$=s$+MID$(string$,i&,1)
+    ENDIF
+  NEXT i&
+  RETURN s$
+ENDFUNC
+> FUNCTION refind(str$,pos&)
+  LOCAL n&,m$
+  m$=@map$(str$)
+  n&=INSTR(m$,MID$(m$,pos&,1),SUCC(pos&))
+  RETURN n&
+ENDFUNC
+> FUNCTION no_in(ch$,string$)
+  LOCAL i&
+  FOR i&=1 TO LEN(ch$)
+    IF INSTR(string$,MID$(ch$,i&,1))>0
+      RETURN FALSE
+    ENDIF
+  NEXT i&
+  RETURN TRUE
+ENDFUNC
+> PROCEDURE savetok(VAR sz&,soz&)
+  sz&=strtok_z&
+  soz&=strtok_oz&
+  strtok_z&=0
+  strtok_oz&=0
+RETURN
+> PROCEDURE desvtok(sz&,soz&)
+  strtok_oz&=soz&
+  strtok_z&=sz&
+RETURN
+> FUNCTION lower$(string$)
+  LOCAL i&,b|
+  FOR i&=0 TO PRED(LEN(string$))
+    b|=BYTE{ADD(V:string$,i&)}
+    IF b|>64 AND b|<91
+      BYTE{ADD(V:string$,i&)}=ADD(b|,32)
+    ENDIF
+  NEXT i&
+  RETURN string$
+ENDFUNC
+'
+> PROCEDURE tool(nr&)
+  SELECT nr&
+  CASE 1
+    CLS
+    FOR i&=240 TO 255
+      PRINT CHR$(i&),i&
+    NEXT i&
+    END
+  CASE 2
+    FOR i&=1 TO 38
+      PRINT p%(i&),
+    NEXT i&
+  CASE 3
+  CASE 4
+  CASE 5
+  CASE 6
+  CASE 7
+  ENDSELECT
+RETURN
+'
+' ! & % # $ !() &() #() $() FN FN$ PRO FUNC FUNC$ L
+'   *           *                      *    *
+> PROCEDURE t(VAR x$())
+  ERASE x$()
+  DIM x$(1)
+  PRINT DIM?(x$())
+  PRINT x$(0)
+RETURN
+'
+> PROCEDURE tab(channel|)
+  LOCAL ln%,sw%,i&
+  ln%=LOF(#channel|)
+  sw%=ln%-164
+  PRINT sw%,
+  FOR i&=0 TO 15
+    sw%=sw%+2*(p%(SUCC(i&))-p%(i&))
+    PRINT sw%,
+  NEXT i&
+  PRINT
+RETURN
+'
+> PROCEDURE anmerkungen
+  ' Offset-Pointer:
+  ' ---------------
+  ' Die Zeiger geben den Offset auf die Adresse 164 (ab Filebeginn) wieder.
+  ' Nr.         Bedeutung
+  ' ---         ---------
+  ' 1-16:       Namen der Variablen (16 Gruppen). p1 ist immer Null.
+  ' 17 :        Erste Programmzeile
+  ' 18 :        Nummer der ersten sichtbaren Zeile im Fenster (beim Speichern)
+  ' 19 :        Nummer der Cursorzeile (beim Speichern)
+  ' 20-35 :     Zeiger auf die Adressentabelle der 16 Variablengruppen
+  '             (wenn Programm in den Hauptspeicher geladen wurde).
+  ' 36 :        Zeiger auf Anfang der Variablentabelle
+  '             = Ende der Adresstabelle
+  ' 37 :        Zeiger hinter Variablentabelle auf ??-Bereich
+  ' 38 :        Zeiger hinter ?? Bereich
+  ' Funktion-Tokens ===============================
+  ' 224 = x# [TYPE(*x#)]
+  ' 225 = x$ [TYPE(*x$)]
+  ' 226 = x% [TYPE(*x%)]
+  ' 227 = x! [TYPE(*x!)]
+  ' 228 = x#() [TYPE(*x#())]
+  ' 229 = x$() [TYPE(*x$())]
+  ' 230 = x%() [TYPE(*x%())]
+  ' 231 = x!() [TYPE(*x!())]
+  ' 232 = x& [TYPE(*x&)]
+  ' 233 = x| [TYPE(*x|)]
+  ' 234 = x:; z.B. bei GOTO a
+  ' 235 = PROCEDURE x; z.B. bei ON x GOSUB a,b,c...
+  ' 236 = x&() [TYPE(*x&())]
+  ' 237 = x|() [TYPE(*x|())]
+  ' 238 = FUNCTION x/DEFFN x
+  ' 239 = FUNCTION x$/DEFFN x$
+  ' 240 = 2 x#
+  ' 241 = 2 x$
+  ' 242 = 2 x%
+  ' 243 = 2 x!
+  ' 244 = 2 x#()
+  ' 245 = 2 x$()
+  ' 246 = 2 x%()
+  ' 247 = 2 x!()
+  ' 248 = 2 x&
+  ' 249 = 2 x|
+  ' 250 = 2 x:
+  ' 251 = 2 PROCEDURE x
+  ' 252 = 2 x&()
+  ' 253 = 2 x|()
+  ' 254 = 2 FUNCTION x/DEFFN x
+  ' 255 = 2 FUNCTION x$/DEFFN x$
+  '
+  ' History =======================================
+  ' 0.00‡
+  ' 0.00‡ PL3   23.09.1996
+  ' - gf4tp_init: Einlesung der Variablensuffixe
+  ' - gf4tp_tp$(): Extreme KÅrzung durch Anwendung der Variablensuffixe
+  ' - gf4tp_tp$(): Bei 2-er Variablentokens erniedrigung der Var-Nummer
+  '   vergessen (ZufÑllig bemerkt)
+  ' - gf4tp_tp$(): Gefaltete Procs jetzt Åber Token definiert.
+  ' 0.00‡ PL4   06.10.1996
+  ' - gf4tp_scan_header(): Es werden jetzt jeweils die maximalen Variablen-
+  '   anzahlen eingelesen und danach dimensioniert.
+  ' - gf4tp_getmax(): Tut eben das.
+  ' - gf4tp_tp$(): Mal aufgerÑumt bei Befehlstokens, auf die noch 2, 4 oder
+  '   6 Byte weitere Informationen folgen. Manche waren doppelt, manche
+  '   an falscher Stelle vertreten (Besonders bei FOR und NEXT-Tokens)
+  ' - gf4tp_tp$(): Bei SELECT x$ wurde nicht aufaddiert, korregiert (Versuch,
+  '   ERGO_TP zu dekodieren)
+  '
+RETURN
