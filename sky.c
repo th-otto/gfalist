@@ -182,6 +182,7 @@ int gf4tp_tp(FILE *ost, struct gfainf *gi, struct gfalin *gl, unsigned int flags
 	unsigned short v;
 	int64_t l;
 	uint32_t ul;
+	char inline_filename[256];
 
 	/* double conversion buffer */
 	unsigned char dcb[8];
@@ -331,6 +332,8 @@ int gf4tp_tp(FILE *ost, struct gfainf *gi, struct gfalin *gl, unsigned int flags
 		while (*mrk != 0x00)
 			gfa_putc(ost, *mrk++, flags);
 	}	
+
+	inline_filename[0] = '\0';
 
 	switch (lcp)
 	{									/* TYPE */
@@ -657,35 +660,12 @@ int gf4tp_tp(FILE *ost, struct gfainf *gi, struct gfalin *gl, unsigned int flags
 				/* treat INLINE data... */
 				if (flags & TP_SAVEINLINE)
 				{
-					/* find out pointer name and save the data into file.... */
-					char filename[256];
-#if 0
-					unsigned char *p = linestart;
-					char *d = filename;
-
-					while (p < dst && *p == ' ')
-						p++;
-					while (p < dst && *p)
-					{
-						if (*p == ' ')
-							*d++ = '-';
-						else if (*p == '%')
-							*d++ = '.';
-						else if (*p == ',')
-							break;
-						else if (isprint(*p))
-							*d++ = *p;
-						else
-							*d++ = '_';
-						p++;
-					}
-					*d++ = 'i';
-					*d++ = 'n';
-					*d++ = 'l';
-					*d = 0;
-#endif
-					bsave(filename, src, (size_t) (srcend - src));
-					gf4tp_output("Saved INLINE data into file --> %s (%ld bytes.)\n", filename, (long)(srcend - src));
+					if (inline_filename[0] == '\0')
+						sprintf(inline_filename, "l%5u", gl->lineno);
+					strcat(inline_filename, ".inl");
+					bsave(inline_filename, src, (size_t) (srcend - src));
+					gf4tp_output("Saved INLINE data into file --> %s (%ld bytes.)\n", inline_filename, (long)(srcend - src));
+					inline_filename[0] = '\0';
 				} else
 				{
 					gfa_putnl(ost, flags);
@@ -884,9 +864,17 @@ int gf4tp_tp(FILE *ost, struct gfainf *gi, struct gfalin *gl, unsigned int flags
 		case 237:
 		case 238:
 		case 239:
-			/* varstart=dst; */  /* save marker for variable name for INLINE */
 			i = pft - 224;
 			v = *src++;
+			if (lcp == TOK_CMD_INLINE)
+			{
+				/* save variable name for INLINE */
+				mrk = gi->hdr->type == TP_SAVE ? gi->ident[i][v] : gf4tp_resvar(gi, i, v);
+				char *p = inline_filename;
+				while (*mrk != 0x00)
+					*p++ = *mrk++;
+				*p = '\0';
+			}
 			pushvar(mrk, i, v, gi, gf4tp_resvar);
 			break;
 
