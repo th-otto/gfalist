@@ -1,9 +1,9 @@
-#include <stdio.h>						/* vfprintf() */
-#include <stdarg.h>						/* vfprintf() */
-#include <time.h>						/* time() */
-#include <assert.h>						/* assert() */
-#include <stdlib.h>						/* malloc(), free() */
-#include <unistd.h>						/* getopt() */
+#include <stdio.h>
+#include <stdarg.h>
+#include <time.h>
+#include <assert.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <string.h>
 
 #include "sky.h"
@@ -107,16 +107,6 @@ static unsigned char *rvsimp(struct gfainf *gi, unsigned short type, unsigned sh
 	return vbuf;
 }
 
-static void measure(int stop)
-{
-	static int timer;
-
-	if (stop == 0)
-		timer = time(NULL);
-	else
-		output("001 measure(): timer %d\n", time(NULL) - timer);
-}
-
 
 static int process(char *name, FILE *ost, char *file, unsigned int flags)
 {
@@ -216,9 +206,6 @@ static int process(char *name, FILE *ost, char *file, unsigned int flags)
 	if ((flags & TP_VERB) != 0x00)
 		output("Analyzing listing (%i)\n", tokensize);
 
-	if ((flags & TP_TIME) != 0x00)
-		measure(0);
-
 	gl.line = slb;
 	gl.lineno = 0;
 
@@ -281,8 +268,6 @@ static int process(char *name, FILE *ost, char *file, unsigned int flags)
 		if ((flags & TP_VERB) != 0x00 && gl.lineno % 0x100 == 0x00)
 			output("Reached line %u\n", gl.lineno);
 	}
-	if ((flags & TP_TIME) != 0x00)
-		measure(1);
 
 	if (poolsize > 0)
 		free(gi.pool);
@@ -329,7 +314,7 @@ int main(int argc, char *argv[])
 			flags |= TP_CONV;
 			break;
 		case 't':						/* Timer */
-			flags |= TP_TIME;
+			/* flags |= TP_TIME; */
 			break;
 		case 'i':						/* save INLINE data into .inl files */
 			flags |= TP_SAVEINLINE;
