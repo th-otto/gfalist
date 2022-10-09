@@ -9,7 +9,6 @@
 #include "sky.h"
 #include "tables.h"						/* gfarecl */
 #include "version.h"					/* VERSION */
-#include "charset.h"					/* charset */
 
 #ifndef FALSE
 # define FALSE 0
@@ -108,17 +107,14 @@ static unsigned char *rvsimp(struct gfainf *gi, unsigned short type, unsigned sh
 }
 
 
-static int process(char *name, FILE *ost, char *file, unsigned int flags)
+static int process(const char *program_name, FILE *ost, const char *filename, unsigned int flags)
 {
 	struct gfainf gi;
 	struct gfahdr gh;
 	struct gfalin gl;
-	unsigned char *bot;
-	unsigned char *src;
 	unsigned char libuf[2];				/* Line info block buffer */
 	unsigned char gibuf[2];				/* General info block buffer */
 	unsigned char dibuf[4 * 38 + 10];
-	unsigned char txt[1025];
 	unsigned char slb[256];				/* Preallocated buffer for small lines */
 	int32_t poolsize;
 	int32_t fldsize;
@@ -130,12 +126,12 @@ static int process(char *name, FILE *ost, char *file, unsigned int flags)
 	gi.hdr = &gh;
 	gl.depth = 0;						/* Start with zero depth */
 
-	if (file == NULL)
+	if (filename == NULL)
 	{
 		ist = stdin;
-	} else if ((ist = fopen(file, "rb")) == NULL)
+	} else if ((ist = fopen(filename, "rb")) == NULL)
 	{
-		output("%s: Unable to open %s for reading.\n", name, file);
+		output("%s: Unable to open %s for reading.\n", program_name, filename);
 		return FALSE;
 	}
 
@@ -224,40 +220,7 @@ static int process(char *name, FILE *ost, char *file, unsigned int flags)
 
 		fread(gl.line, 1, gl.size, ist);
 
-		bot = gf4tp_tp(txt, ost, &gi, &gl, flags);
-
-		if (bot != NULL)
-		{
-			src = txt;
-			if ((flags & TP_CONV) != 0x00)
-			{
-				while (src < bot)
-				{
-					unsigned short wc = charset_w[*src++];
-
-					if (wc < 0x80)
-					{
-						putc(wc, ost);
-					} else if (wc < 0x800)
-					{
-						putc((wc >> 6) | 0xc0, ost);
-						putc((wc & 0x3f) | 0x80, ost);
-					} else
-					{
-						putc((wc >> 12) | 0xe0, ost);
-						putc(((wc >> 6) & 0x3f) | 0x80, ost);
-						putc((wc & 0x3f) | 0x80, ost);
-					}
-				}
-				putc('\n', ost);
-			} else
-			{
-				while (src < bot)
-					putc(*src++, ost);
-				putc(0x0d, ost);
-				putc(0x0a, ost);
-			}
-		}
+		gf4tp_tp(ost, &gi, &gl, flags);
 
 		if (gl.size > 256)
 		{

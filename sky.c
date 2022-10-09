@@ -8,6 +8,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <math.h>
+#include "charset.h"
 
 #ifndef O_BINARY
 #define O_BINARY 0
@@ -19,7 +20,7 @@
 #include "sky.h"
 #include "tables.h"
 
-static int (*gf4tp_output)(const char *format, ...);
+static int (*gf4tp_output)(const char *format, ...) __attribute__((format(printf, 1, 2)));
 static unsigned char *(*gf4tp_resvar)(struct gfainf *gi, unsigned short type, unsigned short var);
 
 static void io_error(int e, const char *n)
@@ -125,7 +126,46 @@ static uint32_t dgfaieeetolong(const unsigned char *src)
 }
 
 
-unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct gfalin *gl, unsigned int flags)
+static void gfa_putc(FILE *ost, unsigned char c, unsigned int flags)
+{
+	if ((flags & TP_CONV) != 0)
+	{
+		unsigned short wc = charset_w[c];
+
+		if (wc < 0x80)
+		{
+			putc(wc, ost);
+		} else if (wc < 0x800)
+		{
+			putc((wc >> 6) | 0xc0, ost);
+			putc((wc & 0x3f) | 0x80, ost);
+		} else
+		{
+			putc((wc >> 12) | 0xe0, ost);
+			putc(((wc >> 6) & 0x3f) | 0x80, ost);
+			putc((wc & 0x3f) | 0x80, ost);
+		}
+	} else
+	{
+		putc(c, ost);
+	}
+}
+
+
+static void gfa_putnl(FILE *ost, unsigned int flags)
+{
+	if (flags & TP_CONV)
+	{
+		putc('\n', ost);
+	} else
+	{
+		putc(0x0d, ost);
+		putc(0x0a, ost);
+	}
+}
+
+
+int gf4tp_tp(FILE *ost, struct gfainf *gi, struct gfalin *gl, unsigned int flags)
 {
 	/* Current source, marker, top and bottom pointers */
 	const unsigned char *src = gl->line;
@@ -148,8 +188,6 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 	unsigned int i;
 
 	int32_t num;
-
-	unsigned char *linestart = dst;
 
 	union
 	{
@@ -222,7 +260,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 
 		if (gl->depth > 0)				/* Required because i is unsigned */
 			for (i = 0; i < gl->depth; i++)
-				*dst++ = ' ', *dst++ = ' ';
+				putc(' ', ost), putc(' ', ost);
 
 		gl->depth += (flags & TP_BACKW) == 0;
 		break;
@@ -231,7 +269,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 
 		if (gl->depth > 0)
 			for (i = 0; i < gl->depth; i++)
-				*dst++ = ' ', *dst++ = ' ';
+				putc(' ', ost), putc(' ', ost);
 
 		gl->depth += (flags & TP_BACKW) == 0 && (flags & TP_BUGEM) == 0;
 		break;
@@ -260,7 +298,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 
 		if (gl->depth > 0)
 			for (i = 0; i < gl->depth; i++)
-				*dst++ = ' ', *dst++ = ' ';
+				putc(' ', ost), putc(' ', ost);
 
 		gl->depth += (flags & TP_BACKW) != 0;
 		break;
@@ -271,12 +309,12 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 	case 252:
 		if (gl->depth > 0)
 			for (i = 1; i < gl->depth; i++)
-				*dst++ = ' ', *dst++ = ' ';
+				putc(' ', ost), putc(' ', ost);
 		break;
 	default:
 		if (gl->depth > 0)
 			for (i = 0; i < gl->depth; i++)
-				*dst++ = ' ', *dst++ = ' ';
+				putc(' ', ost), putc(' ', ost);
 		break;
 	}
 
@@ -291,7 +329,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 	} else
 	{
 		while (*mrk != 0x00)
-			*dst++ = *mrk++;
+			gfa_putc(ost, *mrk++, flags);
 	}	
 
 	switch (lcp)
@@ -301,18 +339,18 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 	case 464:
 	case 468:							/* REM, ', ==>, DATA */
 		if (*src != 0x0D)
-			*dst++ = ' ';
+			putc(' ', ost);
 		/* FALLTROUGH */
 	case 1644:
 	case 1016:							/* $, . */
 		/* (1640(OPTION )) */
 		while (*src != 0x0D)
-			*dst++ = *src++;
+			gfa_putc(ost, *src++, flags);
 		src++;
 		src += (src - gl->line) & 0x01;
 		break;
 	case 180:							/* End of program */
-		return NULL;
+		return 0;
 	case 192:
 	case 236:							/* MONITOR, RESTORE, */
 	case 420:
@@ -331,35 +369,35 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 	case 1420:							/* SYSTEM, SOUND, WAVE, */
 	case 1592:							/* DUMP */
 		if (*src != 0x46)
-			*dst++ = ' ';
+			putc(' ', ost);
 		break;
 	case 124:
 	case 128:
 	case 132:							/* NEXT x# */
 		src += 4;
 		pop16b(v, src);
-		pushvar(dst, mrk, 0, v, gi, gf4tp_resvar);
+		pushvar(mrk, 0, v, gi, gf4tp_resvar);
 		break;
 	case 136:
 	case 140:
 	case 144:							/* NEXT x% */
 		src += 4;
 		pop16b(v, src);
-		pushvar(dst, mrk, 2, v, gi, gf4tp_resvar);
+		pushvar(mrk, 2, v, gi, gf4tp_resvar);
 		break;
 	case 148:
 	case 152:
 	case 156:							/* NEXT x& */
 		src += 4;
 		pop16b(v, src);
-		pushvar(dst, mrk, 8, v, gi, gf4tp_resvar);
+		pushvar(mrk, 8, v, gi, gf4tp_resvar);
 		break;
 	case 160:
 	case 164:
 	case 168:							/* NEXT x| */
 		src += 4;
 		pop16b(v, src);
-		pushvar(dst, mrk, 9, v, gi, gf4tp_resvar);
+		pushvar(mrk, 9, v, gi, gf4tp_resvar);
 		break;
 	case 304:
 	case 76:
@@ -368,14 +406,14 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 	case 256:							/* x#= / */
 		/* FOR x#= / LET x#= */
 		pop16b(v, src);
-		pushvar(dst, mrk, 0, v, gi, gf4tp_resvar);
-		*dst++ = '=';
+		pushvar(mrk, 0, v, gi, gf4tp_resvar);
+		putc('=', ost);
 		break;
 	case 308:
 	case 260:							/* x$= / LET x$= */
 		pop16b(v, src);
-		pushvar(dst, mrk, 1, v, gi, gf4tp_resvar);
-		*dst++ = '=';
+		pushvar(mrk, 1, v, gi, gf4tp_resvar);
+		putc('=', ost);
 		break;
 	case 312:
 	case 88:
@@ -384,14 +422,14 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 	case 264:							/* x%= / */
 		/* FOR x%= / LET x%= */
 		pop16b(v, src);
-		pushvar(dst, mrk, 2, v, gi, gf4tp_resvar);
-		*dst++ = '=';
+		pushvar(mrk, 2, v, gi, gf4tp_resvar);
+		putc('=', ost);
 		break;
 	case 316:
 	case 268:							/* x!= / LET x!= */
 		pop16b(v, src);
-		pushvar(dst, mrk, 3, v, gi, gf4tp_resvar);
-		*dst++ = '=';
+		pushvar(mrk, 3, v, gi, gf4tp_resvar);
+		putc('=', ost);
 		break;
 	case 320:
 	case 100:
@@ -400,8 +438,8 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 	case 272:							/* x&= / */
 		/* FOR x&= / LET x&= */
 		pop16b(v, src);
-		pushvar(dst, mrk, 8, v, gi, gf4tp_resvar);
-		*dst++ = '=';
+		pushvar(mrk, 8, v, gi, gf4tp_resvar);
+		putc('=', ost);
 		break;
 	case 324:
 	case 112:
@@ -410,8 +448,8 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 	case 276:							/* x|= / */
 		/* FOR x|= / LET x|= */
 		pop16b(v, src);
-		pushvar(dst, mrk, 9, v, gi, gf4tp_resvar);
-		*dst++ = '=';
+		pushvar(mrk, 9, v, gi, gf4tp_resvar);
+		putc('=', ost);
 		break;
 	case 328:
 	case 280:
@@ -424,12 +462,12 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 		/* ADD x#() / SUB x#() */
 		/* MUL x#() / DIV x#() */
 		pop16b(v, src);
-		pushvar(dst, mrk, 4, v, gi, gf4tp_resvar);
+		pushvar(mrk, 4, v, gi, gf4tp_resvar);
 		break;
 	case 332:
 	case 284:							/* x$()= / LET x$()= */
 		pop16b(v, src);
-		pushvar(dst, mrk, 5, v, gi, gf4tp_resvar);
+		pushvar(mrk, 5, v, gi, gf4tp_resvar);
 		break;
 	case 336:
 	case 288:
@@ -442,12 +480,12 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 		/* ADD x%() / SUB x%() */
 		/* MUL x%() / DIV x%() */
 		pop16b(v, src);
-		pushvar(dst, mrk, 6, v, gi, gf4tp_resvar);
+		pushvar(mrk, 6, v, gi, gf4tp_resvar);
 		break;
 	case 340:
 	case 292:							/* x!()= / LET x!()= */
 		pop16b(v, src);
-		pushvar(dst, mrk, 7, v, gi, gf4tp_resvar);
+		pushvar(mrk, 7, v, gi, gf4tp_resvar);
 		break;
 	case 344:
 	case 296:
@@ -460,7 +498,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 		/* ADD x&() / SUB x&() */
 		/* MUL x&() / DIV x&() */
 		pop16b(v, src);
-		pushvar(dst, mrk, 12, v, gi, gf4tp_resvar);
+		pushvar(mrk, 12, v, gi, gf4tp_resvar);
 		break;
 	case 348:
 	case 300:
@@ -473,21 +511,21 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 		/* ADD x|() / SUB x|() */
 		/* MUL x|() / DIV x|() */
 		pop16b(v, src);
-		pushvar(dst, mrk, 13, v, gi, gf4tp_resvar);
+		pushvar(mrk, 13, v, gi, gf4tp_resvar);
 		break;
 	case 24:
 	case 216:							/* PROCEDURE / */
 		/* > PROCEDURE  */
 		pop16b(v, src);
-		pushvar(dst, mrk, 11, v, gi, gf4tp_resvar);
-		if (*src != 0x46)
-			*dst++ = '(';
+		pushvar(mrk, 11, v, gi, gf4tp_resvar);
+		if (*src != 'F')
+			putc('(', ost);
 		break;
 	case 240:
 	case 244:
 	case 248:							/*  / @ / GOSUB */
 		pop16b(v, src);
-		pushvar(dst, mrk, 11, v, gi, gf4tp_resvar);
+		pushvar(mrk, 11, v, gi, gf4tp_resvar);
 		break;
 	case 1796:							/* > FUNCTION */
 		break;
@@ -495,28 +533,28 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 	case 1212:
 	case 1260:							/* PRINT / LPRINT */
 		/* CLS */
-		if (*src != 0x46)
-			*dst++ = ' ';
+		if (*src != 'F')
+			putc(' ', ost);
 		break;
 	case 640:
 	case 672:							/* INC x# / DEC x# */
 		pop16b(v, src);
-		pushvar(dst, mrk, 0, v, gi, gf4tp_resvar);
+		pushvar(mrk, 0, v, gi, gf4tp_resvar);
 		break;
 	case 644:
 	case 676:							/* INC x% / DEC x% */
 		pop16b(v, src);
-		pushvar(dst, mrk, 2, v, gi, gf4tp_resvar);
+		pushvar(mrk, 2, v, gi, gf4tp_resvar);
 		break;
 	case 648:
 	case 680:							/* INC x& / DEC x& */
 		pop16b(v, src);
-		pushvar(dst, mrk, 8, v, gi, gf4tp_resvar);
+		pushvar(mrk, 8, v, gi, gf4tp_resvar);
 		break;
 	case 652:
 	case 684:							/* INC x| / DEC x| */
 		pop16b(v, src);
-		pushvar(dst, mrk, 9, v, gi, gf4tp_resvar);
+		pushvar(mrk, 9, v, gi, gf4tp_resvar);
 		break;
 	case 704:
 	case 736:
@@ -524,8 +562,8 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 	case 800:							/* ADD x#, / SUB x#, / */
 		/* MUL x#, / DIV x#, */
 		pop16b(v, src);
-		pushvar(dst, mrk, 0, v, gi, gf4tp_resvar);
-		*dst++ = ',';
+		pushvar(mrk, 0, v, gi, gf4tp_resvar);
+		putc(',', ost);
 		break;
 	case 708:
 	case 740:
@@ -533,8 +571,8 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 	case 804:							/* ADD x%, / SUB x%, / */
 		/* MUL x%, / DIV x%, */
 		pop16b(v, src);
-		pushvar(dst, mrk, 2, v, gi, gf4tp_resvar);
-		*dst++ = ',';
+		pushvar(mrk, 2, v, gi, gf4tp_resvar);
+		putc(',', ost);
 		break;
 	case 712:
 	case 744:
@@ -542,8 +580,8 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 	case 808:							/* ADD x&, / SUB x&, / */
 		/* MUL x&, / DIV x&, */
 		pop16b(v, src);
-		pushvar(dst, mrk, 8, v, gi, gf4tp_resvar);
-		*dst++ = ',';
+		pushvar(mrk, 8, v, gi, gf4tp_resvar);
+		putc(',', ost);
 		break;
 	case 716:
 	case 748:
@@ -551,8 +589,8 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 	case 812:							/* ADD x|, / SUB x|, / */
 		/* MUL x|, / DIV x|, */
 		pop16b(v, src);
-		pushvar(dst, mrk, 9, v, gi, gf4tp_resvar);
-		*dst++ = ',';
+		pushvar(mrk, 9, v, gi, gf4tp_resvar);
+		putc(',', ost);
 		break;
 	case 4:								/* LOOP (4) / */
 	case 12:							/* UNTIL (12) / */
@@ -586,17 +624,17 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 	{
 		switch (pft = *src++)
 		{
-		case 70:
+		case TOK_FUNC_INLINE_DATA:
 			src += (src - gl->line) & 0x01;
 
 			if (src == srcend)
 				break;
-			if (lcp != 1668)
+			if (lcp != TOK_CMD_INLINE)
 			{
 				for (i = *src++; i > 0; i--)
-					*dst++ = ' ';
+					putc(' ', ost);
 
-				*dst++ = '!';
+				putc('!', ost);
 
 				for (mrk = src; mrk < srcend && *mrk != 0x0D; mrk++)
 					;
@@ -604,7 +642,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 				if (mrk < srcend)
 				{
 					while (src < mrk)
-						*dst++ = *src++;
+						gfa_putc(ost, *src++, flags);
 					src++;				/* 0x0D */
 					src += (src - gl->line) & 0x01;
 				} else
@@ -621,6 +659,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 				{
 					/* find out pointer name and save the data into file.... */
 					char filename[256];
+#if 0
 					unsigned char *p = linestart;
 					char *d = filename;
 
@@ -644,45 +683,27 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 					*d++ = 'n';
 					*d++ = 'l';
 					*d = 0;
+#endif
 					bsave(filename, src, (size_t) (srcend - src));
-					gf4tp_output("Saved INLINE data into file --> %s (%d bytes.)\n", filename, srcend - src);
+					gf4tp_output("Saved INLINE data into file --> %s (%ld bytes.)\n", filename, (long)(srcend - src));
 				} else
 				{
+					gfa_putnl(ost, flags);
 					/* Added hex printing of INLINE data / Markus Hoffmann 2013 */
 					fprintf(ost, "' ## INLINE:");
 					for (mrk = src; mrk < srcend; mrk++)
 					{
 						if ((mrk - src) % 16 == 0)
 						{
-							if (flags & TP_CONV)
-							{
-								putc('\n', ost);
-							} else
-							{
-								putc(0x0d, ost);
-								putc(0x0a, ost);
-							}
+							gfa_putnl(ost, flags);
 							fprintf(ost, "' $%04lx: ", (long) (mrk - src));
 						}
 						fprintf(ost, "%02x ", *mrk);
 					}
-					if (flags & TP_CONV)
-					{
-						putc('\n', ost);
-					} else
-					{
-						putc(0x0d, ost);
-						putc(0x0a, ost);
-					}
+					gfa_putnl(ost, flags);
 					fprintf(ost, "' %ld  Bytes.", (long) (mrk - src));
-					if (flags & TP_CONV)
-					{
-						putc('\n', ost);
-					} else
-					{
-						putc(0x0d, ost);
-						putc(0x0a, ost);
-					}
+					gfa_putnl(ost, flags);
+					return 1;
 				}
 				src = srcend;
 			}
@@ -692,12 +713,12 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 			src++; /* skip filler byte at odd address */
 			/* FALLTROUGH */
 		case 198:
-			*dst++ = '"';
+			putc('"', ost);
 			for (mrk = src + 4; src < mrk && *src == 0x00; src++)
 				;
 			while (src < mrk)
-				*dst++ = *src++;
-			*dst++ = '"';
+				gfa_putc(ost, *src++, flags);
+			putc('"', ost);
 			break;
 
 		case 201:
@@ -705,38 +726,38 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 			/* FALLTROUGH */
 		case 200:
 			pop32b(num, src);
-			pushsig(dst, num);
-			pushnum(dst, num, 10);
+			pushsign(num);
+			pushnum(num, 10);
 			break;
 
 		case 203:
 			src++; /* skip filler byte at odd address */
 			/* FALLTROUGH */
 		case 202:
-			*dst++ = '&';
-			*dst++ = 'H';
+			putc('&', ost);
+			putc('H', ost);
 			pop32b(i, src);
-			pushnum(dst, i, 16);
+			pushnum(i, 16);
 			break;
 
 		case 205:
 			src++; /* skip filler byte at odd address */
 			/* FALLTROUGH */
 		case 204:
-			*dst++ = '&';
-			*dst++ = 'O';
+			putc('&', ost);
+			putc('O', ost);
 			pop32b(i, src);
-			pushnum(dst, i, 8);
+			pushnum(i, 8);
 			break;
 
 		case 207:
 			src++; /* skip filler byte at odd address */
 			/* FALLTROUGH */
 		case 206:
-			*dst++ = '&';
-			*dst++ = 'X';
+			putc('&', ost);
+			putc('X', ost);
 			pop32b(i, src);
-			pushnum(dst, i, 2);
+			pushnum(i, 2);
 			break;
 
 		case 208:
@@ -748,7 +769,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 			} else
 			{
 				while (*mrk != 0x00)
-					*dst++ = *mrk++;
+					gfa_putc(ost, *mrk++, flags);
 			}
 			break;
 
@@ -761,7 +782,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 			} else
 			{
 				while (*mrk != 0x00)
-					*dst++ = *mrk++;
+					gfa_putc(ost, *mrk++, flags);
 			}
 			break;
 
@@ -774,7 +795,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 			} else
 			{
 				while (*mrk != 0x00)
-					*dst++ = *mrk++;
+					gfa_putc(ost, *mrk++, flags);
 			}
 			break;
 
@@ -783,11 +804,11 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 			/* FALLTROUGH */
 		case 216:
 			/* binary 8byte double -> ASCII Octal */
-			*dst++ = '&';
-			*dst++ = 'O';
+			putc('&', ost);
+			putc('O', ost);
 			ul = dgfaieeetolong(src);
 			src += 8;
-			pushnum(dst, ul, 8);
+			pushnum(ul, 8);
 			break;
 
 		case 217:
@@ -795,11 +816,11 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 			/* FALLTROUGH */
 		case 218:
 			/* binary 8byte double -> ASCII binary */
-			*dst++ = '&';
-			*dst++ = 'X';
+			putc('&', ost);
+			putc('X', ost);
 			ul = dgfaieeetolong(src);
 			src += 8;
-			pushnum(dst, ul, 2);
+			pushnum(ul, 2);
 			break;
 
 		case 219:
@@ -807,11 +828,11 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 			/* FALLTROUGH */
 		case 220:
 			/* binary 8byte double -> ASCII hexa */
-			*dst++ = '&';
-			*dst++ = 'H';
+			putc('&', ost);
+			putc('H', ost);
 			ul = dgfaieeetolong(src);
 			src += 8;
-			pushnum(dst, ul, 16);
+			pushnum(ul, 16);
 			break;
 
 		case 221:
@@ -831,17 +852,20 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 			copy64b(u.ull, dcb);
 			l = llrint(u.d);
 			if (isfinite(u.d) && l == u.d)
-				dst += sprintf((char *) dst, "%lld", (long long)l);
+				fprintf(ost, "%lld", (long long)l);
 			else
-				dst += sprintf((char *) dst, "%.12G", u.d);
+				fprintf(ost, "%.12G", u.d);
 			break;
 
 		case 222:						/* " */
-			*dst++ = '"';
+			putc('"', ost);
 			for (i = *src++; i > 0; i--)
-				if ((*dst++ = *src++) == '"')
-					*dst++ = '"';
-			*dst++ = '"';
+			{
+				if (*src == '"')
+					putc('"', ost);
+				gfa_putc(ost, *src++, flags);
+			}
+			putc('"', ost);
 			break;
 
 		case 224:
@@ -863,7 +887,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 			/* varstart=dst; */  /* save marker for variable name for INLINE */
 			i = pft - 224;
 			v = *src++;
-			pushvar(dst, mrk, i, v, gi, gf4tp_resvar);
+			pushvar(mrk, i, v, gi, gf4tp_resvar);
 			break;
 
 		case 240:
@@ -884,7 +908,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 		case 255:
 			i = pft - 240;
 			pop16b(v, src);
-			pushvar(dst, mrk, i, v, gi, gf4tp_resvar);
+			pushvar(mrk, i, v, gi, gf4tp_resvar);
 			break;
 
 		case 55:                                      /* NUMBER: */
@@ -904,12 +928,14 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 			mrk = (const unsigned char *)gfapft[pft];
 			assert(mrk != NULL);
 			while (*mrk != 0x00)
-				*dst++ = *mrk++;
+				gfa_putc(ost, *mrk++, flags);
 			break;
 		}
 	}
-	*dst = '\0';
-	return dst;
+	
+	gfa_putnl(ost, flags);
+
+	return 1;
 }
 
 void gf4tp_getgi(struct gfainf *gi, unsigned char *src)

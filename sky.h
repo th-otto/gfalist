@@ -49,7 +49,7 @@ struct gfalin {
 	unsigned int lineno;
 };
 
-unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct gfalin *gl, unsigned int flags);
+int gf4tp_tp(FILE *ost, struct gfainf *gi, struct gfalin *gl, unsigned int flags);
 void gf4tp_getgi(struct gfainf *gi, unsigned char *src);
 void gf4tp_getdi(struct gfainf *gi, unsigned char *src);
 void gf4tp_getii(struct gfainf *gi, unsigned char *src,
@@ -181,41 +181,34 @@ void gf4tp_init(int (*output)(const char *format, ...),
 	dst[1]  |= src[7] << 4 & 0xFF, /* shift bits  4..1 left by 52 bits */ \
 	dst[0]  |= src[0] & 0x80   /* copy sign */
 
-#define pushvar(dst, mrk, t, v, inf, res) \
+#define pushvar(mrk, t, v, inf, res) \
 	mrk = inf->hdr->type == TP_SAVE ? inf->ident[t][v] : res(inf, t, v); \
 	while (*mrk != 0x00) \
-		*dst++ = *mrk++; \
+		gfa_putc(ost, *mrk++, flags); \
 	mrk = gfavst[t]; \
 	while (*mrk != 0x00) \
-		*dst++ = *mrk++
+		gfa_putc(ost, *mrk++, flags)
 
-#define pushsig(dst, num) \
+#define pushsign(num) \
 	if (num < 0) \
-		*dst++  = 0x2D, \
+		gfa_putc(ost, '-', flags), \
 		num    *= -1
 	
-#define pushnum(dst, num, base) \
+#define pushnum(num, base) \
 	{ \
-	unsigned char *bin; \
-	bin = dst; \
+	unsigned char tmp[40]; \
+	unsigned char *bin = tmp; \
 	while (num != 0) { \
-		*dst++ = gfanct[num % base]; \
+		*bin++ = gfanct[num % base]; \
 		num /= base; \
 	} \
-	if (dst > bin) { \
-		int i, j; \
-		j  = (int)(dst - bin); \
-		j >>= 1; \
-		dst--; \
-		for (i = 0; i < j; i++) { \
-			unsigned char c = dst[-i]; \
-			dst[-i] = bin[i]; \
-			bin[i] = c; \
+	if (bin > tmp) { \
+		while (bin > tmp) { \
+			gfa_putc(ost, *--bin, flags); \
 		} \
-		dst++; \
 	} else \
 	{ \
-		*dst++ = gfanct[0]; \
+		gfa_putc(ost, gfanct[0], flags); \
 	} }
 
 
