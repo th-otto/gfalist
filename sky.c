@@ -1,12 +1,12 @@
-#include <stdio.h>						/* sprintf() */
-#include <ctype.h>						/* tolower() */
-#include <assert.h>						/* assert() */
-#include <string.h>						/* strncpy() */
-#include <sys/types.h>					/* open() */
-#include <sys/stat.h>					/* open() */
-#include <unistd.h>						/* open() */
-#include <errno.h>						/* write() */
-#include <fcntl.h>						/* open() */
+#include <stdio.h>
+#include <ctype.h>
+#include <assert.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <errno.h>
+#include <fcntl.h>
 #include <math.h>
 
 #ifndef O_BINARY
@@ -50,6 +50,81 @@ void gf4tp_init(int (*output)(const char *format, ...), unsigned char *(*resvar)
 }
 
 
+/*
+ * code generate by compiler, when assigning a double to a 32bit variable
+VFFTOI:
+[000100a8] 2018                      move.l     (a0)+,d0
+[000100aa] 2418                      move.l     (a0)+,d2
+FFTOI:
+[000100ac] 48c2                      ext.l      d2
+[000100ae] 6b16                      bmi.s      $000100C6
+[000100b0] 0442 03ff                 subi.w     #$03FF,d2
+[000100b4] 6b0c                      bmi.s      $000100C2
+[000100b6] 0442 001f                 subi.w     #$001F,d2
+[000100ba] 6a2a                      bpl.s      $000100E6
+[000100bc] 4442                      neg.w      d2
+[000100be] e4a8                      lsr.l      d2,d0
+[000100c0] 4e75                      rts
+[000100c2] 7000                      moveq.l    #0,d0
+[000100c4] 4e75                      rts
+[000100c6] 4442                      neg.w      d2
+[000100c8] 0442 03ff                 subi.w     #$03FF,d2
+[000100cc] 6bf4                      bmi.s      $000100C2
+[000100ce] 0442 001f                 subi.w     #$001F,d2
+[000100d2] 6a08                      bpl.s      $000100DC
+[000100d4] 4442                      neg.w      d2
+[000100d6] e4a8                      lsr.l      d2,d0
+[000100d8] 4480                      neg.l      d0
+[000100da] 4e75                      rts
+[000100dc] 6608                      bne.s      $000100E6
+[000100de] 0c80 8000 0000            cmpi.l     #$80000000,d0
+[000100e4] 67f4                      beq.s      $000100DA
+[000100e6] 7002                      moveq.l    #2,d0
+[000100e8] 6000 0018                 bra.w      ERROR
+*/
+
+static uint32_t dgfaieeetolong(const unsigned char *src)
+{
+	int16_t exp = (src[6] << 8) | src[7];
+	uint32_t mant = ((uint32_t)src[0] << 24) | ((uint32_t)src[1] << 16) | ((uint32_t)src[2] << 8) | ((uint32_t)src[3]);
+
+	if (exp & 0x8000)
+	{
+		exp = -exp;
+		exp -= 0x3ff;
+		if (exp < 0)
+			return 0;
+		exp -= 31;
+		if (exp >= 0)
+		{
+			if (exp != 0 || mant != 0x80000000UL)
+			{
+				/* would cause runtime error 2 in interpreter */
+				return 0xffffffffUL;
+			}
+			return mant;
+		}
+		exp = -exp;
+		mant >>= exp;
+		mant = -mant;
+	} else
+	{
+		exp -= 0x3ff;
+		if (exp < 0)
+			return 0;
+		exp -= 31;
+		if (exp >= 0)
+		{
+			/* would cause runtime error 2 in interpreter */
+			return 0xffffffffUL;
+		}
+		exp = -exp;
+		mant >>= exp;
+	}
+	return mant;
+}
+
+
 unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct gfalin *gl, unsigned int flags)
 {
 	/* Current source, marker, top and bottom pointers */
@@ -65,25 +140,20 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 	unsigned short pft;
 	unsigned short sft;
 	unsigned short v;
+	int64_t l;
+	uint32_t ul;
 
 	/* double conversion buffer */
 	unsigned char dcb[8];
-
-	/* destination multi purpose conversion bin marker */
-	unsigned char *bin;
-	unsigned char c;
 	unsigned int i;
-	unsigned int j;
 
-	/* double conversion string */
-	char *dcs;
-	int num;
+	int32_t num;
 
 	unsigned char *linestart = dst;
 
 	union
 	{
-		unsigned long long int ull;
+		uint64_t ull;
 		double d;
 	} u;
 
@@ -91,33 +161,28 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 	/* #,$,%,!,#(,$(,%(,!(,&,|,,,&(,|(,,$ */
 
 	static const unsigned char gfavst[][3] = {
-		{0x23, 0x00, 0x00},				/* "#"  */
-		{0x24, 0x00, 0x00},				/* "$"  */
-		{0x25, 0x00, 0x00},				/* "%"  */
-		{0x21, 0x00, 0x00},				/* "!"  */
-		{0x23, 0x28, 0x00},				/* "#(" */
-		{0x24, 0x28, 0x00},				/* "$(" */
-		{0x25, 0x28, 0x00},				/* "%(" */
-		{0x21, 0x28, 0x00},				/* "!(" */
-		{0x26, 0x00, 0x00},				/* "&"  */
-		{0x7C, 0x00, 0x00},				/* "|"  */
-		{0x00, 0x00, 0x00},				/* ""   */
-		{0x00, 0x00, 0x00},				/* ""   */
-		{0x26, 0x28, 0x00},				/* "&(" */
-		{0x7C, 0x28, 0x00},				/* "|(" */
-		{0x00, 0x00, 0x00},				/* ""   */
-		{0x24, 0x00, 0x00},				/* "$"  */
+		{ 0x23, 0x00, 0x00 },				/* "#"  */
+		{ 0x24, 0x00, 0x00 },				/* "$"  */
+		{ 0x25, 0x00, 0x00 },				/* "%"  */
+		{ 0x21, 0x00, 0x00 },				/* "!"  */
+		{ 0x23, 0x28, 0x00 },				/* "#(" */
+		{ 0x24, 0x28, 0x00 },				/* "$(" */
+		{ 0x25, 0x28, 0x00 },				/* "%(" */
+		{ 0x21, 0x28, 0x00 },				/* "!(" */
+		{ 0x26, 0x00, 0x00 },				/* "&"  */
+		{ 0x7C, 0x00, 0x00 },				/* "|"  */
+		{ 0x00, 0x00, 0x00 },				/* ""   */
+		{ 0x00, 0x00, 0x00 },				/* ""   */
+		{ 0x26, 0x28, 0x00 },				/* "&(" */
+		{ 0x7C, 0x28, 0x00 },				/* "|(" */
+		{ 0x00, 0x00, 0x00 },				/* ""   */
+		{ 0x24, 0x00, 0x00 }				/* "$"  */
 	};
 	/* number character text */
-	static const unsigned char gfanct[] = {
-		0x30, 0x31, 0x32, 0x33,
-		0x34, 0x35, 0x36, 0x37,
-		0x38, 0x39, 0x41, 0x42,
-		0x43, 0x44, 0x45, 0x46
-	};
+	static const unsigned char gfanct[16] = "0123456789ABCDEF";
 
 	assert(sizeof(double) == 8);
-	assert(sizeof(unsigned long long int) == 8);
+	assert(sizeof(uint64_t) == 8);
 
 	pop16b(lcp, src);
 
@@ -624,57 +689,54 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 			break;
 
 		case 199:
-			src++;
+			src++; /* skip filler byte at odd address */
 			/* FALLTROUGH */
 		case 198:
 			*dst++ = '"';
-
 			for (mrk = src + 4; src < mrk && *src == 0x00; src++)
 				;
-
 			while (src < mrk)
 				*dst++ = *src++;
-
 			*dst++ = '"';
 			break;
 
 		case 201:
-			src++;
+			src++; /* skip filler byte at odd address */
 			/* FALLTROUGH */
 		case 200:
 			pop32b(num, src);
 			pushsig(dst, num);
-			pushnum(dst, num, 10, bin, i, j, c);
+			pushnum(dst, num, 10);
 			break;
 
 		case 203:
-			src++;
+			src++; /* skip filler byte at odd address */
 			/* FALLTROUGH */
 		case 202:
 			*dst++ = '&';
 			*dst++ = 'H';
 			pop32b(i, src);
-			pushnum(dst, i, 16, bin, i, j, c);
+			pushnum(dst, i, 16);
 			break;
+
 		case 205:
-			src++;
+			src++; /* skip filler byte at odd address */
 			/* FALLTROUGH */
 		case 204:
 			*dst++ = '&';
 			*dst++ = 'O';
 			pop32b(i, src);
-			pushnum(dst, i, 8, bin, i, j, c);
+			pushnum(dst, i, 8);
 			break;
 
 		case 207:
-			src++;
+			src++; /* skip filler byte at odd address */
 			/* FALLTROUGH */
 		case 206:
 			*dst++ = '&';
 			*dst++ = 'X';
 			pop32b(i, src);
-			pushnum(dst, i, 2, bin, i, j, c);
-
+			pushnum(dst, i, 2);
 			break;
 
 		case 208:
@@ -717,84 +779,64 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 			break;
 
 		case 215:
-			src++;
+			src++; /* skip filler byte at odd address */
 			/* FALLTROUGH */
 		case 216:
 			/* binary 8byte double -> ASCII Octal */
 			*dst++ = '&';
 			*dst++ = 'O';
+			ul = dgfaieeetolong(src);
+			src += 8;
+			pushnum(dst, ul, 8);
+			break;
 
+		case 217:
+			src++; /* skip filler byte at odd address */
+			/* FALLTROUGH */
+		case 218:
+			/* binary 8byte double -> ASCII binary */
+			*dst++ = '&';
+			*dst++ = 'X';
+			ul = dgfaieeetolong(src);
+			src += 8;
+			pushnum(dst, ul, 2);
+			break;
+
+		case 219:
+			src++; /* skip filler byte at odd address */
+			/* FALLTROUGH */
+		case 220:
+			/* binary 8byte double -> ASCII hexa */
+			*dst++ = '&';
+			*dst++ = 'H';
+			ul = dgfaieeetolong(src);
+			src += 8;
+			pushnum(dst, ul, 16);
+			break;
+
+		case 221:
+			src++; /* skip filler byte at odd address */
+			/* FALLTROUGH */
+		case 223:						/* 1234567890.1234567890E+1234567890 */
+			{
+			/* double conversion string */
+			char *dcs;
+
+			/* binary 8byte double -> ASCII decimal */
 			/* We cannot abuse dst as dcb here via bin = dst because
 			 * there might be a constant at the 256 byte line length
 			 * limit smaller than eight characters in it's ASCII
 			 * representation, causing a buffer overflow.
 			 */
 			dgfabintoieee(dcb, src);
-			src += 8;
-
-			/* I don't know whether it's right that
-			 * IEEE doubles are really sensitive to endianess, but
-			 * according to a comparision between my Atari and
-			 * a iPENTIUM it seems to be.  Maybe GFA BASIC is just
-			 * wrong here.  Should be tested on an independend
-			 * second big endian machine.
-			 */
-
-			copy64b(u.ull, dcb);
-
-			u.ull = (unsigned long long int) u.d;
-
-			/* C99 offers an %A format which even obeys hexadecimal
-			 * fractions.  However I think GFA BASIC does not allow
-			 * fractional hexadecimal constants.
-			 */
-			pushnum(dst, u.ull, 8, bin, i, j, c);
-			break;
-
-		case 217:
-			src++;
-			/* FALLTROUGH */
-		case 218:
-			/* binary 8byte double -> ASCII binary */
-			*dst++ = '&';
-			*dst++ = 'X';
-
-			dgfabintoieee(dcb, src);
+			/* kill the sign: if negative, will have a UMINUS token before the value */
+			dcb[0] &= 0x7f;
 			src += 8;
 			copy64b(u.ull, dcb);
-			u.ull = (unsigned long long int) u.d;
-
-			pushnum(dst, u.ull, 2, bin, i, j, c);
-			break;
-
-		case 219:
-			src++;
-			/* FALLTROUGH */
-		case 220:
-			/* binary 8byte double -> ASCII hexa */
-			*dst++ = '&';
-			*dst++ = 'H';
-
-			dgfabintoieee(dcb, src);
-			src += 8;
-			copy64b(u.ull, dcb);
-			u.ull = (unsigned long long int) u.d;
-			pushnum(dst, u.ull, 16, bin, i, j, c);
-			break;
-
-		case 221:
-			src++;
-			/* FALLTROUGH */
-		case 223:						/* 1234567890.1234567890E+1234567890 */
-			/* binary 8byte double -> ASCII decimal */
-
-			dgfabintoieee(dcb, src);
-			src += 8;
-			copy64b(u.ull, dcb);
-
 			dcs = (char *) dst;
-			if (isfinite(u.d) && rint(u.d) == u.d)
-				sprintf(dcs, "%lld", llrint(u.d));
+			l = llrint(u.d);
+			if (isfinite(u.d) && l == u.d)
+				sprintf(dcs, "%lld", (long long)l);
 			else
 				sprintf(dcs, "%G", u.d);
 			while (*dcs != '\0')
@@ -847,6 +889,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 					*dst++ = '?';
 					break;
 				}
+			}
 			}
 			break;
 
@@ -916,7 +959,7 @@ unsigned char *gf4tp_tp(unsigned char *dst, FILE *ost, struct gfainf *gi, struct
 
 		default:
 			mrk = (const unsigned char *)gfapft[pft];
-
+			assert(mrk != NULL);
 			while (*mrk != 0x00)
 				*dst++ = *mrk++;
 			break;

@@ -174,7 +174,8 @@ void gf4tp_init(int (*output)(const char *format, ...),
 	dst[0]   = src[6]  & 0x07, /* shift bits 11..9 left by 48 bits */ \
 	dst[0] <<= 4,              /* shift bits 11..9 the remaining four bits. */ \
 	dst[0]  |= src[7] >> 4,    /* shift bits  8..5 left by 52 bits */ \
-	dst[1]  |= src[7] << 4 & 0xFF /* shift bits  4..1 left by 52 bits */
+	dst[1]  |= src[7] << 4 & 0xFF, /* shift bits  4..1 left by 52 bits */ \
+	dst[0]  |= src[0] & 0x80   /* copy sign */
 
 #define pushvar(dst, mrk, t, v, inf, res) \
 	mrk = inf->hdr->type == TP_SAVE ? inf->ident[t][v] : res(inf, t, v); \
@@ -189,25 +190,29 @@ void gf4tp_init(int (*output)(const char *format, ...),
 		*dst++  = 0x2D, \
 		num    *= -1
 	
-#define pushnum(dst, num, dim, bin, i, j, c) \
+#define pushnum(dst, num, base) \
+	{ \
+	unsigned char *bin; \
 	bin = dst; \
 	while (num != 0) { \
-		*dst++ = gfanct[num % dim]; \
-		num /= dim; \
+		*dst++ = gfanct[num % base]; \
+		num /= base; \
 	} \
 	if (dst > bin) { \
-		j  = dst - bin; \
-		j /= 2; \
+		int i, j; \
+		j  = (int)(dst - bin); \
+		j >>= 1; \
 		dst--; \
 		for (i = 0; i < j; i++) { \
-			c       = dst[-(signed)i]; \
-			dst[-(signed)i] = bin[ i]; \
-			bin[ i] = c; \
+			unsigned char c = dst[-i]; \
+			dst[-i] = bin[i]; \
+			bin[i] = c; \
 		} \
 		dst++; \
 	} else \
-		*dst++ = gfanct[0]
-
+	{ \
+		*dst++ = gfanct[0]; \
+	} }
 
 
 #endif

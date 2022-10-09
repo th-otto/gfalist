@@ -117,9 +117,9 @@ const char *const gfalct[520] = {
 	/*  444 */ "BGET ",
 	/*  448 */ "BPUT ",
 	/*  452 */ "ATEXT ",
-	/*  456 */ "REM",     /* Append "" if at least one char long. */
+	/*  456 */ "REM",     /* Append " " if at least one char long. */
 	/*  460 */ "'",       /* Append " " if at least one char long. */
-	/*  464 */ "==>",     /* Append "" if at least one char long. */
+	/*  464 */ "==>",     /* Append " " if at least one char long. */
 	/*  468 */ "DATA",    /* Append " " if at least one char long. */
 	/*  472 */ "SWAP ",
 	/*  476 */ "SWAP ",
