@@ -819,6 +819,11 @@ int gf4tp_tp(FILE *ost, struct gfainf *gi, struct gfalin *gl, unsigned int flags
 			dgfabintoieee(dcb, src);
 			/* kill the sign: if negative, will have a UMINUS token before the value */
 			dcb[0] &= 0x7f;
+#if 0
+			fprintf(stderr, "double: %02x%02x%02x%02x%02x%02x%02x%02x %02x%02x%02x%02x%02x%02x%02x%02x\n",
+				src[0], src[1], src[2], src[3], src[4], src[5], src[6], src[7], 
+				dcb[0], dcb[1], dcb[2], dcb[3], dcb[4], dcb[5], dcb[6], dcb[7]);
+#endif
 			src += 8;
 			copy64b(u.ull, dcb);
 			l = llrint(u.d);

@@ -152,9 +152,8 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 	if ((flags & TP_VERB) != 0x00)
 		output("  Processing DI-Block\n");
 
-	gf4tp_getdi(&gi, dibuf);
-
 	/* Cannot process files older than version 4 yet. */
+#if 1
 	switch (gh.vers)
 	{
 	case 1:
@@ -170,6 +169,9 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 			fclose(ist);
 		return FALSE;
 	}
+#endif
+
+	gf4tp_getdi(&gi, dibuf);
 
 	poolsize = gh.sep[16] - gh.sep[0];
 

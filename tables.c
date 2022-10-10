@@ -1061,7 +1061,7 @@ const char *const gfasft_209[256] = {
 	/*   11 */ "DGETDRV(",
 	/*   12 */ "SYSCONF(",
 	/*   13 */ "SSYSTEM(",
-	/*   14 */ "VQ_VGDOS(",
+	/*   14 */ "VQ_VGDOS()",
 	/*   15 */ "VST_ALIGNMENT(",
 	/*   16 */ "PEXEC(",
 	/*   17 */ "PDOMAIN(",
