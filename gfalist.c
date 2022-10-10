@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <errno.h>
 
 #include "sky.h"
 #include "tables.h"						/* gfarecl */
@@ -122,6 +123,7 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 	int32_t tokensize;
 	FILE *ist;
 	int retcode = TRUE;
+	unsigned short maxlinesize;
 
 	memset(&gi, 0, sizeof(gi));
 	memset(&gh, 0, sizeof(gh));
@@ -133,7 +135,7 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 		ist = stdin;
 	} else if ((ist = fopen(filename, "rb")) == NULL)
 	{
-		output("%s: Unable to open %s for reading.\n", program_name, filename);
+		output("%s: %s: %s\n", program_name, filename, strerror(errno));
 		return FALSE;
 	}
 
@@ -224,9 +226,10 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 	
 		if ((flags & TP_VERB) != 0x00)
 			output("Analyzing listing (%i)\n", tokensize);
-	
+
 		gl.line = slb;
 		gl.lineno = 0;
+		maxlinesize = 0;
 	
 		while (tokensize > 0)
 		{
@@ -243,7 +246,9 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 				break;
 			}
 			gl.size -= 2;
-	
+			if (gl.size > maxlinesize)
+				maxlinesize = gl.size;
+
 			if (gl.size > 256)
 			{
 				gl.line = malloc(gl.size);
@@ -268,6 +273,9 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 			if ((flags & TP_VERB) && gl.lineno % 0x100 == 0)
 				output("Reached line %lu\n", gl.lineno);
 		}
+
+		if (flags & TP_VERB)
+			output("Maximum line size: %u\n", maxlinesize);
 	}
 	
 	if (poolsize > 0)
