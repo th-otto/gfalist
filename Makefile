@@ -7,7 +7,8 @@ RELEASE=1
 
 CC = gcc
 # Cross-Compiler fuer MS WINDOWS
-WINCC=i686-pc-mingw32-gcc
+EVAL_MINGWCC := case `uname -s` in CYGWIN*) echo i686-w64-mingw32-gcc ;; MINGW*) echo gcc ;; *) echo i686-pc-mingw32-gcc;; esac
+WINCC=$(shell $(EVAL_MINGWCC))
 # Cross-Compiler fuer ATARI ST TOS
 TOSCC=m68k-atari-mint-gcc
 
@@ -48,13 +49,10 @@ gfalist.ttp: $(CSRC)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS) $(TRASH)
+	rm -f $(OBJS) $(TARGETS) gfalist.exe gfalist.ttp $(TRASH)
 
-realclean: clean
-	rm -f $(TARGETS) gfalist.exe gfalist.ttp gfalist_$(LIBNO)-$(RELEASE)_*.deb
-
-clobber: realclean
-	rm -f $(PRECIOUS)
+distclean realclean: clean
+	rm -f gfalist_$(LIBNO)-$(RELEASE)_*.deb
 
 dist: MANIFEST HISTORY packdist.sh
 	sh packdist.sh -t $(DISTRIB) -m $< -v HISTORY -s ons.spec ck md

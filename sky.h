@@ -16,8 +16,9 @@
 #define TP_SAVEINLINE  0x20 /* Save INLINE data into .inl files */
 
 struct gfahdr {
-	unsigned char resvd:7;
-	enum {TP_SAVE, TP_PSAVE} type:1;            /* List type/protection */
+	unsigned char type;                         /* List type/protection */
+#define TP_SAVE  0
+#define TP_PSAVE 1
 	unsigned char vers;                         /* File format version */
 	                                            /*  1: Atari, V1.0 */
 	                                            /*  2: Atari, V2.0 */
@@ -44,7 +45,7 @@ struct gfalin {
 	unsigned short size;                        /* Length of the line */
 	short depth;                                /* Indent depth */
 	unsigned char *line;                        /* Pointer to line buffer */
-	unsigned int lineno;
+	unsigned long lineno;
 };
 
 int gf4tp_tp(FILE *ost, struct gfainf *gi, struct gfalin *gl, unsigned int flags);
@@ -180,7 +181,7 @@ void gf4tp_init(int (*output)(const char *format, ...),
 	dst[0]  |= src[0] & 0x80   /* copy sign */
 
 #define pushvar(mrk, t, v, inf, res) \
-	mrk = inf->hdr->type == TP_SAVE ? inf->ident[t][v] : res(inf, t, v); \
+	mrk = inf->hdr->type & TP_PSAVE ? res(inf, t, v) : inf->ident[t][v]; \
 	while (*mrk != 0x00) \
 		gfa_putc(ost, *mrk++, flags); \
 	mrk = gfavst[t]; \

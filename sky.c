@@ -199,23 +199,23 @@ int gf4tp_tp(FILE *ost, struct gfainf *gi, struct gfalin *gl, unsigned int flags
 	/* Variablen-Suffix text (VST) */
 	/* #,$,%,!,#(,$(,%(,!(,&,|,,,&(,|(,,$ */
 
-	static const unsigned char gfavst[][3] = {
-		{ 0x23, 0x00, 0x00 },				/* "#"  */
-		{ 0x24, 0x00, 0x00 },				/* "$"  */
-		{ 0x25, 0x00, 0x00 },				/* "%"  */
-		{ 0x21, 0x00, 0x00 },				/* "!"  */
-		{ 0x23, 0x28, 0x00 },				/* "#(" */
-		{ 0x24, 0x28, 0x00 },				/* "$(" */
-		{ 0x25, 0x28, 0x00 },				/* "%(" */
-		{ 0x21, 0x28, 0x00 },				/* "!(" */
-		{ 0x26, 0x00, 0x00 },				/* "&"  */
-		{ 0x7C, 0x00, 0x00 },				/* "|"  */
-		{ 0x00, 0x00, 0x00 },				/* ""   */
-		{ 0x00, 0x00, 0x00 },				/* ""   */
-		{ 0x26, 0x28, 0x00 },				/* "&(" */
-		{ 0x7C, 0x28, 0x00 },				/* "|(" */
-		{ 0x00, 0x00, 0x00 },				/* ""   */
-		{ 0x24, 0x00, 0x00 }				/* "$"  */
+	static const unsigned char gfavst[16][3] = {
+		"#",
+		"$",
+		"%",
+		"!",
+		"#(",
+		"$(",
+		"%(",
+		"!(",
+		"&",
+		"|",
+		"",
+		"",
+		"&(",
+		"|(",
+		"",
+		"$"
 	};
 	/* number character text */
 	static const unsigned char gfanct[16] = "0123456789ABCDEF";
@@ -317,7 +317,7 @@ int gf4tp_tp(FILE *ost, struct gfainf *gi, struct gfalin *gl, unsigned int flags
 		mrk = NULL;
 	if (mrk == NULL)
 	{
-		gf4tp_output("gf4tp_tp() Error at line %u:%lu: %u is an unknown control code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), lcp);
+		gf4tp_output("gf4tp_tp() Error at line %lu:%lu: %u is an unknown control code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), lcp);
 	} else
 	{
 		while (*mrk != 0x00)
@@ -652,7 +652,7 @@ int gf4tp_tp(FILE *ost, struct gfainf *gi, struct gfalin *gl, unsigned int flags
 				if (flags & TP_SAVEINLINE)
 				{
 					if (inline_filename[0] == '\0')
-						sprintf(inline_filename, "l%5u", gl->lineno);
+						sprintf(inline_filename, "l%5lu", gl->lineno);
 					strcat(inline_filename, ".inl");
 					bsave(inline_filename, src, (size_t) (srcend - src));
 					gf4tp_output("Saved INLINE data into file --> %s (%ld bytes.)\n", inline_filename, (long)(srcend - src));
@@ -736,7 +736,7 @@ int gf4tp_tp(FILE *ost, struct gfainf *gi, struct gfalin *gl, unsigned int flags
 			mrk = (const unsigned char *)gfasft_208[sft];
 			if (mrk == NULL)
 			{
-				gf4tp_output("gf4tp_tp() Error at line %u:%lu: %u/%u is an unknown sft code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft, sft);
+				gf4tp_output("gf4tp_tp() Error at line %lu:%lu: %u/%u is an unknown sft code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft, sft);
 			} else
 			{
 				while (*mrk != 0x00)
@@ -749,7 +749,7 @@ int gf4tp_tp(FILE *ost, struct gfainf *gi, struct gfalin *gl, unsigned int flags
 			mrk = (const unsigned char *)gfasft_209[sft];
 			if (mrk == NULL)
 			{
-				gf4tp_output("gf4tp_tp() Error at line %u:%lu: %u/%u is an unknown sft code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft, sft);
+				gf4tp_output("gf4tp_tp() Error at line %lu:%lu: %u/%u is an unknown sft code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft, sft);
 			} else
 			{
 				while (*mrk != 0x00)
@@ -762,7 +762,7 @@ int gf4tp_tp(FILE *ost, struct gfainf *gi, struct gfalin *gl, unsigned int flags
 			mrk = (const unsigned char *)gfasft_210[sft];
 			if (mrk == NULL)
 			{
-				gf4tp_output("gf4tp_tp() Error at line %u:%lu: %u/%u is an unknown sft code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft, sft);
+				gf4tp_output("gf4tp_tp() Error at line %lu:%lu: %u/%u is an unknown sft code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft, sft);
 			} else
 			{
 				while (*mrk != 0x00)
@@ -865,7 +865,7 @@ int gf4tp_tp(FILE *ost, struct gfainf *gi, struct gfalin *gl, unsigned int flags
 			if (lcp == TOK_CMD_INLINE)
 			{
 				/* save variable name for INLINE */
-				mrk = gi->hdr->type == TP_SAVE ? gi->ident[i][v] : gf4tp_resvar(gi, i, v);
+				mrk = gi->hdr->type & TP_PSAVE ? gf4tp_resvar(gi, i, v) : gi->ident[i][v];
 				char *p = inline_filename;
 				while (*mrk != 0x00)
 					*p++ = *mrk++;
@@ -905,7 +905,7 @@ int gf4tp_tp(FILE *ost, struct gfainf *gi, struct gfalin *gl, unsigned int flags
 		case 212:
 		case 213:
 		case 214:
-			gf4tp_output("gf4tp_tp() Error at line %u:%lu: %u is an unknown token code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft);
+			gf4tp_output("gf4tp_tp() Error at line %lu:%lu: %u is an unknown token code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft);
 			break;
 
 		default:

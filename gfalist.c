@@ -16,6 +16,7 @@
 #endif
 
 
+__attribute__((format(printf, 1, 2)))
 static int output(const char *format, ...)
 {
 	va_list ap;
@@ -120,6 +121,7 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 	int32_t fldsize;
 	int32_t tokensize;
 	FILE *ist;
+	int retcode = TRUE;
 
 	memset(&gi, 0, sizeof(gi));
 	memset(&gh, 0, sizeof(gh));
@@ -136,7 +138,7 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 	}
 
 	if ((flags & TP_VERB) != 0x00)
-		output("Scanning header (%i)\n", sizeof gh);
+		output("Scanning header (%i)\n", (int)sizeof(gh));
 
 	/* Read one general info block */
 
@@ -176,64 +178,98 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 	poolsize = gh.sep[16] - gh.sep[0];
 
 	if (poolsize > 0)
-		gi.pool = malloc(poolsize);
-
-	if ((flags & TP_VERB) != 0x00)
-		output("  Reading identifiers (%i Bytes)\n", poolsize);
-
-	/* Read identifier information block consisting of cnt characters */
-	fread(gi.pool, 1, poolsize, ist);
-
-	fldsize = gh.sep[35] - gh.sep[19];
-
-	if (fldsize > 0)
-		gi.fld = malloc(fldsize * sizeof(char *));
-
-	if ((flags & TP_VERB) != 0x00)
-		output("  Processing II-Block\n");
-
-	gf4tp_getii(&gi, gi.pool, gi.fld);
-
-	/* gf4tp_output("Searching lines\n");
-	 * fseek(ist, gfarecl[gh.vers][1] * 4 + gfarecl[gh.vers][0] + 
-	 *            gh.sep[16] + 2, SEEK_SET);
-	 */
-
-	tokensize = gh.sep[19] - gh.sep[16];
-
-	if ((flags & TP_VERB) != 0x00)
-		output("Analyzing listing (%i)\n", tokensize);
-
-	gl.line = slb;
-	gl.lineno = 0;
-
-	while (tokensize > 0)
 	{
-		fread(libuf, 2, 1, ist);
-
-		copy16b(gl.size, libuf);
-
-		tokensize -= gl.size;
-
-		gl.size -= 2;
-
-		if (gl.size > 256)
-			gl.line = malloc(gl.size);
-
-		fread(gl.line, 1, gl.size, ist);
-
-		gf4tp_tp(ost, &gi, &gl, flags);
-
-		if (gl.size > 256)
+		gi.pool = malloc(poolsize);
+		if (gi.pool == NULL)
 		{
-			free(gl.line);
-			gl.line = slb;
+			output("out of memory\n");
+			retcode = FALSE;
 		}
-		gl.lineno++;
-		if ((flags & TP_VERB) != 0x00 && gl.lineno % 0x100 == 0x00)
-			output("Reached line %u\n", gl.lineno);
 	}
 
+	if (retcode)
+	{
+		if ((flags & TP_VERB) != 0x00)
+			output("  Reading identifiers (%i Bytes)\n", poolsize);
+	
+		/* Read identifier information block consisting of cnt characters */
+		fread(gi.pool, 1, poolsize, ist);
+	
+		fldsize = gh.sep[35] - gh.sep[19];
+	
+		if (fldsize > 0)
+		{
+			gi.fld = malloc(fldsize * sizeof(char *));
+			if (gi.fld == NULL)
+			{
+				output("out of memory\n");
+				retcode = FALSE;
+			}
+		}
+	}
+	
+	if (retcode)
+	{
+		if ((flags & TP_VERB) != 0x00)
+			output("  Processing II-Block\n");
+	
+		gf4tp_getii(&gi, gi.pool, gi.fld);
+	
+		/* gf4tp_output("Searching lines\n");
+		 * fseek(ist, gfarecl[gh.vers][1] * 4 + gfarecl[gh.vers][0] + 
+		 *            gh.sep[16] + 2, SEEK_SET);
+		 */
+	
+		tokensize = gh.sep[19] - gh.sep[16];
+	
+		if ((flags & TP_VERB) != 0x00)
+			output("Analyzing listing (%i)\n", tokensize);
+	
+		gl.line = slb;
+		gl.lineno = 0;
+	
+		while (tokensize > 0)
+		{
+			fread(libuf, 2, 1, ist);
+	
+			copy16b(gl.size, libuf);
+	
+			tokensize -= gl.size;
+	
+			if (gl.size < 2)
+			{
+				output("Empty line at line %lu\n", gl.lineno);
+				retcode = FALSE;
+				break;
+			}
+			gl.size -= 2;
+	
+			if (gl.size > 256)
+			{
+				gl.line = malloc(gl.size);
+				if (gl.line == NULL)
+				{
+					output("out of memory\n");
+					retcode = FALSE;
+					break;
+				}
+			}
+	
+			fread(gl.line, 1, gl.size, ist);
+	
+			gf4tp_tp(ost, &gi, &gl, flags);
+	
+			if (gl.size > 256)
+			{
+				free(gl.line);
+				gl.line = slb;
+			}
+			gl.lineno++;
+			if ((flags & TP_VERB) && gl.lineno % 0x100 == 0)
+				output("Reached line %lu\n", gl.lineno);
+		}
+	}
+	
 	if (poolsize > 0)
 		free(gi.pool);
 
@@ -243,7 +279,7 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 	if (ist != stdin)
 		fclose(ist);
 
-	return TRUE;
+	return retcode;
 }
 
 
