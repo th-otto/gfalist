@@ -7,12 +7,12 @@ RELEASE=1
 
 CC = gcc
 # Cross-Compiler fuer MS WINDOWS
-WINCC=i586-mingw32msvc-gcc
+WINCC=i686-pc-mingw32-gcc
 # Cross-Compiler fuer ATARI ST TOS
 TOSCC=m68k-atari-mint-gcc
 
 CFLAGS = -g -O0 -Wall 
-LFLAGS = -L.
+LFLAGS = 
 
 # Directories
 prefix=/usr
@@ -21,14 +21,11 @@ BINDIR=${exec_prefix}/bin
 MANDIR=${prefix}/share/man
 
 # Precious targets
-TARGETS = libsky.a gfalist
+TARGETS = gfalist
 
-SKY_ARC = libsky.a(sky.o) libsky.a(tables.o)
-SKY_OBJS = sky.o tables.o
+GFALIST_OBJS = gfalist.o charset.o sky.o tables.o
 
-GFALIST_OBJS = gfalist.o charset.o
-
-OBJS = $(SKY_OBJS) $(GFALIST_OBJS)
+OBJS = $(GFALIST_OBJS)
 
 # Headerfiles which should be added to the distribution
 HSRC=charset.h  sky.h  tables.h
@@ -38,28 +35,10 @@ BINDIST= gfalist
 
 TRASH = core ons.spec.OLD
 
-all: $(PRECIOUS) $(TARGETS)
-
-libsky.a: $(SKY_OBJS)
-	$(AR) rcv $@ $?
-	ranlib $@
-
-# Updating on a per file basis: 
-#libsky.a: $(SKY_ARCH) $(SKY_OBJS)
-#	ranlib $@
-#(%.o): %.o
-#	$(AR) rcv $@ $<
-
-# Updating with intermediate files:
-#libsky.a: $(SKY_ARCH)
-#	ranlib $@
-#(%.o): %.c
-#	$(CC) $(CFLAGS) -c $< -o $*.o
-#	$(AR) rcv $@ $*.o
-#	rm $*.o
+all: $(TARGETS)
 
 gfalist: $(GFALIST_OBJS)
-	$(CC) $(LFLAGS) $+ -o $@ -lsky -lm
+	$(CC) $(LFLAGS) $+ -o $@ -lm
 gfalist.exe: $(CSRC)
 	$(WINCC)  $+ -o $@ -lm
 gfalist.ttp: $(CSRC)
@@ -114,7 +93,6 @@ ons.spec: README HISTORY packdist.sh
 	sh packdist.sh -a README -v HISTORY -t $(DISTRIB) -s ons.spec fs
 
 #DEPEND
-gfalist: libsky.a
 sky.o: sky.c sky.h tables.h
 gfalist.o: gfalist.c $(HSRC) version.h
 
