@@ -81,32 +81,78 @@ static unsigned char *(*gf4tp_resvar)(struct gfainf *gi, unsigned short type, un
 	 dst   |= (src)[5]
 
 
-#define pushvar(mrk, t, v, inf, res) \
-	mrk = inf->hdr->type & TP_PSAVE ? res(inf, t, v) : inf->ident[t][v]; \
-	while (*mrk != '\0') \
-		gfa_putc(inf, *mrk++); \
-	mrk = gfavst[t]; \
-	while (*mrk != '\0') \
-		gfa_putc(inf, *mrk++)
+static void gfa_putc(struct gfainf *gi, unsigned char c)
+{
+	if ((gi->flags & TP_CONV) != 0)
+	{
+		unsigned short wc = charset_w[c];
 
-#define pushsign(num) \
-	if (num < 0) \
-		putc('-', gi->ost), \
-		num = -num
-	
-#define pushnum(num, base) \
-	{ \
-	unsigned char tmp[40]; \
-	unsigned char *bin = tmp; \
-	do { \
-		*bin++ = gfanct[num % base]; \
-		num /= base; \
-	} while (num != 0); \
-	while (--bin >= tmp) { \
-		putc(*bin, gi->ost); \
-	} }
+		if (wc < 0x80)
+		{
+			putc(wc, gi->ost);
+		} else if (wc < 0x800)
+		{
+			putc((wc >> 6) | 0xc0, gi->ost);
+			putc((wc & 0x3f) | 0x80, gi->ost);
+		} else
+		{
+			putc((wc >> 12) | 0xe0, gi->ost);
+			putc(((wc >> 6) & 0x3f) | 0x80, gi->ost);
+			putc((wc & 0x3f) | 0x80, gi->ost);
+		}
+	} else
+	{
+		putc(c, gi->ost);
+	}
+}
 
 
+static void pushvar(struct gfainf *gi, unsigned int type, unsigned int v)
+{
+	const unsigned char *mrk = gi->hdr->type & TP_PSAVE ? gf4tp_resvar(gi, type, v) : gi->ident[type][v];
+
+	static const unsigned char gfavst[16][3] = {
+		"#",
+		"$",
+		"%",
+		"!",
+		"#(",
+		"$(",
+		"%(",
+		"!(",
+		"&",
+		"|",
+		"",
+		"",
+		"&(",
+		"|(",
+		"",
+		"$"
+	};
+
+	while (*mrk != '\0')
+		gfa_putc(gi, *mrk++);
+	mrk = gfavst[type];
+	while (*mrk != '\0')
+		gfa_putc(gi, *mrk++);
+}
+
+
+static void pushnum(struct gfainf *gi, uint32_t num, unsigned int base)
+{
+	unsigned char tmp[40];
+	unsigned char *bin = tmp;
+
+	/* number character text */
+	static const unsigned char gfanct[16] = "0123456789ABCDEF";
+
+	do {
+		*bin++ = gfanct[num % base];
+		num /= base;
+	} while (num != 0);
+	while (--bin >= tmp)
+		putc(*bin, gi->ost);
+}
 
 
 static void io_error(int e, const char *n)
@@ -134,32 +180,6 @@ void gf4tp_init(int (*output)(const char *format, ...), unsigned char *(*resvar)
 {
 	gf4tp_output = output;
 	gf4tp_resvar = resvar;
-}
-
-
-static void gfa_putc(struct gfainf *gi, unsigned char c)
-{
-	if ((gi->flags & TP_CONV) != 0)
-	{
-		unsigned short wc = charset_w[c];
-
-		if (wc < 0x80)
-		{
-			putc(wc, gi->ost);
-		} else if (wc < 0x800)
-		{
-			putc((wc >> 6) | 0xc0, gi->ost);
-			putc((wc & 0x3f) | 0x80, gi->ost);
-		} else
-		{
-			putc((wc >> 12) | 0xe0, gi->ost);
-			putc(((wc >> 6) & 0x3f) | 0x80, gi->ost);
-			putc((wc & 0x3f) | 0x80, gi->ost);
-		}
-	} else
-	{
-		putc(c, gi->ost);
-	}
 }
 
 
@@ -530,27 +550,6 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	/* Variablen-Suffix text (VST) */
 	/* #,$,%,!,#(,$(,%(,!(,&,|,,,&(,|(,,$ */
 
-	static const unsigned char gfavst[16][3] = {
-		"#",
-		"$",
-		"%",
-		"!",
-		"#(",
-		"$(",
-		"%(",
-		"!(",
-		"&",
-		"|",
-		"",
-		"",
-		"&(",
-		"|(",
-		"",
-		"$"
-	};
-	/* number character text */
-	static const unsigned char gfanct[16] = "0123456789ABCDEF";
-
 	assert(sizeof(uint64_t) == 8);
 
 	pop16b(lcp, src);
@@ -686,28 +685,28 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	case 132:							/* NEXT x# */
 		src += 4;
 		pop16b(v, src);
-		pushvar(mrk, TYPE_FLOAT, v, gi, gf4tp_resvar);
+		pushvar(gi, TYPE_FLOAT, v);
 		break;
 	case 136:
 	case 140:
 	case 144:							/* NEXT x% */
 		src += 4;
 		pop16b(v, src);
-		pushvar(mrk, TYPE_INT, v, gi, gf4tp_resvar);
+		pushvar(gi, TYPE_INT, v);
 		break;
 	case 148:
 	case 152:
 	case 156:							/* NEXT x& */
 		src += 4;
 		pop16b(v, src);
-		pushvar(mrk, TYPE_WORD, v, gi, gf4tp_resvar);
+		pushvar(gi, TYPE_WORD, v);
 		break;
 	case 160:
 	case 164:
 	case 168:							/* NEXT x| */
 		src += 4;
 		pop16b(v, src);
-		pushvar(mrk, TYPE_BYTE, v, gi, gf4tp_resvar);
+		pushvar(gi, TYPE_BYTE, v);
 		break;
 	case 304:
 	case 76:
@@ -716,13 +715,13 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	case 256:							/* x#= / */
 		/* FOR x#= / LET x#= */
 		pop16b(v, src);
-		pushvar(mrk, TYPE_FLOAT, v, gi, gf4tp_resvar);
+		pushvar(gi, TYPE_FLOAT, v);
 		putc('=', gi->ost);
 		break;
 	case 308:
 	case 260:							/* x$= / LET x$= */
 		pop16b(v, src);
-		pushvar(mrk, TYPE_STRING, v, gi, gf4tp_resvar);
+		pushvar(gi, TYPE_STRING, v);
 		putc('=', gi->ost);
 		break;
 	case 312:
@@ -732,13 +731,13 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	case 264:							/* x%= / */
 		/* FOR x%= / LET x%= */
 		pop16b(v, src);
-		pushvar(mrk, TYPE_INT, v, gi, gf4tp_resvar);
+		pushvar(gi, TYPE_INT, v);
 		putc('=', gi->ost);
 		break;
 	case 316:
 	case 268:							/* x!= / LET x!= */
 		pop16b(v, src);
-		pushvar(mrk, TYPE_BOOL, v, gi, gf4tp_resvar);
+		pushvar(gi, TYPE_BOOL, v);
 		putc('=', gi->ost);
 		break;
 	case 320:
@@ -748,7 +747,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	case 272:							/* x&= / */
 		/* FOR x&= / LET x&= */
 		pop16b(v, src);
-		pushvar(mrk, TYPE_WORD, v, gi, gf4tp_resvar);
+		pushvar(gi, TYPE_WORD, v);
 		putc('=', gi->ost);
 		break;
 	case 324:
@@ -758,7 +757,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	case 276:							/* x|= / */
 		/* FOR x|= / LET x|= */
 		pop16b(v, src);
-		pushvar(mrk, TYPE_BYTE, v, gi, gf4tp_resvar);
+		pushvar(gi, TYPE_BYTE, v);
 		putc('=', gi->ost);
 		break;
 	case 328:
@@ -772,12 +771,12 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 		/* ADD x#() / SUB x#() */
 		/* MUL x#() / DIV x#() */
 		pop16b(v, src);
-		pushvar(mrk, TYPE_DOUBLE_ARR, v, gi, gf4tp_resvar);
+		pushvar(gi, TYPE_DOUBLE_ARR, v);
 		break;
 	case 332:
 	case 284:							/* x$()= / LET x$()= */
 		pop16b(v, src);
-		pushvar(mrk, TYPE_STRING_ARR, v, gi, gf4tp_resvar);
+		pushvar(gi, TYPE_STRING_ARR, v);
 		break;
 	case 336:
 	case 288:
@@ -790,12 +789,12 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 		/* ADD x%() / SUB x%() */
 		/* MUL x%() / DIV x%() */
 		pop16b(v, src);
-		pushvar(mrk, TYPE_INT_ARR, v, gi, gf4tp_resvar);
+		pushvar(gi, TYPE_INT_ARR, v);
 		break;
 	case 340:
 	case 292:							/* x!()= / LET x!()= */
 		pop16b(v, src);
-		pushvar(mrk, TYPE_BOOL_ARR, v, gi, gf4tp_resvar);
+		pushvar(gi, TYPE_BOOL_ARR, v);
 		break;
 	case 344:
 	case 296:
@@ -808,7 +807,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 		/* ADD x&() / SUB x&() */
 		/* MUL x&() / DIV x&() */
 		pop16b(v, src);
-		pushvar(mrk, TYPE_WORD_ARR, v, gi, gf4tp_resvar);
+		pushvar(gi, TYPE_WORD_ARR, v);
 		break;
 	case 348:
 	case 300:
@@ -821,13 +820,13 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 		/* ADD x|() / SUB x|() */
 		/* MUL x|() / DIV x|() */
 		pop16b(v, src);
-		pushvar(mrk, TYPE_BYTE_ARR, v, gi, gf4tp_resvar);
+		pushvar(gi, TYPE_BYTE_ARR, v);
 		break;
 	case 24:
 	case 216:							/* PROCEDURE / */
 		/* > PROCEDURE */
 		pop16b(v, src);
-		pushvar(mrk, TYPE_FUNCTION, v, gi, gf4tp_resvar);
+		pushvar(gi, TYPE_FUNCTION, v);
 		if (src < srcend && *src != TOK_LINE_COMMENT)
 			putc('(', gi->ost);
 		break;
@@ -835,7 +834,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	case 244:
 	case 248:							/*  / @ / GOSUB */
 		pop16b(v, src);
-		pushvar(mrk, TYPE_FUNCTION, v, gi, gf4tp_resvar);
+		pushvar(gi, TYPE_FUNCTION, v);
 		break;
 	case 1796:							/* > FUNCTION */
 		break;
@@ -848,22 +847,22 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	case 640:
 	case 672:							/* INC x# / DEC x# */
 		pop16b(v, src);
-		pushvar(mrk, TYPE_FLOAT, v, gi, gf4tp_resvar);
+		pushvar(gi, TYPE_FLOAT, v);
 		break;
 	case 644:
 	case 676:							/* INC x% / DEC x% */
 		pop16b(v, src);
-		pushvar(mrk, TYPE_INT, v, gi, gf4tp_resvar);
+		pushvar(gi, TYPE_INT, v);
 		break;
 	case 648:
 	case 680:							/* INC x& / DEC x& */
 		pop16b(v, src);
-		pushvar(mrk, TYPE_WORD, v, gi, gf4tp_resvar);
+		pushvar(gi, TYPE_WORD, v);
 		break;
 	case 652:
 	case 684:							/* INC x| / DEC x| */
 		pop16b(v, src);
-		pushvar(mrk, TYPE_BYTE, v, gi, gf4tp_resvar);
+		pushvar(gi, TYPE_BYTE, v);
 		break;
 	case 704:
 	case 736:
@@ -871,7 +870,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	case 800:							/* ADD x#, / SUB x#, / */
 		/* MUL x#, / DIV x#, */
 		pop16b(v, src);
-		pushvar(mrk, TYPE_FLOAT, v, gi, gf4tp_resvar);
+		pushvar(gi, TYPE_FLOAT, v);
 		putc(',', gi->ost);
 		break;
 	case 708:
@@ -880,7 +879,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	case 804:							/* ADD x%, / SUB x%, / */
 		/* MUL x%, / DIV x%, */
 		pop16b(v, src);
-		pushvar(mrk, TYPE_INT, v, gi, gf4tp_resvar);
+		pushvar(gi, TYPE_INT, v);
 		putc(',', gi->ost);
 		break;
 	case 712:
@@ -889,7 +888,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	case 808:							/* ADD x&, / SUB x&, / */
 		/* MUL x&, / DIV x&, */
 		pop16b(v, src);
-		pushvar(mrk, TYPE_WORD, v, gi, gf4tp_resvar);
+		pushvar(gi, TYPE_WORD, v);
 		putc(',', gi->ost);
 		break;
 	case 716:
@@ -898,7 +897,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	case 812:							/* ADD x|, / SUB x|, / */
 		/* MUL x|, / DIV x|, */
 		pop16b(v, src);
-		pushvar(mrk, TYPE_BYTE, v, gi, gf4tp_resvar);
+		pushvar(gi, TYPE_BYTE, v);
 		putc(',', gi->ost);
 		break;
 	case 4:								/* LOOP (4) / */
@@ -1013,8 +1012,12 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 			/* FALLTROUGH */
 		case TOK_DEC_CONST:
 			pop32b(num, src);
-			pushsign(num);
-			pushnum(num, 10);
+			if (num < 0)
+			{
+				putc('-', gi->ost);
+				num = -num;
+			}
+			pushnum(gi, num, 10);
 			break;
 
 		case TOK_HEX_CONST_PAD:
@@ -1023,8 +1026,8 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 		case TOK_HEX_CONST:
 			putc('&', gi->ost);
 			putc('H', gi->ost);
-			pop32b(i, src);
-			pushnum(i, 16);
+			pop32b(num, src);
+			pushnum(gi, num, 16);
 			break;
 
 		case TOK_OCT_CONST_PAD:
@@ -1033,8 +1036,8 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 		case TOK_OCT_CONST:
 			putc('&', gi->ost);
 			putc('O', gi->ost);
-			pop32b(i, src);
-			pushnum(i, 8);
+			pop32b(num, src);
+			pushnum(gi, num, 8);
 			break;
 
 		case TOK_BIN_CONST_PAD:
@@ -1043,8 +1046,8 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 		case TOK_BIN_CONST:
 			putc('&', gi->ost);
 			putc('X', gi->ost);
-			pop32b(i, src);
-			pushnum(i, 2);
+			pop32b(num, src);
+			pushnum(gi, num, 2);
 			break;
 
 		case TOK_SUBFUNC_208:
@@ -1095,7 +1098,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 			putc('O', gi->ost);
 			ul = dgfafloattolong(src);
 			src += 8;
-			pushnum(ul, 8);
+			pushnum(gi, ul, 8);
 			break;
 
 		case TOK_BIN_DBL_CONST_PAD:
@@ -1107,7 +1110,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 			putc('X', gi->ost);
 			ul = dgfafloattolong(src);
 			src += 8;
-			pushnum(ul, 2);
+			pushnum(gi, ul, 2);
 			break;
 
 		case TOK_HEX_DBL_CONST_PAD:
@@ -1119,7 +1122,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 			putc('H', gi->ost);
 			ul = dgfafloattolong(src);
 			src += 8;
-			pushnum(ul, 16);
+			pushnum(gi, ul, 16);
 			break;
 
 		case TOK_DEC_DBL_CONST_PAD:
@@ -1178,7 +1181,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 					*p++ = *mrk++;
 				*p = '\0';
 			}
-			pushvar(mrk, i, v, gi, gf4tp_resvar);
+			pushvar(gi, i, v);
 			break;
 
 		case 240:
@@ -1199,7 +1202,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 		case 255:
 			i = pft - 240;
 			pop16b(v, src);
-			pushvar(mrk, i, v, gi, gf4tp_resvar);
+			pushvar(gi, i, v);
 			break;
 
 		case 55:                                      /* NUMBER: */
