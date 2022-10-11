@@ -107,6 +107,44 @@ static void gfa_putc(struct gfainf *gi, unsigned char c)
 }
 
 
+
+#define LOWCASE(c) do { if ((c) >= 'A' && (c) <= 'Z') c += 'a' - 'A'; } while (0)
+#define UPCASE(c)  do { if ((c) >= 'a' && (c) <= 'z') c -= 'a' - 'A'; } while (0)
+
+static void printname(struct gfainf *gi, const unsigned char *str, int uppercase)
+{
+	unsigned char c;
+
+	if (gi->flags & TP_DEFLIST_CAPITALS)
+	{
+		c = *str++;
+		if (c != '\0')
+		{
+			UPCASE(c);
+			gfa_putc(gi, c);
+			while ((c = *str++) != '\0')
+			{
+				LOWCASE(c);
+				gfa_putc(gi, c);
+			}
+		}
+	} else
+	{
+		while ((c = *str++) != '\0')
+		{
+			if (uppercase)
+			{
+				UPCASE(c);
+			} else
+			{
+				LOWCASE(c);
+			}
+			gfa_putc(gi, c);
+		}
+	}
+}
+
+
 static void pushvar(struct gfainf *gi, unsigned int type, unsigned int v)
 {
 	const unsigned char *mrk = gi->hdr->type & TP_PSAVE ? gf4tp_resvar(gi, type, v) : gi->ident[type][v];
@@ -130,11 +168,13 @@ static void pushvar(struct gfainf *gi, unsigned int type, unsigned int v)
 		"$"
 	};
 
-	while (*mrk != '\0')
-		gfa_putc(gi, *mrk++);
-	mrk = gfavst[type];
-	while (*mrk != '\0')
-		gfa_putc(gi, *mrk++);
+	printname(gi, mrk, FALSE);
+	if (type != TYPE_FLOAT || !(gi->flags & TP_DEFLIST_POSTFIX))
+	{
+		mrk = gfavst[type];
+		while (*mrk != '\0')
+			gfa_putc(gi, *mrk++);
+	}
 }
 
 
@@ -360,7 +400,6 @@ static void dgfafloattostr(const unsigned char *bytes, char *buf, int decimal_di
 	}
 
 domant:
-	printf("%016lx %04x\n", mant, exp);
 	do
 	{
 		*dst++ = ((int)(mant >> 60) & 0x0f) + '0';
@@ -612,7 +651,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	case 60:    /* DEFAULT */
 	case 64:    /* ELSE IF */
 	case 224:   /* CASE */
-	case 252:   /* implicit @ */
+	case 252:
 		indent(gi, gl->depth - 1);
 		break;
 	default:
@@ -630,8 +669,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 		gf4tp_output("gf4tp_tp() Error at line %lu:%lu: %u is an unknown control code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), lcp);
 	} else
 	{
-		while (*mrk != '\0')
-			gfa_putc(gi, *mrk++);
+		printname(gi, mrk, TRUE);
 	}	
 
 	inline_filename[0] = '\0';
@@ -913,7 +951,18 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 				for (i = *src++; i > 0; i--)
 					putc(' ', gi->ost);
 
-				putc('!', gi->ost);
+				if (gi->flags & TP_DEFLIST_C_COMMENTS)
+				{
+					putc('/', gi->ost);
+					putc('*', gi->ost);
+				} else if (gi->flags & TP_DEFLIST_CPP_COMMENTS)
+				{
+					putc('/', gi->ost);
+					putc('/', gi->ost);
+				} else
+				{
+					putc('!', gi->ost);
+				}
 
 				for (mrk = src; mrk < srcend && *mrk != 0x0D; mrk++)
 					;
@@ -1028,8 +1077,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 				gf4tp_output("gf4tp_tp() Error at line %lu:%lu: %u/%u is an unknown sft code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft, sft);
 			} else
 			{
-				while (*mrk != '\0')
-					gfa_putc(gi, *mrk++);
+				printname(gi, mrk, TRUE);
 			}
 			break;
 
@@ -1041,8 +1089,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 				gf4tp_output("gf4tp_tp() Error at line %lu:%lu: %u/%u is an unknown sft code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft, sft);
 			} else
 			{
-				while (*mrk != '\0')
-					gfa_putc(gi, *mrk++);
+				printname(gi, mrk, TRUE);
 			}
 			break;
 
@@ -1054,8 +1101,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 				gf4tp_output("gf4tp_tp() Error at line %lu:%lu: %u/%u is an unknown sft code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft, sft);
 			} else
 			{
-				while (*mrk != '\0')
-					gfa_putc(gi, *mrk++);
+				printname(gi, mrk, TRUE);
 			}
 			break;
 
@@ -1188,8 +1234,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 		default:
 			mrk = (const unsigned char *)gfapft[pft];
 			assert(mrk != NULL);
-			while (*mrk != '\0')
-				gfa_putc(gi, *mrk++);
+			printname(gi, mrk, TRUE);
 			break;
 		}
 	}

@@ -4,17 +4,13 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <getopt.h>
 #include <string.h>
 #include <errno.h>
 
 #include "sky.h"
 #include "tables.h"						/* gfarecl */
 #include "version.h"					/* VERSION */
-
-#ifndef FALSE
-# define FALSE 0
-# define TRUE 1
-#endif
 
 
 __attribute__((format(printf, 1, 2)))
@@ -292,6 +288,58 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 }
 
 
+static void version(FILE *fp)
+{
+	fprintf(fp, "GFALIST, Copyright (C) 2001 by Peter Backes\n"
+		   "Based on SKY version " VERSION " (c) 1992-2001 by Peter Backes\n"
+		   "GFALIST comes with ABSOLUTELY NO WARRANTY.\n"
+		   "This is free software, and you are welcome to redistribute it\n"
+		   "under certain conditions; see the GNU GPL for details.\n");
+}
+
+
+static void usage(FILE *fp)
+{
+	fprintf(fp, "Usage: %s [<options>] files [ ... ]\n", "gfalist");
+	fprintf(fp, "options:\n");
+	fprintf(fp, "  -o, --output <file>       specify output filename\n");
+	fprintf(fp, "  -v, --verbose             be verbose\n");
+	fprintf(fp, "  -c, --convert             convert charset to utf-8\n");
+	fprintf(fp, "  -i, --inlines             save inline data\n");
+	fprintf(fp, "      --capitals            print names in Upcase\n");
+	fprintf(fp, "      --postfix             omit default postfix from float variables\n");
+	fprintf(fp, "      --c-comments          print comments with /*\n");
+	fprintf(fp, "      --c++-comments        print comments with //\n");
+	fprintf(fp, "  -h, --help                print this help and exit\n");
+}
+
+
+enum {
+	OPT_VERBOSE = 'v',
+	OPT_OUTPUT = 'o',
+	OPT_CONVERT = 'c',
+	OPT_INLINES = 'i',
+	OPT_HELP = 'h',
+	OPT_VERSION = 'V',
+	
+	OPT_CAPITALS = 256,
+	OPT_POSTFIX,
+	OPT_C_COMMENTS,
+	OPT_CPP_COMMENTS,
+};
+
+static struct option const longopts[] = {
+	{ "output", required_argument, NULL, OPT_OUTPUT },
+	{ "verbose", no_argument, NULL, OPT_VERBOSE },
+	{ "convert", no_argument, NULL, OPT_CONVERT },
+	{ "inlines", no_argument, NULL, OPT_INLINES },
+	{ "capitals", no_argument, NULL, OPT_CAPITALS },
+	{ "postfix", no_argument, NULL, OPT_POSTFIX },
+	{ "help", no_argument, NULL, OPT_HELP },
+	{ "version", no_argument, NULL, OPT_VERSION },
+};
+
+
 int main(int argc, char *argv[])
 {
 	const char *outfile = NULL;
@@ -302,36 +350,56 @@ int main(int argc, char *argv[])
 	
 	gf4tp_init(output, rvsimp);
 
-	while ((opt = getopt(argc, argv, "o:vcVih")) != -1)
+	while ((opt = getopt_long(argc, argv, "o:vcVih", longopts, NULL)) != -1)
 	{
 		switch (opt)
 		{
-		case 'o':						/* Output */
+		case OPT_OUTPUT:				/* Output */
 			if (outfile != NULL)
 			{
 				output("Error: multiple output files specified\n");
-				return 1;
+				return EXIT_FAILURE;
 			}
 			outfile = optarg;
 			break;
-		case 'v':						/* Verbose */
+
+		case OPT_VERBOSE:				/* Verbose */
 			flags |= TP_VERB;
 			break;
-		case 'c':						/* Conversion */
+
+		case OPT_CONVERT:				/* Conversion */
 			flags |= TP_CONV;
 			break;
-		case 'i':						/* save INLINE data into .inl files */
+
+		case OPT_INLINES:				/* save INLINE data into .inl files */
 			flags |= TP_SAVEINLINE;
 			break;
-		case 'h':						/* display short help and exit */
-		case 'V':						/* display Version and exit */
-			output("GFALIST, Copyright (C) 2001 by Peter Backes\n"
-				   "Based on SKY version " VERSION " (c) 1992-2001 by Peter Backes\n"
-				   "GFALIST comes with ABSOLUTELY NO WARRANTY.\n"
-				   "This is free software, and you are welcome to redistribute it\n"
-				   "under certain conditions; see the GNU GPL for details.\n");
 
-			return 0;
+		case OPT_CAPITALS:
+			flags |= TP_DEFLIST_CAPITALS;
+			break;
+		
+		case OPT_POSTFIX:
+			flags |= TP_DEFLIST_POSTFIX;
+			break;
+		
+		case OPT_C_COMMENTS:
+			flags |= TP_DEFLIST_C_COMMENTS;
+			break;
+		
+		case OPT_CPP_COMMENTS:
+			flags |= TP_DEFLIST_CPP_COMMENTS;
+			break;
+		
+		case OPT_HELP:					/* display short help and exit */
+			version(stdout);
+			usage(stdout);
+			return EXIT_SUCCESS;
+
+		case OPT_VERSION:				/* display Version and exit */
+			version(stdout);
+			return EXIT_SUCCESS;
+
 		default:
 			return EXIT_FAILURE;
 		}
@@ -339,8 +407,8 @@ int main(int argc, char *argv[])
 
 	if (optind >= argc)
 	{
-		output("Usage: %s [ -o output -vct ] files [ ... ]\n", argv[0]);
-		return 1;
+		usage(stderr);
+		return EXIT_FAILURE;
 	}
 
 	if (outfile == NULL || (outfile[0] == '-' && outfile[1] == '\0'))
@@ -349,7 +417,7 @@ int main(int argc, char *argv[])
 	} else if ((ost = fopen(outfile, flags & TP_CONV ? "w" : "wb")) == NULL)
 	{
 		output("%s: cannot open %s for output\n", argv[0], outfile);
-		return 1;
+		return EXIT_FAILURE;
 	}
 
 	if (optind >= argc)

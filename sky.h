@@ -7,6 +7,12 @@
 #error "need host with ASCII character set"
 #endif
 
+#ifndef FALSE
+# define FALSE 0
+# define TRUE 1
+#endif
+
+
 #define TP_MAGIC1 "GfABASIC"   /* Magic for version 1 and 2 files */
 #define TP_MAGIC3 "GFA-BASIC3" /* Magic for version 3 and 4 files */
 #define TP_MAGICA "GFA-AMIGAB" /* Magic for Amiga files */
@@ -14,11 +20,13 @@
 #define TP_MAGIW3 "A-BASIC WIN300" /* Magic for WIN BASIC files */
 
 /* gf4tp_tp flags */
-#define TP_CONV             0x01 /* Convert charset */
-#define TP_VERB             0x02 /* Be verbose */
-#define TP_SAVEINLINE       0x04 /* Save INLINE data into .inl files */
-#define TP_DEFLIST_MIXED    0x08 /* "Print Abc" instead of "PRINT abc" */
-#define TP_SUPPRESS_POSTFIX 0x10 /* suppress postfix for float variables */
+#define TP_CONV                    0x01 /* Convert charset */
+#define TP_VERB                    0x02 /* Be verbose */
+#define TP_SAVEINLINE              0x04 /* Save INLINE data into .inl files */
+#define TP_DEFLIST_CAPITALS        0x08 /* Capitalize names (DEFLIST bit 0) */
+#define TP_DEFLIST_POSTFIX         0x10 /* suppress postfix for float variables (!DEFLIST bit 1) */
+#define TP_DEFLIST_CPP_COMMENTS    0x20 /* comment marker is // (DEFLIST bit 2) */
+#define TP_DEFLIST_C_COMMENTS      0x40 /* comment marker is / * (DEFLIST bit 3) */
 
 
 #define TYPE_FLOAT          0
