@@ -827,87 +827,76 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 		if (src < srcend && *src != TOK_LINE_COMMENT)
 			putc(' ', gi->ost);
 		break;
-	case 640:
-	case 672:							/* INC x# / DEC x# */
+	case 640:							/* INC x# */
+	case 672:							/* DEC x# */
 		pop16b(v, src);
 		pushvar(gi, TYPE_FLOAT, v);
 		break;
-	case 644:
-	case 676:							/* INC x% / DEC x% */
+	case 644:							/* INC x% */
+	case 676:							/* DEC x% */
 		pop16b(v, src);
 		pushvar(gi, TYPE_INT, v);
 		break;
-	case 648:
-	case 680:							/* INC x& / DEC x& */
+	case 648:							/* INC x& */
+	case 680:							/* DEC x& */
 		pop16b(v, src);
 		pushvar(gi, TYPE_WORD, v);
 		break;
-	case 652:
-	case 684:							/* INC x| / DEC x| */
+	case 652:							/* INC x| */
+	case 684:							/* DEC x| */
 		pop16b(v, src);
 		pushvar(gi, TYPE_BYTE, v);
 		break;
-	case 704:
-	case 736:
-	case 768:
-	case 800:							/* ADD x#, / SUB x#, / */
-		/* MUL x#, / DIV x#, */
+	case 704:							/* ADD x# */
+	case 736:							/* SUB x# */
+	case 768:							/* MUL x# */
+	case 800:							/* DIV x# */
 		pop16b(v, src);
 		pushvar(gi, TYPE_FLOAT, v);
 		putc(',', gi->ost);
 		break;
-	case 708:
-	case 740:
-	case 772:
-	case 804:							/* ADD x%, / SUB x%, / */
-		/* MUL x%, / DIV x%, */
+	case 708:							/* ADD x% */
+	case 740:							/* SUB x% */
+	case 772:							/* MUL x% */
+	case 804:							/* DIV x% */
 		pop16b(v, src);
 		pushvar(gi, TYPE_INT, v);
 		putc(',', gi->ost);
 		break;
-	case 712:
-	case 744:
-	case 776:
-	case 808:							/* ADD x&, / SUB x&, / */
-		/* MUL x&, / DIV x&, */
+	case 712:							/* ADD x& */
+	case 744:							/* SUB x& */
+	case 776:							/* MUL x& */
+	case 808:							/* DIV x& */
 		pop16b(v, src);
 		pushvar(gi, TYPE_WORD, v);
 		putc(',', gi->ost);
 		break;
-	case 716:
-	case 748:
-	case 780:
-	case 812:							/* ADD x|, / SUB x|, / */
-		/* MUL x|, / DIV x|, */
+	case 716:							/* ADD x| */
+	case 748:							/* SUB x| */
+	case 780:							/* MUL x| */
+	case 812:							/* DIV x| */
 		pop16b(v, src);
 		pushvar(gi, TYPE_BYTE, v);
 		putc(',', gi->ost);
 		break;
 	case 4:								/* LOOP */
 	case 12:							/* UNTIL */
-	case 16:							/* WHILE (16) / */
-	case 20:							/* WEND (20) / */
-	case 32:							/* IF (32) / */
-	case 48:							/* SELECT (48) / */
-	case 56:							/* ELSE (56) / */
-	case 60:							/* DEFAULT (60) / */
-	case 64:							/* ELSE IF (64) / */
-	case 172:							/* EXIT IF (172) / */
-	case 176:							/* SELECT (176) / */
-	case 196:							/* DO WHILE (196) / */
-	case 200:							/* DO UNTIL (200) / */
-	case 204:							/* LOOP WHILE (204) / */
-	case 208:							/* LOOP UNTIL (208) / */
-	case 220:							/* EXIT IF (220) / */
-	case 224:							/* CASE (224) /  */
+	case 16:							/* WHILE */
+	case 20:							/* WEND */
+	case 32:							/* IF */
+	case 48:							/* SELECT */
+	case 56:							/* ELSE */
+	case 60:							/* DEFAULT */
+	case 64:							/* ELSE IF */
+	case 172:							/* EXIT IF */
+	case 176:							/* SELECT */
+	case 196:							/* DO WHILE */
+	case 200:							/* DO UNTIL */
+	case 204:							/* LOOP WHILE */
+	case 208:							/* LOOP UNTIL */
+	case 220:							/* EXIT IF */
+	case 224:							/* CASE */
 		src += 4;
-		/*
-		   ' CASE 76,80,84,88,92,96,100,104,108,112,116,120
-		   ' CASE 124,128,132,136,140,144,148,152,156,160,164,168
-		   ' CASE 76,88,100,112,124,136,148,160              ! FOR / NEXT
-		   CASE 124,128,132,136,140,144,148,152,156,160,164,168 ! NEXT
-		   ADD a&,6
-		 */
 		break;
 	}
 
