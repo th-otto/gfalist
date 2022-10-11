@@ -127,7 +127,11 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 
 	memset(&gi, 0, sizeof(gi));
 	memset(&gh, 0, sizeof(gh));
+
 	gi.hdr = &gh;
+	gi.ost = ost;
+	gi.filename = filename;
+	gi.flags = flags;
 	gl.depth = 0;						/* Start with zero depth */
 
 	if (filename == NULL)
@@ -262,7 +266,7 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 	
 			fread(gl.line, 1, gl.size, ist);
 	
-			gf4tp_tp(ost, &gi, &gl, flags);
+			gf4tp_tp(&gi, &gl);
 	
 			if (gl.size > 256)
 			{
@@ -278,11 +282,8 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 			output("Maximum line size: %u\n", maxlinesize);
 	}
 	
-	if (poolsize > 0)
-		free(gi.pool);
-
-	if (fldsize > 0)
-		free(gi.fld);
+	free(gi.pool);
+	free(gi.fld);
 
 	if (ist != stdin)
 		fclose(ist);

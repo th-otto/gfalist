@@ -12,8 +12,8 @@ WINCC=$(shell $(EVAL_MINGWCC))
 # Cross-Compiler fuer ATARI ST TOS
 TOSCC=m68k-atari-mint-gcc
 
-CFLAGS = -g -O0 -Wall -Wstrict-prototypes -Wmissing-prototypes -Wdeclaration-after-statement
-LFLAGS = 
+CFLAGS = -O2 -Wall -Wstrict-prototypes -Wmissing-prototypes -Wdeclaration-after-statement
+LFLAGS = -s
 
 # Directories
 prefix=/usr

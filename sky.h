@@ -60,6 +60,9 @@ struct gfainf {
 	unsigned char **fld;                        /* Pointer field */
 	unsigned char *pool;                        /* Memory pool */
 	/* XXX In-Depth documentation of field and pool lacking here. */
+	const char *filename;
+	FILE *ost;
+	unsigned int flags;
 };
 
 struct gfalin {
@@ -69,7 +72,7 @@ struct gfalin {
 	unsigned long lineno;
 };
 
-int gf4tp_tp(FILE *ost, struct gfainf *gi, struct gfalin *gl, unsigned int flags);
+int gf4tp_tp(struct gfainf *gi, struct gfalin *gl);
 void gf4tp_getgi(struct gfainf *gi, unsigned char *src);
 void gf4tp_getdi(struct gfainf *gi, unsigned char *src);
 void gf4tp_getii(struct gfainf *gi, unsigned char *src, unsigned char **ptr);
