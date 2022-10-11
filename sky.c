@@ -336,10 +336,7 @@ static void dgfafloattostr(const unsigned char *bytes, char *buf, int decimal_di
 			exp = lde + 0x3fe;
 			mant = (uint64_t)(0x8000000000000000ULL * ld);
 			mant <<= 1;
-			/*
-			mant = 0xb851eb851eb90000ULL;
-			exp = 0x03fb;
-			*/
+			mant &= 0xFFFFFFFFFFFE0000UL;
 		}
 		
 		do
@@ -354,7 +351,7 @@ static void dgfafloattostr(const unsigned char *bytes, char *buf, int decimal_di
 			exp++;
 		}
 		mant += 0x10000UL;
-		if (mant >= 0x9FFFFFFF00000000ULL)
+		if ((mant & 0xFFFF0000UL) == 0 && mant >= 0x9FFFFFFF00000000ULL)
 		{
 		overflow:
 			mant = 0x1000000000000000ULL;
@@ -363,6 +360,7 @@ static void dgfafloattostr(const unsigned char *bytes, char *buf, int decimal_di
 	}
 
 domant:
+	printf("%016lx %04x\n", mant, exp);
 	do
 	{
 		*dst++ = ((int)(mant >> 60) & 0x0f) + '0';
@@ -1106,9 +1104,6 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 			fputs(strbuf, gi->ost);
 #if 0
 			fprintf(gi->ost, " /* %02x%02x%02x%02x%02x%02x%02x%02x */ ", src[0], src[1], src[2], src[3], src[4], src[5], src[6], src[7]);
-			/*
-			  90000000 00000402 / c8000000 00000405 -> b851eb85 1eb903fb
-			 */
 #endif
 			src += 8;
 			break;

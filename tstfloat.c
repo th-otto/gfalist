@@ -6,7 +6,7 @@ extern uint32_t mantlo, manthi;
 
 int main(void)
 {
-	printf("%s\n", gfa_format(0x90000000UL, 0x00000402UL));
+	printf("%s\n", gfa_format(0xbebc1fff, 0xf7cf0419));
 	printf("%08x %08x\n", manthi, mantlo);
 	return 0;
 }
