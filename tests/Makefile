@@ -19,11 +19,11 @@ GEN = $(GB36_GEN)
 all: tests inlinedatatest
 
 tests: $(GEN)
-	@for i in $(GEN); do ls -l $$i; done
+	@ls -l $(GEN)
 
 %.out: gb36test.a ../gfalist
 	ar xvo $< $*.gfa $*.lst
-	../gfalist -b -o $*.tmp $*.gfa
+	../gfalist -o $*.tmp $*.gfa
 	diff $*.lst $*.tmp > $@ || true
 	# rm $*.gfa $*.lst $*.tmp
 	rm *.tmp 
@@ -36,5 +36,5 @@ inlinedatatest: SP_SEK_V.GFA
 	../gfalist -i -o $<.lst $< 
 
 clean:
-	rm -f $(GEN) $(GB36_GFA) $(GB36_LST) SP_SEK_V.GFA.lst INLINE-pss.inl
+	rm -f $(GEN) $(GB36_GFA) $(GB36_LST) SP_SEK_V.GFA.lst pss.inl
 
