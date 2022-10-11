@@ -345,7 +345,7 @@ static void dgfafloattostr(const unsigned char *bytes, char *buf, int decimal_di
 			} while (exp >= e);
 			
 			/* fdiv(m, e): mant,exp = mant,exp / m,e */
-			ld = scalbl((long double)mant, exp - 0x3ff) / scalbl((long double)m, e - 0x3ff);
+			ld = scalbnl((long double)mant, exp - 0x3ff) / scalbnl((long double)m, e - 0x3ff);
 			ld = frexpl(ld, &lde);
 			exp = lde + 0x3fe;
 			mant = (uint64_t)(0x8000000000000000ULL * ld);
