@@ -147,9 +147,9 @@ static void printname(struct gfainf *gi, const unsigned char *str, int uppercase
 
 static void pushvar(struct gfainf *gi, unsigned int type, unsigned int v)
 {
-	const unsigned char *mrk = gi->hdr->type & TP_PSAVE ? gf4tp_resvar(gi, type, v) : gi->ident[type][v];
+	const unsigned char *mrk = gi->hdr.type & TP_PSAVE ? gf4tp_resvar(gi, type, v) : gi->ident[type][v];
 
-	static const unsigned char gfavst[16][3] = {
+	static const unsigned char gfavst[MAX_TYPES][3] = {
 		"#",
 		"$",
 		"%",
@@ -591,7 +591,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 
 	pop16b(lcp, src);
 
-	fprintf(stderr, "%lu lcp: %u\n", gl->lineno, lcp);
+	/* fprintf(stderr, "%lu lcp: %u\n", gl->lineno, lcp); */
 	/*
 	 * handle indentation changes
 	 */
@@ -1198,7 +1198,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 				char *p;
 
 				/* save variable name for INLINE */
-				mrk = gi->hdr->type & TP_PSAVE ? gf4tp_resvar(gi, i, v) : gi->ident[i][v];
+				mrk = gi->hdr.type & TP_PSAVE ? gf4tp_resvar(gi, i, v) : gi->ident[i][v];
 				p = inline_filename;
 				while (*mrk != '\0')
 					*p++ = *mrk++;
@@ -1262,15 +1262,15 @@ void gf4tp_getgi(struct gfainf *gi, unsigned char *src)
 	switch (*src++)
 	{
 	case 0xFF:
-		gi->hdr->type = TP_PSAVE;
+		gi->hdr.type = TP_PSAVE;
 		break;
 	case 0x00:
 	default:
-		gi->hdr->type = TP_SAVE;
+		gi->hdr.type = TP_SAVE;
 		break;
 	}
 
-	gi->hdr->vers = *src;
+	gi->hdr.vers = *src;
 }
 
 
@@ -1278,22 +1278,22 @@ void gf4tp_getdi(struct gfainf *gi, unsigned char *src)
 {
 	/* Current and upper pointers */
 	uint32_t *cp;
-	uint32_t *up;
+	short i;
 
 	/* Record lengths (for magic and memory separator field) */
 
-	assert(gi->hdr->vers == 1 || gi->hdr->vers == 2
-		   || gi->hdr->vers == 3 || gi->hdr->vers == 4 || gi->hdr->vers == 70);
+	assert(gi->hdr.vers == 1 || gi->hdr.vers == 2
+		   || gi->hdr.vers == 3 || gi->hdr.vers == 4 || gi->hdr.vers == 70);
 
-	memcpy(gi->hdr->mag, src, gfarecl[gi->hdr->vers].len_magic);
-	src += gfarecl[gi->hdr->vers].len_magic;
+	memcpy(gi->hdr.mag, src, gfarecl[gi->hdr.vers].len_magic);
+	src += gfarecl[gi->hdr.vers].len_magic;
 
-	cp = gi->hdr->sep;
-	up = cp + gfarecl[gi->hdr->vers].num_offsets;
-
-	while (cp != up)
+	cp = gi->hdr.sep;
+	for (i = 0; i < gfarecl[gi->hdr.vers].num_offsets; i++)
 	{
 		copy32b(*cp, src);
+		if (gi->flags & TP_VERB)
+			gf4tp_output("  off[%2d] = %8lu (0x%08lx)\n", i, (unsigned long)*cp, (unsigned long)*cp);
 		cp++;
 		src += 4;
 	}
@@ -1311,11 +1311,16 @@ void gf4tp_getii(struct gfainf *gi)
 	unsigned char *src = gi->pool;
 	unsigned char **ptr = gi->fld;
 	
-	for (i = 0; i < 16; i++)
+	for (i = 0; i < MAX_TYPES; i++)
 	{
 		dst = top = src;
 
-		j = gi->hdr->sep[20 + i] - gi->hdr->sep[19 + i];
+		/*
+		 * The actual offsets here are meaningless to us,
+		 * they are only used at runtime.
+		 * We just need to know the number of variables in this block.
+		 */
+		j = gi->hdr.sep[OFF_PTR_FIRST + 1 + i] - gi->hdr.sep[OFF_PTR_FIRST + i];
 		j /= 4;
 
 		gi->ident[i] = ptr;
@@ -1369,6 +1374,6 @@ void gf4tp_getii(struct gfainf *gi)
 		}
 
 		/* Skip fill byte if neccessary (odd position at read end) */
-		src = dst += (dst - top) & 0x01;
+		src += (src - top) & 0x01;
 	}
 }

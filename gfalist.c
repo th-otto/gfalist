@@ -108,23 +108,19 @@ static unsigned char *rvsimp(struct gfainf *gi, unsigned short type, unsigned sh
 static int process(const char *program_name, FILE *ost, const char *filename, unsigned int flags)
 {
 	struct gfainf gi;
-	struct gfahdr gh;
 	struct gfalin gl;
 	unsigned char libuf[2];				/* Line info block buffer */
 	unsigned char gibuf[2];				/* General info block buffer */
 	unsigned char dibuf[4 * 38 + 10];
 	unsigned char slb[256];				/* Preallocated buffer for small lines */
-	int32_t poolsize;
-	int32_t fldsize;
+	uint32_t fldsize;
 	int32_t tokensize;
 	FILE *ist;
 	int retcode = TRUE;
 	unsigned short maxlinesize;
 
 	memset(&gi, 0, sizeof(gi));
-	memset(&gh, 0, sizeof(gh));
 
-	gi.hdr = &gh;
 	gi.ost = ost;
 	gi.filename = filename;
 	gi.flags = flags;
@@ -140,7 +136,7 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 	}
 
 	if ((flags & TP_VERB) != 0x00)
-		output("Scanning header (%i)\n", (int)sizeof(gh));
+		output("Scanning header (%i)\n", (int)sizeof(gi.hdr));
 
 	/* Read one general info block */
 
@@ -151,37 +147,44 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 
 	gf4tp_getgi(&gi, gibuf);
 
-	fread(dibuf, gfarecl[gh.vers].num_offsets * 4 + gfarecl[gh.vers].len_magic, 1, ist);
+	fread(dibuf, gfarecl[gi.hdr.vers].num_offsets * 4 + gfarecl[gi.hdr.vers].len_magic, 1, ist);
 
 	/* Cannot process files older than version 4 yet. */
 #if 1
-	switch (gh.vers)
+	switch (gi.hdr.vers)
 	{
 	case 1:
 	case 2:
 	case 3:
-		output("Version %d files not supported yet.\n", gh.vers);
+		output("Version %d files not supported yet.\n", gi.hdr.vers);
 		if (ist != stdin)
 			fclose(ist);
 		return FALSE;
 	case 70:
-		output("GF%.14s files not supported yet.\n", gh.mag);
+		output("GF%.14s files not supported yet.\n", gi.hdr.mag);
 		if (ist != stdin)
 			fclose(ist);
 		return FALSE;
 	}
 #endif
 
-	if ((flags & TP_VERB) != 0x00)
+	if (flags & TP_VERB)
 		output("  Processing DI-Block\n");
 
 	gf4tp_getdi(&gi, dibuf);
 
-	poolsize = gh.sep[16] - gh.sep[0];
-
-	if (poolsize > 0)
+	if (gi.hdr.sep[OFF_TYPE_FIRST + MAX_TYPES] < gi.hdr.sep[OFF_TYPE_FIRST])
 	{
-		gi.pool = malloc(poolsize);
+		output("invalid offsets: %lu < %lu\n", (unsigned long)gi.hdr.sep[OFF_TYPE_FIRST + MAX_TYPES], (unsigned long)gi.hdr.sep[OFF_TYPE_FIRST]);
+		retcode = FALSE;
+	} else
+	{
+		gi.poolsize = gi.hdr.sep[OFF_TYPE_FIRST + MAX_TYPES] - gi.hdr.sep[OFF_TYPE_FIRST];
+	}
+
+	if (gi.poolsize > 0)
+	{
+		gi.pool = malloc(gi.poolsize);
 		if (gi.pool == NULL)
 		{
 			output("out of memory\n");
@@ -192,13 +195,21 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 	if (retcode)
 	{
 		if ((flags & TP_VERB) != 0x00)
-			output("  Reading identifiers (%i Bytes)\n", poolsize);
+			output("  Reading identifiers (%lu Bytes)\n", (unsigned long)gi.poolsize);
 	
 		/* Read identifier information block consisting of cnt characters */
-		fread(gi.pool, 1, poolsize, ist);
+		fread(gi.pool, 1, gi.poolsize, ist);
 	
-		fldsize = gh.sep[35] - gh.sep[19];
-	
+		if (gi.hdr.sep[OFF_PTR_FIRST + MAX_TYPES] < gi.hdr.sep[OFF_PTR_FIRST])
+		{
+			output("invalid offsets: %lu < %lu\n", (unsigned long)gi.hdr.sep[OFF_PTR_FIRST + MAX_TYPES], (unsigned long)gi.hdr.sep[OFF_PTR_FIRST]);
+			retcode = FALSE;
+			fldsize = 0;
+		} else
+		{
+			fldsize = gi.hdr.sep[OFF_PTR_FIRST + MAX_TYPES] - gi.hdr.sep[OFF_PTR_FIRST];
+		}
+
 		if (fldsize > 0)
 		{
 			gi.fld = malloc(fldsize * sizeof(char *));
@@ -218,12 +229,19 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 		gf4tp_getii(&gi);
 	
 		/* gf4tp_output("Searching lines\n");
-		 * fseek(ist, gfarecl[gh.vers].num_offsets * 4 + gfarecl[gh.vers].len_magic + 
-		 *            gh.sep[16] + 2, SEEK_SET);
+		 * fseek(ist, gfarecl[gi.hdr.vers].num_offsets * 4 + gfarecl[gi.hdr.vers].len_magic + 
+		 *            gi.hdr.sep[16] + 2, SEEK_SET);
 		 */
-	
-		tokensize = gh.sep[19] - gh.sep[16];
-	
+		if (gi.hdr.sep[OFF_PROGRAMSTART + 3] < gi.hdr.sep[OFF_PROGRAMSTART])
+		{
+			output("invalid offsets: %lu < %lu\n", (unsigned long)gi.hdr.sep[OFF_PROGRAMSTART + 3], (unsigned long)gi.hdr.sep[OFF_PROGRAMSTART]);
+			retcode = FALSE;
+			tokensize = 0;
+		} else
+		{
+			tokensize = gi.hdr.sep[OFF_PROGRAMSTART + 3] - gi.hdr.sep[OFF_PROGRAMSTART];
+		}
+
 		if ((flags & TP_VERB) != 0x00)
 			output("Analyzing listing (%i)\n", tokensize);
 
@@ -237,8 +255,6 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 	
 			copy16b(gl.size, libuf);
 	
-			tokensize -= gl.size;
-	
 			/* must have at least the length word */
 			if (gl.size < 2)
 			{
@@ -246,6 +262,12 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 				retcode = FALSE;
 				break;
 			}
+			if (gl.size > tokensize)
+			{
+				output("warning: bogus line size at line %lu\n", gl.lineno);
+				gl.size = tokensize;
+			}
+
 			/*
 			 * should have at least the length word, and a statement token
 			 */
@@ -253,6 +275,8 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 			{
 				output("warning: bogus line size at line %lu\n", gl.lineno);
 			}
+
+			tokensize -= gl.size;
 			gl.size -= 2;
 			if (gl.size > maxlinesize)
 				maxlinesize = gl.size;
@@ -298,11 +322,12 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 
 static void version(FILE *fp)
 {
-	fprintf(fp, "GFALIST, Copyright (C) 2001 by Peter Backes\n"
-		   "Based on SKY version " VERSION " (c) 1992-2001 by Peter Backes\n"
-		   "GFALIST comes with ABSOLUTELY NO WARRANTY.\n"
-		   "This is free software, and you are welcome to redistribute it\n"
-		   "under certain conditions; see the GNU GPL for details.\n");
+	fprintf(fp,
+		"GFALIST, Copyright (C) 2001 by Peter Backes\n"
+		"Based on SKY version " VERSION " (c) 1992-2001 by Peter Backes\n"
+		"GFALIST comes with ABSOLUTELY NO WARRANTY.\n"
+		"This is free software, and you are welcome to redistribute it\n"
+		"under certain conditions; see the GNU GPL for details.\n");
 }
 
 

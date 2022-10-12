@@ -44,6 +44,8 @@
 #define TYPE_BYTE_ARR      13
 #define TYPE_DEFFN         14
 
+#define MAX_TYPES          16
+
 
 struct gfahdr {
 	unsigned char type;                         /* List type/protection */
@@ -63,14 +65,54 @@ struct gfahdr {
 	                                             */
 };
 
+/* offsets */
+#define OFF_TYPE_FLOAT        0
+#define OFF_TYPE_STRING       1
+#define OFF_TYPE_INT          2
+#define OFF_TYPE_BOOL         3
+#define OFF_TYPE_FLOAT_ARR    4
+#define OFF_TYPE_STRING_ARR   5
+#define OFF_TYPE_INT_ARR      6
+#define OFF_TYPE_BOOL_ARR     7
+#define OFF_TYPE_WORD         8
+#define OFF_TYPE_BYTE         9
+#define OFF_TYPE_PROCEDURE   11
+#define OFF_TYPE_WORD_ARR    12
+#define OFF_TYPE_BYTE_ARR    13
+#define OFF_TYPE_DEFFN       14
+#define OFF_TYPE_FIRST       OFF_TYPE_FLOAT
+#define OFF_PROGRAMSTART     16
+#define OFF_FIRSTLINE        17
+#define OFF_CURSORLINE       18
+#define OFF_PTR_FLOAT        19
+#define OFF_PTR_STRING       20
+#define OFF_PTR_INT          21
+#define OFF_PTR_BOOL         22
+#define OFF_PTR_FLOAT_ARR    23
+#define OFF_PTR_STRING_ARR   24
+#define OFF_PTR_INT_ARR      25
+#define OFF_PTR_BOOL_ARR     26
+#define OFF_PTR_WORD         27
+#define OFF_PTR_BYTE         28
+#define OFF_PTR_PROCEDURE    30
+#define OFF_PTR_WORD_ARR     31
+#define OFF_PTR_BYTE_ARR     32
+#define OFF_PTR_DEFFN        33
+#define OFF_PTR_FIRST        OFF_PTR_FLOAT
+#define OFF_VARSTART         35
+#define OFF_INFOS            36
+#define OFF_FILESIZE         37
+
+
 struct gfainf {
-	struct gfahdr *hdr;                         /* Header */
+	struct gfahdr hdr;                          /* Header */
 	unsigned char **ident[16];                  /* Identifier list; pointers to variable names per type */
 	unsigned char **fld;                        /* Pointer field */
 	unsigned char *pool;                        /* Memory pool; holds all variable names */
 	const char *filename;
 	FILE *ost;
 	unsigned int flags;
+	uint32_t poolsize;
 };
 
 struct gfalin {
