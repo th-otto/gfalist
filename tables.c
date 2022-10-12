@@ -3,528 +3,528 @@
 
 /* Line command text */
 const char *const gfalct[520] = {
-	/*    0 */ "DO",
-	/*    4 */ "LOOP",
-	/*    8 */ "REPEAT",
-	/*   12 */ "UNTIL ",
-	/*   16 */ "WHILE ",
-	/*   20 */ "WEND",
-	/*   24 */ "PROCEDURE ",
-	/*   28 */ "RETURN",					/* from PROCEDURE */
-	/*   32 */ "IF ",
-	/*   36 */ "ENDIF",
-	/*   40 */ "FUNCTION ",
-	/*   44 */ "ENDFUNC",
-	/*   48 */ "SELECT ",					/* SELECT number */
-	/*   52 */ "ENDSELECT",
-	/*   56 */ "ELSE",
-	/*   60 */ "DEFAULT",
-	/*   64 */ "ELSE IF ",
-	/*   68 */ "RETURN ",					/* return number */
-	/*   72 */ "RETURN ",					/* return string */
-	/*   76 */ "FOR ",						/* FOR x# */
-	/*   80 */ "FOR ",						/* FOR x# */
-	/*   84 */ "FOR ",						/* FOR x# */
-	/*   88 */ "FOR ",						/* FOR x% */
-	/*   92 */ "FOR ",						/* FOR x% */
-	/*   96 */ "FOR ",						/* FOR x% */
-	/*  100 */ "FOR ",						/* FOR x& */
-	/*  104 */ "FOR ",						/* FOR x& */
-	/*  108 */ "FOR ",						/* FOR x& */
-	/*  112 */ "FOR ",						/* FOR x| */
-	/*  116 */ "FOR ",						/* FOR x| */
-	/*  120 */ "FOR ",						/* FOR x| */
-	/*  124 */ "NEXT ",						/* NEXT x# */
-	/*  128 */ "NEXT ",						/* NEXT x# */
-	/*  132 */ "NEXT ",						/* NEXT x# */
-	/*  136 */ "NEXT ",						/* NEXT x% */
-	/*  140 */ "NEXT ",						/* NEXT x% */
-	/*  144 */ "NEXT ",						/* NEXT x% */
-	/*  148 */ "NEXT ",						/* NEXT x& */
-	/*  152 */ "NEXT ",						/* NEXT x& */
-	/*  156 */ "NEXT ",						/* NEXT x& */
-	/*  160 */ "NEXT ",						/* NEXT x| */
-	/*  164 */ "NEXT ",						/* NEXT x| */
-	/*  168 */ "NEXT ",						/* NEXT x| */
-	/*  172 */ "EXIT IF ",
-	/*  176 */ "SELECT ",					/* SELECT string */
-	/*  180 */ "",							/* End of program */
-	/*  184 */ "SELECT ",					/* SELECT AND ??? */
-	/*  188 */ "SELECT ",					/* SELECT AND ??? */
-	/*  192 */ "MONITOR",
-	/*  196 */ "DO WHILE ",
-	/*  200 */ "DO UNTIL ",
-	/*  204 */ "LOOP WHILE ",
-	/*  208 */ "LOOP UNTIL ",
-	/*  212 */ "LOCAL ",
-	/*  216 */ "> PROCEDURE ",
-	/*  220 */ "EXIT IF ",
-	/*  224 */ "CASE ",
-	/*  228 */ "DEFFN ",
-	/*  232 */ "GOTO ",
-	/*  236 */ "RESTORE",
-	/*  240 */ "",      					/* implicit @ */
-	/*  244 */ "GOSUB ",
-	/*  248 */ "@",
-	/*  252 */ NULL,						/* ??? */
-	/*  256 */ "LET ",						/* LET x#= */
-	/*  260 */ "LET ",						/* LET x$= */
-	/*  264 */ "LET ",						/* LET x%= */
-	/*  268 */ "LET ",						/* LET x!= */
-	/*  272 */ "LET ",						/* LET x&= */
-	/*  276 */ "LET ",						/* LET x|= */
-	/*  280 */ "LET ",						/* LET x#()= */
-	/*  284 */ "LET ",						/* LET x$()= */
-	/*  288 */ "LET ",						/* LET x%()= */
-	/*  292 */ "LET ",						/* LET x!()= */
-	/*  296 */ "LET ",						/* LET x&()= */
-	/*  300 */ "LET ",						/* LET x|()= */
-	/*  304 */ "",							/* x#= */
-	/*  308 */ "",							/* x$= */
-	/*  312 */ "",							/* x%= */
-	/*  316 */ "",							/* x!= */
-	/*  320 */ "",							/* x&= */
-	/*  324 */ "",							/* x|= */
-	/*  328 */ "",							/* x#()= */
-	/*  332 */ "",							/* x$()= */
-	/*  336 */ "",							/* x%()= */
-	/*  340 */ "",							/* x!()= */
-	/*  344 */ "",							/* x&()= */
-	/*  348 */ "",							/* x|()= */
-	/*  352 */ "PLOT ",
-	/*  356 */ "PSET ",
-	/*  360 */ "ALINE ",
-	/*  364 */ "HLINE ",
-	/*  368 */ "ARECT ",
-	/*  372 */ "APOLY ",
-	/*  376 */ "ACHAR ",
-	/*  380 */ "ACLIP ",
-	/*  384 */ "COLOR ",
-	/*  388 */ "POKE ",
-	/*  392 */ "DPOKE ",
-	/*  396 */ "LPOKE ",
-	/*  400 */ "SPOKE ",
-	/*  404 */ "SDPOKE ",
-	/*  408 */ "SLPOKE ",
-	/*  412 */ "RESERVE",
-	/*  416 */ "RESERVE ",
-	/*  420 */ "RESUME",
-	/*  424 */ "RESUME ",
-	/*  428 */ "RESUME ",
-	/*  432 */ "",
-	/*  436 */ "RECORD ",
-	/*  440 */ "DELAY ",
-	/*  444 */ "BGET ",
-	/*  448 */ "BPUT ",
-	/*  452 */ "ATEXT ",
-	/*  456 */ "REM",     /* Append " " if at least one char long. */
-	/*  460 */ "'",       /* Append " " if at least one char long. */
-	/*  464 */ "==>",     /* Append " " if at least one char long. */
-	/*  468 */ "DATA",    /* Append " " if at least one char long. */
-	/*  472 */ "SWAP ",
-	/*  476 */ "SWAP ",
-	/*  480 */ "SWAP ",
-	/*  484 */ "*",
-	/*  488 */ "*",
-	/*  492 */ "SINGLE{",
-	/*  496 */ "END",
-	/*  500 */ "LOCATE ",
-	/*  504 */ "ON ",
-	/*  508 */ "",
-	/*  512 */ "ON ERROR",
-	/*  516 */ "ON ERROR GOSUB ",
-	/*  520 */ "ON BREAK",
-	/*  524 */ "ON BREAK CONT",
-	/*  528 */ "ON BREAK GOSUB ",
-	/*  532 */ "ON MENU GOSUB ",
-	/*  536 */ "ON MENU MESSAGE GOSUB ",
-	/*  540 */ "ON MENU KEY GOSUB ",
-	/*  544 */ "ON MENU BUTTON ",
-	/*  548 */ "ON MENU",
-	/*  552 */ "ON MENU ",
-	/*  556 */ "MENU ",
-	/*  560 */ "MENU OFF",
-	/*  564 */ "MENU KILL",
-	/*  568 */ "MENU ",
-	/*  572 */ "TRON",
-	/*  576 */ "TRON ",
-	/*  580 */ "TRON ",
-	/*  584 */ "TROFF",
-	/*  588 */ "PRINT",  /* Append space if it has parameters */
-	/*  592 */ "PRINT ", /* PRINT # */
-	/*  596 */ "TEXT ",
-	/*  600 */ "TEXT ",
-	/*  604 */ "RCALL ",
-	/*  608 */ "CALL ",
-	/*  612 */ "FORM INPUT ",
-	/*  616 */ "LINE INPUT ",
-	/*  620 */ "LINE ",
-	/*  624 */ "",
-	/*  628 */ "",
-	/*  632 */ "",
-	/*  636 */ "",
-	/*  640 */ "INC ",						/* INC x# */
-	/*  644 */ "INC ",						/* INC x% */
-	/*  648 */ "INC ",						/* INC x& */
-	/*  652 */ "INC ",						/* INC x| */
-	/*  656 */ "INC ",						/* INC x#() */
-	/*  660 */ "INC ",						/* INC x%() */
-	/*  664 */ "INC ",						/* INC x&() */
-	/*  668 */ "INC ",						/* INC x|() */
-	/*  672 */ "DEC ",						/* DEC x# */
-	/*  676 */ "DEC ",						/* DEC x% */
-	/*  680 */ "DEC ",						/* DEC x& */
-	/*  684 */ "DEC ",						/* DEC x| */
-	/*  688 */ "DEC ",						/* DEC x#() */
-	/*  692 */ "DEC ",						/* DEC x%() */
-	/*  696 */ "DEC ",						/* DEC x&() */
-	/*  700 */ "DEC ",						/* DEC x|() */
-	/*  704 */ "ADD ",						/* ADD x# */
-	/*  708 */ "ADD ",						/* ADD x% / */
-	/*  712 */ "ADD ",						/* ADD x& */
-	/*  716 */ "ADD ",						/* ADD x| */
-	/*  720 */ "ADD ",						/* ADD x#() */
-	/*  724 */ "ADD ",						/* ADD x%() */
-	/*  728 */ "ADD ",						/* ADD x&() */
-	/*  732 */ "ADD ",						/* ADD x|() */
-	/*  736 */ "SUB ",						/* ADD x# */
-	/*  740 */ "SUB ",						/* SUB x% */
-	/*  744 */ "SUB ",						/* SUB x& */
-	/*  748 */ "SUB ",						/* SUB x|, */
-	/*  752 */ "SUB ",						/* SUB x#() */
-	/*  756 */ "SUB ",						/* SUB x%() */
-	/*  760 */ "SUB ",						/* SUB x&() */
-	/*  764 */ "SUB ",						/* SUB x|() */
-	/*  768 */ "MUL ",						/* MUL x# */
-	/*  772 */ "MUL ",						/* MUL x% */
-	/*  776 */ "MUL ",						/* MUL x& */
-	/*  780 */ "MUL ",						/* MUL x| */
-	/*  784 */ "MUL ",						/* MUL x#() */
-	/*  788 */ "MUL ",						/* MUL x%() */
-	/*  792 */ "MUL ",						/* MUL x&() */
-	/*  796 */ "MUL ",						/* MUL x|() */
-	/*  800 */ "DIV ",						/* DIV x# */
-	/*  804 */ "DIV ",						/* DIV x% */
-	/*  808 */ "DIV ",						/* DIV x& */
-	/*  812 */ "DIV ",						/* MUL x| */
-	/*  816 */ "DIV ",						/* DIV x#() */
-	/*  820 */ "DIV ",						/* DIV x%() */
-	/*  824 */ "DIV ",						/* DIV x&() */
-	/*  828 */ "DIV ",						/* DIV x|() */
-	/*  832 */ "SEEK #",
-	/*  836 */ "RELSEEK #",
-	/*  840 */ "DIM ",
-	/*  844 */ "SETCOLOR ",
-	/*  848 */ "SETCOLOR ",
-	/*  852 */ "BMOVE ",
-	/*  856 */ "VDISYS",					/* No further tokens follow */
-	/*  860 */ "VDISYS ",
-	/*  864 */ "VDISYS ",
-	/*  868 */ "VDISYS ",
-	/*  872 */ "GEMSYS",
-	/*  876 */ "GEMSYS ",
-	/*  880 */ "PTSIN(",
-	/*  884 */ "PTSOUT(",
-	/*  888 */ "INTIN(",
-	/*  892 */ "INTOUT(",
-	/*  896 */ "ADDRIN(",
-	/*  900 */ "ADDROUT(",
-	/*  904 */ "GINTIN(",
-	/*  908 */ "GINTOUT(",
-	/*  912 */ "CONTRL(",
-	/*  916 */ "GCONTRL(",
-	/*  920 */ "{",
-	/*  924 */ "LONG{",
-	/*  928 */ "INT{",
-	/*  932 */ "CARD{",
-	/*  936 */ "BYTE{",
-	/*  940 */ "CHAR{",
-	/*  944 */ "FLOAT{",
-	/*  948 */ "DOUBLE{",
-	/*  952 */ "ON MENU IBOX ",
-	/*  956 */ "ON MENU OBOX ",
-	/*  960 */ "VOID ",
-	/*  964 */ "~",
-	/*  968 */ "OB_NEXT(",
-	/*  972 */ "OB_HEAD(",
-	/*  976 */ "OB_TAIL(",
-	/*  980 */ "OB_TYPE(",
-	/*  984 */ "OB_FLAGS(",
-	/*  988 */ "OB_STATE(",
-	/*  992 */ "OB_SPEC(",
-	/*  996 */ "OB_X(",
-	/* 1000 */ "OB_Y(",
-	/* 1004 */ "OB_W(",
-	/* 1008 */ "OB_H(",
-	/* 1012 */ "ABSOLUTE ",
-	/* 1016 */ ".",
-	/* 1020 */ "RANDOMIZE",
-	/* 1024 */ "ALERT ",
-	/* 1028 */ "GET ",
-	/* 1032 */ "GET ",
-	/* 1036 */ "GET ",
-	/* 1040 */ "PUT ",
-	/* 1044 */ "PUT ",
-	/* 1048 */ "PUT ",
-	/* 1052 */ "PUT ",
-	/* 1056 */ "",
-	/* 1060 */ "OPEN ",
-	/* 1064 */ "OPENW ",
-	/* 1068 */ "OPENW #",
-	/* 1072 */ "CLOSE",
-	/* 1076 */ "CLOSEW ",
-	/* 1080 */ "CLOSEW #",
-	/* 1084 */ "CLEAR",
-	/* 1088 */ "CLEARW ",
-	/* 1092 */ "CLEARW #",
-	/* 1096 */ "TOPW #",
-	/* 1100 */ "TITLEW #",
-	/* 1104 */ "INFOW #",
-	/* 1108 */ "DEFLINE",
-	/* 1112 */ "GRAPHMODE ",
-	/* 1116 */ "DEFMOUSE ",
-	/* 1120 */ "DEFMOUSE ",
-	/* 1124 */ "DEFLIST ",
-	/* 1128 */ "DEFMARK",
-	/* 1132 */ "DEFNUM ",
-	/* 1136 */ "DEFTEXT",
-	/* 1140 */ "DEFFILL",
-	/* 1144 */ "DEFFILL",
-	/* 1148 */ "BOX ",
-	/* 1152 */ "PBOX ",
-	/* 1156 */ "RBOX ",
-	/* 1160 */ "PRBOX ",
-	/* 1164 */ "CIRCLE ",
-	/* 1168 */ "CIRCLE ",
-	/* 1172 */ "PCIRCLE ",
-	/* 1176 */ "PCIRCLE ",
-	/* 1180 */ "ELLIPSE ",
-	/* 1184 */ "ELLIPSE ",
-	/* 1188 */ "PELLIPSE ",
-	/* 1192 */ "PELLIPSE ",
-	/* 1196 */ "ERROR ",
-	/* 1200 */ "FILL ",
-	/* 1204 */ "FILL ",
-	/* 1208 */ "HIDEM",
-	/* 1212 */ "LPRINT",  /* Append space if it has parameters */
-	/* 1216 */ "LSET ",
-	/* 1220 */ "MID$(",
-	/* 1224 */ "NEW",
-	/* 1228 */ "OUT ",
-	/* 1232 */ "OUT ",
-	/* 1236 */ "QUIT",
-	/* 1240 */ "",
-	/* 1244 */ "CHDIR ",
-	/* 1248 */ "CHDRIVE ",
-	/* 1252 */ "CHDRIVE ",
-	/* 1256 */ "CLR ",
-	/* 1260 */ "CLS",     /* Append space if it has parameters */
-	/* 1264 */ "",
-	/* 1268 */ "CONT",
-	/* 1272 */ "",
-	/* 1276 */ "DIR",
-	/* 1280 */ "HTAB ",
-	/* 1284 */ "VTAB ",
-	/* 1288 */ "ERASE ",
-	/* 1292 */ "EXEC ",
-	/* 1296 */ "FIELD ",
-	/* 1300 */ "FILES",
-	/* 1304 */ "TOUCH #",
-	/* 1308 */ "",
-	/* 1312 */ "EDIT",
-	/* 1316 */ "FILESELECT ",
-	/* 1320 */ "NAME ",
-	/* 1324 */ "MKDIR ",
-	/* 1328 */ "MOUSE ",
-	/* 1332 */ "KILL ",
-	/* 1336 */ "RMDIR ",
-	/* 1340 */ "RSET ",
-	/* 1344 */ "SETTIME ",
-	/* 1348 */ "SGET ",
-	/* 1352 */ "SHOWM",
-	/* 1356 */ "SPUT ",
-	/* 1360 */ "STOP",
-	/* 1364 */ "SYSTEM",  /* Append " " if other tokens follow */
-	/* 1368 */ "VSYNC",
-	/* 1372 */ "HARDCOPY",
-	/* 1376 */ "PAUSE ",
-	/* 1380 */ "QSORT ",
-	/* 1384 */ "SSORT ",
-	/* 1388 */ "POLYLINE ",
-	/* 1392 */ "POLYFILL ",
-	/* 1396 */ "POLYMARK ",
-	/* 1400 */ "INSERT ",
-	/* 1404 */ "DELETE ",
-	/* 1408 */ "RENAME ",
-	/* 1412 */ "STICK ",
-	/* 1416 */ "SOUND",
-	/* 1420 */ "WAVE",
-	/* 1424 */ "CLIP ",
-	/* 1428 */ "CLIP ",
-	/* 1432 */ "CLIP ",
-	/* 1436 */ "CLIP ",
-	/* 1440 */ "CLIP ",
-	/* 1444 */ "FULLW ",
-	/* 1448 */ "EVERY ",
-	/* 1452 */ "EVERY ",
-	/* 1456 */ "EVERY ",
-	/* 1460 */ "AFTER ",
-	/* 1464 */ "AFTER ",
-	/* 1468 */ "AFTER ",
-	/* 1472 */ "INPUT ",
-	/* 1476 */ "INPUT ",
-	/* 1480 */ "DRAW ",
-	/* 1484 */ "DRAW ",
-	/* 1488 */ "READ ",
-	/* 1492 */ "",
-	/* 1496 */ "SETMOUSE ",
-	/* 1500 */ "KEYPAD ",
-	/* 1504 */ "KEYTEST ",
-	/* 1508 */ "KEYGET ",
-	/* 1512 */ "KEYLOOK ",
-	/* 1516 */ "KEYPRESS ",
-	/* 1520 */ "KEYDEF ",
-	/* 1524 */ "DEFINT ",
-	/* 1528 */ "DEFFLT ",
-	/* 1532 */ "DEFBYT ",
-	/* 1536 */ "DEFWRD ",
-	/* 1540 */ "DEFBIT ",
-	/* 1544 */ "DEFSTR ",
-	/* 1548 */ "BOUNDARY ",
-	/* 1552 */ "LIST ",
-	/* 1556 */ "LLIST ",
-	/* 1560 */ "SAVE ",
-	/* 1564 */ "PSAVE ",
-	/* 1568 */ "CHAIN ",
-	/* 1572 */ "RUN",
-	/* 1576 */ "RUN ",
-	/* 1580 */ "LOAD ",
-	/* 1584 */ "SETDRAW ",
-	/* 1588 */ "ARRAYFILL ",
-	/* 1592 */ "DUMP",
-	/* 1596 */ "BITBLT ",
-	/* 1600 */ "BITBLT ",
-	/* 1604 */ "BITBLT ",
-	/* 1608 */ "STORE ",
-	/* 1612 */ "RECALL ",
-	/* 1616 */ "BSAVE ",
-	/* 1620 */ "BLOAD ",
-	/* 1624 */ "V~H=",
-	/* 1628 */ "TIME$=",
-	/* 1632 */ "DATE$=",
-	/* 1636 */ "SPRITE ",
-	/* 1640 */ "OPTION ",
-	/* 1644 */ "$",
-	/* 1648 */ "WINDTAB(",
-	/* 1652 */ "RC_COPY ",
-	/* 1656 */ "MODE ",
-	/* 1660 */ "",
-	/* 1664 */ "WRITE ",
-	/* 1668 */ "INLINE ",
-	/* 1672 */ "WORD{",
-	/* 1676 */ "VSETCOLOR ",
-	/* 1680 */ "OUT& ",
-	/* 1684 */ "OUT% ",
-	/* 1688 */ "CURVE ",
-	/* 1692 */ "_DATA= ",
-	/* 1696 */ "MAT ADD ",
-	/* 1700 */ "MAT ADD ",
-	/* 1704 */ "MAT SUB ",
-	/* 1708 */ "MAT SUB ",
-	/* 1712 */ "MAT CPY ",
-	/* 1716 */ "MAT XCPY ",
-	/* 1720 */ "MAT DET ",
-	/* 1724 */ "MAT NEG ",
-	/* 1728 */ "MAT ABS ",
-	/* 1732 */ "MAT NORM ",
-	/* 1736 */ "MAT READ ",
-	/* 1740 */ "MAT PRINT ",
-	/* 1744 */ "MAT TRANS ",
-	/* 1748 */ "MAT CLR ",
-	/* 1752 */ "MAT SET ",
-	/* 1756 */ "MAT ONE ",
-	/* 1760 */ "MAT BASE ",
-	/* 1764 */ "MAT QDET ",
-	/* 1768 */ "MAT INPUT ",
-	/* 1772 */ "MAT RANG ",
-	/* 1776 */ "MAT MUL ",
-	/* 1780 */ "MAT MUL ",
-	/* 1784 */ "MAT MUL ",
-	/* 1788 */ "MAT MUL ",
-	/* 1792 */ "MAT INV ",
-	/* 1796 */ "> FUNCTION ",
-	/* 1800 */ "DMASOUND ",
-	/* 1804 */ "DMACONTROL ",
-	/* 1808 */ "MW_OUT ",
-	/* 1812 */ "MW_OUT ",
-	/* 1816 */ "MW_OUT ",
-	/* 1820 */ "MW_OUT ",
-	/* 1824 */ "MW_OUT ",
-	/* 1828 */ "MW_OUT ",
-	/* 1832 */ "MW_OUT ",
-	/* 1836 */ "MW_OUT ",
-	/* 1840 */ "SET.MFDB ",
-	/* 1844 */ "SET.PXYWH ",
-	/* 1848 */ "BCLEAR ",
-	/* 1852 */ "BFILL ",
-	/* 1856 */ "BXLATE ",
-	/* 1860 */ "BEEP",
-	/* 1864 */ "GHIDEM",
-	/* 1868 */ "GSHOWM",
-	/* 1872 */ "GMOUSE",
-	/* 1876 */ "VCURVE ",
-	/* 1880 */ "VRC_COPY ",
-	/* 1884 */ "VGET ",
-	/* 1888 */ "VPLOT ",
-	/* 1892 */ "TIMESTAMP",
-	/* 1896 */ "AMOUSE ",
-	/* 1900 */ "VLINE ",
-	/* 1904 */ "CPUFLUSH",
-	/* 1908 */ "BCRYPT ",
-	/* 1912 */ "GSTICK ",
-	/* 1916 */ "VSGET ",
-	/* 1920 */ "VSPUT ",
-	/* 1924 */ "VCLS ",
-	/* 1928 */ "PALGET ",
-	/* 1932 */ "PALSET ",
-	/* 1936 */ "LOG_MSG ",
-	/* 1940 */ "LOG_SET ",
-	/* 1944 */ "LOG_FILE ",
-	/* 1948 */ "LOG_KILL",
-	/* 1952 */ "SET.PXYXY ",
-	/* 1956 */ "VBOX ",
-	/* 1960 */ "VBITBLT ",
-	/* 1964 */ "SCALL ",
-	/* 1968 */ "VPUT ",
-	/* 1972 */ "VPUT ",
-	/* 1976 */ "CHAR$ ",
-	/* 1980 */ "SET.SOCKADDR ",
-	/* 1984 */ "SET.SOCKADDR ",
-	/* 1988 */ "SET.SOCKADDR ",
-	/* 1992 */ "SET.SOCKADDR ",
-	/* 1996 */ "SET.SOCKADDR ",
-	/* 2000 */ "SET.SOCKADDR ",
-	/* 2004 */ "SET.SOCKADDR ",
-	/* 2008 */ "SET.SOCKADDR ",
-	/* 2012 */ "SET.SOCKADDR ",
-	/* 2016 */ "OB.STATE(",
-	/* 2020 */ "OB.FLAGS(",
-	/* 2024 */ "OB_SELECTED(",
-	/* 2028 */ "OB_CROSSED(",
-	/* 2032 */ "OB_CHECKED(",
-	/* 2036 */ "OB_DISABLED(",
-	/* 2040 */ "OB.RBUTTON(",
-	/* 2044 */ "OB_TEXT$(",
-	/* 2048 */ "OB_SELECTABLE(",
-	/* 2052 */ "OB_DEFAULT(",
-	/* 2056 */ "OB_EXIT(",
-	/* 2060 */ "OB_EDITABLE(",
-	/* 2064 */ "OB_RBUTTON(",
-	/* 2068 */ "OB_LASTOB(",
-	/* 2072 */ "OB_TOUCHEXIT(",
-	/* 2076 */ "OB_HIDETREE("
+	/*   0 */ "DO",
+	/*   1 */ "LOOP",
+	/*   2 */ "REPEAT",
+	/*   3 */ "UNTIL ",
+	/*   4 */ "WHILE ",
+	/*   5 */ "WEND",
+	/*   6 */ "PROCEDURE ",
+	/*   7 */ "RETURN",					/* from PROCEDURE */
+	/*   8 */ "IF ",
+	/*   9 */ "ENDIF",
+	/*  10 */ "FUNCTION ",
+	/*  11 */ "ENDFUNC",
+	/*  12 */ "SELECT ",					/* SELECT number */
+	/*  13 */ "ENDSELECT",
+	/*  14 */ "ELSE",
+	/*  15 */ "DEFAULT",
+	/*  16 */ "ELSE IF ",
+	/*  17 */ "RETURN ",					/* return number */
+	/*  18 */ "RETURN ",					/* return string */
+	/*  19 */ "FOR ",						/* FOR x# */
+	/*  20 */ "FOR ",						/* FOR x# */
+	/*  21 */ "FOR ",						/* FOR x# */
+	/*  22 */ "FOR ",						/* FOR x% */
+	/*  23 */ "FOR ",						/* FOR x% */
+	/*  24 */ "FOR ",						/* FOR x% */
+	/*  25 */ "FOR ",						/* FOR x& */
+	/*  26 */ "FOR ",						/* FOR x& */
+	/*  27 */ "FOR ",						/* FOR x& */
+	/*  28 */ "FOR ",						/* FOR x| */
+	/*  29 */ "FOR ",						/* FOR x| */
+	/*  30 */ "FOR ",						/* FOR x| */
+	/*  31 */ "NEXT ",						/* NEXT x# */
+	/*  32 */ "NEXT ",						/* NEXT x# */
+	/*  33 */ "NEXT ",						/* NEXT x# */
+	/*  34 */ "NEXT ",						/* NEXT x% */
+	/*  35 */ "NEXT ",						/* NEXT x% */
+	/*  36 */ "NEXT ",						/* NEXT x% */
+	/*  37 */ "NEXT ",						/* NEXT x& */
+	/*  38 */ "NEXT ",						/* NEXT x& */
+	/*  39 */ "NEXT ",						/* NEXT x& */
+	/*  40 */ "NEXT ",						/* NEXT x| */
+	/*  41 */ "NEXT ",						/* NEXT x| */
+	/*  42 */ "NEXT ",						/* NEXT x| */
+	/*  43 */ "EXIT IF ",
+	/*  44 */ "SELECT ",					/* SELECT string */
+	/*  45 */ "",							/* End of program */
+	/*  46 */ "SELECT ",					/* SELECT AND ??? */
+	/*  47 */ "SELECT ",					/* SELECT AND ??? */
+	/*  48 */ "MONITOR",
+	/*  49 */ "DO WHILE ",
+	/*  50 */ "DO UNTIL ",
+	/*  51 */ "LOOP WHILE ",
+	/*  52 */ "LOOP UNTIL ",
+	/*  53 */ "LOCAL ",
+	/*  54 */ "> PROCEDURE ",
+	/*  55 */ "EXIT IF ",
+	/*  56 */ "CASE ",
+	/*  57 */ "DEFFN ",
+	/*  58 */ "GOTO ",
+	/*  59 */ "RESTORE",
+	/*  60 */ "",      					/* implicit @ */
+	/*  61 */ "GOSUB ",
+	/*  62 */ "@",
+	/*  63 */ "",							/* label: */
+	/*  64 */ "LET ",						/* LET x#= */
+	/*  65 */ "LET ",						/* LET x$= */
+	/*  66 */ "LET ",						/* LET x%= */
+	/*  67 */ "LET ",						/* LET x!= */
+	/*  68 */ "LET ",						/* LET x&= */
+	/*  69 */ "LET ",						/* LET x|= */
+	/*  70 */ "LET ",						/* LET x#()= */
+	/*  71 */ "LET ",						/* LET x$()= */
+	/*  72 */ "LET ",						/* LET x%()= */
+	/*  73 */ "LET ",						/* LET x!()= */
+	/*  74 */ "LET ",						/* LET x&()= */
+	/*  75 */ "LET ",						/* LET x|()= */
+	/*  76 */ "",							/* x#= */
+	/*  77 */ "",							/* x$= */
+	/*  78 */ "",							/* x%= */
+	/*  79 */ "",							/* x!= */
+	/*  80 */ "",							/* x&= */
+	/*  81 */ "",							/* x|= */
+	/*  82 */ "",							/* x#()= */
+	/*  83 */ "",							/* x$()= */
+	/*  84 */ "",							/* x%()= */
+	/*  85 */ "",							/* x!()= */
+	/*  86 */ "",							/* x&()= */
+	/*  87 */ "",							/* x|()= */
+	/*  88 */ "PLOT ",
+	/*  89 */ "PSET ",
+	/*  90 */ "ALINE ",
+	/*  91 */ "HLINE ",
+	/*  92 */ "ARECT ",
+	/*  93 */ "APOLY ",
+	/*  94 */ "ACHAR ",
+	/*  95 */ "ACLIP ",
+	/*  96 */ "COLOR ",
+	/*  97 */ "POKE ",
+	/*  98 */ "DPOKE ",
+	/*  99 */ "LPOKE ",
+	/* 100 */ "SPOKE ",
+	/* 101 */ "SDPOKE ",
+	/* 102 */ "SLPOKE ",
+	/* 103 */ "RESERVE",
+	/* 104 */ "RESERVE ",
+	/* 105 */ "RESUME",
+	/* 106 */ "RESUME ",
+	/* 107 */ "RESUME ",
+	/* 108 */ "",
+	/* 109 */ "RECORD ",
+	/* 110 */ "DELAY ",
+	/* 111 */ "BGET ",
+	/* 112 */ "BPUT ",
+	/* 113 */ "ATEXT ",
+	/* 114 */ "REM",     /* Append " " if at least one char long. */
+	/* 115 */ "'",       /* Append " " if at least one char long. */
+	/* 116 */ "==>",     /* Append " " if at least one char long. */
+	/* 117 */ "DATA",    /* Append " " if at least one char long. */
+	/* 118 */ "SWAP ",
+	/* 119 */ "SWAP ",
+	/* 120 */ "SWAP ",
+	/* 121 */ "*",
+	/* 122 */ "*",
+	/* 123 */ "SINGLE{",
+	/* 124 */ "END",
+	/* 125 */ "LOCATE ",
+	/* 126 */ "ON ",
+	/* 127 */ "",
+	/* 128 */ "ON ERROR",
+	/* 129 */ "ON ERROR GOSUB ",
+	/* 130 */ "ON BREAK",
+	/* 131 */ "ON BREAK CONT",
+	/* 132 */ "ON BREAK GOSUB ",
+	/* 133 */ "ON MENU GOSUB ",
+	/* 134 */ "ON MENU MESSAGE GOSUB ",
+	/* 135 */ "ON MENU KEY GOSUB ",
+	/* 136 */ "ON MENU BUTTON ",
+	/* 137 */ "ON MENU",
+	/* 138 */ "ON MENU ",
+	/* 139 */ "MENU ",
+	/* 140 */ "MENU OFF",
+	/* 141 */ "MENU KILL",
+	/* 142 */ "MENU ",
+	/* 143 */ "TRON",
+	/* 144 */ "TRON ",
+	/* 145 */ "TRON ",
+	/* 146 */ "TROFF",
+	/* 147 */ "PRINT",  /* Append space if it has parameters */
+	/* 148 */ "PRINT ", /* PRINT # */
+	/* 149 */ "TEXT ",
+	/* 150 */ "TEXT ",
+	/* 151 */ "RCALL ",
+	/* 152 */ "CALL ",
+	/* 153 */ "FORM INPUT ",
+	/* 154 */ "LINE INPUT ",
+	/* 155 */ "LINE ",
+	/* 156 */ "",
+	/* 157 */ "",
+	/* 158 */ "",
+	/* 159 */ "",
+	/* 160 */ "INC ",						/* INC x# */
+	/* 161 */ "INC ",						/* INC x% */
+	/* 162 */ "INC ",						/* INC x& */
+	/* 163 */ "INC ",						/* INC x| */
+	/* 164 */ "INC ",						/* INC x#() */
+	/* 165 */ "INC ",						/* INC x%() */
+	/* 166 */ "INC ",						/* INC x&() */
+	/* 167 */ "INC ",						/* INC x|() */
+	/* 168 */ "DEC ",						/* DEC x# */
+	/* 169 */ "DEC ",						/* DEC x% */
+	/* 170 */ "DEC ",						/* DEC x& */
+	/* 171 */ "DEC ",						/* DEC x| */
+	/* 172 */ "DEC ",						/* DEC x#() */
+	/* 173 */ "DEC ",						/* DEC x%() */
+	/* 174 */ "DEC ",						/* DEC x&() */
+	/* 175 */ "DEC ",						/* DEC x|() */
+	/* 176 */ "ADD ",						/* ADD x# */
+	/* 177 */ "ADD ",						/* ADD x% / */
+	/* 178 */ "ADD ",						/* ADD x& */
+	/* 179 */ "ADD ",						/* ADD x| */
+	/* 180 */ "ADD ",						/* ADD x#() */
+	/* 181 */ "ADD ",						/* ADD x%() */
+	/* 182 */ "ADD ",						/* ADD x&() */
+	/* 183 */ "ADD ",						/* ADD x|() */
+	/* 184 */ "SUB ",						/* ADD x# */
+	/* 185 */ "SUB ",						/* SUB x% */
+	/* 186 */ "SUB ",						/* SUB x& */
+	/* 187 */ "SUB ",						/* SUB x|, */
+	/* 188 */ "SUB ",						/* SUB x#() */
+	/* 189 */ "SUB ",						/* SUB x%() */
+	/* 190 */ "SUB ",						/* SUB x&() */
+	/* 191 */ "SUB ",						/* SUB x|() */
+	/* 192 */ "MUL ",						/* MUL x# */
+	/* 193 */ "MUL ",						/* MUL x% */
+	/* 194 */ "MUL ",						/* MUL x& */
+	/* 195 */ "MUL ",						/* MUL x| */
+	/* 196 */ "MUL ",						/* MUL x#() */
+	/* 197 */ "MUL ",						/* MUL x%() */
+	/* 198 */ "MUL ",						/* MUL x&() */
+	/* 199 */ "MUL ",						/* MUL x|() */
+	/* 200 */ "DIV ",						/* DIV x# */
+	/* 201 */ "DIV ",						/* DIV x% */
+	/* 202 */ "DIV ",						/* DIV x& */
+	/* 203 */ "DIV ",						/* DIV x| */
+	/* 204 */ "DIV ",						/* DIV x#() */
+	/* 205 */ "DIV ",						/* DIV x%() */
+	/* 206 */ "DIV ",						/* DIV x&() */
+	/* 207 */ "DIV ",						/* DIV x|() */
+	/* 208 */ "SEEK #",
+	/* 209 */ "RELSEEK #",
+	/* 210 */ "DIM ",
+	/* 211 */ "SETCOLOR ",
+	/* 212 */ "SETCOLOR ",
+	/* 213 */ "BMOVE ",
+	/* 214 */ "VDISYS",					/* No further tokens follow */
+	/* 215 */ "VDISYS ",
+	/* 216 */ "VDISYS ",
+	/* 217 */ "VDISYS ",
+	/* 218 */ "GEMSYS",
+	/* 219 */ "GEMSYS ",
+	/* 220 */ "PTSIN(",
+	/* 221 */ "PTSOUT(",
+	/* 222 */ "INTIN(",
+	/* 223 */ "INTOUT(",
+	/* 224 */ "ADDRIN(",
+	/* 225 */ "ADDROUT(",
+	/* 226 */ "GINTIN(",
+	/* 227 */ "GINTOUT(",
+	/* 228 */ "CONTRL(",
+	/* 229 */ "GCONTRL(",
+	/* 230 */ "{",
+	/* 231 */ "LONG{",
+	/* 232 */ "INT{",
+	/* 233 */ "CARD{",
+	/* 234 */ "BYTE{",
+	/* 235 */ "CHAR{",
+	/* 236 */ "FLOAT{",
+	/* 237 */ "DOUBLE{",
+	/* 238 */ "ON MENU IBOX ",
+	/* 239 */ "ON MENU OBOX ",
+	/* 240 */ "VOID ",
+	/* 241 */ "~",
+	/* 242 */ "OB_NEXT(",
+	/* 243 */ "OB_HEAD(",
+	/* 244 */ "OB_TAIL(",
+	/* 245 */ "OB_TYPE(",
+	/* 246 */ "OB_FLAGS(",
+	/* 247 */ "OB_STATE(",
+	/* 248 */ "OB_SPEC(",
+	/* 249 */ "OB_X(",
+	/* 250 */ "OB_Y(",
+	/* 251 */ "OB_W(",
+	/* 252 */ "OB_H(",
+	/* 253 */ "ABSOLUTE ",
+	/* 254 */ ".",
+	/* 255 */ "RANDOMIZE",
+	/* 256 */ "ALERT ",
+	/* 257 */ "GET ",
+	/* 258 */ "GET ",
+	/* 259 */ "GET ",
+	/* 260 */ "PUT ",
+	/* 261 */ "PUT ",
+	/* 262 */ "PUT ",
+	/* 263 */ "PUT ",
+	/* 264 */ "",
+	/* 265 */ "OPEN ",
+	/* 266 */ "OPENW ",
+	/* 267 */ "OPENW #",
+	/* 268 */ "CLOSE",
+	/* 269 */ "CLOSEW ",
+	/* 270 */ "CLOSEW #",
+	/* 271 */ "CLEAR",
+	/* 272 */ "CLEARW ",
+	/* 273 */ "CLEARW #",
+	/* 274 */ "TOPW #",
+	/* 275 */ "TITLEW #",
+	/* 276 */ "INFOW #",
+	/* 277 */ "DEFLINE",
+	/* 278 */ "GRAPHMODE ",
+	/* 279 */ "DEFMOUSE ",
+	/* 280 */ "DEFMOUSE ",
+	/* 281 */ "DEFLIST ",
+	/* 282 */ "DEFMARK",
+	/* 283 */ "DEFNUM ",
+	/* 284 */ "DEFTEXT",
+	/* 285 */ "DEFFILL",
+	/* 286 */ "DEFFILL",
+	/* 287 */ "BOX ",
+	/* 288 */ "PBOX ",
+	/* 289 */ "RBOX ",
+	/* 290 */ "PRBOX ",
+	/* 291 */ "CIRCLE ",
+	/* 292 */ "CIRCLE ",
+	/* 293 */ "PCIRCLE ",
+	/* 294 */ "PCIRCLE ",
+	/* 295 */ "ELLIPSE ",
+	/* 296 */ "ELLIPSE ",
+	/* 297 */ "PELLIPSE ",
+	/* 298 */ "PELLIPSE ",
+	/* 299 */ "ERROR ",
+	/* 300 */ "FILL ",
+	/* 301 */ "FILL ",
+	/* 302 */ "HIDEM",
+	/* 303 */ "LPRINT",  /* Append space if it has parameters */
+	/* 304 */ "LSET ",
+	/* 305 */ "MID$(",
+	/* 306 */ "NEW",
+	/* 307 */ "OUT ",
+	/* 308 */ "OUT ",
+	/* 309 */ "QUIT",
+	/* 310 */ "",
+	/* 311 */ "CHDIR ",
+	/* 312 */ "CHDRIVE ",
+	/* 313 */ "CHDRIVE ",
+	/* 314 */ "CLR ",
+	/* 315 */ "CLS",     /* Append space if it has parameters */
+	/* 316 */ "",
+	/* 317 */ "CONT",
+	/* 318 */ "",
+	/* 319 */ "DIR",
+	/* 320 */ "HTAB ",
+	/* 321 */ "VTAB ",
+	/* 322 */ "ERASE ",
+	/* 323 */ "EXEC ",
+	/* 324 */ "FIELD ",
+	/* 325 */ "FILES",
+	/* 326 */ "TOUCH #",
+	/* 327 */ "",
+	/* 328 */ "EDIT",
+	/* 329 */ "FILESELECT ",
+	/* 330 */ "NAME ",
+	/* 331 */ "MKDIR ",
+	/* 332 */ "MOUSE ",
+	/* 333 */ "KILL ",
+	/* 334 */ "RMDIR ",
+	/* 335 */ "RSET ",
+	/* 336 */ "SETTIME ",
+	/* 337 */ "SGET ",
+	/* 338 */ "SHOWM",
+	/* 339 */ "SPUT ",
+	/* 340 */ "STOP",
+	/* 341 */ "SYSTEM",  /* Append " " if other tokens follow */
+	/* 342 */ "VSYNC",
+	/* 343 */ "HARDCOPY",
+	/* 344 */ "PAUSE ",
+	/* 345 */ "QSORT ",
+	/* 346 */ "SSORT ",
+	/* 347 */ "POLYLINE ",
+	/* 348 */ "POLYFILL ",
+	/* 349 */ "POLYMARK ",
+	/* 350 */ "INSERT ",
+	/* 351 */ "DELETE ",
+	/* 352 */ "RENAME ",
+	/* 353 */ "STICK ",
+	/* 354 */ "SOUND",
+	/* 355 */ "WAVE",
+	/* 356 */ "CLIP ",
+	/* 357 */ "CLIP ",
+	/* 358 */ "CLIP ",
+	/* 359 */ "CLIP ",
+	/* 360 */ "CLIP ",
+	/* 361 */ "FULLW ",
+	/* 362 */ "EVERY ",
+	/* 363 */ "EVERY ",
+	/* 364 */ "EVERY ",
+	/* 365 */ "AFTER ",
+	/* 366 */ "AFTER ",
+	/* 367 */ "AFTER ",
+	/* 368 */ "INPUT ",
+	/* 369 */ "INPUT ",
+	/* 370 */ "DRAW ",
+	/* 371 */ "DRAW ",
+	/* 372 */ "READ ",
+	/* 373 */ "",
+	/* 374 */ "SETMOUSE ",
+	/* 375 */ "KEYPAD ",
+	/* 376 */ "KEYTEST ",
+	/* 377 */ "KEYGET ",
+	/* 378 */ "KEYLOOK ",
+	/* 379 */ "KEYPRESS ",
+	/* 380 */ "KEYDEF ",
+	/* 381 */ "DEFINT ",
+	/* 382 */ "DEFFLT ",
+	/* 383 */ "DEFBYT ",
+	/* 384 */ "DEFWRD ",
+	/* 385 */ "DEFBIT ",
+	/* 386 */ "DEFSTR ",
+	/* 387 */ "BOUNDARY ",
+	/* 388 */ "LIST ",
+	/* 389 */ "LLIST ",
+	/* 390 */ "SAVE ",
+	/* 391 */ "PSAVE ",
+	/* 392 */ "CHAIN ",
+	/* 393 */ "RUN",
+	/* 394 */ "RUN ",
+	/* 395 */ "LOAD ",
+	/* 396 */ "SETDRAW ",
+	/* 397 */ "ARRAYFILL ",
+	/* 398 */ "DUMP",
+	/* 399 */ "BITBLT ",
+	/* 400 */ "BITBLT ",
+	/* 401 */ "BITBLT ",
+	/* 402 */ "STORE ",
+	/* 403 */ "RECALL ",
+	/* 404 */ "BSAVE ",
+	/* 405 */ "BLOAD ",
+	/* 406 */ "V~H=",
+	/* 407 */ "TIME$=",
+	/* 408 */ "DATE$=",
+	/* 409 */ "SPRITE ",
+	/* 410 */ "OPTION ",
+	/* 411 */ "$",
+	/* 412 */ "WINDTAB(",
+	/* 413 */ "RC_COPY ",
+	/* 414 */ "MODE ",
+	/* 415 */ "",
+	/* 416 */ "WRITE ",
+	/* 417 */ "INLINE ",
+	/* 418 */ "WORD{",
+	/* 419 */ "VSETCOLOR ",
+	/* 420 */ "OUT& ",
+	/* 421 */ "OUT% ",
+	/* 422 */ "CURVE ",
+	/* 423 */ "_DATA= ",
+	/* 424 */ "MAT ADD ",
+	/* 425 */ "MAT ADD ",
+	/* 426 */ "MAT SUB ",
+	/* 427 */ "MAT SUB ",
+	/* 428 */ "MAT CPY ",
+	/* 429 */ "MAT XCPY ",
+	/* 430 */ "MAT DET ",
+	/* 431 */ "MAT NEG ",
+	/* 432 */ "MAT ABS ",
+	/* 433 */ "MAT NORM ",
+	/* 434 */ "MAT READ ",
+	/* 435 */ "MAT PRINT ",
+	/* 436 */ "MAT TRANS ",
+	/* 437 */ "MAT CLR ",
+	/* 438 */ "MAT SET ",
+	/* 439 */ "MAT ONE ",
+	/* 440 */ "MAT BASE ",
+	/* 441 */ "MAT QDET ",
+	/* 442 */ "MAT INPUT ",
+	/* 443 */ "MAT RANG ",
+	/* 444 */ "MAT MUL ",
+	/* 445 */ "MAT MUL ",
+	/* 446 */ "MAT MUL ",
+	/* 447 */ "MAT MUL ",
+	/* 448 */ "MAT INV ",
+	/* 449 */ "> FUNCTION ",
+	/* 450 */ "DMASOUND ",
+	/* 451 */ "DMACONTROL ",
+	/* 452 */ "MW_OUT ",
+	/* 453 */ "MW_OUT ",
+	/* 454 */ "MW_OUT ",
+	/* 455 */ "MW_OUT ",
+	/* 456 */ "MW_OUT ",
+	/* 457 */ "MW_OUT ",
+	/* 458 */ "MW_OUT ",
+	/* 459 */ "MW_OUT ",
+	/* 460 */ "SET.MFDB ",
+	/* 461 */ "SET.PXYWH ",
+	/* 462 */ "BCLEAR ",
+	/* 463 */ "BFILL ",
+	/* 464 */ "BXLATE ",
+	/* 465 */ "BEEP",
+	/* 466 */ "GHIDEM",
+	/* 467 */ "GSHOWM",
+	/* 468 */ "GMOUSE",
+	/* 469 */ "VCURVE ",
+	/* 470 */ "VRC_COPY ",
+	/* 471 */ "VGET ",
+	/* 472 */ "VPLOT ",
+	/* 473 */ "TIMESTAMP",
+	/* 474 */ "AMOUSE ",
+	/* 475 */ "VLINE ",
+	/* 476 */ "CPUFLUSH",
+	/* 477 */ "BCRYPT ",
+	/* 478 */ "GSTICK ",
+	/* 479 */ "VSGET ",
+	/* 480 */ "VSPUT ",
+	/* 481 */ "VCLS ",
+	/* 482 */ "PALGET ",
+	/* 483 */ "PALSET ",
+	/* 484 */ "LOG_MSG ",
+	/* 485 */ "LOG_SET ",
+	/* 486 */ "LOG_FILE ",
+	/* 487 */ "LOG_KILL",
+	/* 488 */ "SET.PXYXY ",
+	/* 489 */ "VBOX ",
+	/* 490 */ "VBITBLT ",
+	/* 491 */ "SCALL ",
+	/* 492 */ "VPUT ",
+	/* 493 */ "VPUT ",
+	/* 494 */ "CHAR$ ",
+	/* 495 */ "SET.SOCKADDR ",
+	/* 496 */ "SET.SOCKADDR ",
+	/* 497 */ "SET.SOCKADDR ",
+	/* 498 */ "SET.SOCKADDR ",
+	/* 499 */ "SET.SOCKADDR ",
+	/* 500 */ "SET.SOCKADDR ",
+	/* 501 */ "SET.SOCKADDR ",
+	/* 502 */ "SET.SOCKADDR ",
+	/* 503 */ "SET.SOCKADDR ",
+	/* 504 */ "OB.STATE(",
+	/* 505 */ "OB.FLAGS(",
+	/* 506 */ "OB_SELECTED(",
+	/* 507 */ "OB_CROSSED(",
+	/* 508 */ "OB_CHECKED(",
+	/* 509 */ "OB_DISABLED(",
+	/* 510 */ "OB.RBUTTON(",
+	/* 511 */ "OB_TEXT$(",
+	/* 512 */ "OB_SELECTABLE(",
+	/* 513 */ "OB_DEFAULT(",
+	/* 514 */ "OB_EXIT(",
+	/* 515 */ "OB_EDITABLE(",
+	/* 516 */ "OB_RBUTTON(",
+	/* 517 */ "OB_LASTOB(",
+	/* 518 */ "OB_TOUCHEXIT(",
+	/* 519 */ "OB_HIDETREE("
 };
-unsigned short const size_lct = sizeof(gfalct) / sizeof(gfalct[0]);
+unsigned int const size_lct = sizeof(gfalct) / sizeof(gfalct[0]);
 
 /* Primary function text */
 const char *const gfapft[256] = {

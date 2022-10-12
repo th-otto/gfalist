@@ -41,6 +41,7 @@
 #define TYPE_WORD           8
 #define TYPE_BYTE           9
 #define TYPE_PROCEDURE     11
+#define TYPE_LABEL         12
 #define TYPE_WORD_ARR      12
 #define TYPE_BYTE_ARR      13
 #define TYPE_FUNCTION      14
@@ -78,6 +79,7 @@ struct gfahdr {
 #define OFF_TYPE_BOOL_ARR     7
 #define OFF_TYPE_WORD         8
 #define OFF_TYPE_BYTE         9
+#define OFF_TYPE_LABEL       10
 #define OFF_TYPE_PROCEDURE   11
 #define OFF_TYPE_WORD_ARR    12
 #define OFF_TYPE_BYTE_ARR    13
@@ -96,6 +98,7 @@ struct gfahdr {
 #define OFF_PTR_BOOL_ARR     26
 #define OFF_PTR_WORD         27
 #define OFF_PTR_BYTE         28
+#define OFF_PTR_LABEL        29
 #define OFF_PTR_PROCEDURE    30
 #define OFF_PTR_WORD_ARR     31
 #define OFF_PTR_BYTE_ARR     32

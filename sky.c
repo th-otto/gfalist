@@ -31,7 +31,7 @@ static const unsigned char gfavst[MAX_TYPES][3] = {
 	"!(",
 	"&",
 	"|",
-	"",
+	"", /* TYPE_LABEL */
 	"", /* TYPE_PROCEDURE */
 	"&(",
 	"|(",
@@ -573,7 +573,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	 * secondary function token
 	 */
 	unsigned short lcp;
-	unsigned short lct;
+	unsigned int lct;
 	unsigned short pft;
 	unsigned short sft;
 	unsigned short v;
@@ -590,69 +590,70 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	assert(sizeof(uint64_t) == 8);
 
 	pop16b(lcp, src);
+	lct = lcp / 4;
 
-	/* fprintf(stderr, "%lu lcp: %u\n", gl->lineno, lcp); */
+	/* fprintf(stderr, "%lu lcp: %u %u\n", gl->lineno, lcp, lct); */
 	/*
 	 * handle indentation changes
 	 */
-	switch (lcp)
+	switch (lct)
 	{
 	case 0:     /* DO */
-	case 8:     /* REPEAT */
-	case 16:    /* WHILE */
-	case 24:    /* PROCEDURE */
-	case 32:    /* IF */
-	case 40:    /* FUNCTION */
-	case 48:    /* SELECT */
-	case 76:    /* FOR */
-	case 80:    /* FOR */
-	case 84:    /* FOR */
-	case 88:    /* FOR */
-	case 92:    /* FOR */
-	case 96:    /* FOR */
-	case 100:   /* FOR */
-	case 104:   /* FOR */
-	case 108:   /* FOR */
-	case 112:   /* FOR */
-	case 116:   /* FOR */
-	case 120:   /* FOR */
-	case 176:   /* SELECT */
-	case 196:   /* DO WHILE */
-	case 200:   /* DO UNTIL */
-	case 216:   /* > PROCEDURE */
-	case 1796:  /* > FUNCTION */
+	case 2:     /* REPEAT */
+	case 4:     /* WHILE */
+	case 6:     /* PROCEDURE */
+	case 8:     /* IF */
+	case 10:    /* FUNCTION */
+	case 12:    /* SELECT */
+	case 19:    /* FOR */
+	case 20:    /* FOR */
+	case 21:    /* FOR */
+	case 22:    /* FOR */
+	case 23:    /* FOR */
+	case 24:    /* FOR */
+	case 25:    /* FOR */
+	case 26:    /* FOR */
+	case 27:    /* FOR */
+	case 28:    /* FOR */
+	case 29:    /* FOR */
+	case 30:    /* FOR */
+	case 44:    /* SELECT */
+	case 49:    /* DO WHILE */
+	case 50:    /* DO UNTIL */
+	case 54:    /* > PROCEDURE */
+	case 449:   /* > FUNCTION */
 		indent(gi, gl->depth);
 		gl->depth += 1;
 		break;
-	case 4:     /* LOOP */
-	case 12:    /* UNTIL */
-	case 20:    /* WEND */
-	case 28:    /* RETURN */
-	case 36:    /* ENDIF */
-	case 44:    /* ENDFUNC */
-	case 52:    /* ENDSELECT */
-	case 124:   /* NEXT */
-	case 128:   /* NEXT */
-	case 132:   /* NEXT */
-	case 136:   /* NEXT */
-	case 140:   /* NEXT */
-	case 144:   /* NEXT */
-	case 148:   /* NEXT */
-	case 152:   /* NEXT */
-	case 156:   /* NEXT */
-	case 160:   /* NEXT */
-	case 164:   /* NEXT */
-	case 168:   /* NEXT */
-	case 204:   /* LOOP WHILE */
-	case 208:   /* LOOP UNTIL */
+	case 1:     /* LOOP */
+	case 3:     /* UNTIL */
+	case 5:     /* WEND */
+	case 7:     /* RETURN */
+	case 9:     /* ENDIF */
+	case 11:    /* ENDFUNC */
+	case 13:    /* ENDSELECT */
+	case 31:    /* NEXT */
+	case 32:    /* NEXT */
+	case 33:    /* NEXT */
+	case 34:    /* NEXT */
+	case 35:    /* NEXT */
+	case 36:    /* NEXT */
+	case 37:    /* NEXT */
+	case 38:    /* NEXT */
+	case 39:    /* NEXT */
+	case 40:    /* NEXT */
+	case 41:    /* NEXT */
+	case 42:    /* NEXT */
+	case 51:    /* LOOP WHILE */
+	case 52:    /* LOOP UNTIL */
 		gl->depth -= 1;
 		indent(gi, gl->depth);
 		break;
-	case 56:    /* ELSE */
-	case 60:    /* DEFAULT */
-	case 64:    /* ELSE IF */
-	case 224:   /* CASE */
-	case 252:	/* ??? */
+	case 14:    /* ELSE */
+	case 15:    /* DEFAULT */
+	case 16:    /* ELSE IF */
+	case 56:    /* CASE */
+	case 63:	/* label: */
 		indent(gi, gl->depth - 1);
 		break;
 	default:
@@ -663,14 +664,13 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	/*
 	 * output statement
 	 */
-	lct = lcp / 4;
 	if (lct < size_lct)
 		mrk = (const unsigned char *)gfalct[lct];
 	else
 		mrk = NULL;
 	if (mrk == NULL)
 	{
-		gf4tp_output("gf4tp_tp() Error at line %lu:%lu: %u is an unknown control code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), lcp);
+		gf4tp_output("Error at line %lu:%lu: %u is an unknown control code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), lcp);
 	} else
 	{
 		printname(gi, mrk, TRUE);
@@ -681,17 +681,17 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	/*
 	 * special statement handling
 	 */
-	switch (lcp)
+	switch (lct)
 	{
-	case 456:							/* REM */
-	case 460:							/* ' */
-	case 464:							/* ==> */
-	case 468:							/* DATA */
+	case 114:							/* REM */
+	case 115:							/* ' */
+	case 116:							/* ==> */
+	case 117:							/* DATA */
 		if (src < srcend && *src != 0x0D)
 			putc(' ', gi->ost);
 		/* FALLTROUGH */
-	case 1644:							/* $ */
-	case 1016:							/* . */
+	case 411:							/* $ */
+	case 254:							/* . */
 		while (src < srcend && *src != 0x0D)
 			gfa_putc(gi, *src++);
 		src++;
@@ -699,246 +699,246 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 		break;
 	case TOK_CMD_EOF:					/* End of program */
 		return FALSE;
-	case 192:							/* MONITOR */
-	case 236:							/* RESTORE */
-	case 420:							/* RESUME */
-	case 1020:							/* RANDOMIZE */
-	case 1072:							/* CLOSE */
-	case 1108:							/* DEFLINE */
-	case 1128:							/* DEFMARK */
-	case 1136:							/* DEFTEXT */
-	case 1140:							/* DEFFILL */
-	case 1144:							/* DEFFILL */
-	case 1236:							/* QUIT */
-	case 1276:							/* DIR */
-	case 1300:							/* FILES */
-	case 1364:							/* SYSTEM */
-	case 1416:							/* SOUND */
-	case 1420:							/* WAVE */
-	case 1592:							/* DUMP */
+	case 48:							/* MONITOR */
+	case 59:							/* RESTORE */
+	case 105:							/* RESUME */
+	case 255:							/* RANDOMIZE */
+	case 268:							/* CLOSE */
+	case 277:							/* DEFLINE */
+	case 282:							/* DEFMARK */
+	case 284:							/* DEFTEXT */
+	case 285:							/* DEFFILL */
+	case 286:							/* DEFFILL */
+	case 309:							/* QUIT */
+	case 319:							/* DIR */
+	case 325:							/* FILES */
+	case 341:							/* SYSTEM */
+	case 354:							/* SOUND */
+	case 355:							/* WAVE */
+	case 398:							/* DUMP */
 		if (src < srcend && *src != TOK_LINE_COMMENT)
 			putc(' ', gi->ost);
 		break;
-	case 124:
-	case 128:
-	case 132:							/* NEXT x# */
+	case 31:
+	case 32:
+	case 33:							/* NEXT x# */
 		src += 4;
 		pop16b(v, src);
 		pushvar(gi, TYPE_FLOAT, v);
 		break;
-	case 136:
-	case 140:
-	case 144:							/* NEXT x% */
+	case 34:
+	case 35:
+	case 36:							/* NEXT x% */
 		src += 4;
 		pop16b(v, src);
 		pushvar(gi, TYPE_INT, v);
 		break;
-	case 148:
-	case 152:
-	case 156:							/* NEXT x& */
+	case 37:
+	case 38:
+	case 39:							/* NEXT x& */
 		src += 4;
 		pop16b(v, src);
 		pushvar(gi, TYPE_WORD, v);
 		break;
-	case 160:
-	case 164:
-	case 168:							/* NEXT x| */
+	case 40:
+	case 41:
+	case 42:							/* NEXT x| */
 		src += 4;
 		pop16b(v, src);
 		pushvar(gi, TYPE_BYTE, v);
 		break;
-	case 256:							/* LET x#= */
-	case 304:							/* x#= */
-	case 76:							/* FOR x# */
-	case 80:							/* FOR x# */
-	case 84:							/* FOR x# */
+	case 64:							/* LET x#= */
+	case 76:							/* x#= */
+	case 19:							/* FOR x# */
+	case 20:							/* FOR x# */
+	case 21:							/* FOR x# */
 		pop16b(v, src);
 		pushvar(gi, TYPE_FLOAT, v);
 		putc('=', gi->ost);
 		break;
-	case 260:							/* LET x$= */
-	case 308:							/* x$= */
+	case 65:							/* LET x$= */
+	case 77:							/* x$= */
 		pop16b(v, src);
 		pushvar(gi, TYPE_STRING, v);
 		putc('=', gi->ost);
 		break;
-	case 264:							/* LET x%= */
-	case 312:							/* x%= */
-	case 88:							/* FOR x% */
-	case 92:							/* FOR x% */
-	case 96:							/* FOR x% */
+	case 66:							/* LET x%= */
+	case 78:							/* x%= */
+	case 22:							/* FOR x% */
+	case 23:							/* FOR x% */
+	case 24:							/* FOR x% */
 		pop16b(v, src);
 		pushvar(gi, TYPE_INT, v);
 		putc('=', gi->ost);
 		break;
-	case 268:							/* LET x!= */
-	case 316:							/* x!= */
+	case 67:							/* LET x!= */
+	case 79:							/* x!= */
 		pop16b(v, src);
 		pushvar(gi, TYPE_BOOL, v);
 		putc('=', gi->ost);
 		break;
-	case 272:							/* LET x&= */
-	case 320:							/* x&= */
-	case 100:							/* FOR x& */
-	case 104:							/* FOR x& */
-	case 108:							/* FOR x& */
+	case 68:							/* LET x&= */
+	case 80:							/* x&= */
+	case 25:							/* FOR x& */
+	case 26:							/* FOR x& */
+	case 27:							/* FOR x& */
 		pop16b(v, src);
 		pushvar(gi, TYPE_WORD, v);
 		putc('=', gi->ost);
 		break;
-	case 276:							/* LET x|= */
-	case 324:							/* x|= */
-	case 112:							/* FOR x| */
-	case 116:							/* FOR x| */
-	case 120:							/* FOR x| */
+	case 69:							/* LET x|= */
+	case 81:							/* x|= */
+	case 28:							/* FOR x| */
+	case 29:							/* FOR x| */
+	case 30:							/* FOR x| */
 		pop16b(v, src);
 		pushvar(gi, TYPE_BYTE, v);
 		putc('=', gi->ost);
 		break;
-	case 280:							/* LET x#()= */
-	case 328:							/* x#()= */
-	case 656:							/* INC x#() */
-	case 688:							/* DEC x#() */
-	case 720:							/* ADD x#() */
-	case 752:							/* SUB x#() */
-	case 784:							/* MUL x#() */
-	case 816:							/* DIV x#() */
+	case 70:							/* LET x#()= */
+	case 82:							/* x#()= */
+	case 164:							/* INC x#() */
+	case 172:							/* DEC x#() */
+	case 180:							/* ADD x#() */
+	case 188:							/* SUB x#() */
+	case 196:							/* MUL x#() */
+	case 204:							/* DIV x#() */
 		pop16b(v, src);
 		pushvar(gi, TYPE_FLOAT_ARR, v);
 		break;
-	case 284:							/* LET x$()= */
-	case 332:							/* x$()= */
+	case 71:							/* LET x$()= */
+	case 83:							/* x$()= */
 		pop16b(v, src);
 		pushvar(gi, TYPE_STRING_ARR, v);
 		break;
-	case 288:							/* LET x%()= */
-	case 336:							/* x%()= */
-	case 660:							/* INC x%() */
-	case 692:							/* DEC x%() */
-	case 724:							/* ADD x%() */
-	case 756:							/* SUB x#() */
-	case 788:							/* MUL x%() */
-	case 820:							/* DIV x%() */
+	case 72:							/* LET x%()= */
+	case 84:							/* x%()= */
+	case 165:							/* INC x%() */
+	case 173:							/* DEC x%() */
+	case 181:							/* ADD x%() */
+	case 189:							/* SUB x#() */
+	case 197:							/* MUL x%() */
+	case 205:							/* DIV x%() */
 		pop16b(v, src);
 		pushvar(gi, TYPE_INT_ARR, v);
 		break;
-	case 292:							/* LET x!()= */
-	case 340:							/* x!()= */
+	case 73:							/* LET x!()= */
+	case 85:							/* x!()= */
 		pop16b(v, src);
 		pushvar(gi, TYPE_BOOL_ARR, v);
 		break;
-	case 296:							/* LET x&()= */
-	case 344:							/* x&()= */
-	case 664:							/* INC x&() */
-	case 696:							/* DEC x&() */
-	case 728:							/* ADD x&() */
-	case 760:							/* SUB x&() */
-	case 792:							/* MUL x&() */
-	case 824:							/* DIV x&() */
+	case 74:							/* LET x&()= */
+	case 86:							/* x&()= */
+	case 166:							/* INC x&() */
+	case 174:							/* DEC x&() */
+	case 182:							/* ADD x&() */
+	case 190:							/* SUB x&() */
+	case 198:							/* MUL x&() */
+	case 206:							/* DIV x&() */
 		pop16b(v, src);
 		pushvar(gi, TYPE_WORD_ARR, v);
 		break;
-	case 300:							/* LET x|()= */
-	case 348:							/* x|()= */
-	case 668:							/* INC x|() */
-	case 700:							/* DEC x|() */
-	case 732:							/* ADD x|() */
-	case 764:							/* SUB x|() */
-	case 796:							/* MUL x|() */
-	case 828:							/* DIV x|() */
+	case 75:							/* LET x|()= */
+	case 87:							/* x|()= */
+	case 167:							/* INC x|() */
+	case 175:							/* DEC x|() */
+	case 183:							/* ADD x|() */
+	case 191:							/* SUB x|() */
+	case 199:							/* MUL x|() */
+	case 207:							/* DIV x|() */
 		pop16b(v, src);
 		pushvar(gi, TYPE_BYTE_ARR, v);
 		break;
-	case 24:							/* PROCEDURE / */
-	case 216:							/* > PROCEDURE */
+	case 6:							/* PROCEDURE / */
+	case 54:							/* > PROCEDURE */
 		pop16b(v, src);
 		pushvar(gi, TYPE_PROCEDURE, v);
 		if (src < srcend && *src != TOK_LINE_COMMENT)
 			putc('(', gi->ost);
 		break;
-	case 240: 	     					/* implicit @ */
-	case 244:      						/* GOSUB */
-	case 248:							/* @ */
+	case 60: 	     					/* implicit @ */
+	case 61:      						/* GOSUB */
+	case 62:							/* @ */
 		pop16b(v, src);
 		pushvar(gi, TYPE_PROCEDURE, v);
 		break;
-	case 1796:							/* > FUNCTION */
+	case 449:							/* > FUNCTION */
 		break;
-	case 588:							/* PRINT */
-	case 1212:							/* LPRINT */
-	case 1260:							/* CLS */
+	case 147:							/* PRINT */
+	case 303:							/* LPRINT */
+	case 315:							/* CLS */
 		if (src < srcend && *src != TOK_LINE_COMMENT)
 			putc(' ', gi->ost);
 		break;
-	case 640:							/* INC x# */
-	case 672:							/* DEC x# */
+	case 160:							/* INC x# */
+	case 168:							/* DEC x# */
 		pop16b(v, src);
 		pushvar(gi, TYPE_FLOAT, v);
 		break;
-	case 644:							/* INC x% */
-	case 676:							/* DEC x% */
+	case 161:							/* INC x% */
+	case 169:							/* DEC x% */
 		pop16b(v, src);
 		pushvar(gi, TYPE_INT, v);
 		break;
-	case 648:							/* INC x& */
-	case 680:							/* DEC x& */
+	case 162:							/* INC x& */
+	case 170:							/* DEC x& */
 		pop16b(v, src);
 		pushvar(gi, TYPE_WORD, v);
 		break;
-	case 652:							/* INC x| */
-	case 684:							/* DEC x| */
+	case 163:							/* INC x| */
+	case 171:							/* DEC x| */
 		pop16b(v, src);
 		pushvar(gi, TYPE_BYTE, v);
 		break;
-	case 704:							/* ADD x# */
-	case 736:							/* SUB x# */
-	case 768:							/* MUL x# */
-	case 800:							/* DIV x# */
+	case 176:							/* ADD x# */
+	case 184:							/* SUB x# */
+	case 192:							/* MUL x# */
+	case 200:							/* DIV x# */
 		pop16b(v, src);
 		pushvar(gi, TYPE_FLOAT, v);
 		putc(',', gi->ost);
 		break;
-	case 708:							/* ADD x% */
-	case 740:							/* SUB x% */
-	case 772:							/* MUL x% */
-	case 804:							/* DIV x% */
+	case 177:							/* ADD x% */
+	case 185:							/* SUB x% */
+	case 193:							/* MUL x% */
+	case 201:							/* DIV x% */
 		pop16b(v, src);
 		pushvar(gi, TYPE_INT, v);
 		putc(',', gi->ost);
 		break;
-	case 712:							/* ADD x& */
-	case 744:							/* SUB x& */
-	case 776:							/* MUL x& */
-	case 808:							/* DIV x& */
+	case 178:							/* ADD x& */
+	case 186:							/* SUB x& */
+	case 194:							/* MUL x& */
+	case 202:							/* DIV x& */
 		pop16b(v, src);
 		pushvar(gi, TYPE_WORD, v);
 		putc(',', gi->ost);
 		break;
-	case 716:							/* ADD x| */
-	case 748:							/* SUB x| */
-	case 780:							/* MUL x| */
-	case 812:							/* DIV x| */
+	case 179:							/* ADD x| */
+	case 187:							/* SUB x| */
+	case 195:							/* MUL x| */
+	case 203:							/* DIV x| */
 		pop16b(v, src);
 		pushvar(gi, TYPE_BYTE, v);
 		putc(',', gi->ost);
 		break;
-	case 4:								/* LOOP */
-	case 12:							/* UNTIL */
-	case 16:							/* WHILE */
-	case 20:							/* WEND */
-	case 32:							/* IF */
-	case 48:							/* SELECT */
-	case 56:							/* ELSE */
-	case 60:							/* DEFAULT */
-	case 64:							/* ELSE IF */
-	case 172:							/* EXIT IF */
-	case 176:							/* SELECT */
-	case 196:							/* DO WHILE */
-	case 200:							/* DO UNTIL */
-	case 204:							/* LOOP WHILE */
-	case 208:							/* LOOP UNTIL */
-	case 220:							/* EXIT IF */
-	case 224:							/* CASE */
+	case 1:								/* LOOP */
+	case 3:								/* UNTIL */
+	case 4:								/* WHILE */
+	case 5:								/* WEND */
+	case 8:								/* IF */
+	case 12:							/* SELECT */
+	case 14:							/* ELSE */
+	case 15:							/* DEFAULT */
+	case 16:							/* ELSE IF */
+	case 43:							/* EXIT IF */
+	case 44:							/* SELECT */
+	case 49:							/* DO WHILE */
+	case 50:							/* DO UNTIL */
+	case 51:							/* LOOP WHILE */
+	case 52:							/* LOOP UNTIL */
+	case 55:							/* EXIT IF */
+	case 56:							/* CASE */
 		src += 4;
 		break;
 	}
@@ -956,7 +956,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 
 			if (src == srcend)
 				break;
-			if (lcp != TOK_CMD_INLINE)
+			if (lct != TOK_CMD_INLINE)
 			{
 				for (i = *src++; i > 0; i--)
 					putc(' ', gi->ost);
@@ -1084,7 +1084,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 			mrk = (const unsigned char *)gfasft_208[sft];
 			if (mrk == NULL)
 			{
-				gf4tp_output("gf4tp_tp() Error at line %lu:%lu: %u/%u is an unknown sft code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft, sft);
+				gf4tp_output("Error at line %lu:%lu: %u/%u is an unknown sft code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft, sft);
 			} else
 			{
 				printname(gi, mrk, TRUE);
@@ -1096,7 +1096,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 			mrk = (const unsigned char *)gfasft_209[sft];
 			if (mrk == NULL)
 			{
-				gf4tp_output("gf4tp_tp() Error at line %lu:%lu: %u/%u is an unknown sft code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft, sft);
+				gf4tp_output("Error at line %lu:%lu: %u/%u is an unknown sft code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft, sft);
 			} else
 			{
 				printname(gi, mrk, TRUE);
@@ -1108,7 +1108,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 			mrk = (const unsigned char *)gfasft_210[sft];
 			if (mrk == NULL)
 			{
-				gf4tp_output("gf4tp_tp() Error at line %lu:%lu: %u/%u is an unknown sft code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft, sft);
+				gf4tp_output("Error at line %lu:%lu: %u/%u is an unknown sft code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft, sft);
 			} else
 			{
 				printname(gi, mrk, TRUE);
@@ -1193,7 +1193,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 		case 239:
 			i = pft - 224;
 			v = *src++;
-			if (lcp == TOK_CMD_INLINE)
+			if (lct == TOK_CMD_INLINE)
 			{
 				char *p;
 
@@ -1238,7 +1238,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 		case 212:
 		case 213:
 		case 214:
-			gf4tp_output("gf4tp_tp() Error at line %lu:%lu: %u is an unknown token code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft);
+			gf4tp_output("Error at line %lu:%lu: %u is an unknown token code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft);
 			break;
 
 		default:
