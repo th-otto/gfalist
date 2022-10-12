@@ -10,18 +10,18 @@ const char *const gfalct[520] = {
 	/*   16 */ "WHILE ",
 	/*   20 */ "WEND",
 	/*   24 */ "PROCEDURE ",
-	/*   28 */ "RETURN",
+	/*   28 */ "RETURN",					/* from PROCEDURE */
 	/*   32 */ "IF ",
 	/*   36 */ "ENDIF",
 	/*   40 */ "FUNCTION ",
 	/*   44 */ "ENDFUNC",
-	/*   48 */ "SELECT ",
+	/*   48 */ "SELECT ",					/* SELECT number */
 	/*   52 */ "ENDSELECT",
 	/*   56 */ "ELSE",
 	/*   60 */ "DEFAULT",
 	/*   64 */ "ELSE IF ",
-	/*   68 */ "RETURN ",
-	/*   72 */ "RETURN ",
+	/*   68 */ "RETURN ",					/* return number */
+	/*   72 */ "RETURN ",					/* return string */
 	/*   76 */ "FOR ",						/* FOR x# */
 	/*   80 */ "FOR ",						/* FOR x# */
 	/*   84 */ "FOR ",						/* FOR x# */
@@ -47,10 +47,10 @@ const char *const gfalct[520] = {
 	/*  164 */ "NEXT ",						/* NEXT x| */
 	/*  168 */ "NEXT ",						/* NEXT x| */
 	/*  172 */ "EXIT IF ",
-	/*  176 */ "SELECT ",
+	/*  176 */ "SELECT ",					/* SELECT string */
 	/*  180 */ "",							/* End of program */
-	/*  184 */ "",
-	/*  188 */ "",
+	/*  184 */ "SELECT ",					/* SELECT AND ??? */
+	/*  188 */ "SELECT ",					/* SELECT AND ??? */
 	/*  192 */ "MONITOR",
 	/*  196 */ "DO WHILE ",
 	/*  200 */ "DO UNTIL ",
@@ -66,7 +66,7 @@ const char *const gfalct[520] = {
 	/*  240 */ "",      					/* implicit @ */
 	/*  244 */ "GOSUB ",
 	/*  248 */ "@",
-	/*  252 */ "",
+	/*  252 */ NULL,						/* ??? */
 	/*  256 */ "LET ",						/* LET x#= */
 	/*  260 */ "LET ",						/* LET x$= */
 	/*  264 */ "LET ",						/* LET x%= */
@@ -217,7 +217,7 @@ const char *const gfalct[520] = {
 	/*  844 */ "SETCOLOR ",
 	/*  848 */ "SETCOLOR ",
 	/*  852 */ "BMOVE ",
-	/*  856 */ "VDISYS",    /* No further tokens follow */
+	/*  856 */ "VDISYS",					/* No further tokens follow */
 	/*  860 */ "VDISYS ",
 	/*  864 */ "VDISYS ",
 	/*  868 */ "VDISYS ",
@@ -524,6 +524,7 @@ const char *const gfalct[520] = {
 	/* 2072 */ "OB_TOUCHEXIT(",
 	/* 2076 */ "OB_HIDETREE("
 };
+unsigned short const size_lct = sizeof(gfalct) / sizeof(gfalct[0]);
 
 /* Primary function text */
 const char *const gfapft[256] = {
@@ -1565,7 +1566,7 @@ const char *const gfasft_210[256] = {
 	/*  255 */ NULL
 };
 
-short const gfarecl[71][2] = {
+struct gfaversinfo const gfarecl[71] = {
 	{ 0,  0},
 	{ 8, 29},
 	{ 8, 29},

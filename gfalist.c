@@ -9,8 +9,8 @@
 #include <errno.h>
 
 #include "sky.h"
-#include "tables.h"						/* gfarecl */
-#include "version.h"					/* VERSION */
+#include "tables.h"
+#include "version.h"
 
 
 __attribute__((format(printf, 1, 2)))
@@ -151,10 +151,7 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 
 	gf4tp_getgi(&gi, gibuf);
 
-	fread(dibuf, gfarecl[gh.vers][1] * 4 + gfarecl[gh.vers][0], 1, ist);
-
-	if ((flags & TP_VERB) != 0x00)
-		output("  Processing DI-Block\n");
+	fread(dibuf, gfarecl[gh.vers].num_offsets * 4 + gfarecl[gh.vers].len_magic, 1, ist);
 
 	/* Cannot process files older than version 4 yet. */
 #if 1
@@ -174,6 +171,9 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 		return FALSE;
 	}
 #endif
+
+	if ((flags & TP_VERB) != 0x00)
+		output("  Processing DI-Block\n");
 
 	gf4tp_getdi(&gi, dibuf);
 
@@ -215,10 +215,10 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 		if ((flags & TP_VERB) != 0x00)
 			output("  Processing II-Block\n");
 	
-		gf4tp_getii(&gi, gi.pool, gi.fld);
+		gf4tp_getii(&gi);
 	
 		/* gf4tp_output("Searching lines\n");
-		 * fseek(ist, gfarecl[gh.vers][1] * 4 + gfarecl[gh.vers][0] + 
+		 * fseek(ist, gfarecl[gh.vers].num_offsets * 4 + gfarecl[gh.vers].len_magic + 
 		 *            gh.sep[16] + 2, SEEK_SET);
 		 */
 	
@@ -239,11 +239,19 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 	
 			tokensize -= gl.size;
 	
+			/* must have at least the length word */
 			if (gl.size < 2)
 			{
 				output("Empty line at line %lu\n", gl.lineno);
 				retcode = FALSE;
 				break;
+			}
+			/*
+			 * should have at least the length word, and a statement token
+			 */
+			if (gl.size < 4 || (gl.size & 1))
+			{
+				output("warning: bogus line size at line %lu\n", gl.lineno);
 			}
 			gl.size -= 2;
 			if (gl.size > maxlinesize)

@@ -161,15 +161,15 @@ static void pushvar(struct gfainf *gi, unsigned int type, unsigned int v)
 		"&",
 		"|",
 		"",
-		"",
+		"", /* TYPE_PROCEDURE */
 		"&(",
 		"|(",
-		"",
+		"", /* TYPE_DEFFN */
 		"$"
 	};
 
 	printname(gi, mrk, FALSE);
-	if (type != TYPE_FLOAT || !(gi->flags & TP_DEFLIST_POSTFIX))
+	if ((type != TYPE_FLOAT && type != TYPE_FLOAT_ARR) || !(gi->flags & TP_DEFLIST_POSTFIX))
 	{
 		mrk = gfavst[type];
 		while (*mrk != '\0')
@@ -591,11 +591,12 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 
 	pop16b(lcp, src);
 
+	fprintf(stderr, "%lu lcp: %u\n", gl->lineno, lcp);
+	/*
+	 * handle indentation changes
+	 */
 	switch (lcp)
 	{
-		/* 0+ 4- 8+ 12- 16+ 20- 24+ 28- 32+ 36- 40+ 44- 48+ 52- 56* 60* 
-		 * 64* 76..120+ 124..168- 176+ 196+ 200+ 204- 208- 216+ 224* 1796+ 
-		 */
 	case 0:     /* DO */
 	case 8:     /* REPEAT */
 	case 16:    /* WHILE */
@@ -651,7 +652,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	case 60:    /* DEFAULT */
 	case 64:    /* ELSE IF */
 	case 224:   /* CASE */
-	case 252:
+	case 252:	/* ??? */
 		indent(gi, gl->depth - 1);
 		break;
 	default:
@@ -659,8 +660,11 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 		break;
 	}
 
+	/*
+	 * output statement
+	 */
 	lct = lcp / 4;
-	if (lct < 512)
+	if (lct < size_lct)
 		mrk = (const unsigned char *)gfalct[lct];
 	else
 		mrk = NULL;
@@ -674,24 +678,27 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 
 	inline_filename[0] = '\0';
 
+	/*
+	 * special statement handling
+	 */
 	switch (lcp)
 	{
 	case 456:							/* REM */
 	case 460:							/* ' */
 	case 464:							/* ==> */
 	case 468:							/* DATA */
-		if (*src != 0x0D)
+		if (src < srcend && *src != 0x0D)
 			putc(' ', gi->ost);
 		/* FALLTROUGH */
 	case 1644:							/* $ */
 	case 1016:							/* . */
-		while (*src != 0x0D)
+		while (src < srcend && *src != 0x0D)
 			gfa_putc(gi, *src++);
 		src++;
 		src += (src - gl->line) & 0x01;
 		break;
-	case 180:							/* End of program */
-		return 0;
+	case TOK_CMD_EOF:					/* End of program */
+		return FALSE;
 	case 192:							/* MONITOR */
 	case 236:							/* RESTORE */
 	case 420:							/* RESUME */
@@ -709,7 +716,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	case 1416:							/* SOUND */
 	case 1420:							/* WAVE */
 	case 1592:							/* DUMP */
-		if (*src != TOK_LINE_COMMENT)
+		if (src < srcend && *src != TOK_LINE_COMMENT)
 			putc(' ', gi->ost);
 		break;
 	case 124:
@@ -797,7 +804,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	case 784:							/* MUL x#() */
 	case 816:							/* DIV x#() */
 		pop16b(v, src);
-		pushvar(gi, TYPE_DOUBLE_ARR, v);
+		pushvar(gi, TYPE_FLOAT_ARR, v);
 		break;
 	case 284:							/* LET x$()= */
 	case 332:							/* x$()= */
@@ -845,7 +852,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	case 24:							/* PROCEDURE / */
 	case 216:							/* > PROCEDURE */
 		pop16b(v, src);
-		pushvar(gi, TYPE_FUNCTION, v);
+		pushvar(gi, TYPE_PROCEDURE, v);
 		if (src < srcend && *src != TOK_LINE_COMMENT)
 			putc('(', gi->ost);
 		break;
@@ -853,7 +860,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	case 244:      						/* GOSUB */
 	case 248:							/* @ */
 		pop16b(v, src);
-		pushvar(gi, TYPE_FUNCTION, v);
+		pushvar(gi, TYPE_PROCEDURE, v);
 		break;
 	case 1796:							/* > FUNCTION */
 		break;
@@ -936,6 +943,9 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 		break;
 	}
 
+	/*
+	 * process expressions
+	 */
 	while (src < srcend)
 	{
 		pft = *src++;
@@ -1241,7 +1251,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	
 	gfa_putnl(gi);
 
-	return 1;
+	return TRUE;
 }
 
 
@@ -1267,18 +1277,19 @@ void gf4tp_getgi(struct gfainf *gi, unsigned char *src)
 void gf4tp_getdi(struct gfainf *gi, unsigned char *src)
 {
 	/* Current and upper pointers */
-	uint32_t *cp = gi->hdr->sep;
-	uint32_t *up = gi->hdr->sep;
+	uint32_t *cp;
+	uint32_t *up;
 
 	/* Record lengths (for magic and memory separator field) */
 
 	assert(gi->hdr->vers == 1 || gi->hdr->vers == 2
 		   || gi->hdr->vers == 3 || gi->hdr->vers == 4 || gi->hdr->vers == 70);
 
-	memcpy(gi->hdr->mag, src, gfarecl[gi->hdr->vers][0]);
-	src += gfarecl[gi->hdr->vers][0];
+	memcpy(gi->hdr->mag, src, gfarecl[gi->hdr->vers].len_magic);
+	src += gfarecl[gi->hdr->vers].len_magic;
 
-	up += gfarecl[gi->hdr->vers][1];
+	cp = gi->hdr->sep;
+	up = cp + gfarecl[gi->hdr->vers].num_offsets;
 
 	while (cp != up)
 	{
@@ -1289,7 +1300,7 @@ void gf4tp_getdi(struct gfainf *gi, unsigned char *src)
 }
 
 
-void gf4tp_getii(struct gfainf *gi, unsigned char *src, unsigned char **ptr)
+void gf4tp_getii(struct gfainf *gi)
 {
 	/* Identifier info block */
 	unsigned int i;
@@ -1297,7 +1308,9 @@ void gf4tp_getii(struct gfainf *gi, unsigned char *src, unsigned char **ptr)
 	unsigned int cnt;
 	unsigned char *top;
 	unsigned char *dst;
-
+	unsigned char *src = gi->pool;
+	unsigned char **ptr = gi->fld;
+	
 	for (i = 0; i < 16; i++)
 	{
 		dst = top = src;

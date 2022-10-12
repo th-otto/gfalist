@@ -33,15 +33,16 @@
 #define TYPE_STRING         1
 #define TYPE_INT            2
 #define TYPE_BOOL           3
-#define TYPE_DOUBLE_ARR     4
+#define TYPE_FLOAT_ARR      4
 #define TYPE_STRING_ARR     5
 #define TYPE_INT_ARR        6
 #define TYPE_BOOL_ARR       7
 #define TYPE_WORD           8
 #define TYPE_BYTE           9
-#define TYPE_FUNCTION      11
+#define TYPE_PROCEDURE     11
 #define TYPE_WORD_ARR      12
 #define TYPE_BYTE_ARR      13
+#define TYPE_DEFFN         14
 
 
 struct gfahdr {
@@ -64,10 +65,9 @@ struct gfahdr {
 
 struct gfainf {
 	struct gfahdr *hdr;                         /* Header */
-	unsigned char **ident[16];                  /* Identifier list */
+	unsigned char **ident[16];                  /* Identifier list; pointers to variable names per type */
 	unsigned char **fld;                        /* Pointer field */
-	unsigned char *pool;                        /* Memory pool */
-	/* XXX In-Depth documentation of field and pool lacking here. */
+	unsigned char *pool;                        /* Memory pool; holds all variable names */
 	const char *filename;
 	FILE *ost;
 	unsigned int flags;
@@ -83,7 +83,7 @@ struct gfalin {
 int gf4tp_tp(struct gfainf *gi, struct gfalin *gl);
 void gf4tp_getgi(struct gfainf *gi, unsigned char *src);
 void gf4tp_getdi(struct gfainf *gi, unsigned char *src);
-void gf4tp_getii(struct gfainf *gi, unsigned char *src, unsigned char **ptr);
+void gf4tp_getii(struct gfainf *gi);
 void gf4tp_init(int (*output)(const char *format, ...), unsigned char *(*resvar)(struct gfainf *gi, unsigned short type, unsigned short var));
 
 /* GFA-BASIC files come from M68K platform and use 8 bits per byte */
