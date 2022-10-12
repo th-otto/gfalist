@@ -421,7 +421,10 @@ int main(int argc, char *argv[])
 
 	if (outfile == NULL || (outfile[0] == '-' && outfile[1] == '\0'))
 	{
-		ost = stdout;
+		if (flags & TP_CONV)
+			ost = stdout;
+		else
+			ost = freopen(NULL, "wb", stdout);
 	} else if ((ost = fopen(outfile, flags & TP_CONV ? "w" : "wb")) == NULL)
 	{
 		output("%s: cannot open %s for output\n", argv[0], outfile);
