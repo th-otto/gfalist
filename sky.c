@@ -20,6 +20,25 @@
 #include "sky.h"
 #include "tables.h"
 
+static const unsigned char gfavst[MAX_TYPES][3] = {
+	"#",
+	"$",
+	"%",
+	"!",
+	"#(",
+	"$(",
+	"%(",
+	"!(",
+	"&",
+	"|",
+	"",
+	"", /* TYPE_PROCEDURE */
+	"&(",
+	"|(",
+	"", /* functions returning number, including DEFFN */
+	"$" /* functions returning string */
+};
+
 static int (*gf4tp_output)(const char *format, ...) __attribute__((format(printf, 1, 2)));
 static unsigned char *(*gf4tp_resvar)(struct gfainf *gi, unsigned short type, unsigned short var);
 
@@ -148,25 +167,6 @@ static void printname(struct gfainf *gi, const unsigned char *str, int uppercase
 static void pushvar(struct gfainf *gi, unsigned int type, unsigned int v)
 {
 	const unsigned char *mrk = gi->hdr.type & TP_PSAVE ? gf4tp_resvar(gi, type, v) : gi->ident[type][v];
-
-	static const unsigned char gfavst[MAX_TYPES][3] = {
-		"#",
-		"$",
-		"%",
-		"!",
-		"#(",
-		"$(",
-		"%(",
-		"!(",
-		"&",
-		"|",
-		"",
-		"", /* TYPE_PROCEDURE */
-		"&(",
-		"|(",
-		"", /* TYPE_DEFFN */
-		"$"
-	};
 
 	printname(gi, mrk, FALSE);
 	if ((type != TYPE_FLOAT && type != TYPE_FLOAT_ARR) || !(gi->flags & TP_DEFLIST_POSTFIX))
@@ -1375,5 +1375,31 @@ void gf4tp_getii(struct gfainf *gi)
 
 		/* Skip fill byte if neccessary (odd position at read end) */
 		src += (src - top) & 0x01;
+	}
+	if (gi->flags & TP_VARNAMES)
+	{
+		if (gi->flags & TP_VERB)
+			gf4tp_output("\n");
+		gf4tp_output("Variables:\n");
+		for (i = 0; i < MAX_TYPES; i++)
+		{
+			cnt = gi->hdr.sep[OFF_PTR_FIRST + 1 + i] - gi->hdr.sep[OFF_PTR_FIRST + i];
+			cnt /= 4;
+			gf4tp_output("Type %u:\n", i);
+			for (j = 0; j < cnt; j++)
+			{
+				gf4tp_output("  %s%s%s\n",
+					gi->ident[i][j],
+					gfavst[i],
+					i == TYPE_FLOAT_ARR ||
+					i == TYPE_STRING_ARR ||
+					i == TYPE_INT_ARR ||
+					i == TYPE_BOOL_ARR ||
+					i == TYPE_WORD_ARR ||
+					i == TYPE_BYTE_ARR ? ")" : "");
+			}
+			if (i != MAX_TYPES - 1)
+				gf4tp_output("\n");
+		}
 	}
 }

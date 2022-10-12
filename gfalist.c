@@ -212,7 +212,7 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 
 		if (fldsize > 0)
 		{
-			gi.fld = malloc(fldsize * sizeof(char *));
+			gi.fld = malloc((fldsize / 4) * sizeof(char *));
 			if (gi.fld == NULL)
 			{
 				output("out of memory\n");
@@ -343,6 +343,7 @@ static void usage(FILE *fp)
 	fprintf(fp, "      --postfix             omit default postfix from float variables\n");
 	fprintf(fp, "      --c-comments          print comments with /*\n");
 	fprintf(fp, "      --c++-comments        print comments with //\n");
+	fprintf(fp, "      --varnames            list variables names\n");
 	fprintf(fp, "  -h, --help                print this help and exit\n");
 }
 
@@ -359,6 +360,7 @@ enum {
 	OPT_POSTFIX,
 	OPT_C_COMMENTS,
 	OPT_CPP_COMMENTS,
+	OPT_VARNAMES,
 };
 
 static struct option const longopts[] = {
@@ -368,6 +370,7 @@ static struct option const longopts[] = {
 	{ "inlines", no_argument, NULL, OPT_INLINES },
 	{ "capitals", no_argument, NULL, OPT_CAPITALS },
 	{ "postfix", no_argument, NULL, OPT_POSTFIX },
+	{ "varnames", no_argument, NULL, OPT_VARNAMES },
 	{ "help", no_argument, NULL, OPT_HELP },
 	{ "version", no_argument, NULL, OPT_VERSION },
 };
@@ -422,6 +425,10 @@ int main(int argc, char *argv[])
 		
 		case OPT_CPP_COMMENTS:
 			flags |= TP_DEFLIST_CPP_COMMENTS;
+			break;
+		
+		case OPT_VARNAMES:
+			flags |= TP_VARNAMES;
 			break;
 		
 		case OPT_HELP:					/* display short help and exit */

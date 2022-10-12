@@ -27,6 +27,7 @@
 #define TP_DEFLIST_POSTFIX         0x10 /* suppress postfix for float variables (!DEFLIST bit 1) */
 #define TP_DEFLIST_CPP_COMMENTS    0x20 /* comment marker is // (DEFLIST bit 2) */
 #define TP_DEFLIST_C_COMMENTS      0x40 /* comment marker is / * (DEFLIST bit 3) */
+#define TP_VARNAMES                0x80 /* list variables names */
 
 
 #define TYPE_FLOAT          0
@@ -42,7 +43,8 @@
 #define TYPE_PROCEDURE     11
 #define TYPE_WORD_ARR      12
 #define TYPE_BYTE_ARR      13
-#define TYPE_DEFFN         14
+#define TYPE_FUNCTION      14
+#define TYPE_FUNCTION_STR  15
 
 #define MAX_TYPES          16
 
@@ -100,8 +102,8 @@ struct gfahdr {
 #define OFF_PTR_DEFFN        33
 #define OFF_PTR_FIRST        OFF_PTR_FLOAT
 #define OFF_VARSTART         35
-#define OFF_INFOS            36
-#define OFF_FILESIZE         37
+#define OFF_UNK1             36
+#define OFF_UNK2             37
 
 
 struct gfainf {
