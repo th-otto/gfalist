@@ -147,31 +147,32 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 
 	gf4tp_getgi(&gi, gibuf);
 
-	fread(dibuf, gfarecl[gi.hdr.vers].num_offsets * 4 + gfarecl[gi.hdr.vers].len_magic, 1, ist);
-
 	/* Cannot process files older than version 4 yet. */
-#if 1
 	switch (gi.hdr.vers)
 	{
 	case 1:
 	case 2:
-	case 3:
+	case 70:
 		output("Version %d files not supported yet.\n", gi.hdr.vers);
 		if (ist != stdin)
 			fclose(ist);
 		return FALSE;
-	case 70:
-		output("GF%.14s files not supported yet.\n", gi.hdr.mag);
+	case 3:
+	case 4:
+		break;
+	default:
+		output("Unknown version %d in header.\n", gi.hdr.vers);
 		if (ist != stdin)
 			fclose(ist);
 		return FALSE;
 	}
-#endif
 
-	if (flags & TP_VERB)
-		output("  Processing DI-Block\n");
+	fread(dibuf, gfarecl[gi.hdr.vers].num_offsets * 4 + gfarecl[gi.hdr.vers].len_magic, 1, ist);
 
 	gf4tp_getdi(&gi, dibuf);
+
+	if (flags & TP_VERB)
+		output("  Processing DI-Block (%d, %s)\n", gi.hdr.vers, gi.hdr.mag);
 
 	if (gi.hdr.sep[OFF_TYPE_FIRST + MAX_TYPES] < gi.hdr.sep[OFF_TYPE_FIRST])
 	{

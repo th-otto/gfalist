@@ -30,6 +30,9 @@
 #define TP_VARNAMES                0x80 /* list variables names */
 
 
+/*
+ * variable types
+ */
 #define TYPE_FLOAT          0
 #define TYPE_STRING         1
 #define TYPE_INT            2

@@ -1311,6 +1311,9 @@ void gf4tp_getii(struct gfainf *gi)
 	unsigned char *src = gi->pool;
 	unsigned char **ptr = gi->fld;
 	
+	if ((gi->hdr.type & TP_PSAVE) || gi->pool == NULL)
+		return;
+
 	for (i = 0; i < MAX_TYPES; i++)
 	{
 		dst = top = src;
