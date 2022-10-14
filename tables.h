@@ -1,7 +1,7 @@
 #ifndef TABLES_H
 #define TABLES_H
 
-extern const char *const gfalct[520];
+extern const char *const gfalct[];
 extern unsigned int const size_lct;
 extern const char *const gfapft[256];
 extern const char *const gfasft_208[256];
@@ -16,7 +16,18 @@ extern struct gfaversinfo const gfarecl[71];
 /*
  * line level commands
  */
+#define TOK_CMD_FOR_FLOAT        19
+#define TOK_CMD_NEXT_FLOAT       31
 #define TOK_CMD_EOF              45
+#define TOK_CMD_LET_FLOAT        64
+#define TOK_CMD_ASSIGN_FLOAT     76
+#define TOK_CMD_REM             114
+#define TOK_CMD_COMMENT         115
+#define TOK_CMD_SYNERR          116
+#define TOK_CMD_DATA            117
+#define TOK_CMD_END             124
+#define TOK_CMD_DOT             254
+#define TOK_CMD_DOLLAR          411
 #define TOK_CMD_INLINE          417
 
 /*

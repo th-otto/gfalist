@@ -43,8 +43,8 @@
 #define TYPE_BOOL_ARR       7
 #define TYPE_WORD           8
 #define TYPE_BYTE           9
+#define TYPE_LABEL         10
 #define TYPE_PROCEDURE     11
-#define TYPE_LABEL         12
 #define TYPE_WORD_ARR      12
 #define TYPE_BYTE_ARR      13
 #define TYPE_FUNCTION      14

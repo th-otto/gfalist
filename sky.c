@@ -702,6 +702,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	case 48:							/* MONITOR */
 	case 59:							/* RESTORE */
 	case 105:							/* RESUME */
+	case 147:							/* PRINT */
 	case 255:							/* RANDOMIZE */
 	case 268:							/* CLOSE */
 	case 277:							/* DEFLINE */
@@ -709,7 +710,9 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	case 284:							/* DEFTEXT */
 	case 285:							/* DEFFILL */
 	case 286:							/* DEFFILL */
+	case 303:							/* LPRINT */
 	case 309:							/* QUIT */
+	case 315:							/* CLS */
 	case 319:							/* DIR */
 	case 325:							/* FILES */
 	case 341:							/* SYSTEM */
@@ -849,7 +852,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 		pop16b(v, src);
 		pushvar(gi, TYPE_BYTE_ARR, v);
 		break;
-	case 6:							/* PROCEDURE / */
+	case 6:								/* PROCEDURE / */
 	case 54:							/* > PROCEDURE */
 		pop16b(v, src);
 		pushvar(gi, TYPE_PROCEDURE, v);
@@ -863,12 +866,6 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 		pushvar(gi, TYPE_PROCEDURE, v);
 		break;
 	case 449:							/* > FUNCTION */
-		break;
-	case 147:							/* PRINT */
-	case 303:							/* LPRINT */
-	case 315:							/* CLS */
-		if (src < srcend && *src != TOK_LINE_COMMENT)
-			putc(' ', gi->ost);
 		break;
 	case 160:							/* INC x# */
 	case 168:							/* DEC x# */
