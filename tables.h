@@ -26,7 +26,12 @@ extern struct gfaversinfo const gfarecl[71];
 #define TOK_CMD_SYNERR          116
 #define TOK_CMD_DATA            117
 #define TOK_CMD_END             124
+#define TOK_CMD_ADDROUT         225
+#define TOK_CMD_CONTRL          228
+#define TOK_CMD_DOUBLE_REF      237
 #define TOK_CMD_DOT             254
+#define TOK_CMD_FILES           325
+#define TOK_CMD_FILESELECT      329
 #define TOK_CMD_DOLLAR          411
 #define TOK_CMD_INLINE          417
 
