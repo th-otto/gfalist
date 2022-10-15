@@ -6,9 +6,14 @@ EOL = 13
 CR  = 13
 NL  = 10
 
+TOK_CMD_PROCEDURE       =   6
 TOK_CMD_FOR_FLOAT       =  19
 TOK_CMD_NEXT_FLOAT      =  31
 TOK_CMD_EOF             =  45
+TOK_CMD_CALL_IMP        =  60
+TOK_CMD_GOSUB           =  61
+TOK_CMD_CALL            =  62
+TOK_CMD_LABEL           =  63
 TOK_CMD_LET_FLOAT       =  64
 TOK_CMD_ASSIGN_FLOAT    =  76
 TOK_CMD_REM             = 114
@@ -16,6 +21,8 @@ TOK_CMD_COMMENT         = 115
 TOK_CMD_SYNERR          = 116
 TOK_CMD_DATA            = 117
 TOK_CMD_END             = 124
+TOK_CMD_INC_FLOAT       = 160
+TOK_CMD_DIV_FLOAT       = 200
 TOK_CMD_ADDRIN          = 224
 TOK_CMD_ADDROUT         = 225
 TOK_CMD_CONTRL          = 228
@@ -3034,18 +3041,21 @@ x11ab0:
 x11abc:
 [00011abc] 7209                      moveq.l    #10-1,d1
 [00011abe] 7001                      moveq.l    #1,d0
+x11abc_1:
 [00011ac0] 30c0                      move.w     d0,(a0)+
-[00011ac2] 51c9 fffc                 dbf        d1,$00011AC0
+[00011ac2] 51c9 fffc                 dbf        d1,x11abc_1
 [00011ac6] d160                      add.w      d0,-(a0)
 [00011ac8] 41ee 1df0                 lea.l      7664(a6),a0
 [00011acc] 43ee 21fa                 lea.l      8698(a6),a1
 [00011ad0] 702c                      moveq.l    #45-1,d0
+x11abc_2:
 [00011ad2] 32d8                      move.w     (a0)+,(a1)+
-[00011ad4] 51c8 fffc                 dbf        d0,$00011AD2
+[00011ad4] 51c8 fffc                 dbf        d0,x11abc_2
 [00011ad8] 41ee 1ef0                 lea.l      7920(a6),a0
 [00011adc] 700b                      moveq.l    #12-1,d0
+x11abc_3:
 [00011ade] 32d8                      move.w     (a0)+,(a1)+
-[00011ae0] 51c8 fffc                 dbf        d0,$00011ADE
+[00011ae0] 51c8 fffc                 dbf        d0,x11abc_3
 [00011ae4] 4e75                      rts
 
 x11ae6:    .dc.w 0
@@ -4057,77 +4067,108 @@ cmd_other_table:
 		.dc.b ((448*2)/256),((448*2)&255),(x13ed2-x13696)/256,(x13ed2-x13696)&255
 		.dc.b -1
 		.even
+/* gfa: 21edc */
 
-[000128b8] 2300                      move.l     d0,-(a1)
-[000128ba] 4d00                      chk.l      d0,d6 ; 68020+ only
-[000128bc] 2700                      move.l     d0,-(a3)
-[000128be] 5700                      subq.b     #3,d0
-[000128c0] 0d00                      btst       d6,d0
-[000128c2] 4600                      not.b      d0
-[000128c4] 2800                      move.l     d0,d4
-[000128c6] 2300                      move.l     d0,-(a1)
-[000128c8] 2900                      move.l     d0,-(a4)
-[000128ca] 2000                      move.l     d0,d0
-[000128cc] 2a00                      move.l     d0,d5
-[000128ce] 0700                      btst       d3,d0
-[000128d0] 2b00                      move.l     d0,-(a5)
-[000128d2] 0600 2d00                 addi.b     #$00,d0
-[000128d6] 0500                      btst       d2,d0
-[000128d8] 2d00                      move.l     d0,-(a6)
-[000128da] 1e00                      move.b     d0,d7
-[000128dc] 2c00                      move.l     d0,d6
-[000128de] 2100                      move.l     d0,-(a0)
-[000128e0] 3b00                      move.w     d0,-(a5)
-[000128e2] 2201                      move.l     d1,d1
-[000128e4] 3d3d                      move.w     ???,-(a6)
-[000128e6] 002d 013e 3c00            ori.b      #$3E,15360(a5)
-[000128ec] 0c01 3c3e                 cmpi.b     #$3E,d1
-[000128f0] 000c 013c                 ori.b      #$3C,a4 ; apollo only
-[000128f4] 3d00                      move.w     d0,-(a6)
-[000128f6] 0d01                      btst       d6,d1
-[000128f8] 3d3c 000e                 move.w     #$000E,-(a6)
-[000128fc] 013d                      btst       d0,???
-[000128fe] 3e00                      move.w     d0,d7
-[00012900] 1001                      move.b     d1,d0
-[00012902] 3e3d                      move.w     ???,d7
-[00012904] 000f 003c                 ori.b      #$3C,a7 ; apollo only
-[00012908] 0011 003d                 ori.b      #$3D,(a1)
-[0001290c] 0013 003e                 ori.b      #$3E,(a3)
-[00012910] 0012 003a                 ori.b      #$3A,(a2)
-[00012914] 007c 0040                 ori.w      #$0040,sr
-[00012918] 009f 0028 002e            ori.l      #$0028002E,(a7)+
-[0001291e] 0028 009d 002c            ori.b      #$9D,44(a0)
-[00012924] 009c 002b 001c            ori.l      #$002B001C,(a4)+
-[0001292a] 002c 0040 003c            ori.b      #$40,60(a4)
-[00012930] 0019 013c                 ori.b      #$3C,(a1)+
-[00012934] 3d00                      move.w     d0,-(a6)
-[00012936] 1501                      move.b     d1,-(a2)
-[00012938] 3c3e                      move.w     ???,d6
-[0001293a] 0014 003d                 ori.b      #$3D,(a4)
-[0001293e] 001b 003d                 ori.b      #$3D,(a3)+
-[00012942] 0045 013d                 ori.w      #$013D,d5
-[00012946] 3c00                      move.w     d0,d6
-[00012948] 1601                      move.b     d1,d3
-[0001294a] 3d3e                      move.w     ???,-(a6)
-[0001294c] 0018 003e                 ori.b      #$3E,(a0)+
-[00012950] 001a 013e                 ori.b      #$3E,(a2)+
-[00012954] 3d00                      move.w     d0,-(a6)
-[00012956] 1700                      move.b     d0,-(a3)
-[00012958] 2ad0                      move.l     (a0),(a5)+
-[0001295a] bd00                      eor.b      d6,d0
-[0001295c] 3000                      move.w     d0,d0
-[0001295e] b800                      cmp.b      d0,d4
-[00012960] 3100                      move.w     d0,-(a0)
-[00012962] b900                      eor.b      d4,d0
-[00012964] 3200                      move.w     d0,d1
-[00012966] ba00                      cmp.b      d0,d5
-[00012968] 3300                      move.w     d0,-(a1)
-[0001296a] bb01                      eor.b      d5,d1
-[0001296c] 293d                      move.l     ???,-(a4)
-[0001296e] 0039 017d 3d00 4301       ori.b      #$7D,$3D004301
-[00012976] 5d3d                      subq.b     #6,???
-[00012978] 0044 0029                 ori.w      #$0029,d4
-[0001297c] 0033
+x128b8:
+		.dc.w 0x2300
+		.dc.w 0x4d00
+		.dc.w 0x2700
+		.dc.w 0x5700
+		.dc.w 0x0d00
+		.dc.w 0x4600
+		.dc.w 0x2800
+		.dc.w 0x2300
+		.dc.w 0x2900
+		.dc.w 0x2000
+		.dc.w 0x2a00
+		.dc.w 0x0700
+		.dc.w 0x2b00
+		.dc.w 0x0600
+		.dc.w 0x2d00
+		.dc.w 0x0500
+		.dc.w 0x2d00
+		.dc.w 0x1e00
+		.dc.w 0x2c00
+		.dc.w 0x2100
+		.dc.w 0x3b00
+		.dc.w 0x2201
+		.dc.w 0x3d3d
+		.dc.w 0x002d
+		.dc.w 0x013e
+		.dc.w 0x3c00
+		.dc.w 0x0c01
+		.dc.w 0x3c3e
+		.dc.w 0x000c
+		.dc.w 0x013c
+		.dc.w 0x3d00
+		.dc.w 0x0d01
+		.dc.w 0x3d3c
+		.dc.w 0x000e
+		.dc.w 0x013d
+		.dc.w 0x3e00
+		.dc.w 0x1001
+		.dc.w 0x3e3d
+		.dc.w 0x000f
+		.dc.w 0x003c
+		.dc.w 0x0011
+		.dc.w 0x003d
+		.dc.w 0x0013
+		.dc.w 0x003e
+		.dc.w 0x0012
+		.dc.w 0x003a
+		.dc.w 0x007c
+		.dc.w 0x0040
+		.dc.w 0x009f
+		.dc.w 0x0028
+		.dc.w 0x002e
+		.dc.w 0x0028
+		.dc.w 0x009d
+		.dc.w 0x002c
+		.dc.w 0x009c
+		.dc.w 0x002b
+		.dc.w 0x001c
+		.dc.w 0x002c
+		.dc.w 0x0040
+		.dc.w 0x003c
+		.dc.w 0x0019
+		.dc.w 0x013c
+		.dc.w 0x3d00
+		.dc.w 0x1501
+		.dc.w 0x3c3e
+		.dc.w 0x0014
+		.dc.w 0x003d
+		.dc.w 0x001b
+		.dc.w 0x003d
+		.dc.w 0x0045
+		.dc.w 0x013d
+		.dc.w 0x3c00
+		.dc.w 0x1601
+		.dc.w 0x3d3e
+		.dc.w 0x0018
+		.dc.w 0x003e
+		.dc.w 0x001a
+		.dc.w 0x013e
+		.dc.w 0x3d00
+		.dc.w 0x1700
+		.dc.w 0x2ad0
+		.dc.w 0xbd00
+		.dc.w 0x3000
+		.dc.w 0xb800
+		.dc.w 0x3100
+		.dc.w 0xb900
+		.dc.w 0x3200
+		.dc.w 0xba00
+		.dc.w 0x3300
+		.dc.w 0xbb01
+		.dc.w 0x293d
+		.dc.w 0x0039
+		.dc.w 0x017d
+		.dc.w 0x3d00
+		.dc.w 0x4301
+		.dc.w 0x5d3d
+		.dc.w 0x0044
+		.dc.w 0x0029
+		.dc.w 0x0033
 
 func_table:
 func_a_table: /* 1297e */
@@ -5232,64 +5273,71 @@ func_other_table:
 
 x13696:
 [00013696] 7009                      moveq.l    #9,d0
-[00013698] 6006                      bra.s      $000136A0
+[00013698] 6006                      bra.s      f136a0
+f1369a:
 [0001369a] 7003                      moveq.l    #3,d0
-[0001369c] 6002                      bra.s      $000136A0
+[0001369c] 6002                      bra.s      f136a0
+f1369e:
 [0001369e] 7002                      moveq.l    #2,d0
+f136a0:
 [000136a0] 6100 041c                 bsr        x13abe
-[000136a4] bc7c 0088                 cmp.w      #$0088,d6
-[000136a8] 6212                      bhi.s      $000136BC
+[000136a4] bc7c 0088                 cmp.w      #136,d6
+[000136a8] 6212                      bhi.s      f136a0_1
 [000136aa] 3206                      move.w     d6,d1
 [000136ac] e249                      lsr.w      #1,d1
-[000136ae] 6410                      bcc.s      $000136C0
-[000136b0] 123b 101e                 move.b     $000136D0(pc,d1.w),d1
-[000136b4] 0241 000f                 andi.w     #$000F,d1
+[000136ae] 6410                      bcc.s      f136a0_2
+[000136b0] 123b 101e                 move.b     x136d0(pc,d1.w),d1
+[000136b4] 0241 000f                 andi.w     #15,d1
 [000136b8] b001                      cmp.b      d1,d0
-[000136ba] 670e                      beq.s      $000136CA
+[000136ba] 670e                      beq.s      f136a0_3
+f136a0_1:
 [000136bc] 7eff                      moveq.l    #-1,d7
 [000136be] 4e75                      rts
-[000136c0] 123b 100e                 move.b     $000136D0(pc,d1.w),d1
+f136a0_2:
+[000136c0] 123b 100e                 move.b     x136d0(pc,d1.w),d1
 [000136c4] e849                      lsr.w      #4,d1
 [000136c6] b001                      cmp.b      d1,d0
-[000136c8] 66f2                      bne.s      $000136BC
+[000136c8] 66f2                      bne.s      f136a0_1
+f136a0_3:
 [000136ca] 12c6                      move.b     d6,(a1)+
 [000136cc] 7e00                      moveq.l    #0,d7
 [000136ce] 4e75                      rts
 
-[000136d0] 3333
-           3333
-           3333
-           3333
-           3333
-[000136da] 5555
-[000136dc] 5555
-[000136de] 5444
-[000136e0] 7770
-[000136e2] 2000
-[000136e4] 0000
-           0300
-[000136e8] 0000
-           9190
-[000136ec] 9000
-[000136ee] 0000
-           0020
-[000136f2] 0000
-[000136f4] 0000
-[000136f6] 0000
-           0009
-[000136fa] 0000
-           0003
-[000136fe] cc00
-[00013700] 0022
-           2221
-[00013704] 1111
-[00013706] 0009
-           0000
-[0001370a] 0000
-[0001370c] 0000
-           0090
-[00013710] 2000
-[00013712] 2010
+x136d0:
+		.dc.b 0x33,0x33
+		.dc.b 0x33,0x33
+		.dc.b 0x33,0x33
+		.dc.b 0x33,0x33
+		.dc.b 0x33,0x33
+		.dc.b 0x55,0x55
+		.dc.b 0x55,0x55
+		.dc.b 0x54,0x44
+		.dc.b 0x77,0x70
+		.dc.b 0x20,0x00
+		.dc.b 0x00,0x00
+		.dc.b 0x03,0x00
+		.dc.b 0x00,0x00
+		.dc.b 0x91,0x90
+		.dc.b 0x90,0x00
+		.dc.b 0x00,0x00
+		.dc.b 0x00,0x20
+		.dc.b 0x00,0x00
+		.dc.b 0x00,0x00
+		.dc.b 0x00,0x00
+		.dc.b 0x00,0x09
+		.dc.b 0x00,0x00
+		.dc.b 0x00,0x03
+		.dc.b 0xcc,0x00
+		.dc.b 0x00,0x22
+		.dc.b 0x22,0x21
+		.dc.b 0x11,0x11
+		.dc.b 0x00,0x09
+		.dc.b 0x00,0x00
+		.dc.b 0x00,0x00
+		.dc.b 0x00,0x00
+		.dc.b 0x00,0x90
+		.dc.b 0x20,0x00
+		.dc.b 0x20,0x10
 
 cmd_index_table:
 		.dc.w cmd_a_table-x13696
@@ -5350,17 +5398,20 @@ func_index_table:
 x1377c:
 [0001377c] 49ee 0352                 lea.l      850(a6),a4
 [00013780] 4bee 0452                 lea.l      1106(a6),a5
+x1377c_1:
 [00013784] 101c                      move.b     (a4)+,d0
-[00013786] 6602                      bne.s      $0001378A
+[00013786] 6602                      bne.s      x1377c_2
 [00013788] 700d                      moveq.l    #13,d0
+x1377c_2:
 [0001378a] b03c 007a                 cmp.b      #'z',d0
-[0001378e] 620a                      bhi.s      $0001379A
+[0001378e] 620a                      bhi.s      x1377c_3
 [00013790] b03c 0061                 cmp.b      #'a',d0
-[00013794] 6504                      bcs.s      $0001379A
+[00013794] 6504                      bcs.s      x1377c_3
 [00013796] 0400 0020                 subi.b     #' ',d0
+x1377c_3:
 [0001379a] 1ac0                      move.b     d0,(a5)+
 [0001379c] b03c 000d                 cmp.b      #13,d0
-[000137a0] 66e2                      bne.s      $00013784
+[000137a0] 66e2                      bne.s      x1377c_1
 [000137a2] 41ee 0452                 lea.l      1106(a6),a0
 [000137a6] 4e75                      rts
 
@@ -5399,45 +5450,49 @@ x137d2:
 [000137f4] 6100 00a6                 bsr        x1389c
 [000137f8] 6100 0160                 bsr        x1395a
 [000137fc] 2009                      move.l     a1,d0
-[000137fe] 6624                      bne.s      $00013824
+[000137fe] 6624                      bne.s      x137d2_1
 [00013800] 45fa 0881                 lea.l      x14083(pc),a2
 [00013804] 303c 0098                 move.w     #152,d0
 [00013808] 61b6                      bsr.s      x137c0
-[0001380a] 6618                      bne.s      $00013824
+[0001380a] 6618                      bne.s      x137d2_1
 [0001380c] 45fa 1191                 lea.l      x1499f(pc),a2
-[00013810] 303c 007e                 move.w     #$007E,d0
+[00013810] 303c 007e                 move.w     #126,d0
 [00013814] 61aa                      bsr.s      x137c0
-[00013816] 660c                      bne.s      $00013824
+[00013816] 660c                      bne.s      x137d2_1
 [00013818] 45fa 1140                 lea.l      x1495a(pc),a2
-[0001381c] 303c 0078                 move.w     #$0078,d0
+[0001381c] 303c 0078                 move.w     #120,d0
 [00013820] 619e                      bsr.s      x137c0
-[00013822] 6768                      beq.s      $0001388C
-[00013824] 6b6c                      bmi.s      $00013892
+[00013822] 6768                      beq.s      x137d2_5
+x137d2_1:
+[00013824] 6b6c                      bmi.s      x137d2_6
 [00013826] 4850                      pea.l      (a0)
-[00013828] 6100 1cc6                 bsr        $000154F0
-[0001382c] 6100 2154                 bsr        $00015982
+[00013828] 6100 1cc6                 bsr        x154f0
+[0001382c] 6100 2154                 bsr        x15982
 [00013830] 203a ff82                 move.l     x137b4(pc),d0
-[00013834] 6732                      beq.s      $00013868
+[00013834] 6732                      beq.s      x137d2_4
 [00013836] 2040                      movea.l    d0,a0
 [00013838] 41e8 ff00                 lea.l      -256(a0),a0
 [0001383c] 2009                      move.l     a1,d0
-[0001383e] 6f28                      ble.s      $00013868
+[0001383e] 6f28                      ble.s      x137d2_4
 [00013840] 5280                      addq.l     #1,d0
 [00013842] 0880 0000                 bclr       #0,d0
 [00013846] 2240                      movea.l    d0,a1
 [00013848] 2448                      movea.l    a0,a2
 [0001384a] 70ff                      moveq.l    #-1,d0
+x137d2_2:
 [0001384c] 5240                      addq.w     #1,d0
 [0001384e] 0c22 0020                 cmpi.b     #' ',-(a2)
-[00013852] 67f8                      beq.s      $0001384C
+[00013852] 67f8                      beq.s      x137d2_2
 [00013854] 12c0                      move.b     d0,(a1)+
 [00013856] 0c18 0021                 cmpi.b     #'!',(a0)+
-[0001385a] 6702                      beq.s      $0001385E
+[0001385a] 6702                      beq.s      x137d2_3
 [0001385c] 5288                      addq.l     #1,a0
+x137d2_3:
 [0001385e] 1018                      move.b     (a0)+,d0
 [00013860] 12c0                      move.b     d0,(a1)+
 [00013862] b03c 000d                 cmp.b      #13,d0
-[00013866] 66f6                      bne.s      $0001385E
+[00013866] 66f6                      bne.s      x137d2_3
+x137d2_4:
 [00013868] 205f                      movea.l    (a7)+,a0
 [0001386a] 2009                      move.l     a1,d0
 [0001386c] 43ee 0552                 lea.l      1362(a6),a1
@@ -5445,15 +5500,17 @@ x137d2:
 [00013872] 5240                      addq.w     #1,d0
 [00013874] 0240 fffe                 andi.w     #0xFFFE,d0
 [00013878] b07c 10fe                 cmp.w      #0x10FE,d0
-[0001387c] 6214                      bhi.s      $00013892
+[0001387c] 6214                      bhi.s      x137d2_6
 [0001387e] 3280                      move.w     d0,(a1)
 [00013880] e1e9 0002                 asl.w      2(a1)
 [00013884] 4e75                      rts
 [00013886] 2e7a 0010                 movea.l    x13898(pc),a7
 [0001388a] 93c9                      suba.l     a1,a1
+x137d2_5:
 [0001388c] 207a ff2a                 movea.l    x137b8(pc),a0
 [00013890] 4e75                      rts
-[00013892] 43f8 ffff                 lea.l      ($FFFFFFFF).w,a1
+x137d2_6:
+[00013892] 43f8 ffff                 lea.l      (-1).w,a1
 [00013896] 4e75                      rts
 
 x13898: .dc.l 0
@@ -5473,7 +5530,7 @@ x1389c:
 [000138c4] 661c                      bne.s      $000138E2
 [000138c6] 5688                      addq.l     #3,a0
 [000138c8] 32fc 00f8                 move.w     #248,(a1)+ /* TOK_CMD_END*2 */
-[000138cc] 45fa 0b9c                 lea.l      $0001446A(pc),a2
+[000138cc] 45fa 0b9c                 lea.l      x1446a(pc),a2
 [000138d0] 4e75                      rts
 
 [000138d2] 45fa e226                 lea.l      cmd_table(pc),a2
@@ -5482,6 +5539,7 @@ x1389c:
 [000138da] 45fa ecab                 lea.l      cmd_other_table(pc),a2
 [000138de] 747f                      moveq.l    #127,d2
 [000138e0] 601e                      bra.s      $00013900
+
 [000138e2] 45fa fe30                 lea.l      cmd_index_table(pc),a2
 [000138e6] 3602                      move.w     d2,d3
 [000138e8] 0443 0041                 subi.w     #'A',d3
@@ -10484,6 +10542,8 @@ f154da:
 [000154e8] 6600 e81c                 bne        $00013D06
 [000154ec] 740f                      moveq.l    #15,d2
 [000154ee] 60ac                      bra.s      $0001549C
+
+x154f0:
 [000154f0] 41ee 0554                 lea.l      1364(a6),a0
 [000154f4] 3018                      move.w     (a0)+,d0
 [000154f6] b07c 00e4                 cmp.w      #228,d0 /* TOK_CMD_REM*2 */
@@ -10899,22 +10959,26 @@ f15976:
 [00015976] 7004                      moveq.l    #4,d0
 [00015978] 13c0 0001 5980            move.b     d0,$00015980
 [0001597e] 4e75                      rts
-[00015980] 0000 41ee                 ori.b      #$EE,d0
-[00015984] 0554                      bchg       d2,(a4)
+
+[00015980] 0000
+
+x15982:
+[00015982] 41ee                      lea.l      1364(a6),a0
 [00015986] 3018                      move.w     (a0)+,d0
-[00015988] b07c 0078                 cmp.w      #$0078,d0
+[00015988] b07c 0078                 cmp.w      #120,d0 /* TOK_CMD_CALL_IMP*2 */
 [0001598c] 6710                      beq.s      $0001599E
-[0001598e] b07c 007a                 cmp.w      #$007A,d0
+[0001598e] b07c 007a                 cmp.w      #122,d0 /* TOK_CMD_GOSUB*2 */
 [00015992] 670a                      beq.s      $0001599E
-[00015994] b07c 007c                 cmp.w      #$007C,d0
+[00015994] b07c 007c                 cmp.w      #124,d0 /* TOK_CMD_CALL*2 */
 [00015998] 6704                      beq.s      $0001599E
-[0001599a] b07c 000c                 cmp.w      #$000C,d0
-[0001599e] 6700 020a                 beq        $00015BAA
-[000159a2] b07c 0140                 cmp.w      #$0140,d0
+[0001599a] b07c 000c                 cmp.w      #12,d0 /* TOK_CMD_PROCEDURE*2 */
+[0001599e] 6700 020a                 beq        x15baa
+[000159a2] b07c 0140                 cmp.w      #320,d0 /* TOK_CMD_INC_FLOAT*2 */
 [000159a6] 650a                      bcs.s      $000159B2
-[000159a8] b07c 0190                 cmp.w      #$0190,d0
+[000159a8] b07c 0190                 cmp.w      #400,d0 /* TOK_CMD_DIV_FLOAT*2 */
 [000159ac] 6300 0198                 bls        $00015B46
 [000159b0] 4e75                      rts
+
 [000159b2] b07c 0080                 cmp.w      #128,d0 /* TOK_CMD_LET_FLOAT*2 */
 [000159b6] 6700 0082                 beq        $00015A3A
 [000159ba] b07c 0098                 cmp.w      #152,d0 /* TOK_CMD_ASSIGN_FLOAT*2 */
@@ -11092,7 +11156,9 @@ x15a04: .dc.b 0,0,6,0,0,0,0,0,12,18
 [00015b9e] 0800 0a00                 btst       #2560,d0
 [00015ba2] 0406 0000                 subi.b     #$00,d6
 [00015ba6] 0c0e 0000                 cmpi.b     #$00,a6 ; apollo only
-[00015baa] 0c10 00f0                 cmpi.b     #$F0,(a0)
+
+x15baa:
+[00015baa] 0c10 00f0                 cmpi.b     #240,(a0)
 [00015bae] 6510                      bcs.s      $00015BC0
 [00015bb0] 10e8 0001                 move.b     1(a0),(a0)+
 [00015bb4] 10e8 0001                 move.b     1(a0),(a0)+
