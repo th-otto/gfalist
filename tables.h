@@ -16,9 +16,14 @@ extern struct gfaversinfo const gfarecl[71];
 /*
  * line level commands
  */
+#define TOK_CMD_PROCEDURE         6
 #define TOK_CMD_FOR_FLOAT        19
 #define TOK_CMD_NEXT_FLOAT       31
 #define TOK_CMD_EOF              45
+#define TOK_CMD_CALL_IMP         60
+#define TOK_CMD_GOSUB            61
+#define TOK_CMD_CALL             62
+#define TOK_CMD_LABEL            63
 #define TOK_CMD_LET_FLOAT        64
 #define TOK_CMD_ASSIGN_FLOAT     76
 #define TOK_CMD_REM             114
@@ -26,6 +31,8 @@ extern struct gfaversinfo const gfarecl[71];
 #define TOK_CMD_SYNERR          116
 #define TOK_CMD_DATA            117
 #define TOK_CMD_END             124
+#define TOK_CMD_INC_FLOAT       160
+#define TOK_CMD_DIV_FLOAT       200
 #define TOK_CMD_ADDROUT         225
 #define TOK_CMD_CONTRL          228
 #define TOK_CMD_DOUBLE_REF      237
