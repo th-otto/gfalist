@@ -84,7 +84,7 @@ int main(void)
 	int first_char;
 	
 	out = stdout;
-	fp = fopen("lst2gfa.ttp", "rb");
+	fp = fopen("lst2gfa_orig.ttp", "rb");
 	if (fp == NULL)
 		return 1;
 
@@ -197,6 +197,8 @@ int main(void)
 	dump_table(fp, 0x145c6, 0x14be6);
 	fprintf(out, "\n");
 	dump_table(fp, 0x14ce8, 0x14d16);
+	fprintf(out, "\n");
+	dump_table(fp, 0x14ee8, 0x152e4);
 	fprintf(out, "\n");
 	
 	return 0;

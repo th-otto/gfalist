@@ -743,18 +743,18 @@ const char *const gfapft[256] = {
 	/*  207 */ NULL, /* binary constant */
 	/*  208 */ NULL, /* secondary function -> gfasft_208 */
 	/*  209 */ NULL, /* secondary function -> gfasft_209 */
-	/*  210 */ NULL, /* secondary function -> unknown */
-	/*  211 */ NULL, /* secondary function -> unknown */
-	/*  212 */ NULL, /* secondary function -> unknown */
-	/*  213 */ NULL, /* secondary function -> unknown */
-	/*  214 */ NULL, /* secondary function -> unknown */
-	/*  215 */ NULL, /* octal double constant */
+	/*  210 */ NULL, /* secondary function -> gfasft_210 */
+	/*  211 */ NULL, /* secondary function -> gfasft_211 */
+	/*  212 */ NULL, /* secondary function -> gfasft_212 */
+	/*  213 */ NULL, /* secondary function -> gfasft_213 */
+	/*  214 */ NULL, /* secondary function -> gfasft_214 */
+	/*  215 */ NULL, /* octal double constant (pad byte) */
 	/*  216 */ NULL, /* octal double constant */
-	/*  217 */ NULL, /* binary double constant */
+	/*  217 */ NULL, /* binary double constant (pad byte) */
 	/*  218 */ NULL, /* binary double constant */
-	/*  219 */ NULL, /* hexadecimal double constant */
+	/*  219 */ NULL, /* hexadecimal double constant (pad byte) */
 	/*  220 */ NULL, /* hexadecimal double constant */
-	/*  221 */ NULL, /* decimal double constant */
+	/*  221 */ NULL, /* decimal double constant (pad byte) */
 	/*  222 */ NULL, /* string constant */
 	/*  223 */ NULL, /* decimal double constant */
 	/*  224 */ NULL, /* variable access, 1 byte follows */

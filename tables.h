@@ -32,6 +32,10 @@ extern struct gfaversinfo const gfarecl[71];
 #define TOK_CMD_DATA            117
 #define TOK_CMD_END             124
 #define TOK_CMD_INC_FLOAT       160
+#define TOK_CONST_ZERO          184
+#define TOK_CONST_ONE           185
+#define TOK_CONST_TWO           186
+#define TOK_CONST_THREE         187
 #define TOK_CMD_DIV_FLOAT       200
 #define TOK_CMD_ADDROUT         225
 #define TOK_CMD_CONTRL          228
@@ -46,6 +50,8 @@ extern struct gfaversinfo const gfarecl[71];
  * tokens in a line
  */
 #define TOK_LINE_COMMENT         70
+#define TOK_FNCALL              158
+#define TOK_GOSUB               159
 #define TOK_CHAR_CONST          198
 #define TOK_CHAR_CONST_PAD      199
 #define TOK_DEC_CONST           200
@@ -59,6 +65,10 @@ extern struct gfaversinfo const gfarecl[71];
 #define TOK_SUBFUNC_208         208
 #define TOK_SUBFUNC_209         209
 #define TOK_SUBFUNC_210         210
+#define TOK_SUBFUNC_211         211
+#define TOK_SUBFUNC_212         212
+#define TOK_SUBFUNC_213         213
+#define TOK_SUBFUNC_214         214
 #define TOK_OCT_DBL_CONST_PAD   215
 #define TOK_OCT_DBL_CONST       216
 #define TOK_BIN_DBL_CONST_PAD   217
@@ -66,7 +76,9 @@ extern struct gfaversinfo const gfarecl[71];
 #define TOK_HEX_DBL_CONST_PAD   219
 #define TOK_HEX_DBL_CONST       220
 #define TOK_DEC_DBL_CONST_PAD   221
-#define TOK_DEC_DBL_CONST       223
 #define TOK_STRING_CONST        222
+#define TOK_DEC_DBL_CONST       223
+#define TOK_REF_FLOAT_SHORT     224
+#define TOK_REF_FLOAT           240
 
 #endif
