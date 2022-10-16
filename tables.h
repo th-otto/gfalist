@@ -16,10 +16,34 @@ extern struct gfaversinfo const gfarecl[71];
 /*
  * line level commands
  */
+#define TOK_CMD_DO                0
+#define TOK_CMD_LOOP              1
+#define TOK_CMD_REPEAT            2
+#define TOK_CMD_UNTIL             3
+#define TOK_CMD_WHILE             4
+#define TOK_CMD_WEND              5
 #define TOK_CMD_PROCEDURE         6
+#define TOK_CMD_ENDPROC           7
+#define TOK_CMD_IF                8
+#define TOK_CMD_ENDIF             9
+#define TOK_CMD_FUNCTION         10
+#define TOK_CMD_ENDFUNC          11
+#define TOK_CMD_SELECT           12
+#define TOK_CMD_ENDSELECT        13
+#define TOK_CMD_ELSE             14
+#define TOK_CMD_DEFAULT          15
+#define TOK_CMD_ELSEIF           16
+#define TOK_CMD_RETURN           17
+#define TOK_CMD_RETURN_STR       18
 #define TOK_CMD_FOR_FLOAT        19
 #define TOK_CMD_NEXT_FLOAT       31
+#define TOK_CMD_EXITIF           43
+#define TOK_CMD_SELECT_STR       44
 #define TOK_CMD_EOF              45
+#define TOK_CMD_DO_WHILE         49
+#define TOK_CMD_LOOP_UNTIL       52
+#define TOK_CMD_EXITIF2          55
+#define TOK_CMD_CASE             56
 #define TOK_CMD_CALL_IMP         60
 #define TOK_CMD_GOSUB            61
 #define TOK_CMD_CALL             62
@@ -43,6 +67,12 @@ extern struct gfaversinfo const gfarecl[71];
 #define TOK_CMD_DOT             254
 #define TOK_CMD_FILES           325
 #define TOK_CMD_FILESELECT      329
+#define TOK_CMD_DEFINT          381
+#define TOK_CMD_DEFFLT          382
+#define TOK_CMD_DEFBYT          383
+#define TOK_CMD_DEFWRD          384
+#define TOK_CMD_DEFBIT          385
+#define TOK_CMD_DEFSTR          386
 #define TOK_CMD_DOLLAR          411
 #define TOK_CMD_INLINE          417
 

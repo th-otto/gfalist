@@ -58,7 +58,7 @@ const char *const gfalct[] = {
 	/*  52 */ "LOOP UNTIL ",
 	/*  53 */ "LOCAL ",
 	/*  54 */ "> PROCEDURE ",
-	/*  55 */ "EXIT IF ",
+	/*  55 */ "EXIT IF ",					/* todo */
 	/*  56 */ "CASE ",
 	/*  57 */ "DEFFN ",
 	/*  58 */ "GOTO ",

@@ -6,16 +6,42 @@ EOL = 13
 CR  = 13
 NL  = 10
 
+TOK_CMD_DO              =   0
+TOK_CMD_LOOP            =   1
+TOK_CMD_REPEAT          =   2
+TOK_CMD_UNTIL           =   3
+TOK_CMD_WHILE           =   4
+TOK_CMD_WEND            =   5
 TOK_CMD_PROCEDURE       =   6
+TOK_CMD_ENDPROC         =   7
+TOK_CMD_IF              =   8
+TOK_CMD_ENDIF           =   9
+TOK_CMD_FUNCTION        =  10
+TOK_CMD_ENDFUNC         =  11
+TOK_CMD_SELECT          =  12
+TOK_CMD_ENDSELECT       =  13
+TOK_CMD_ELSE            =  14
+TOK_CMD_DEFAULT         =  15
+TOK_CMD_ELSEIF          =  16
+TOK_CMD_RETURN          =  17
+TOK_CMD_RETURN_STR      =  18
 TOK_CMD_FOR_FLOAT       =  19
 TOK_CMD_NEXT_FLOAT      =  31
+TOK_CMD_EXITIF          =  43
+TOK_CMD_SELECT_STR      =  44
 TOK_CMD_EOF             =  45
+TOK_CMD_DO_WHILE        =  49
+TOK_CMD_LOOP_UNTIL      =  52
+TOK_CMD_PROCEDURE2      =  54
+TOK_CMD_EXITIF2         =  55
+TOK_CMD_CASE            =  56
 TOK_CMD_CALL_IMP        =  60
 TOK_CMD_GOSUB           =  61
 TOK_CMD_CALL            =  62
 TOK_CMD_LABEL           =  63
 TOK_CMD_LET_FLOAT       =  64
 TOK_CMD_ASSIGN_FLOAT    =  76
+TOK_CMD_ASSIGN_BYTE_ARR =  87
 TOK_CMD_REM             = 114
 TOK_CMD_COMMENT         = 115
 TOK_CMD_SYNERR          = 116
@@ -27,6 +53,7 @@ TOK_CONST_ONE           = 185
 TOK_CONST_TWO           = 186
 TOK_CONST_THREE         = 187
 TOK_CMD_DIV_FLOAT       = 200
+TOK_CMD_DIV_BYTE_ARR    = 207
 TOK_CMD_ADDRIN          = 224
 TOK_CMD_ADDROUT         = 225
 TOK_CMD_CONTRL          = 228
@@ -34,6 +61,12 @@ TOK_CMD_DOUBLE_REF      = 237
 TOK_CMD_DOT             = 254
 TOK_CMD_FILES           = 325
 TOK_CMD_FILESELECT      = 329
+TOK_CMD_DEFINT          = 381
+TOK_CMD_DEFFLT          = 382
+TOK_CMD_DEFBYT          = 383
+TOK_CMD_DEFWRD          = 384
+TOK_CMD_DEFBIT          = 385
+TOK_CMD_DEFSTR          = 386
 TOK_CMD_DOLLAR          = 411
 TOK_CMD_INLINE          = 417
 
@@ -8027,7 +8060,7 @@ x14554:
 x14555:
 	.dc.b -1,(x1455c-x13696)/256,(x1455c-x13696)&255
 x14558:
-	.dc.b -2,(f15bca-x13696)/256,(f15bca-x13696)&255
+	.dc.b -2,(execute_defint-x13696)/256,(execute_defint-x13696)&255
 x1455b:
 	.dc.b -4
 x1455c:
@@ -11846,447 +11879,518 @@ x1577c_1:
 
 x1578c:
 [0001578c] 0800 0000                 btst       #0,d0
-[00015790] 6710                      beq.s      $000157A2
+[00015790] 6710                      beq.s      x1578c_1
 [00015792] 2008                      move.l     a0,d0
 [00015794] 0800 0000                 btst       #0,d0
-[00015798] 6716                      beq.s      $000157B0
+[00015798] 6716                      beq.s      x1578c_2
 [0001579a] d0fc 0009                 adda.w     #9,a0
-[0001579e] 6000 fd82                 bra        $00015522
+[0001579e] 6000 fd82                 bra        x154f0_3
+x1578c_1:
 [000157a2] 2008                      move.l     a0,d0
 [000157a4] 0800 0000                 btst       #0,d0
-[000157a8] 6612                      bne.s      $000157BC
+[000157a8] 6612                      bne.s      x1578c_3
 [000157aa] 5088                      addq.l     #8,a0
-[000157ac] 6000 fd74                 bra        $00015522
+[000157ac] 6000 fd74                 bra        x154f0_3
+x1578c_2:
 [000157b0] 61ba                      bsr.s      x1576c
 [000157b2] 5220                      addq.b     #1,-(a0)
 [000157b4] d0fc 0009                 adda.w     #9,a0
-[000157b8] 6000 fd68                 bra        $00015522
-[000157bc] 61be                      bsr.s      $0001577C
+[000157b8] 6000 fd68                 bra        x154f0_3
+x1578c_3:
+[000157bc] 61be                      bsr.s      x1577c
 [000157be] 5320                      subq.b     #1,-(a0)
 [000157c0] d0fc 000a                 adda.w     #10,a0
-[000157c4] 6000 fd5c                 bra        $00015522
+[000157c4] 6000 fd5c                 bra        x154f0_3
+
+x157c8:
 [000157c8] 1018                      move.b     (a0)+,d0
+x157c8_1:
 [000157ca] b03c 0020                 cmp.b      #' ',d0
-[000157ce] 67f8                      beq.s      $000157C8
+[000157ce] 67f8                      beq.s      x157c8
 [000157d0] 4e75                      rts
-[000157d2] 4239 0001 585a            clr.b      $0001585A
+
+x157d2:
+[000157d2] 4239 0001 585a            clr.b      x1585a
 [000157d8] 7400                      moveq.l    #0,d2
-[000157da] b03c 0022                 cmp.b      #$22,d0
-[000157de] 6700 00f0                 beq        $000158D0
-[000157e2] b03c 002b                 cmp.b      #$2B,d0
-[000157e6] 670c                      beq.s      $000157F4
-[000157e8] b03c 002d                 cmp.b      #$2D,d0
-[000157ec] 660a                      bne.s      $000157F8
-[000157ee] 4639 0001 585a            not.b      $0001585A
-[000157f4] 61d2                      bsr.s      $000157C8
-[000157f6] 60ea                      bra.s      $000157E2
+[000157da] b03c 0022                 cmp.b      #'"',d0
+[000157de] 6700 00f0                 beq        x157d2_14
+x157d2_1:
+[000157e2] b03c 002b                 cmp.b      #'+',d0
+[000157e6] 670c                      beq.s      x157d2_2
+[000157e8] b03c 002d                 cmp.b      #'-',d0
+[000157ec] 660a                      bne.s      x157d2_3
+[000157ee] 4639 0001 585a            not.b      x1585a
+x157d2_2:
+[000157f4] 61d2                      bsr.s      x157c8
+[000157f6] 60ea                      bra.s      x157d2_1
+x157d2_3:
 [000157f8] b03c 0026                 cmp.b      #'&',d0
-[000157fc] 675e                      beq.s      $0001585C
-[000157fe] 7203                      moveq.l    #3,d1
+[000157fc] 675e                      beq.s      x157d2_8
+[000157fe] 7203                      moveq.l    #(TOK_BIN_CONST-TOK_DEC_CONST)/2,d1
 [00015800] b03c 0025                 cmp.b      #'%',d0
-[00015804] 6700 00b2                 beq        $000158B8
-[00015808] 7201                      moveq.l    #1,d1
+[00015804] 6700 00b2                 beq        x157d2_13
+[00015808] 7201                      moveq.l    #(TOK_HEX_CONST-TOK_DEC_CONST)/2,d1
 [0001580a] b03c 0024                 cmp.b      #'$',d0
-[0001580e] 6766                      beq.s      $00015876
+[0001580e] 6766                      beq.s      x157d2_9
 [00015810] 0400 0030                 subi.b     #'0',d0
-[00015814] b03c 0009                 cmp.b      #$09,d0
-[00015818] 622e                      bhi.s      $00015848
+[00015814] b03c 0009                 cmp.b      #9,d0
+[00015818] 622e                      bhi.s      x157d2_5
 [0001581a] 7200                      moveq.l    #0,d1
 [0001581c] 740f                      moveq.l    #15,d2
 [0001581e] c440                      and.w      d0,d2
+x157d2_4:
 [00015820] 7000                      moveq.l    #0,d0
 [00015822] 1018                      move.b     (a0)+,d0
 [00015824] b03c 0030                 cmp.b      #'0',d0
-[00015828] 6522                      bcs.s      $0001584C
+[00015828] 6522                      bcs.s      x157d2_6
 [0001582a] b03c 0039                 cmp.b      #'9',d0
-[0001582e] 621c                      bhi.s      $0001584C
-[00015830] 0200 000f                 andi.b     #$0F,d0
+[0001582e] 621c                      bhi.s      x157d2_6
+[00015830] 0200 000f                 andi.b     #15,d0
 [00015834] d482                      add.l      d2,d2
-[00015836] 6910                      bvs.s      $00015848
+[00015836] 6910                      bvs.s      x157d2_5
 [00015838] d082                      add.l      d2,d0
-[0001583a] 690c                      bvs.s      $00015848
+[0001583a] 690c                      bvs.s      x157d2_5
 [0001583c] d482                      add.l      d2,d2
-[0001583e] 6908                      bvs.s      $00015848
+[0001583e] 6908                      bvs.s      x157d2_5
 [00015840] d482                      add.l      d2,d2
-[00015842] 6904                      bvs.s      $00015848
+[00015842] 6904                      bvs.s      x157d2_5
 [00015844] d480                      add.l      d0,d2
-[00015846] 68d8                      bvc.s      $00015820
-[00015848] 703f                      moveq.l    #63,d0
+[00015846] 68d8                      bvc.s      x157d2_4
+x157d2_5:
+[00015848] 703f                      moveq.l    #'?',d0
 [0001584a] 4e75                      rts
-[0001584c] 4a39 0001 585a            tst.b      $0001585A
-[00015852] 6702                      beq.s      $00015856
+x157d2_6:
+[0001584c] 4a39 0001 585a            tst.b      x1585a
+[00015852] 6702                      beq.s      x157d2_7
 [00015854] 4482                      neg.l      d2
-[00015856] 6000 ff72                 bra        $000157CA
-[0001585a] 0000 1018                 ori.b      #$18,d0
-[0001585e] 7203                      moveq.l    #3,d1
-[00015860] b03c 0058                 cmp.b      #$58,d0
-[00015864] 6752                      beq.s      $000158B8
-[00015866] 7202                      moveq.l    #2,d1
-[00015868] b03c 004f                 cmp.b      #$4F,d0
-[0001586c] 6730                      beq.s      $0001589E
-[0001586e] 7201                      moveq.l    #1,d1
-[00015870] b03c 0048                 cmp.b      #$48,d0
-[00015874] 6602                      bne.s      $00015878
+x157d2_7:
+[00015856] 6000 ff72                 bra        x157c8_1
+
+x1585a: .dc.b 0
+		.even
+
+x157d2_8:
+[0001585c] 1018                      move.b     (a0)+,d0
+[0001585e] 7203                      moveq.l    #(TOK_BIN_CONST-TOK_DEC_CONST)/2,d1
+[00015860] b03c 0058                 cmp.b      #'X',d0
+[00015864] 6752                      beq.s      x157d2_13
+[00015866] 7202                      moveq.l    #(TOK_OCT_CONST-TOK_DEC_CONST)/2,d1
+[00015868] b03c 004f                 cmp.b      #'O',d0
+[0001586c] 6730                      beq.s      x157d2_12
+[0001586e] 7201                      moveq.l    #(TOK_HEX_CONST-TOK_DEC_CONST)/2,d1
+[00015870] b03c 0048                 cmp.b      #'H',d0
+[00015874] 6602                      bne.s      x157d2_10
+x157d2_9:
 [00015876] 1018                      move.b     (a0)+,d0
-[00015878] b03c 0046                 cmp.b      #$46,d0
-[0001587c] 62ce                      bhi.s      $0001584C
+x157d2_10:
+[00015878] b03c 0046                 cmp.b      #'F',d0
+[0001587c] 62ce                      bhi.s      x157d2_6
 [0001587e] b03c 0030                 cmp.b      #'0',d0
-[00015882] 65c8                      bcs.s      $0001584C
+[00015882] 65c8                      bcs.s      x157d2_6
 [00015884] b03c 0039                 cmp.b      #'9',d0
-[00015888] 6308                      bls.s      $00015892
+[00015888] 6308                      bls.s      x157d2_11
 [0001588a] b03c 0041                 cmp.b      #'A',d0
-[0001588e] 65b8                      bcs.s      $00015848
+[0001588e] 65b8                      bcs.s      x157d2_5
 [00015890] 5f00                      subq.b     #7,d0
-[00015892] 0200 000f                 andi.b     #$0F,d0
+x157d2_11:
+[00015892] 0200 000f                 andi.b     #15,d0
 [00015896] e982                      asl.l      #4,d2
-[00015898] 65ae                      bcs.s      $00015848
+[00015898] 65ae                      bcs.s      x157d2_5
 [0001589a] 8400                      or.b       d0,d2
-[0001589c] 60d8                      bra.s      $00015876
+[0001589c] 60d8                      bra.s      x157d2_9
+x157d2_12:
 [0001589e] 1018                      move.b     (a0)+,d0
 [000158a0] b03c 0030                 cmp.b      #'0',d0
-[000158a4] 65a6                      bcs.s      $0001584C
+[000158a4] 65a6                      bcs.s      x157d2_6
 [000158a6] b03c 0039                 cmp.b      #'9',d0
-[000158aa] 62a0                      bhi.s      $0001584C
-[000158ac] 0200 0007                 andi.b     #$07,d0
+[000158aa] 62a0                      bhi.s      x157d2_6
+[000158ac] 0200 0007                 andi.b     #7,d0
 [000158b0] e782                      asl.l      #3,d2
-[000158b2] 6594                      bcs.s      $00015848
+[000158b2] 6594                      bcs.s      x157d2_5
 [000158b4] 8400                      or.b       d0,d2
-[000158b6] 60e6                      bra.s      $0001589E
+[000158b6] 60e6                      bra.s      x157d2_12
+x157d2_13:
 [000158b8] 1018                      move.b     (a0)+,d0
 [000158ba] b03c 0030                 cmp.b      #'0',d0
-[000158be] 658c                      bcs.s      $0001584C
-[000158c0] b03c 0031                 cmp.b      #$31,d0
-[000158c4] 6286                      bhi.s      $0001584C
+[000158be] 658c                      bcs.s      x157d2_6
+[000158c0] b03c 0031                 cmp.b      #'1',d0
+[000158c4] 6286                      bhi.s      x157d2_6
 [000158c6] e208                      lsr.b      #1,d0
 [000158c8] e392                      roxl.l     #1,d2
-[000158ca] 6500 ff7c                 bcs        $00015848
-[000158ce] 60e8                      bra.s      $000158B8
-[000158d0] 7204                      moveq.l    #4,d1
+[000158ca] 6500 ff7c                 bcs        x157d2_5
+[000158ce] 60e8                      bra.s      x157d2_13
+x157d2_14:
+[000158d0] 7204                      moveq.l    #4,d1 /* string constant */
+x157d2_15:
 [000158d2] 1018                      move.b     (a0)+,d0
-[000158d4] b03c 000d                 cmp.b      #13,d0
-[000158d8] 6700 ff72                 beq        $0001584C
-[000158dc] b03c 0022                 cmp.b      #$22,d0
-[000158e0] 660a                      bne.s      $000158EC
+[000158d4] b03c 000d                 cmp.b      #CR,d0 /* FIXME: handle also LF */
+[000158d8] 6700 ff72                 beq        x157d2_6
+[000158dc] b03c 0022                 cmp.b      #'"',d0
+[000158e0] 660a                      bne.s      x157d2_16
 [000158e2] 1018                      move.b     (a0)+,d0
-[000158e4] b03c 0022                 cmp.b      #$22,d0
-[000158e8] 6600 ff62                 bne        $0001584C
+[000158e4] b03c 0022                 cmp.b      #'"',d0
+[000158e8] 6600 ff62                 bne        x157d2_6
+x157d2_16:
 [000158ec] e182                      asl.l      #8,d2
-[000158ee] 6500 ff58                 bcs        $00015848
+[000158ee] 6500 ff58                 bcs        x157d2_5
 [000158f2] 1428 feff                 move.b     -257(a0),d2
-[000158f6] 60da                      bra.s      $000158D2
+[000158f6] 60da                      bra.s      x157d2_15
 
 f158f8:
 [000158f8] 4850                      pea.l      (a0)
-[000158fa] 6100 fecc                 bsr        $000157C8
-[000158fe] 6100 fed2                 bsr        $000157D2
-[00015902] b23c 0004                 cmp.b      #$04,d1
-[00015906] 674c                      beq.s      $00015954
-[00015908] b03c 002c                 cmp.b      #$2C,d0
-[0001590c] 6728                      beq.s      $00015936
-[0001590e] b03c 0029                 cmp.b      #$29,d0
-[00015912] 6722                      beq.s      $00015936
-[00015914] b03c 0054                 cmp.b      #$54,d0
-[00015918] 671c                      beq.s      $00015936
+[000158fa] 6100 fecc                 bsr        x157c8
+[000158fe] 6100 fed2                 bsr        x157d2
+[00015902] b23c 0004                 cmp.b      #4,d1 /* string constant? */
+[00015906] 674c                      beq.s      f158f8_4
+f158f8_0:
+[00015908] b03c 002c                 cmp.b      #',',d0
+[0001590c] 6728                      beq.s      f158f8_2
+[0001590e] b03c 0029                 cmp.b      #')',d0
+[00015912] 6722                      beq.s      f158f8_2
+[00015914] b03c 0054                 cmp.b      #'T',d0
+[00015918] 671c                      beq.s      f158f8_2
 [0001591a] b03c 0021                 cmp.b      #'!',d0
-[0001591e] 6716                      beq.s      $00015936
+[0001591e] 6716                      beq.s      f158f8_2
 [00015920] b03c 002f                 cmp.b      #'/',d0
-[00015924] 660a                      bne.s      $00015930
+[00015924] 660a                      bne.s      f158f8_1
 [00015926] b010                      cmp.b      (a0),d0
-[00015928] 670c                      beq.s      $00015936
+[00015928] 670c                      beq.s      f158f8_2
 [0001592a] 0c10 002a                 cmpi.b     #'*',(a0)
-[0001592e] 6706                      beq.s      $00015936
-[00015930] b03c 000d                 cmp.b      #13,d0
-[00015934] 661e                      bne.s      $00015954
-[00015936] 76c8                      moveq.l    #-56,d3
+[0001592e] 6706                      beq.s      f158f8_2
+f158f8_1:
+[00015930] b03c 000d                 cmp.b      #CR,d0
+[00015934] 661e                      bne.s      f158f8_4
+f158f8_2:
+[00015936] 76c8                      moveq.l    #TOK_DEC_CONST,d3
 [00015938] 5388                      subq.l     #1,a0
 [0001593a] d241                      add.w      d1,d1
 [0001593c] d203                      add.b      d3,d1
 [0001593e] 12c1                      move.b     d1,(a1)+
 [00015940] 2609                      move.l     a1,d3
 [00015942] e28b                      lsr.l      #1,d3
-[00015944] 6406                      bcc.s      $0001594C
-[00015946] 5229 ffff                 addq.b     #1,-1(a1)
+[00015944] 6406                      bcc.s      f158f8_3 /* odd address? */
+[00015946] 5229 ffff                 addq.b     #1,-1(a1) /* change into padding token */
 [0001594a] 4219                      clr.b      (a1)+
+f158f8_3:
 [0001594c] 22c2                      move.l     d2,(a1)+
 [0001594e] 7e00                      moveq.l    #0,d7
 [00015950] 588f                      addq.l     #4,a7
 [00015952] 4e75                      rts
+f158f8_4:
 [00015954] 7eff                      moveq.l    #-1,d7
 [00015956] 205f                      movea.l    (a7)+,a0
 [00015958] 4e75                      rts
+
 f1595a:
 [0001595a] 4850                      pea.l      (a0)
-[0001595c] 6100 fe6a                 bsr        $000157C8
-[00015960] 6100 fe70                 bsr        $000157D2
-[00015964] b23c 0004                 cmp.b      #$04,d1
-[00015968] 669e                      bne.s      $00015908
+[0001595c] 6100 fe6a                 bsr        x157c8
+[00015960] 6100 fe70                 bsr        x157d2
+[00015964] b23c 0004                 cmp.b      #4,d1 /* string constant? */
+[00015968] 669e                      bne.s      f158f8_0
 [0001596a] 72ff                      moveq.l    #-1,d1
-[0001596c] 609a                      bra.s      $00015908
+[0001596c] 609a                      bra.s      f158f8_0
+
 f1596e:
 [0001596e] 7000                      moveq.l    #0,d0
-[00015970] 6006                      bra.s      $00015978
+[00015970] 6006                      bra.s      f15976_0
+
 f15972:
 [00015972] 7002                      moveq.l    #2,d0
-[00015974] 6002                      bra.s      $00015978
+[00015974] 6002                      bra.s      f15976_0
+
 f15976:
 [00015976] 7004                      moveq.l    #4,d0
-[00015978] 13c0 0001 5980            move.b     d0,$00015980
+f15976_0:
+[00015978] 13c0 0001 5980            move.b     d0,x15980
 [0001597e] 4e75                      rts
 
-[00015980] 0000
+x15980: .dc.b 0
+		.even
 
 x15982:
 [00015982] 41ee                      lea.l      1364(a6),a0
 [00015986] 3018                      move.w     (a0)+,d0
 [00015988] b07c 0078                 cmp.w      #120,d0 /* TOK_CMD_CALL_IMP*2 */
-[0001598c] 6710                      beq.s      $0001599E
+[0001598c] 6710                      beq.s      x15982_1
 [0001598e] b07c 007a                 cmp.w      #122,d0 /* TOK_CMD_GOSUB*2 */
-[00015992] 670a                      beq.s      $0001599E
+[00015992] 670a                      beq.s      x15982_1
 [00015994] b07c 007c                 cmp.w      #124,d0 /* TOK_CMD_CALL*2 */
-[00015998] 6704                      beq.s      $0001599E
+[00015998] 6704                      beq.s      x15982_1
 [0001599a] b07c 000c                 cmp.w      #12,d0 /* TOK_CMD_PROCEDURE*2 */
-[0001599e] 6700 020a                 beq        x15baa
+x15982_1:
+[0001599e] 6700 020a                 beq        x15982_33
 [000159a2] b07c 0140                 cmp.w      #320,d0 /* TOK_CMD_INC_FLOAT*2 */
-[000159a6] 650a                      bcs.s      $000159B2
+[000159a6] 650a                      bcs.s      x15982_2
 [000159a8] b07c 0190                 cmp.w      #400,d0 /* TOK_CMD_DIV_FLOAT*2 */
-[000159ac] 6300 0198                 bls        $00015B46
+[000159ac] 6300 0198                 bls        x15982_29
 [000159b0] 4e75                      rts
-
+x15982_2:
 [000159b2] b07c 0080                 cmp.w      #128,d0 /* TOK_CMD_LET_FLOAT*2 */
-[000159b6] 6700 0082                 beq        $00015A3A
+[000159b6] 6700 0082                 beq        x15982_8
 [000159ba] b07c 0098                 cmp.w      #152,d0 /* TOK_CMD_ASSIGN_FLOAT*2 */
-[000159be] 677a                      beq.s      $00015A3A
+[000159be] 677a                      beq.s      x15982_8
 [000159c0] b07c 0026                 cmp.w      #38,d0 /* TOK_CMD_FOR_FLOAT*2 */
-[000159c4] 6708                      beq.s      $000159CE
+[000159c4] 6708                      beq.s      x15982_3
 [000159c6] b07c 003e                 cmp.w      #62,d0 /* TOK_CMD_NEXT_FLOAT*2 */
-[000159ca] 6742                      beq.s      $00015A0E
+[000159ca] 6742                      beq.s      x15982_5
 [000159cc] 4e75                      rts
+x15982_3:
 [000159ce] 720f                      moveq.l    #15,d1
 [000159d0] c210                      and.b      (a0),d1
 [000159d2] 7026                      moveq.l    #38,d0
-[000159d4] d03b 102e                 add.b      $00015A04(pc,d1.w),d0
-[000159d8] d039 0001 5980            add.b      $00015980,d0
+[000159d4] d03b 102e                 add.b      x15a04(pc,d1.w),d0
+[000159d8] d039 0001 5980            add.b      x15980,d0
 [000159de] 1140 ffff                 move.b     d0,-1(a0)
 [000159e2] 0810 0004                 btst       #4,(a0)
-[000159e6] 6710                      beq.s      $000159F8
+[000159e6] 6710                      beq.s      x15982_4
 [000159e8] 10e8 0001                 move.b     1(a0),(a0)+
 [000159ec] 10e8 0001                 move.b     1(a0),(a0)+
 [000159f0] 43e8 0002                 lea.l      2(a0),a1
-[000159f4] 6000 00aa                 bra        $00015AA0
+[000159f4] 6000 00aa                 bra        x15982_16
+x15982_4:
 [000159f8] 4218                      clr.b      (a0)+
 [000159fa] 5288                      addq.l     #1,a0
 [000159fc] 43e8 0001                 lea.l      1(a0),a1
-[00015a00] 6000 009e                 bra        $00015AA0
+[00015a00] 6000 009e                 bra        x15982_16
 
 x15a04: .dc.b 0,0,6,0,0,0,0,0,12,18
 
+x15982_5:
 [00015a0e] 5888                      addq.l     #4,a0
 [00015a10] 720f                      moveq.l    #15,d1
 [00015a12] c210                      and.b      (a0),d1
 [00015a14] 703e                      moveq.l    #62,d0
-[00015a16] d03b 10ec                 add.b      $00015A04(pc,d1.w),d0
+[00015a16] d03b 10ec                 add.b      x15a04(pc,d1.w),d0
 [00015a1a] 1140 fffb                 move.b     d0,-5(a0)
 [00015a1e] 0810 0004                 btst       #4,(a0)
-[00015a22] 6710                      beq.s      $00015A34
+[00015a22] 6710                      beq.s      x15982_7
 [00015a24] 10e8 0001                 move.b     1(a0),(a0)+
 [00015a28] 10e8 0001                 move.b     1(a0),(a0)+
-[00015a2c] 10fc 0046                 move.b     #$46,(a0)+
+x15982_6:
+[00015a2c] 10fc 0046                 move.b     #70,(a0)+
 [00015a30] 2248                      movea.l    a0,a1
 [00015a32] 4e75                      rts
+x15982_7:
 [00015a34] 4218                      clr.b      (a0)+
 [00015a36] 5288                      addq.l     #1,a0
-[00015a38] 60f2                      bra.s      $00015A2C
+[00015a38] 60f2                      bra.s      x15982_6
+x15982_8:
 [00015a3a] 720f                      moveq.l    #15,d1
 [00015a3c] c210                      and.b      (a0),d1
-[00015a3e] 143b 1036                 move.b     $00015A76(pc,d1.w),d2
+[00015a3e] 143b 1036                 move.b     x15a76(pc,d1.w),d2
 [00015a42] d528 ffff                 add.b      d2,-1(a0)
 [00015a46] 0810 0004                 btst       #4,(a0)
-[00015a4a] 6716                      beq.s      $00015A62
+[00015a4a] 6716                      beq.s      x15982_9
 [00015a4c] 10e8 0001                 move.b     1(a0),(a0)+
 [00015a50] 10e8 0001                 move.b     1(a0),(a0)+
 [00015a54] 43e8 0001                 lea.l      1(a0),a1
-[00015a58] 0c11 0045                 cmpi.b     #$45,(a1)
-[00015a5c] 6642                      bne.s      $00015AA0
+[00015a58] 0c11 0045                 cmpi.b     #69,(a1)
+[00015a5c] 6642                      bne.s      x15982_16
 [00015a5e] 5289                      addq.l     #1,a1
-[00015a60] 603e                      bra.s      $00015AA0
+[00015a60] 603e                      bra.s      x15982_16
+x15982_9:
 [00015a62] 4218                      clr.b      (a0)+
-[00015a64] 0c28 0045 0001            cmpi.b     #$45,1(a0)
-[00015a6a] 6608                      bne.s      $00015A74
+[00015a64] 0c28 0045 0001            cmpi.b     #69,1(a0)
+[00015a6a] 6608                      bne.s      x15982_10
 [00015a6c] 5288                      addq.l     #1,a0
 [00015a6e] 43e8 0001                 lea.l      1(a0),a1
-[00015a72] 602c                      bra.s      $00015AA0
+[00015a72] 602c                      bra.s      x15982_16
+x15982_10:
 [00015a74] 4e75                      rts
-[00015a76] 0002 0406                 ori.b      #$06,d2
-[00015a7a] 0c0e 1012                 cmpi.b     #$12,a6 ; apollo only
-[00015a7e] 080a 0000                 btst       #0,a2
-[00015a82] 1416                      move.b     (a6),d2
-[00015a84] 0000 7000                 ori.b      #$00,d0
+
+x15a76: dc.b 0,2,4,6,12,14,16,18,8,10,0,0,20,22,0,0
+
+x15982_11:
+[00015a86] 7000                      moveq.l    #0,d0
 [00015a88] 1019                      move.b     (a1)+,d0
 [00015a8a] 10c0                      move.b     d0,(a0)+
-[00015a8c] 6002                      bra.s      $00015A90
+[00015a8c] 6002                      bra.s      x15982_13
+x15982_12:
 [00015a8e] 10d9                      move.b     (a1)+,(a0)+
-[00015a90] 51c8 fffc                 dbf        d0,$00015A8E
-[00015a94] 600a                      bra.s      $00015AA0
-[00015a96] b03c 00f0                 cmp.b      #$F0,d0
-[00015a9a] 6502                      bcs.s      $00015A9E
+x15982_13:
+[00015a90] 51c8 fffc                 dbf        d0,x15982_12
+[00015a94] 600a                      bra.s      x15982_16
+x15982_14:
+[00015a96] b03c 00f0                 cmp.b      #TOK_REF_FLOAT,d0
+[00015a9a] 6502                      bcs.s      x15982_15
 [00015a9c] 10d9                      move.b     (a1)+,(a0)+
+x15982_15:
 [00015a9e] 10d9                      move.b     (a1)+,(a0)+
+x15982_16:
 [00015aa0] 1019                      move.b     (a1)+,d0
 [00015aa2] 10c0                      move.b     d0,(a0)+
-[00015aa4] b03c 0046                 cmp.b      #$46,d0
-[00015aa8] 6774                      beq.s      $00015B1E
-[00015aaa] b03c 00c6                 cmp.b      #$C6,d0
-[00015aae] 65f0                      bcs.s      $00015AA0
-[00015ab0] b03c 00d6                 cmp.b      #$D6,d0
-[00015ab4] 6432                      bcc.s      $00015AE8
-[00015ab6] b03c 00d0                 cmp.b      #$D0,d0
-[00015aba] 6428                      bcc.s      $00015AE4
+[00015aa4] b03c 0046                 cmp.b      #TOK_LINE_COMMENT,d0
+[00015aa8] 6774                      beq.s      x15982_25
+[00015aaa] b03c 00c6                 cmp.b      #TOK_CHAR_CONST,d0
+[00015aae] 65f0                      bcs.s      x15982_16
+[00015ab0] b03c 00d6                 cmp.b      #TOK_SUBFUNC_214,d0
+[00015ab4] 6432                      bcc.s      x15982_21
+[00015ab6] b03c 00d0                 cmp.b      #TOK_SUBFUNC_208,d0
+[00015aba] 6428                      bcc.s      x15982_20
 [00015abc] e208                      lsr.b      #1,d0
-[00015abe] 6410                      bcc.s      $00015AD0
+[00015abe] 6410                      bcc.s      x15982_17
 [00015ac0] 2208                      move.l     a0,d1
 [00015ac2] e209                      lsr.b      #1,d1
-[00015ac4] 6518                      bcs.s      $00015ADE
+[00015ac4] 6518                      bcs.s      x15982_18
 [00015ac6] 0868 0000 ffff            bchg       #0,-1(a0)
 [00015acc] 5289                      addq.l     #1,a1
-[00015ace] 6010                      bra.s      $00015AE0
+[00015ace] 6010                      bra.s      x15982_19
+x15982_17:
 [00015ad0] 2208                      move.l     a0,d1
 [00015ad2] e209                      lsr.b      #1,d1
-[00015ad4] 640a                      bcc.s      $00015AE0
+[00015ad4] 640a                      bcc.s      x15982_19
 [00015ad6] 0860 0000                 bchg       #0,-(a0)
 [00015ada] 5488                      addq.l     #2,a0
-[00015adc] 6002                      bra.s      $00015AE0
+[00015adc] 6002                      bra.s      x15982_19
+x15982_18:
 [00015ade] 10d9                      move.b     (a1)+,(a0)+
+x15982_19:
 [00015ae0] 20d9                      move.l     (a1)+,(a0)+
-[00015ae2] 60bc                      bra.s      $00015AA0
+[00015ae2] 60bc                      bra.s      x15982_16
+x15982_20:
 [00015ae4] 10d9                      move.b     (a1)+,(a0)+
-[00015ae6] 60b8                      bra.s      $00015AA0
-[00015ae8] b03c 00df                 cmp.b      #$DF,d0
-[00015aec] 6734                      beq.s      $00015B22
-[00015aee] 62a6                      bhi.s      $00015A96
-[00015af0] b03c 00dd                 cmp.b      #$DD,d0
-[00015af4] 673c                      beq.s      $00015B32
-[00015af6] 628e                      bhi.s      $00015A86
+[00015ae6] 60b8                      bra.s      x15982_16
+x15982_21:
+[00015ae8] b03c 00df                 cmp.b      #TOK_DEC_DBL_CONST,d0
+[00015aec] 6734                      beq.s      x15982_26
+[00015aee] 62a6                      bhi.s      x15982_14
+[00015af0] b03c 00dd                 cmp.b      #TOK_DEC_DBL_CONST_PAD,d0
+[00015af4] 673c                      beq.s      x15982_27
+[00015af6] 628e                      bhi.s      x15982_11
 [00015af8] e208                      lsr.b      #1,d0
-[00015afa] 640e                      bcc.s      $00015B0A
+[00015afa] 640e                      bcc.s      x15982_22
 [00015afc] 2208                      move.l     a0,d1
 [00015afe] e209                      lsr.b      #1,d1
-[00015b00] 6514                      bcs.s      $00015B16
+[00015b00] 6514                      bcs.s      x15982_23
 [00015b02] 5228 ffff                 addq.b     #1,-1(a0)
 [00015b06] 5289                      addq.l     #1,a1
-[00015b08] 600e                      bra.s      $00015B18
+[00015b08] 600e                      bra.s      x15982_24
+x15982_22:
 [00015b0a] 2208                      move.l     a0,d1
 [00015b0c] e209                      lsr.b      #1,d1
-[00015b0e] 6408                      bcc.s      $00015B18
+[00015b0e] 6408                      bcc.s      x15982_24
 [00015b10] 5320                      subq.b     #1,-(a0)
 [00015b12] 5488                      addq.l     #2,a0
-[00015b14] 6002                      bra.s      $00015B18
+[00015b14] 6002                      bra.s      x15982_24
+x15982_23:
 [00015b16] 10d9                      move.b     (a1)+,(a0)+
+x15982_24:
 [00015b18] 20d9                      move.l     (a1)+,(a0)+
 [00015b1a] 20d9                      move.l     (a1)+,(a0)+
-[00015b1c] 6082                      bra.s      $00015AA0
+[00015b1c] 6082                      bra.s      x15982_16
+x15982_25:
 [00015b1e] 2248                      movea.l    a0,a1
 [00015b20] 4e75                      rts
+x15982_26:
 [00015b22] 2208                      move.l     a0,d1
 [00015b24] e209                      lsr.b      #1,d1
-[00015b26] 64f0                      bcc.s      $00015B18
-[00015b28] 117c 00dd ffff            move.b     #$DD,-1(a0)
+[00015b26] 64f0                      bcc.s      x15982_24
+[00015b28] 117c 00dd ffff            move.b     #TOK_DEC_DBL_CONST_PAD,-1(a0)
 [00015b2e] 4218                      clr.b      (a0)+
-[00015b30] 60e6                      bra.s      $00015B18
+[00015b30] 60e6                      bra.s      x15982_24
+x15982_27:
 [00015b32] 2208                      move.l     a0,d1
 [00015b34] e209                      lsr.b      #1,d1
-[00015b36] 650a                      bcs.s      $00015B42
-[00015b38] 117c 00df ffff            move.b     #$DF,-1(a0)
+[00015b36] 650a                      bcs.s      x15982_28
+[00015b38] 117c 00df ffff            move.b     #TOK_DEC_DBL_CONST,-1(a0)
 [00015b3e] 5289                      addq.l     #1,a1
-[00015b40] 60d6                      bra.s      $00015B18
+[00015b40] 60d6                      bra.s      x15982_24
+x15982_28:
 [00015b42] 10d9                      move.b     (a1)+,(a0)+
-[00015b44] 60d2                      bra.s      $00015B18
+[00015b44] 60d2                      bra.s      x15982_24
+x15982_29:
 [00015b46] 720f                      moveq.l    #15,d1
 [00015b48] c210                      and.b      (a0),d1
-[00015b4a] 143b 104e                 move.b     $00015B9A(pc,d1.w),d2
+[00015b4a] 143b 104e                 move.b     x15b9a(pc,d1.w),d2
 [00015b4e] d528 ffff                 add.b      d2,-1(a0)
 [00015b52] 0810 0004                 btst       #4,(a0)
-[00015b56] 6720                      beq.s      $00015B78
+[00015b56] 6720                      beq.s      x15982_30
 [00015b58] 10e8 0001                 move.b     1(a0),(a0)+
 [00015b5c] 10e8 0001                 move.b     1(a0),(a0)+
 [00015b60] 43e8 0001                 lea.l      1(a0),a1
-[00015b64] 0c11 0046                 cmpi.b     #$46,(a1)
-[00015b68] 672a                      beq.s      $00015B94
+[00015b64] 0c11 0046                 cmpi.b     #TOK_LINE_COMMENT,(a1)
+[00015b68] 672a                      beq.s      x15982_31
 [00015b6a] 0c11 0021                 cmpi.b     #'!',(a1)
-[00015b6e] 6600 ff30                 bne        $00015AA0
+[00015b6e] 6600 ff30                 bne        x15982_16
 [00015b72] 5289                      addq.l     #1,a1
-[00015b74] 6000 ff2a                 bra        $00015AA0
+[00015b74] 6000 ff2a                 bra        x15982_16
+x15982_30:
 [00015b78] 4218                      clr.b      (a0)+
-[00015b7a] 0c28 0046 0001            cmpi.b     #$46,1(a0)
-[00015b80] 6716                      beq.s      $00015B98
+[00015b7a] 0c28 0046 0001            cmpi.b     #TOK_LINE_COMMENT,1(a0)
+[00015b80] 6716                      beq.s      x15982_32
 [00015b82] 0c28 0021 0001            cmpi.b     #'!',1(a0)
-[00015b88] 660e                      bne.s      $00015B98
+[00015b88] 660e                      bne.s      x15982_32
 [00015b8a] 5288                      addq.l     #1,a0
 [00015b8c] 43e8 0001                 lea.l      1(a0),a1
-[00015b90] 6000 ff0e                 bra        $00015AA0
-[00015b94] 10fc 0046                 move.b     #$46,(a0)+
+[00015b90] 6000 ff0e                 bra        x15982_16
+x15982_31:
+[00015b94] 10fc 0046                 move.b     #TOK_LINE_COMMENT,(a0)+
+x15982_32:
 [00015b98] 4e75                      rts
-[00015b9a] 0000 0200                 ori.b      #$00,d0
-[00015b9e] 0800 0a00                 btst       #2560,d0
-[00015ba2] 0406 0000                 subi.b     #$00,d6
-[00015ba6] 0c0e 0000                 cmpi.b     #$00,a6 ; apollo only
 
-x15baa:
+x15b9a: .dc.b 0,0,2,0,8,0,10,0,4,6,0,0,12,14,0,0
+
+x15982_33:
 [00015baa] 0c10 00f0                 cmpi.b     #240,(a0)
-[00015bae] 6510                      bcs.s      $00015BC0
+[00015bae] 6510                      bcs.s      x15982_34
 [00015bb0] 10e8 0001                 move.b     1(a0),(a0)+
 [00015bb4] 10e8 0001                 move.b     1(a0),(a0)+
 [00015bb8] 43e8 0001                 lea.l      1(a0),a1
-[00015bbc] 6000 fee2                 bra        $00015AA0
+[00015bbc] 6000 fee2                 bra        x15982_16
+x15982_34:
 [00015bc0] 4210                      clr.b      (a0)
 [00015bc2] 4e75                      rts
 
-[00015bc4] 0200 0908                 andi.b     #$08,d0
-[00015bc8] 0301                      btst       d1,d1
+x15bc4: .dc.b TYPE_INT,TYPE_FLOAT,TYPE_BYTE,TYPE_WORD,TYPE_BOOL,TYPE_STRING
 
-f15bca:
+execute_defint:
 [00015bca] 48e7 00c0                 movem.l    a0-a1,-(a7)
 [00015bce] 43fa f814                 lea.l      deftype(pc),a1
 [00015bd2] 41ee 0554                 lea.l      1364(a6),a0
 [00015bd6] 3018                      move.w     (a0)+,d0
-[00015bd8] 0440 02fa                 subi.w     #$02FA,d0
+[00015bd8] 0440 02fa                 subi.w     #762,d0 /* TOK_CMD_DEFINT*2 */
 [00015bdc] e248                      lsr.w      #1,d0
-[00015bde] 103b 00e4                 move.b     $00015BC4(pc,d0.w),d0
+[00015bde] 103b 00e4                 move.b     x15bc4(pc,d0.w),d0
 [00015be2] 5288                      addq.l     #1,a0
 [00015be4] 1218                      move.b     (a0)+,d1
+execute_defint_1:
 [00015be6] 5301                      subq.b     #1,d1
-[00015be8] 6a06                      bpl.s      $00015BF0
+[00015be8] 6a06                      bpl.s      execute_defint_3
+execute_defint_2:
 [00015bea] 4cdf 0300                 movem.l    (a7)+,a0-a1
 [00015bee] 4e75                      rts
+execute_defint_3:
 [00015bf0] 1418                      move.b     (a0)+,d2
-[00015bf2] b43c 002c                 cmp.b      #$2C,d2
-[00015bf6] 67ee                      beq.s      $00015BE6
+[00015bf2] b43c 002c                 cmp.b      #',',d2
+[00015bf6] 67ee                      beq.s      execute_defint_1
 [00015bf8] b43c 0020                 cmp.b      #' ',d2
-[00015bfc] 67e8                      beq.s      $00015BE6
-[00015bfe] 0242 00df                 andi.w     #$00DF,d2
+[00015bfc] 67e8                      beq.s      execute_defint_1
+[00015bfe] 0242 00df                 andi.w     #0x00DF,d2 /* make it uppercase */
 [00015c02] b43c 0041                 cmp.b      #'A',d2
-[00015c06] 65e2                      bcs.s      $00015BEA
+[00015c06] 65e2                      bcs.s      execute_defint_2
 [00015c08] b43c 005a                 cmp.b      #'Z',d2
-[00015c0c] 62dc                      bhi.s      $00015BEA
+[00015c0c] 62dc                      bhi.s      execute_defint_2
 [00015c0e] 1380 20bf                 move.b     d0,-65(a1,d2.w)
-[00015c12] 0c10 002d                 cmpi.b     #$2D,(a0)
-[00015c16] 66ce                      bne.s      $00015BE6
+[00015c12] 0c10 002d                 cmpi.b     #'-',(a0)
+[00015c16] 66ce                      bne.s      execute_defint_1
 [00015c18] 5288                      addq.l     #1,a0
 [00015c1a] 1618                      move.b     (a0)+,d3
-[00015c1c] 0243 00df                 andi.w     #$00DF,d3
+[00015c1c] 0243 00df                 andi.w     #0x00DF,d3 /* make it uppercase */
 [00015c20] 5501                      subq.b     #2,d1
-[00015c22] 6bc6                      bmi.s      $00015BEA
-[00015c24] b67c 0041                 cmp.w      #$0041,d3
-[00015c28] 65c0                      bcs.s      $00015BEA
-[00015c2a] b67c 005a                 cmp.w      #$005A,d3
-[00015c2e] 62ba                      bhi.s      $00015BEA
+[00015c22] 6bc6                      bmi.s      execute_defint_2
+[00015c24] b67c 0041                 cmp.w      #'A',d3
+[00015c28] 65c0                      bcs.s      execute_defint_2
+[00015c2a] b67c 005a                 cmp.w      #'Z',d3
+[00015c2e] 62ba                      bhi.s      execute_defint_2
 [00015c30] b642                      cmp.w      d2,d3
-[00015c32] 6202                      bhi.s      $00015C36
+[00015c32] 6202                      bhi.s      execute_defint_4
 [00015c34] c742                      exg        d3,d2
+execute_defint_4:
 [00015c36] 1380 20bf                 move.b     d0,-65(a1,d2.w)
 [00015c3a] 5202                      addq.b     #1,d2
 [00015c3c] b443                      cmp.w      d3,d2
-[00015c3e] 63f6                      bls.s      $00015C36
-[00015c40] 60a4                      bra.s      $00015BE6
+[00015c3e] 63f6                      bls.s      execute_defint_4
+[00015c40] 60a4                      bra.s      execute_defint_1
 
 x15c42: .dc.w 0
 
@@ -12296,117 +12400,130 @@ x15c44:
 x15c46:
 		.dc.b 0xf0,0xf1,0xf2,0xf3,0xf8,0xf9,0xf4,0xf5,0xf6,0xf7,0xfc,0xfd
 
+x15c52:
 [00015c52] 4a39 0001                 tst.b      x1181a
 [00015c58] 66ea                      bne.s      x15c44
 [00015c5a] 3e19                      move.w     (a1)+,d7
 [00015c5c] 7000                      moveq.l    #0,d0
 [00015c5e] 3019                      move.w     (a1)+,d0
 [00015c60] 3f00                      move.w     d0,-(a7)
-[00015c62] 4871 70fc                 pea.l      -4(a1,d7.w)
+[00015c62] 4871 70fc                 pea.l      -4(a1,d7.w) /* start of next line */
 [00015c66] 41ee 0352                 lea.l      850(a6),a0
 [00015c6a] e248                      lsr.w      #1,d0
 [00015c6c] 3c00                      move.w     d0,d6
 [00015c6e] 47ee 10cc                 lea.l      4300(a6),a3
 [00015c72] 3233 0000                 move.w     0(a3,d0.w),d1
-[00015c76] 6700 00cc                 beq        $00015D44
+[00015c76] 6700 00cc                 beq        x15c52_8
 [00015c7a] 47fa da1a                 lea.l      x13696(pc),a3
 [00015c7e] d6c1                      adda.w     d1,a3
 [00015c80] 7200                      moveq.l    #0,d1
 [00015c82] 121b                      move.b     (a3)+,d1
 [00015c84] 10db                      move.b     (a3)+,(a0)+
-[00015c86] 6014                      bra.s      $00015C9C
+[00015c86] 6014                      bra.s      x15c52_3
+x15c52_1:
 [00015c88] 101b                      move.b     (a3)+,d0
 [00015c8a] b03c 0041                 cmp.b      #'A',d0
-[00015c8e] 650a                      bcs.s      $00015C9A
+[00015c8e] 650a                      bcs.s      x15c52_2
 [00015c90] b03c 005a                 cmp.b      #'Z',d0
-[00015c94] 6204                      bhi.s      $00015C9A
+[00015c94] 6204                      bhi.s      x15c52_2
 [00015c96] d02e 20ce                 add.b      8398(a6),d0
+x15c52_2:
 [00015c9a] 10c0                      move.b     d0,(a0)+
-[00015c9c] 51c9 ffea                 dbf        d1,$00015C88
+x15c52_3:
+[00015c9c] 51c9 ffea                 dbf        d1,x15c52_1
 [00015ca0] 3006                      move.w     d6,d0
 [00015ca2] e248                      lsr.w      #1,d0
 [00015ca4] 3200                      move.w     d0,d1
 [00015ca6] e649                      lsr.w      #3,d1
-[00015ca8] 45fa 06a2                 lea.l      $0001634C(pc),a2
+[00015ca8] 45fa 06a2                 lea.l      x1634c(pc),a2
 [00015cac] 0132 1000                 btst       d0,0(a2,d1.w)
-[00015cb0] 6604                      bne.s      $00015CB6
+[00015cb0] 6604                      bne.s      x15c52_4
 [00015cb2] 10fc 0020                 move.b     #' ',(a0)+
-[00015cb6] bc7c 00e4                 cmp.w      #$00E4,d6
-[00015cba] 671c                      beq.s      $00015CD8
-[00015cbc] bc7c 00e6                 cmp.w      #$00E6,d6
-[00015cc0] 6716                      beq.s      $00015CD8
-[00015cc2] bc7c 00e8                 cmp.w      #$00E8,d6
-[00015cc6] 6710                      beq.s      $00015CD8
-[00015cc8] bc7c 00ea                 cmp.w      #$00EA,d6
-[00015ccc] 670a                      beq.s      $00015CD8
-[00015cce] bc7c 01fc                 cmp.w      #$01FC,d6
-[00015cd2] 6704                      beq.s      $00015CD8
-[00015cd4] bc7c 0336                 cmp.w      #$0336,d6
-[00015cd8] 6700 01d4                 beq        $00015EAE
-[00015cdc] bc7c 0080                 cmp.w      #$0080,d6
-[00015ce0] 6462                      bcc.s      $00015D44
-[00015ce2] bc7c 0062                 cmp.w      #$0062,d6
-[00015ce6] 6506                      bcs.s      $00015CEE
-[00015ce8] bc7c 0068                 cmp.w      #$0068,d6
-[00015cec] 6354                      bls.s      $00015D42
-[00015cee] bc7c 0002                 cmp.w      #2,d6
-[00015cf2] 674e                      beq.s      $00015D42
-[00015cf4] bc7c 0006                 cmp.w      #6,d6
-[00015cf8] 6748                      beq.s      $00015D42
-[00015cfa] bc7c 0008                 cmp.w      #8,d6
-[00015cfe] 6742                      beq.s      $00015D42
-[00015d00] bc7c 000a                 cmp.w      #10,d6
-[00015d04] 673c                      beq.s      $00015D42
-[00015d06] bc7c 0010                 cmp.w      #$0010,d6
-[00015d0a] 6736                      beq.s      $00015D42
-[00015d0c] bc7c 0018                 cmp.w      #$0018,d6
-[00015d10] 6730                      beq.s      $00015D42
-[00015d12] bc7c 0058                 cmp.w      #$0058,d6
-[00015d16] 672a                      beq.s      $00015D42
-[00015d18] bc7c 001c                 cmp.w      #$001C,d6
-[00015d1c] 6724                      beq.s      $00015D42
-[00015d1e] bc7c 001e                 cmp.w      #$001E,d6
-[00015d22] 671e                      beq.s      $00015D42
-[00015d24] bc7c 0020                 cmp.w      #$0020,d6
-[00015d28] 6718                      beq.s      $00015D42
-[00015d2a] bc7c 006e                 cmp.w      #$006E,d6
-[00015d2e] 6712                      beq.s      $00015D42
-[00015d30] bc7c 0070                 cmp.w      #$0070,d6
-[00015d34] 670c                      beq.s      $00015D42
-[00015d36] bc7c 003e                 cmp.w      #$003E,d6
-[00015d3a] 6508                      bcs.s      $00015D44
-[00015d3c] bc7c 0056                 cmp.w      #$0056,d6
-[00015d40] 6202                      bhi.s      $00015D44
+x15c52_4:
+[00015cb6] bc7c 00e4                 cmp.w      #228,d6 /* TOK_CMD_REM*2 */
+[00015cba] 671c                      beq.s      x15c52_5
+[00015cbc] bc7c 00e6                 cmp.w      #230,d6 /* TOK_CMD_COMMENT*2 */
+[00015cc0] 6716                      beq.s      x15c52_5
+[00015cc2] bc7c 00e8                 cmp.w      #232,d6 /* TOK_CMD_SYNERR*2 */
+[00015cc6] 6710                      beq.s      x15c52_5
+[00015cc8] bc7c 00ea                 cmp.w      #234,d6 /* TOK_CMD_DATA*2 */
+[00015ccc] 670a                      beq.s      x15c52_5
+[00015cce] bc7c 01fc                 cmp.w      #508,d6 /* TOK_CMD_DOT*2 */
+[00015cd2] 6704                      beq.s      x15c52_5
+[00015cd4] bc7c 0336                 cmp.w      #822,d6 /* TOK_CMD_DOLLAR*2 */
+x15c52_5:
+[00015cd8] 6700 01d4                 beq        x15c52_27
+[00015cdc] bc7c 0080                 cmp.w      #128,d6 /* TOK_CMD_LET_FLOAT*2 */
+[00015ce0] 6462                      bcc.s      x15c52_8
+[00015ce2] bc7c 0062                 cmp.w      #98,d6 /* TOK_CMD_DO_WHILE*2 */
+[00015ce6] 6506                      bcs.s      x15c52_6
+[00015ce8] bc7c 0068                 cmp.w      #104,d6 /* TOK_CMD_LOOP_UNTIL*2 */
+[00015cec] 6354                      bls.s      x15c52_7
+x15c52_6:
+[00015cee] bc7c 0002                 cmp.w      #2,d6 / TOK_CMD_LOOP*2 */
+[00015cf2] 674e                      beq.s      x15c52_7
+[00015cf4] bc7c 0006                 cmp.w      #6,d6 /* TOK_CMD_UNTIL*2 */
+[00015cf8] 6748                      beq.s      x15c52_7
+[00015cfa] bc7c 0008                 cmp.w      #8,d6 /* TOK_CMD_WHILE*2 */
+[00015cfe] 6742                      beq.s      x15c52_7
+[00015d00] bc7c 000a                 cmp.w      #10,d6 /* TOK_CMD_WEND*2 */
+[00015d04] 673c                      beq.s      x15c52_7
+[00015d06] bc7c 0010                 cmp.w      #16,d6 /* TOK_CMD_IF*2 */
+[00015d0a] 6736                      beq.s      x15c52_7
+[00015d0c] bc7c 0018                 cmp.w      #24,d6 /* TOK_CMD_SELECT*2 */
+[00015d10] 6730                      beq.s      x15c52_7
+[00015d12] bc7c 0058                 cmp.w      #88,d6 /* TOK_CMD_SELECT_STR*2 */
+[00015d16] 672a                      beq.s      x15c52_7
+[00015d18] bc7c 001c                 cmp.w      #28,d6 /* TOK_CMD_ELSE*2 */
+[00015d1c] 6724                      beq.s      x15c52_7
+[00015d1e] bc7c 001e                 cmp.w      #30,d6 /* TOK_CMD_DEFAULT*2 */
+[00015d22] 671e                      beq.s      x15c52_7
+[00015d24] bc7c 0020                 cmp.w      #32,d6 /* TOK_CMD_ELSEIF*2 */
+[00015d28] 6718                      beq.s      x15c52_7
+[00015d2a] bc7c 006e                 cmp.w      #110,d6 /* TOK_CMD_EXITIF2*2 */
+[00015d2e] 6712                      beq.s      x15c52_7
+[00015d30] bc7c 0070                 cmp.w      #112,d6 /* TOK_CMD_CASE*2 */
+[00015d34] 670c                      beq.s      x15c52_7
+[00015d36] bc7c 003e                 cmp.w      #62,d6 /* TOK_CMD_NEXT_FLOAT*2 */
+[00015d3a] 6508                      bcs.s      x15c52_8
+[00015d3c] bc7c 0056                 cmp.w      #86,d6 /* TOK_CMD_EXITIF*2 */
+[00015d40] 6202                      bhi.s      x15c52_8
+x15c52_7:
 [00015d42] 5889                      addq.l     #4,a1
-[00015d44] bc7c 000c                 cmp.w      #$000C,d6
-[00015d48] 6700 05ee                 beq        $00016338
-[00015d4c] bc7c 006c                 cmp.w      #$006C,d6
-[00015d50] 6700 05e6                 beq        $00016338
-[00015d54] bc7c 0026                 cmp.w      #$0026,d6
-[00015d58] 6566                      bcs.s      $00015DC0
-[00015d5a] bc7c 0078                 cmp.w      #$0078,d6
+x15c52_8:
+[00015d44] bc7c 000c                 cmp.w      #12,d6 /* TOK_CMD_PROCEDURE*2 */
+[00015d48] 6700 05ee                 beq        x16338
+[00015d4c] bc7c 006c                 cmp.w      #108,d6 /* TOK_CMD_PROCEDURE2*2 */
+[00015d50] 6700 05e6                 beq        x16338
+[00015d54] bc7c 0026                 cmp.w      #38,d6 /* TOK_CMD_FOR_FLOAT*2 */
+[00015d58] 6566                      bcs.s      x15c52_13
+[00015d5a] bc7c 0078                 cmp.w      #120,d6 /* TOK_CMD_CALL_IMP*2 */
 [00015d5e] 670c                      beq.s      $00015D6C
-[00015d60] bc7c 007a                 cmp.w      #$007A,d6
+[00015d60] bc7c 007a                 cmp.w      #122,d6 /* TOK_CMD_GOSUB*2 */
 [00015d64] 6706                      beq.s      $00015D6C
-[00015d66] bc7c 007c                 cmp.w      #$007C,d6
+[00015d66] bc7c 007c                 cmp.w      #124,d6 /* TOK_CMD_CALL*2 */
 [00015d6a] 6604                      bne.s      $00015D70
-[00015d6c] 6000 05d8                 bra        $00016346
-[00015d70] bc7c 003e                 cmp.w      #$003E,d6
-[00015d74] 6500 057c                 bcs        $000162F2
-[00015d78] bc7c 0056                 cmp.w      #$0056,d6
-[00015d7c] 6500 057e                 bcs        $000162FC
-[00015d80] bc7c 0140                 cmp.w      #$0140,d6
+x15c52_9:
+[00015d6c] 6000 05d8                 bra        x16338_1
+x15c52_10:
+[00015d70] bc7c 003e                 cmp.w      #62,d6 /* TOK_CMD_NEXT_FLOAT*2 */
+[00015d74] 6500 057c                 bcs        x162f2
+[00015d78] bc7c 0056                 cmp.w      #86,d6 /* TOK_CMD_EXITIF*2 */
+[00015d7c] 6500 057e                 bcs        x162fc
+[00015d80] bc7c 0140                 cmp.w      #320,d6 /* TOK_CMD_INC_FLOAT*2 */
 [00015d84] 6508                      bcs.s      $00015D8E
-[00015d86] bc7c 019e                 cmp.w      #$019E,d6
+[00015d86] bc7c 019e                 cmp.w      #414,d6 /* TOK_CMD_DIV_BYTE_ARR*2 */
 [00015d8a] 6300 058c                 bls        x16318
-[00015d8e] bc7c 0080                 cmp.w      #$0080,d6
-[00015d92] 652c                      bcs.s      $00015DC0
-[00015d94] bc7c 00ae                 cmp.w      #$00AE,d6
-[00015d98] 6226                      bhi.s      $00015DC0
+x15c52_11:
+[00015d8e] bc7c 0080                 cmp.w      #128,d6 /* TOK_CMD_LET_FLOAT*2 */
+[00015d92] 652c                      bcs.s      x15c52_13
+[00015d94] bc7c 00ae                 cmp.w      #174,d6 /* TOK_CMD_ASSIGN_BYTE_ARR*2 */
+[00015d98] 6226                      bhi.s      x15c52_13
 [00015d9a] 3206                      move.w     d6,d1
-[00015d9c] 0441 0098                 subi.w     #152,d1
+[00015d9c] 0441 0098                 subi.w     #152,d1 /* TOK_CMD_ASSIGN_FLOAT*2 */
 [00015da0] 6a04                      bpl.s      $00015DA6
 [00015da2] 0641 0018                 addi.w     #24,d1
+x15c52_12:
 [00015da6] e249                      lsr.w      #1,d1
 [00015da8] b27c 0006                 cmp.w      #6,d1
 [00015dac] 6406                      bcc.s      $00015DB4
@@ -12415,124 +12532,148 @@ x15c46:
 [00015db8] 7000                      moveq.l    #0,d0
 [00015dba] 1033 1000                 move.b     0(a3,d1.w),d0
 [00015dbe] 6004                      bra.s      $00015DC4
+x15c52_13:
 [00015dc0] 7000                      moveq.l    #0,d0
 [00015dc2] 1019                      move.b     (a1)+,d0
-[00015dc4] b03c 0046                 cmp.b      #$46,d0
-[00015dc8] 6774                      beq.s      $00015E3E
-[00015dca] b03c 0037                 cmp.b      #$37,d0
-[00015dce] 67f0                      beq.s      $00015DC0
-[00015dd0] b03c 00d6                 cmp.b      #$D6,d0
-[00015dd4] 6400 00e2                 bcc        $00015EB8
-[00015dd8] b03c 00c6                 cmp.b      #$C6,d0
-[00015ddc] 6400 04ce                 bcc        $000162AC
+x15c52_14:
+[00015dc4] b03c 0046                 cmp.b      #TOK_LINE_COMMENT,d0
+[00015dc8] 6774                      beq.s      x15c52_19
+[00015dca] b03c 0037                 cmp.b      #55,d0
+[00015dce] 67f0                      beq.s      x15c52_13
+[00015dd0] b03c 00d6                 cmp.b      #TOK_SUBFUNC_214,d0
+[00015dd4] 6400 00e2                 bcc        x15c52_28
+[00015dd8] b03c 00c6                 cmp.b      #TOK_CHAR_CONST,d0
+[00015ddc] 6400 04ce                 bcc        x162ac
 [00015de0] 47fa 0206                 lea.l      x15fe8(pc),a3
 [00015de4] 3200                      move.w     d0,d1
 [00015de6] e649                      lsr.w      #3,d1
 [00015de8] 0133 1000                 btst       d0,0(a3,d1.w)
-[00015dec] 6704                      beq.s      $00015DF2
+[00015dec] 6704                      beq.s      x15c52_15
 [00015dee] 10fc 0020                 move.b     #' ',(a0)+
+x15c52_15:
 [00015df2] d040                      add.w      d0,d0
 [00015df4] 47ee 0d2c                 lea.l      3372(a6),a3
 [00015df8] 3233 0000                 move.w     0(a3,d0.w),d1
-[00015dfc] 6740                      beq.s      $00015E3E
+[00015dfc] 6740                      beq.s      x15c52_19
 [00015dfe] 47fa d896                 lea.l      x13696(pc),a3
 [00015e02] d6c1                      adda.w     d1,a3
 [00015e04] 7200                      moveq.l    #0,d1
 [00015e06] 121b                      move.b     (a3)+,d1
 [00015e08] 10db                      move.b     (a3)+,(a0)+
-[00015e0a] 6014                      bra.s      $00015E20
+[00015e0a] 6014                      bra.s      x15c52_18
+x15c52_16:
 [00015e0c] 101b                      move.b     (a3)+,d0
 [00015e0e] b03c 0041                 cmp.b      #'A',d0
-[00015e12] 650a                      bcs.s      $00015E1E
+[00015e12] 650a                      bcs.s      x15c52_17
 [00015e14] b03c 005a                 cmp.b      #'Z',d0
-[00015e18] 6204                      bhi.s      $00015E1E
+[00015e18] 6204                      bhi.s      x15c52_17
 [00015e1a] d02e 20ce                 add.b      8398(a6),d0
+x15c52_17:
 [00015e1e] 10c0                      move.b     d0,(a0)+
-[00015e20] 51c9 ffea                 dbf        d1,$00015E0C
+x15c52_18:
+[00015e20] 51c9 ffea                 dbf        d1,x15c52_16
 [00015e24] 47fa 01e2                 lea.l      x16008(pc),a3
 [00015e28] 7000                      moveq.l    #0,d0
 [00015e2a] 1029 ffff                 move.b     -1(a1),d0
 [00015e2e] 3200                      move.w     d0,d1
 [00015e30] e649                      lsr.w      #3,d1
 [00015e32] 0133 1000                 btst       d0,0(a3,d1.w)
-[00015e36] 6788                      beq.s      $00015DC0
+[00015e36] 6788                      beq.s      x15c52_13
 [00015e38] 10fc 0020                 move.b     #' ',(a0)+
-[00015e3c] 6082                      bra.s      $00015DC0
+[00015e3c] 6082                      bra.s      x15c52_13
+x15c52_19:
 [00015e3e] 0c20 0020                 cmpi.b     #' ',-(a0)
-[00015e42] 6702                      beq.s      $00015E46
+[00015e42] 6702                      beq.s      x15c52_20
 [00015e44] 5288                      addq.l     #1,a0
-[00015e46] 0c6f 0684 0004            cmpi.w     #$0684,4(a7)
-[00015e4c] 674e                      beq.s      $00015E9C
+x15c52_20:
+[00015e46] 0c6f 0684 0004            cmpi.w     #1668,4(a7) /* TOK_CMD_INLINE*4 */
+[00015e4c] 674e                      beq.s      x15c52_25
 [00015e4e] 2009                      move.l     a1,d0
 [00015e50] 5280                      addq.l     #1,d0
-[00015e52] 0880 0000                 bclr       #0,d0
+[00015e52] 0880 0000                 bclr       #0,d0 /* make next address even */
 [00015e56] 2240                      movea.l    d0,a1
 [00015e58] b3d7                      cmpa.l     (a7),a1
-[00015e5a] 6440                      bcc.s      $00015E9C
+[00015e5a] 6440                      bcc.s      x15c52_25
 [00015e5c] 7000                      moveq.l    #0,d0
 [00015e5e] 1019                      move.b     (a1)+,d0
-[00015e60] 6004                      bra.s      $00015E66
+[00015e60] 6004                      bra.s      x15c52_21
+x15c52_44:
 [00015e62] 10fc 0020                 move.b     #' ',(a0)+
-[00015e66] 51c8 fffa                 dbf        d0,$00015E62
+x15c52_21:
+[00015e66] 51c8 fffa                 dbf        d0,x15c52_44
 [00015e6a] 082e 0003 20cf            btst       #3,8399(a6)
-[00015e70] 670a                      beq.s      $00015E7C
+[00015e70] 670a                      beq.s      x15c52_22
 [00015e72] 10fc 002f                 move.b     #'/',(a0)+
 [00015e76] 10fc 002a                 move.b     #'*',(a0)+
-[00015e7a] 6016                      bra.s      $00015E92
+[00015e7a] 6016                      bra.s      x15c52_24
+x15c52_22:
 [00015e7c] 082e 0002 20cf            btst       #2,8399(a6)
-[00015e82] 670a                      beq.s      $00015E8E
+[00015e82] 670a                      beq.s      x15c52_23
 [00015e84] 10fc 002f                 move.b     #'/',(a0)+
 [00015e88] 10fc 002f                 move.b     #'/',(a0)+
-[00015e8c] 6004                      bra.s      $00015E92
+[00015e8c] 6004                      bra.s      x15c52_24
+x15c52_23:
 [00015e8e] 10fc 0021                 move.b     #'!',(a0)+
+x15c52_24:
 [00015e92] 0c11 000d                 cmpi.b     #EOL,(a1)
-[00015e96] 6704                      beq.s      $00015E9C
+[00015e96] 6704                      beq.s      x15c52_25
 [00015e98] 10d9                      move.b     (a1)+,(a0)+
-[00015e9a] 60f6                      bra.s      $00015E92
+[00015e9a] 60f6                      bra.s      x15c52_24
+x15c52_25:
 [00015e9c] 10fc 000d                 move.b     #CR,(a0)+
 [00015ea0] 10fc 000a                 move.b     #NL,(a0)+
 [00015ea4] 4210                      clr.b      (a0)
 [00015ea6] 225f                      movea.l    (a7)+,a1
 [00015ea8] 548f                      addq.l     #2,a7
 [00015eaa] 4e75                      rts
+x15c52_26:
 [00015eac] 10c0                      move.b     d0,(a0)+
+x15c52_27:
 [00015eae] 1019                      move.b     (a1)+,d0
-[00015eb0] b03c 000d                 cmp.b      #13,d0
-[00015eb4] 66f6                      bne.s      $00015EAC
-[00015eb6] 6086                      bra.s      $00015E3E
-[00015eb8] b03c 00dd                 cmp.b      #$DD,d0
-[00015ebc] 673a                      beq.s      $00015EF8
-[00015ebe] b03c 00de                 cmp.b      #$DE,d0
-[00015ec2] 670c                      beq.s      $00015ED0
-[00015ec4] b03c 00df                 cmp.b      #$DF,d0
-[00015ec8] 6730                      beq.s      $00015EFA
-[00015eca] 623c                      bhi.s      $00015F08
-[00015ecc] 6000 015a                 bra        $00016028
-[00015ed0] 10fc 0022                 move.b     #$22,(a0)+
+[00015eb0] b03c 000d                 cmp.b      #EOL,d0
+[00015eb4] 66f6                      bne.s      x15c52_26
+[00015eb6] 6086                      bra.s      x15c52_19
+x15c52_28:
+[00015eb8] b03c 00dd                 cmp.b      #TOK_DEC_DBL_CONST_PAD,d0
+[00015ebc] 673a                      beq.s      x15c52_23
+[00015ebe] b03c 00de                 cmp.b      #TOK_STRING_CONST,d0
+[00015ec2] 670c                      beq.s      x15c52_29
+[00015ec4] b03c 00df                 cmp.b      #TOK_DEC_DBL_CONST,d0
+[00015ec8] 6730                      beq.s      x15c52_33
+[00015eca] 623c                      bhi.s      x15c52_34
+[00015ecc] 6000 015a                 bra        x16028
+x15c52_29:
+[00015ed0] 10fc 0022                 move.b     #'"',(a0)+
 [00015ed4] 7000                      moveq.l    #0,d0
 [00015ed6] 1019                      move.b     (a1)+,d0
-[00015ed8] 6716                      beq.s      $00015EF0
+[00015ed8] 6716                      beq.s      x15c52_31
 [00015eda] 5340                      subq.w     #1,d0
+x15c52_30:
 [00015edc] 1219                      move.b     (a1)+,d1
 [00015ede] 10c1                      move.b     d1,(a0)+
-[00015ee0] b23c 0022                 cmp.b      #$22,d1
-[00015ee4] 57c8 fff6                 dbeq       d0,$00015EDC
-[00015ee8] 6606                      bne.s      $00015EF0
+[00015ee0] b23c 0022                 cmp.b      #'"',d1
+[00015ee4] 57c8 fff6                 dbeq       d0,x15c52_30
+[00015ee8] 6606                      bne.s      x15c52_31
 [00015eea] 10c1                      move.b     d1,(a0)+
-[00015eec] 51c8 ffee                 dbf        d0,$00015EDC
-[00015ef0] 10fc 0022                 move.b     #$22,(a0)+
-[00015ef4] 6000 feca                 bra        $00015DC0
+[00015eec] 51c8 ffee                 dbf        d0,x15c52_30
+x15c52_31:
+[00015ef0] 10fc 0022                 move.b     #'"',(a0)+
+[00015ef4] 6000 feca                 bra        x15c52_13
+x15c52_32:
 [00015ef8] 5289                      addq.l     #1,a1
+x15c52_33:
 [00015efa] 2019                      move.l     (a1)+,d0
 [00015efc] 3219                      move.w     (a1)+,d1
 [00015efe] 3419                      move.w     (a1)+,d2
-[00015f00] 6100 036a                 bsr        $0001626C
-[00015f04] 6000 feba                 bra        $00015DC0
+[00015f00] 6100 036a                 bsr        print_float
+[00015f04] 6000 feba                 bra        x15c52_13
+x15c52_34:
 [00015f08] 7200                      moveq.l    #0,d1
-[00015f0a] b03c 00f0                 cmp.b      #0xF0,d0
-[00015f0e] 6504                      bcs.s      $00015F14
+[00015f0a] b03c 00f0                 cmp.b      #TOK_REF_FLOAT,d0
+[00015f0e] 6504                      bcs.s      x15c52_35
 [00015f10] 1f19                      move.b     (a1)+,-(a7)
 [00015f12] 321f                      move.w     (a7)+,d1
+x15c52_35:
 [00015f14] 1219                      move.b     (a1)+,d1
 [00015f16] 0240 000f                 andi.w     #15,d0
 [00015f1a] d040                      add.w      d0,d0
@@ -12541,16 +12682,18 @@ x15c46:
 [00015f22] 2472 0000                 movea.l    0(a2,d0.w),a2
 [00015f26] 7400                      moveq.l    #0,d2
 [00015f28] e249                      lsr.w      #1,d1
-[00015f2a] 6404                      bcc.s      $00015F30
+[00015f2a] 6404                      bcc.s      x15c52_36
 [00015f2c] 141a                      move.b     (a2)+,d2
 [00015f2e] d5c2                      adda.l     d2,a2
+x15c52_36:
 [00015f30] e249                      lsr.w      #1,d1
-[00015f32] 641a                      bcc.s      $00015F4E
+[00015f32] 641a                      bcc.s      x15c52_38
 [00015f34] 141a                      move.b     (a2)+,d2
 [00015f36] d5c2                      adda.l     d2,a2
 [00015f38] 141a                      move.b     (a2)+,d2
 [00015f3a] d5c2                      adda.l     d2,a2
-[00015f3c] 6010                      bra.s      $00015F4E
+[00015f3c] 6010                      bra.s      x15c52_38
+x15c52_37:
 [00015f3e] 141a                      move.b     (a2)+,d2
 [00015f40] d5c2                      adda.l     d2,a2
 [00015f42] 141a                      move.b     (a2)+,d2
@@ -12559,26 +12702,30 @@ x15c46:
 [00015f48] d5c2                      adda.l     d2,a2
 [00015f4a] 141a                      move.b     (a2)+,d2
 [00015f4c] d5c2                      adda.l     d2,a2
-[00015f4e] 51c9 ffee                 dbf        d1,$00015F3E
+x15c52_38:
+[00015f4e] 51c9 ffee                 dbf        d1,x15c52_37
 [00015f52] 141a                      move.b     (a2)+,d2
 [00015f54] 5342                      subq.w     #1,d2
 [00015f56] 1d52 20d1                 move.b     (a2),8401(a6)
 [00015f5a] 4a2e 20ce                 tst.b      8398(a6)
-[00015f5e] 6706                      beq.s      $00015F66
+[00015f5e] 6706                      beq.s      x15c52_39
 [00015f60] 10da                      move.b     (a2)+,(a0)+
 [00015f62] 5342                      subq.w     #1,d2
-[00015f64] 6b18                      bmi.s      $00015F7E
+[00015f64] 6b18                      bmi.s      x15c52_40
+x15c52_39:
 [00015f66] 121a                      move.b     (a2)+,d1
 [00015f68] b23c 0041                 cmp.b      #'A',d1
-[00015f6c] 650a                      bcs.s      $00015F78
+[00015f6c] 650a                      bcs.s      x15c52_45
 [00015f6e] b23c 005a                 cmp.b      #'Z',d1
-[00015f72] 6204                      bhi.s      $00015F78
+[00015f72] 6204                      bhi.s      x15c52_45
 [00015f74] 0601 0020                 addi.b     #' ',d1
+x15c52_45:
 [00015f78] 10c1                      move.b     d1,(a0)+
-[00015f7a] 51ca ffea                 dbf        d2,$00015F66
+[00015f7a] 51ca ffea                 dbf        d2,x15c52_39
+x15c52_40:
 [00015f7e] e248                      lsr.w      #1,d0
 [00015f80] 082e 0001 20cf            btst       #1,8399(a6)
-[00015f86] 661e                      bne.s      $00015FA6
+[00015f86] 661e                      bne.s      x15c52_41
 [00015f88] 7400                      moveq.l    #0,d2
 [00015f8a] 142e 20d1                 move.b     8401(a6),d2
 [00015f8e] 4850                      pea.l      (a0)
@@ -12587,21 +12734,24 @@ x15c46:
 [00015f98] 205f                      movea.l    (a7)+,a0
 [00015f9a] d402                      add.b      d2,d2
 [00015f9c] b400                      cmp.b      d0,d2
-[00015f9e] 670e                      beq.s      $00015FAE
+[00015f9e] 670e                      beq.s      x15c52_42
 [00015fa0] 5002                      addq.b     #8,d2
 [00015fa2] b400                      cmp.b      d0,d2
-[00015fa4] 6708                      beq.s      $00015FAE
+[00015fa4] 6708                      beq.s      x15c52_42
+x15c52_41:
 [00015fa6] 143b 0020                 move.b     x15fc8(pc,d0.w),d2
-[00015faa] 6702                      beq.s      $00015FAE
+[00015faa] 6702                      beq.s      x15c52_42
 [00015fac] 10c2                      move.b     d2,(a0)+
+x15c52_42:
 [00015fae] 143b 0019                 move.b     x15fc8+1(pc,d0.w),d2
-[00015fb2] 6702                      beq.s      $00015FB6
+[00015fb2] 6702                      beq.s      x15c52_43
 [00015fb4] 10c2                      move.b     d2,(a0)+
+x15c52_43:
 [00015fb6] 102e 20d0                 move.b     8400(a6),d0
-[00015fba] 6700 fe04                 beq        $00015DC0
+[00015fba] 6700 fe04                 beq        x15c52_13
 [00015fbe] 422e 20d0                 clr.b      8400(a6)
 [00015fc2] 10c0                      move.b     d0,(a0)+
-[00015fc4] 6000 fdfa                 bra        $00015DC0
+[00015fc4] 6000 fdfa                 bra        x15c52_13
 
 x15fc8:
 		.dc.b '#',0
@@ -12633,8 +12783,9 @@ x16008:
 		.dc.b 0x00,0x00,0x00,0x44,0x88,0x38,0x40,0x00
 		.dc.b 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00
 
+x16028:
 [00016028] 10fc                      move.b     #'&',(a0)+
-[0001602c] 0400                      subi.b     #0xd8,d0
+[0001602c] 0400                      subi.b     #TOK_OCT_DBL_CONST,d0
 [00016030] 6b20                      bmi.s      $00016052
 [00016032] 6720                      beq.s      $00016054
 [00016034] 5500                      subq.b     #2,d0
@@ -12648,21 +12799,21 @@ x16008:
 [00016044] 3419                      move.w     (a1)+,d2
 [00016046] 4eae 0148                 jsr        328(a6)
 [0001604a] 6100 0128                 bsr        $00016174
-[0001604e] 6000 fd70                 bra        $00015DC0
+[0001604e] 6000 fd70                 bra        x15c52_13
 [00016052] 5289                      addq.l     #1,a1
 [00016054] 2019                      move.l     (a1)+,d0
 [00016056] 3219                      move.w     (a1)+,d1
 [00016058] 3419                      move.w     (a1)+,d2
 [0001605a] 4eae 0148                 jsr        328(a6)
 [0001605e] 6100 014e                 bsr        $000161AE
-[00016062] 6000 fd5c                 bra        $00015DC0
+[00016062] 6000 fd5c                 bra        x15c52_13
 [00016066] 5289                      addq.l     #1,a1
 [00016068] 2019                      move.l     (a1)+,d0
 [0001606a] 3219                      move.w     (a1)+,d1
 [0001606c] 3419                      move.w     (a1)+,d2
 [0001606e] 4eae 0148                 jsr        328(a6)
 [00016072] 6100 0174                 bsr        $000161E8
-[00016076] 6000 fd48                 bra        $00015DC0
+[00016076] 6000 fd48                 bra        x15c52_13
 
 x1607a:
 [0001607a] 41ee 0d2c                 lea.l      3372(a6),a0
@@ -12803,7 +12954,7 @@ x1607a:
 [00016202] 51c9 fff6                 dbf        d1,$000161FA
 [00016206] 4e75                      rts
 [00016208] b0bc 0000 2710            cmp.l      #$00002710,d0
-[0001620e] 6456                      bcc.s      $00016266
+[0001620e] 6456                      bcc.s      print_int
 [00016210] 80fc 0064                 divu.w     #100,d0
 [00016214] 3200                      move.w     d0,d1
 [00016216] 4840                      swap       d0
@@ -12836,7 +12987,10 @@ x1607a:
 [00016260] 4840                      swap       d0
 [00016262] 10c0                      move.b     d0,(a0)+
 [00016264] 4e75                      rts
+
+print_int:
 [00016266] 4eb9 0001 0b96            jsr        FITOF
+print_float:
 [0001626c] 48e7 00c0                 movem.l    a0-a1,-(a7)
 [00016270] 50ee 021e                 st         542(a6)
 [00016274] 4eb9 0001 0ae6            jsr        Fstr
@@ -12859,7 +13013,9 @@ x1607a:
 [000162a0] 6a02                      bpl.s      $000162A4
 [000162a2] 7204                      moveq.l    #4,d1
 [000162a4] 6100 fe86                 bsr        $0001612C
-[000162a8] 6000 fb16                 bra        $00015DC0
+[000162a8] 6000 fb16                 bra        x15c52_13
+
+x162ac:
 [000162ac] b03c 00d0                 cmp.b      #$D0,d0
 [000162b0] 66e2                      bne.s      $00016294
 [000162b2] 7000                      moveq.l    #0,d0
@@ -12868,7 +13024,7 @@ x1607a:
 [000162ba] d040                      add.w      d0,d0
 [000162bc] 47ee 0d2c                 lea.l      3372(a6),a3
 [000162c0] 3233 0000                 move.w     0(a3,d0.w),d1
-[000162c4] 6700 fb78                 beq        $00015E3E
+[000162c4] 6700 fb78                 beq        x15c52_19
 [000162c8] 47fa d3cc                 lea.l      x13696(pc),a3
 [000162cc] d6c1                      adda.w     d1,a3
 [000162ce] 7200                      moveq.l    #0,d1
@@ -12883,17 +13039,22 @@ x1607a:
 [000162e4] d02e 20ce                 add.b      8398(a6),d0
 [000162e8] 10c0                      move.b     d0,(a0)+
 [000162ea] 51c9 ffea                 dbf        d1,$000162D6
-[000162ee] 6000 fad0                 bra        $00015DC0
+[000162ee] 6000 fad0                 bra        x15c52_13
+
+x162f2:
 [000162f2] 1d7c 003d 20d0            move.b     #'=',8400(a6)
 [000162f8] 72da                      moveq.l    #-38,d1
-[000162fa] 6002                      bra.s      $000162FE
+[000162fa] 6002                      bra.s      x162fc_1
+
+x162fc:
 [000162fc] 72c2                      moveq.l    #-62,d1
+x162fc_1:
 [000162fe] d246                      add.w      d6,d1
 [00016300] 48c1                      ext.l      d1
 [00016302] 82fc 0006                 divu.w     #6,d1
 [00016306] 7000                      moveq.l    #0,d0
 [00016308] 103b 1006                 move.b     x16310(pc,d1.w),d0
-[0001630c] 6000 fab6                 bra        $00015DC4
+[0001630c] 6000 fab6                 bra        x15c52_14
 
 x16310:
 	.dc.b 0xf0,0xf2,0xf8,0xf9,0xf4,0xf6,0xfc,0xfd
@@ -12909,45 +13070,49 @@ x16318:
 [00016328] bc7c 015e                 cmp.w      #$015E,d6
 [0001632c] 6306                      bls.s      $00016334
 [0001632e] 1d7c 002c 20d0            move.b     #',',8400(a6)
-[00016334] 6000 fa8e                 bra        $00015DC4
-[00016338] 0c29 0046 0002            cmpi.b     #$46,2(a1)
-[0001633e] 6706                      beq.s      $00016346
-[00016340] 1d7c 0028 20d0            move.b     #'(',8400(a6)
-[00016346] 70fb                      moveq.l    #-5,d0
-[00016348] 6000 fa7a                 bra        $00015DC4
+[00016334] 6000 fa8e                 bra        x15c52_14
 
-[0001634c] 0000
-[0001634e] 0000
-[00016350] 0000
-           0050
-[00016354] 0000
-[00016356] 0000
-[00016358] 0000
-           000e
-[0001635c] 0000
-[0001635e] 0000
-[00016360] 0000
-[00016362] 0000
-[00016364] 0000
-           03f0
-[00016368] ff3f
-           fe5f
-           0048
-           1e00
-[00016370] 0000
-           0200
-[00016374] 4000
-[00016376] 0000
-[00016378] 0000
-[0001637a] 0000
-[0001637c] 0000
-           c019
-[00016380] 0400
-           0000
-[00016384] 0000
-[00016386] 0000
-[00016388] 0000
-[0001638a] 0000
+x16338:
+[00016338] 0c29 0046 0002            cmpi.b     #$46,2(a1)
+[0001633e] 6706                      beq.s      x16338_1
+[00016340] 1d7c 0028 20d0            move.b     #'(',8400(a6)
+x16338_1:
+[00016346] 70fb                      moveq.l    #-5,d0
+[00016348] 6000 fa7a                 bra        x15c52_14
+
+x1634c:
+		.dc.b 0x00,0x00
+		.dc.b 0x00,0x00
+		.dc.b 0x00,0x00
+		.dc.b 0x00,0x50
+		.dc.b 0x00,0x00
+		.dc.b 0x00,0x00
+		.dc.b 0x00,0x00
+		.dc.b 0x00,0x0e
+		.dc.b 0x00,0x00
+		.dc.b 0x00,0x00
+		.dc.b 0x00,0x00
+		.dc.b 0x00,0x00
+		.dc.b 0x00,0x00
+		.dc.b 0x03,0xf0
+		.dc.b 0xff,0x3f
+		.dc.b 0xfe,0x5f
+		.dc.b 0x00,0x48
+		.dc.b 0x1e,0x00
+		.dc.b 0x00,0x00
+		.dc.b 0x02,0x00
+		.dc.b 0x40,0x00
+		.dc.b 0x00,0x00
+		.dc.b 0x00,0x00
+		.dc.b 0x00,0x00
+		.dc.b 0x00,0x00
+		.dc.b 0xc0,0x19
+		.dc.b 0x04,0x00
+		.dc.b 0x00,0x00
+		.dc.b 0x00,0x00
+		.dc.b 0x00,0x00
+		.dc.b 0x00,0x00
+		.dc.b 0x00,0x00
 
 /* subfunction of FSINQ; seems to be unused */
 fsin: /* 1638c */
@@ -13158,13 +13323,17 @@ x16786:   .ds.b 6+4096
 bss_end: /* 1779c */
 
 /* a6:
+16: variable table
 490: tmpbuf for Fstr
 512: outbuf for FTstr
 542: decimal_digits
 1106: offsets / genereal buffer
+1364: token buffer
 2772: filetable, xx*6 */
 7664: intout
 7920: ptsout
+8398: offset to add to variable names
+8399: deflist style
 8401: first char of identifier
 8698: workout
 9708: workin
