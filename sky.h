@@ -16,8 +16,8 @@
 #define TP_MAGIC1 "GfABASIC"   /* Magic for version 1 and 2 files */
 #define TP_MAGIC3 "GFA-BASIC3" /* Magic for version 3 and 4 files */
 #define TP_MAGICA "GFA-AMIGAB" /* Magic for Amiga files */
-#define TP_MAGIMS "A-BASIC MS-DOS" /* Magic for DOS BASIC files */
-#define TP_MAGIW3 "A-BASIC WIN300" /* Magic for WIN BASIC files */
+#define TP_MAGIMS "A-BASIC MS-DOS\032\001\001\001" /* Magic for DOS BASIC files */
+#define TP_MAGIW3 "A-BASIC WIN300\032\001\001\001" /* Magic for WIN BASIC files */
 
 /* gf4tp_tp flags */
 #define TP_CONV                    0x01 /* Convert charset */

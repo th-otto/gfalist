@@ -946,6 +946,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	while (src < srcend)
 	{
 		pft = *src++;
+		printf("/* %u */", pft);
 		switch (pft)
 		{
 		case TOK_LINE_COMMENT:
