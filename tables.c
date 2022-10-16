@@ -529,7 +529,7 @@ const char *const gfalct[] = {
 	/* 518 */ "OB_TOUCHEXIT(",
 	/* 519 */ "OB_HIDETREE("
 };
-unsigned int const size_lct = sizeof(gfalct) / sizeof(gfalct[0]);
+unsigned int const size_lct = (unsigned int)(sizeof(gfalct) / sizeof(gfalct[0]));
 
 /* Primary function text */
 const char *const gfapft[256] = {
@@ -561,11 +561,11 @@ const char *const gfapft[256] = {
 	/*   25 */ "<",
 	/*   26 */ ">",
 	/*   27 */ "=",
-	/*   28 */ "+",
-	/*   29 */ "+",
-	/*   30 */ "-",
+	/*   28 */ "+", /* strings */
+	/*   29 */ "+", /* unary plus */
+	/*   30 */ "-", /* unary minus */
 	/*   31 */ "NOT ",
-	/*   32 */ ")",
+	/*   32 */ ")", /* end of array ref */
 	/*   33 */ ",",
 	/*   34 */ ";",
 	/*   35 */ "(",
@@ -579,7 +579,7 @@ const char *const gfapft[256] = {
 	/*   43 */ "TAN(",
 	/*   44 */ "ATN(",
 	/*   45 */ "==",
-	/*   46 */ NULL, /* unknown */
+	/*   46 */ "(", /* unknown */
 	/*   47 */ "EXP(",
 	/*   48 */ "LOG(",
 	/*   49 */ "LOG10(",
@@ -597,11 +597,11 @@ const char *const gfapft[256] = {
 	/*   61 */ "RIGHT$(",
 	/*   62 */ "MID$(",
 	/*   63 */ "MID$(",
-	/*   64 */ NULL, /* , */
+	/*   64 */ ",", /* unknown */
 	/*   65 */ "ASIN(",
 	/*   66 */ "CHR$(",
 	/*   67 */ "}=",
-	/*   68 */ NULL, /* ] */
+	/*   68 */ "]=", /* unknown */
 	/*   69 */ "=",
 	/*   70 */ NULL, /* comment */
 	/*   71 */ " TO ",

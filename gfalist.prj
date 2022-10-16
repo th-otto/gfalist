@@ -1,0 +1,10 @@
+gfalist.ttp
+.L[-S=8192]
+=
+cstartv.o
+gfalist.c
+tables.c
+sky.c
+
+pcstdlib.lib
+

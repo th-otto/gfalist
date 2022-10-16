@@ -35,9 +35,9 @@ TOK_CMD_LOOP_UNTIL      =  52
 TOK_CMD_PROCEDURE2      =  54
 TOK_CMD_EXITIF2         =  55
 TOK_CMD_CASE            =  56
-TOK_CMD_CALL_IMP        =  60
+TOK_CMD_GOSUB_IMP       =  60
 TOK_CMD_GOSUB           =  61
-TOK_CMD_CALL            =  62
+TOK_CMD_GOSUB_EXP       =  62
 TOK_CMD_LABEL           =  63
 TOK_CMD_LET_FLOAT       =  64
 TOK_CMD_ASSIGN_FLOAT    =  76
@@ -49,10 +49,6 @@ TOK_CMD_DATA            = 117
 TOK_CMD_END             = 124
 TOK_CMD_INC_FLOAT       = 160
 TOK_CMD_OFF             = 175
-TOK_CONST_ZERO          = 184
-TOK_CONST_ONE           = 185
-TOK_CONST_TWO           = 186
-TOK_CONST_THREE         = 187
 TOK_CMD_DIV_FLOAT       = 200
 TOK_CMD_DIV_BYTE_ARR    = 207
 TOK_CMD_ADDRIN          = 224
@@ -72,9 +68,64 @@ TOK_CMD_DOLLAR          = 411
 TOK_CMD_INLINE          = 417
 
 
+TOK_AND                 =   0
+TOK_OR                  =   1
+TOK_XOR                 =   2
+TOK_IMP                 =   3
+TOK_EQV                 =   4
+TOK_SUB                 =   5
+TOK_ADD                 =   6
+TOK_MUL                 =   7
+TOK_DIVIDE              =   8
+TOK_POWER               =   9
+TOK_MOD                 =  10
+TOK_DIV                 =  11
+TOK_NE                  =  12
+TOK_LE                  =  13
+TOK_LE2                 =  14
+TOK_GE                  =  15
+TOK_GE2                 =  16
+TOK_LT                  =  17
+TOK_GT                  =  18
+TOK_EQ                  =  19
+TOK_NE_STR              =  20
+TOK_LE_STR              =  21
+TOK_LE2_STR             =  22
+TOK_GE_STR              =  23
+TOK_GE2_STR             =  24
+TOK_LT_STR              =  25
+TOK_GT_STR              =  26
+TOK_EQ_STR              =  27
+TOK_PLUS_STR            =  28
+TOK_UPLUS               =  29
+TOK_UMINUS              =  30
+TOK_UNOT                =  31
+TOK_RPAREN              =  32
+TOK_COMMA               =  33
+TOK_SEMI                =  34
+TOK_LPAREN              =  35
+TOK_ERRSTR              =  36
+TOK_INT                 =  37
+TOK_TRUNC               =  38
+TOK_FRAC                =  39
+TOK_ABS                 =  40
+TOK_SIN                 =  41
+TOK_COS                 =  42
+TOK_TAN                 =  43
+TOK_ATAN                =  44
+TOK_APPROX_EQ           =  45
+TOK_RES_46              =  46
+TOK_EXP                 =  47
+TOK_LOG                 =  48
+TOK_LOG10               =  49
+TOK_VAR                 =  50
 TOK_LINE_COMMENT        =  70
 TOK_FNCALL              = 158
 TOK_GOSUB               = 159
+TOK_CONST_ZERO          = 184
+TOK_CONST_ONE           = 185
+TOK_CONST_TWO           = 186
+TOK_CONST_THREE         = 187
 TOK_CHAR_CONST          = 198
 TOK_CHAR_CONST_PAD      = 199
 TOK_DEC_CONST           = 200
@@ -4163,49 +4214,49 @@ func_misc_table:
 		.dc.b 0,'#',0,77
 		.dc.b 0,0x27,0,87
 		.dc.b 0,0x0d,0,TOK_LINE_COMMENT
-		.dc.b 0,'(',0,35
-		.dc.b 0,')',0,0x20
-		.dc.b 0,'*',0,0x07
-		.dc.b 0,'+',0,0x06
-		.dc.b 0,'-',0,0x05
-		.dc.b 0,'-',0,0x1e
-		.dc.b 0,',',0,0x21
-		.dc.b 0,';',0,0x22
-		.dc.b 1,'=','=',0,0x2d
-		.dc.b 1,'>','<',0,0x0c
-		.dc.b 1,'<','>',0,0x0c
-		.dc.b 1,'<','=',0,0x0d
-		.dc.b 1,'=','<',0,0x0e
-		.dc.b 1,'=','>',0,0x10
-		.dc.b 1,'>','=',0,0x0f
-		.dc.b 0,'<',0,0x11
-		.dc.b 0,'=',0,0x13
-		.dc.b 0,'>',0,0x12
-		.dc.b 0,0x3a,0,0x7c
-		.dc.b 0,0x40,0,0x9f
-		.dc.b 0,0x28,0,0x2e
-		.dc.b 0,0x28,0,0x9d
-		.dc.b 0,0x2c,0,0x9c
-		.dc.b 0,0x2b,0,0x1c
-		.dc.b 0,0x2c,0,0x40
-		.dc.b 0,'<',0,0x19
-		.dc.b 1,'<','=',0,0x15
-		.dc.b 1,'<','>',0,0x14
-		.dc.b 0,'=',0,0x1b
-		.dc.b 0,'=',0,0x45
-		.dc.b 1,'=','<',0,0x16
-		.dc.b 1,'=','>',0,0x18
-		.dc.b 0,'>',0,0x1a
-		.dc.b 1,'>','=',0,0x17
-		.dc.b 0,0x2a,TOK_SUBFUNC_208,0xbd
-		.dc.b 0,0x30,0,0xb8
-		.dc.b 0,0x31,0,0xb9
-		.dc.b 0,0x32,0,0xba
-		.dc.b 0,0x33,0,0xbb
-		.dc.b 1,0x29,'=',0,0x39
-		.dc.b 1,0x7d,'=',0,0x43
-		.dc.b 1,0x5d,'=',0,0x44
-		.dc.b 0,0x29,0,0x33
+		.dc.b 0,'(',0,TOK_LPAREN
+		.dc.b 0,')',0,TOK_RPAREN
+		.dc.b 0,'*',0,TOK_MUL
+		.dc.b 0,'+',0,TOK_ADD
+		.dc.b 0,'-',0,TOK_SUB
+		.dc.b 0,'-',0,TOK_UMINUS
+		.dc.b 0,',',0,TOK_COMMA
+		.dc.b 0,';',0,TOK_SEMI
+		.dc.b 1,'=','=',0,TOK_APPROX_EQ
+		.dc.b 1,'>','<',0,TOK_NE
+		.dc.b 1,'<','>',0,TOK_NE
+		.dc.b 1,'<','=',0,TOK_LE
+		.dc.b 1,'=','<',0,TOK_LE2
+		.dc.b 1,'=','>',0,TOK_GE2
+		.dc.b 1,'>','=',0,TOK_GE
+		.dc.b 0,'<',0,TOK_LT
+		.dc.b 0,'=',0,TOK_EQ
+		.dc.b 0,'>',0,TOK_GT
+		.dc.b 0,':',0,124
+		.dc.b 0,'@',0,TOK_GOSUB
+		.dc.b 0,'(',0,TOK_RES_46
+		.dc.b 0,'(',0,157
+		.dc.b 0,',',0,156
+		.dc.b 0,'+',0,TOK_PLUS_STR
+		.dc.b 0,',',0,64
+		.dc.b 0,'<',0,TOK_LT_STR
+		.dc.b 1,'<','=',0,TOK_LE_STR
+		.dc.b 1,'<','>',0,TOK_NE_STR
+		.dc.b 0,'=',0,TOK_EQ_STR
+		.dc.b 0,'=',0,69
+		.dc.b 1,'=','<',0,TOK_LE2_STR
+		.dc.b 1,'=','>',0,TOK_GE2_STR
+		.dc.b 0,'>',0,TOK_GT_STR
+		.dc.b 1,'>','=',0,TOK_GE_STR
+		.dc.b 0,'*',TOK_SUBFUNC_208,189
+		.dc.b 0,'0',0,TOK_CONST_ZERO
+		.dc.b 0,'1',0,TOK_CONST_ONE
+		.dc.b 0,'2',0,TOK_CONST_TWO
+		.dc.b 0,'3',0,TOK_CONST_THREE
+		.dc.b 1,')','=',0,57
+		.dc.b 1,'}','=',0,67
+		.dc.b 1,']','=',0,68
+		.dc.b 0,')',0,51
 
 func_table:
 func_a_table: /* 1297e */
@@ -12181,11 +12232,11 @@ x15980: .dc.b 0
 x15982:
 		lea.l      1364(a6),a0
 		move.w     (a0)+,d0
-		cmp.w      #120,d0 /* TOK_CMD_CALL_IMP*2 */
+		cmp.w      #120,d0 /* TOK_CMD_GOSUB_IMP*2 */
 		beq.s      x15982_1
 		cmp.w      #122,d0 /* TOK_CMD_GOSUB*2 */
 		beq.s      x15982_1
-		cmp.w      #124,d0 /* TOK_CMD_CALL*2 */
+		cmp.w      #124,d0 /* TOK_CMD_GOSUB_EXP*2 */
 		beq.s      x15982_1
 		cmp.w      #12,d0 /* TOK_CMD_PROCEDURE*2 */
 x15982_1:
@@ -12568,11 +12619,11 @@ x15c52_8:
 		beq        x16338
 		cmp.w      #38,d6 /* TOK_CMD_FOR_FLOAT*2 */
 		bcs.s      x15c52_13
-		cmp.w      #120,d6 /* TOK_CMD_CALL_IMP*2 */
+		cmp.w      #120,d6 /* TOK_CMD_GOSUB_IMP*2 */
 		beq.s      x15c52_9
 		cmp.w      #122,d6 /* TOK_CMD_GOSUB*2 */
 		beq.s      x15c52_9
-		cmp.w      #124,d6 /* TOK_CMD_CALL*2 */
+		cmp.w      #124,d6 /* TOK_CMD_GOSUB_EXP*2 */
 		bne.s      x15c52_10
 x15c52_9:
 		bra        x16338_1

@@ -34,6 +34,7 @@ static unsigned char *rvsimp(struct gfainf *gi, unsigned short type, unsigned sh
 	unsigned char *dst = vbuf;
 	char *src = (char *)vbuf;
 
+	(void)gi;
 	sprintf(src, "v%x_%x", type, var);
 	while (*src != '\0')
 	{
