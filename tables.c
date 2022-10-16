@@ -529,7 +529,7 @@ const char *const gfalct[] = {
 	/* 518 */ "OB_TOUCHEXIT(",
 	/* 519 */ "OB_HIDETREE("
 };
-unsigned int const size_lct = (unsigned int)(sizeof(gfalct) / sizeof(gfalct[0]));
+unsigned int const size_lct = sizeof(gfalct) / sizeof(gfalct[0]);
 
 /* Primary function text */
 const char *const gfapft[256] = {
@@ -545,30 +545,30 @@ const char *const gfapft[256] = {
 	/*    9 */ "^",
 	/*   10 */ " MOD ",
 	/*   11 */ " DIV ",
-	/*   12 */ "<>",
-	/*   13 */ "<=",
-	/*   14 */ "=<",
-	/*   15 */ ">=",
-	/*   16 */ "=>",
-	/*   17 */ "<",
-	/*   18 */ ">",
-	/*   19 */ "=",
-	/*   20 */ "<>",
-	/*   21 */ "<=",
-	/*   22 */ "=<",
-	/*   23 */ ">=",
-	/*   24 */ "=>",
-	/*   25 */ "<",
-	/*   26 */ ">",
-	/*   27 */ "=",
+	/*   12 */ "<>", /* numbers */
+	/*   13 */ "<=", /* numbers */
+	/*   14 */ "=<", /* numbers */
+	/*   15 */ ">=", /* numbers */
+	/*   16 */ "=>", /* numbers */
+	/*   17 */ "<", /* numbers */
+	/*   18 */ ">", /* numbers */
+	/*   19 */ "=", /* numbers */
+	/*   20 */ "<>", /* strings */
+	/*   21 */ "<=", /* strings */
+	/*   22 */ "=<", /* strings */
+	/*   23 */ ">=", /* strings */
+	/*   24 */ "=>", /* strings */
+	/*   25 */ "<", /* strings */
+	/*   26 */ ">", /* strings */
+	/*   27 */ "=", /* strings */
 	/*   28 */ "+", /* strings */
 	/*   29 */ "+", /* unary plus */
 	/*   30 */ "-", /* unary minus */
 	/*   31 */ "NOT ",
-	/*   32 */ ")", /* end of array ref */
+	/*   32 */ ")", /* end of parameter list (array ref, function call, dim) */
 	/*   33 */ ",",
 	/*   34 */ ";",
-	/*   35 */ "(",
+	/*   35 */ "(", /* in expressions */
 	/*   36 */ "ERR$(",
 	/*   37 */ "INT(",
 	/*   38 */ "TRUNC(",
@@ -589,14 +589,14 @@ const char *const gfapft[256] = {
 	/*   53 */ "VAL(",
 	/*   54 */ "INPMID$",
 	/*   55 */ "",  /* Precedes functions that return a numeric value in PRINT statements */
-	/*   56 */ "TIME$",
-	/*   57 */ ")=",
-	/*   58 */ "LEFT$(",
-	/*   59 */ "LEFT$(",
-	/*   60 */ "RIGHT$(",
-	/*   61 */ "RIGHT$(",
-	/*   62 */ "MID$(",
-	/*   63 */ "MID$(",
+	/*   56 */ "TIME$", /* no arguments */
+	/*   57 */ ")=", /* for array assignment */
+	/*   58 */ "LEFT$(", /* 1 argument */
+	/*   59 */ "LEFT$(", /* 2 arguments */
+	/*   60 */ "RIGHT$(", /* 1 argument */
+	/*   61 */ "RIGHT$(", /* 2 arguments */
+	/*   62 */ "MID$(", /* 2 arguments */
+	/*   63 */ "MID$(", /* 3 arguments */
 	/*   64 */ ",", /* unknown */
 	/*   65 */ "ASIN(",
 	/*   66 */ "CHR$(",
@@ -617,18 +617,18 @@ const char *const gfapft[256] = {
 	/*   81 */ "]",
 	/*   82 */ "ACOS(",
 	/*   83 */ "INKEY$",
-	/*   84 */ "RND(",
-	/*   85 */ "RND",
+	/*   84 */ "RND(", /* 1 argument */
+	/*   85 */ "RND", /* no arguments */
 	/*   86 */ "RANDOM(",
-	/*   87 */ "'",
+	/*   87 */ "'", /* in print statemtent */
 	/*   88 */ "}",
 	/*   89 */ "AT(",
 	/*   90 */ "IF",
-	/*   91 */ "\\",
+	/*   91 */ "\\", /* integer DIV */
 	/*   92 */ "FLOAT{",
 	/*   93 */ "DOUBLE{",
-	/*   94 */ "INPUT$(",
-	/*   95 */ "INPUT$(",
+	/*   94 */ "INPUT$(", /* 1 argument */
+	/*   95 */ "INPUT$(", /* 2 arguments */
 	/*   96 */ "INPUT",
 	/*   97 */ "CHAR{",
 	/*   98 */ "MKI$(",
@@ -645,25 +645,25 @@ const char *const gfapft[256] = {
 	/*  109 */ " OFFSET ",
 	/*  110 */ "CFLOAT(",
 	/*  111 */ "TRACE$",
-	/*  112 */ "ROUND(",
-	/*  113 */ "ROUND(",
+	/*  112 */ "ROUND(", /* 1 argument */
+	/*  113 */ "ROUND(", /* 2 arguments */
 	/*  114 */ " WITH ",
-	/*  115 */ "BIN$(",
-	/*  116 */ "BIN$(",
-	/*  117 */ "MIN(",
-	/*  118 */ "MIN(",
-	/*  119 */ "MAX(",
-	/*  120 */ "MAX(",
+	/*  115 */ "BIN$(", /* 1 argument */
+	/*  116 */ "BIN$(", /* 2 arguments */
+	/*  117 */ "MIN(", /* numbers */
+	/*  118 */ "MIN(", /* strings */
+	/*  119 */ "MAX(", /* numbers */
+	/*  120 */ "MAX(", /* strings */
 	/*  121 */ "SINGLE{",
 	/*  122 */ " AT(",
 	/*  123 */ "SINQ(",
 	/*  124 */ ":",
 	/*  125 */ "COSQ(",
-	/*  126 */ "DATE$",
+	/*  126 */ "DATE$", /* no arguments */
 	/*  127 */ "UPPER$(",
 	/*  128 */ "SPACE$(",
-	/*  129 */ "STRING$(",
-	/*  130 */ "STRING$(",
+	/*  129 */ "STRING$(", /* 2nd argument code */
+	/*  130 */ "STRING$(", /* 2nd argument string */
 	/*  131 */ "SUCC(",
 	/*  132 */ "DIR$(",
 	/*  133 */ "PRED(",
@@ -697,8 +697,8 @@ const char *const gfapft[256] = {
 	/*  161 */ "TAB(",
 	/*  162 */ "SPC(",
 	/*  163 */ "USING ",
-	/*  164 */ "DATE$(",
-	/*  165 */ "TIME$(",
+	/*  164 */ "DATE$(", /* 1 argument */
+	/*  165 */ "TIME$(", /* 1 argument */
 	/*  166 */ "TIMESTAMP$(",
 	/*  167 */ "MENU",
 	/*  168 */ "NEXT",

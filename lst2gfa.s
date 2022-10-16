@@ -119,9 +119,131 @@ TOK_EXP                 =  47
 TOK_LOG                 =  48
 TOK_LOG10               =  49
 TOK_VAR                 =  50
+TOK_RPAREN2             =  51
+TOK_INPAUX              =  52
+TOK_VAL                 =  53
+TOK_INPMID              =  54
+TOK_PRINTNUM            =  55
+TOK_TIME                =  56
+TOK_ARRAY_ASS           =  57
+TOK_LEFT1               =  58
+TOK_LEFT2               =  59
+TOK_RIGHT1              =  60
+TOK_RIGHT2              =  61
+TOK_MID2                =  62
+TOK_MID3                =  63
+TOK_RES_64              =  64
+TOK_ASIN                =  65
+TOK_CHR                 =  66
+TOK_REFEND              =  67
+TOK_RES_68              =  68
+TOK_ASSIGN              =  69
 TOK_LINE_COMMENT        =  70
+TOK_TO                  =  71
+TOK_STEP                =  72
+TOK_DOWNTO              =  73
+TOK_THEN                =  74
+TOK_GOTO_FUNC           =  75
+TOK_GOSUB_FUNC          =  76
+TOK_CHANNEL             =  77
+TOK_SQR                 =  78
+TOK_PI                  =  79
+TOK_LBRACKET            =  80
+TOK_RBRACKET            =  81
+TOK_ACOS                =  82
+TOK_INKEY               =  83
+TOK_RND1                =  84
+TOK_RND                 =  85
+TOK_RANDOM              =  86
+TOK_PRINTSPACE          =  87
+TOK_RBRACE              =  88
+TOK_AT                  =  89
+TOK_IF                  =  90
+TOK_INTDIV              =  91
+TOK_FLOAT_REF           =  92
+TOK_DOUBLE_REF          =  93
+TOK_INPUT1              =  94
+TOK_INPUT2              =  95
+TOK_INPUT3              =  96
+TOK_CHAR_REF            =  97
+TOK_MKI                 =  98
+TOK_MKL                 =  99
+TOK_MKS                 = 100
+TOK_MKF                 = 101
+TOK_MKD                 = 102
+TOK_DEG                 = 103
+TOK_RAD                 = 104
+TOK_CVS                 = 105
+TOK_CVF                 = 106
+TOK_CVD                 = 107
+TOK_AS                  = 108
+TOK_OFFSET              = 109
+TOK_CFLOAT              = 110
+TOK_TRACE               = 111
+TOK_ROUND1              = 112
+TOK_ROUND2              = 113
+TOK_WITH                = 114
+TOK_BIN1                = 115
+TOK_BIN2                = 116
+TOK_MIN                 = 117
+TOK_MIN_STR             = 118
+TOK_MAX                 = 119
+TOK_MAX_STR             = 120
+TOK_SINGLE_REF          = 121
+TOK_AT2                 = 122
+TOK_SINQ                = 123
+TOK_LABEL               = 124
+TOK_COSQ                = 125
+TOK_DATE                = 126
+TOK_UPPER               = 127
+TOK_SPACE               = 128
+TOK_STRING_CODE         = 129
+TOK_STRING              = 130
+TOK_SUCC                = 131
+TOK_DIR                 = 132
+TOK_PRED                = 133
+TOK_DRAW                = 134
+TOK_TRIM                = 135
+TOK_CMDLINE             = 136
+TOK_CMDLINE2            = 137
+TOK_LONGARG             = 138
+TOK_WORDARG             = 139
+TOK_FACT                = 140
+TOK_COMBIN              = 141
+TOK_COMBIN2             = 142
+TOK_VARIAT              = 143
+TOK_LTRIM               = 144
+TOK_RTRIM               = 145
+TOK_LCASE               = 146
+TOK_RCASE               = 147
+TOK_LOWER               = 148
+TOK_OB_TEXT             = 149
+TOK_ZTRIM               = 150
+TOK_ERROR               = 151
+TOK_STOP                = 152
+TOK_BREAK               = 153
+TOK_CONT                = 154
+TOK_FIX                 = 155
+TOK_COMMA2              = 156
+TOK_LPAREN2             = 157
 TOK_FNCALL              = 158
 TOK_GOSUB               = 159
+TOK_MIRROR              = 160
+TOK_TAB                 = 161
+TOK_SPC                 = 162
+TOK_USING               = 163
+TOK_DATE1               = 164
+TOK_TIME1               = 165
+TOK_TIMESTAMP           = 166
+TOK_MENU                = 167
+TOK_NEXT                = 168
+TOK_CHAR                = 169
+TOK_KEY                 = 170
+TOK_BUTTON              = 171
+TOK_IBOX                = 172
+TOK_OBOX                = 173
+TOK_MESSAGE             = 174
+TOK_OFF                 = 175
 TOK_CONST_ZERO          = 184
 TOK_CONST_ONE           = 185
 TOK_CONST_TWO           = 186
@@ -4211,8 +4333,8 @@ cmd_other_table:
 /* gbe: 00051c8a */
 
 func_misc_table:
-		.dc.b 0,'#',0,77
-		.dc.b 0,0x27,0,87
+		.dc.b 0,'#',0,TOK_CHANNEL
+		.dc.b 0,0x27,0,TOK_PRINTSPACE
 		.dc.b 0,0x0d,0,TOK_LINE_COMMENT
 		.dc.b 0,'(',0,TOK_LPAREN
 		.dc.b 0,')',0,TOK_RPAREN
@@ -4232,18 +4354,18 @@ func_misc_table:
 		.dc.b 0,'<',0,TOK_LT
 		.dc.b 0,'=',0,TOK_EQ
 		.dc.b 0,'>',0,TOK_GT
-		.dc.b 0,':',0,124
+		.dc.b 0,':',0,TOK_LABEL
 		.dc.b 0,'@',0,TOK_GOSUB
 		.dc.b 0,'(',0,TOK_RES_46
-		.dc.b 0,'(',0,157
-		.dc.b 0,',',0,156
+		.dc.b 0,'(',0,TOK_LPAREN2
+		.dc.b 0,',',0,TOK_COMMA2
 		.dc.b 0,'+',0,TOK_PLUS_STR
-		.dc.b 0,',',0,64
+		.dc.b 0,',',0,TOK_RES_64
 		.dc.b 0,'<',0,TOK_LT_STR
 		.dc.b 1,'<','=',0,TOK_LE_STR
 		.dc.b 1,'<','>',0,TOK_NE_STR
 		.dc.b 0,'=',0,TOK_EQ_STR
-		.dc.b 0,'=',0,69
+		.dc.b 0,'=',0,TOK_ASSIGN
 		.dc.b 1,'=','<',0,TOK_LE2_STR
 		.dc.b 1,'=','>',0,TOK_GE2_STR
 		.dc.b 0,'>',0,TOK_GT_STR
@@ -4253,10 +4375,10 @@ func_misc_table:
 		.dc.b 0,'1',0,TOK_CONST_ONE
 		.dc.b 0,'2',0,TOK_CONST_TWO
 		.dc.b 0,'3',0,TOK_CONST_THREE
-		.dc.b 1,')','=',0,57
-		.dc.b 1,'}','=',0,67
-		.dc.b 1,']','=',0,68
-		.dc.b 0,')',0,51
+		.dc.b 1,')','=',0,TOK_ARRAY_ASS
+		.dc.b 1,'}','=',0,TOK_REFEND
+		.dc.b 1,']','=',0,TOK_RES_68
+		.dc.b 0,')',0,TOK_RPAREN2
 
 func_table:
 func_a_table: /* 1297e */
@@ -5312,13 +5434,13 @@ func_z_table:
 func_other_table:
 		.dc.b 0
 		.dc.b 0x5c
-		.dc.b 0,91
+		.dc.b 0,TOK_INTDIV
 		.dc.b 0
 		.ascii "["
-		.dc.b 0,80
+		.dc.b 0,TOK_LBRACKET
 		.dc.b 0
 		.ascii "]"
-		.dc.b 0,81
+		.dc.b 0,TOK_RBRACKET
 		.dc.b 4
 		.ascii "_DATA"
 		.dc.b TOK_SUBFUNC_208,227
@@ -5333,13 +5455,13 @@ func_other_table:
 		.dc.b TOK_SUBFUNC_208,238
 		.dc.b 0
 		.ascii "^"
-		.dc.b 0,9
+		.dc.b 0,TOK_POWER
 		.dc.b 0
 		.ascii "{"
 		.dc.b TOK_SUBFUNC_208,112
 		.dc.b 0
 		.ascii "}"
-		.dc.b 0,88
+		.dc.b 0,TOK_RBRACE
 		.dc.b 4
 		.ascii "EOF(#"
 		.dc.b TOK_SUBFUNC_208,78
@@ -5360,10 +5482,11 @@ func_other_table:
 		.dc.b 0,133
 		.dc.b 0
 		.ascii "/"
-		.dc.b 0,8
+		.dc.b 0,TOK_DIVIDE
 		.dc.b -1
 		.even
 
+jmpbase:
 x13696:
 f13696:
 		moveq.l    #9,d0
