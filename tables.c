@@ -732,15 +732,15 @@ const char *const gfapft[256] = {
 	/*  196 */ "OCT$(",
 	/*  197 */ "OCT$(",
 	/*  198 */ NULL, /* string constant */
-	/*  199 */ NULL, /* string constant */
+	/*  199 */ NULL, /* string constant (pad byte) */
 	/*  200 */ NULL, /* decimal constant */
-	/*  201 */ NULL, /* decimal constant */
+	/*  201 */ NULL, /* decimal constant (pad byte) */
 	/*  202 */ NULL, /* hexadecimal constant */
-	/*  203 */ NULL, /* hexadecimal constant */
+	/*  203 */ NULL, /* hexadecimal constant (pad byte) */
 	/*  204 */ NULL, /* octal constant */
-	/*  205 */ NULL, /* octal constant */
+	/*  205 */ NULL, /* octal constant (pad byte) */
 	/*  206 */ NULL, /* binary constant */
-	/*  207 */ NULL, /* binary constant */
+	/*  207 */ NULL, /* binary constant (pad byte) */
 	/*  208 */ NULL, /* secondary function -> gfasft_208 */
 	/*  209 */ NULL, /* secondary function -> gfasft_209 */
 	/*  210 */ NULL, /* secondary function -> gfasft_210 */
