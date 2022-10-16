@@ -399,7 +399,7 @@ print_decimal_4:
 		divu.w     #10,d2
 		move.l     d2,-(a7)
 		cmp.w      #9,d2
-		bgt.s      print_decimal_8
+		bgt.s      print_decimal_4
 print_decimal_5:
 		addi.w     #'0',d2
 		move.w     d2,d0
@@ -2059,13 +2059,14 @@ GarColl_7:
 		lsr.w      #1,d0
 		bcc.s      GarColl_8
 		bra.s      GarColl_9
+GarColl_11:
 		move.l     -(a0),-(a1)
 		move.l     -(a0),-(a1)
 GarColl_9:
 		move.l     -(a0),-(a1)
 		move.l     -(a0),-(a1)
 GarColl_8:
-		dbf        d0,GarColl_10
+		dbf        d0,GarColl_11
 		move.l     a1,(a3)
 		cmpa.l     a0,a2
 GarColl_10:
@@ -2080,7 +2081,7 @@ GarColl_1:
 x1111c:
 		movea.l    80(a6),a0
 x1111c_1:
-		cmpi.w     #368,2(a0)
+		cmpi.w     #468,2(a0)
 		beq.s      x1111c_2
 		cmpi.w     #180,2(a0)
 		adda.w     (a0),a0
@@ -2324,7 +2325,7 @@ MergeFlg: .dc.w 0
 
 /* gfa: 00015a06 */
 _FillBuf_2:
-		moveq.l    #0,d0
+		moveq.l    #26,d0
 _FillBuf_3:
 		.IFNE FOR_LIB
 		bra        ERROR
@@ -2770,7 +2771,7 @@ x1160e_18:
 x1160e_19:
 		clr.w      (a0)+
 x1160e_20:
-		dbf        d0,x1160e_20
+		dbf        d0,x1160e_19
 		bsr        x1030a
 		movea.l    a1,a0
 		move.l     (a7)+,d0
@@ -2816,9 +2817,9 @@ x117bc_4:
 		move.b     (a0)+,d1
 		beq.s      x117bc_6
 		cmp.b      #'a',d1
-		blt.s      x117bc_6
+		blt.s      x117bc_4
 		cmp.b      #'z',d1
-		bgt.s      x117bc_6
+		bgt.s      x117bc_4
 x117bc_5:
 		eori.l     #0x00202020,d0
 		bra.s      x117bc_7
@@ -4163,49 +4164,48 @@ func_misc_table:
 		.dc.b 0,0x27,0,87
 		.dc.b 0,0x0d,0,TOK_LINE_COMMENT
 		.dc.b 0,'(',0,35
-		.dc.b 0,'#',0,41
-		.dc.b 0x00,0x29,0x00,0x20
-		.dc.b 0x00,0x2a,0x00,0x07
-		.dc.b 0x00,0x2b,0x00,0x06
-		.dc.b 0x00,0x2d,0x00,0x05
-		.dc.b 0x00,0x2d,0x00,0x1e
-		.dc.b 0x00,0x2c,0x00,0x21
-		.dc.b 0x00,0x3b,0x00,0x22
-		.dc.b 0x01,0x3d,0x3d,0x00,0x2d
-		.dc.b 0x01,0x3e,0x3c,0x00,0x0c
-		.dc.b 0x01,0x3c,0x3e,0x00,0x0c
-		.dc.b 0x01,0x3c,0x3d,0x00,0x0d
-		.dc.b 0x01,0x3d,0x3c,0x00,0x0e
-		.dc.b 0x01,0x3d,0x3e,0x00,0x10
-		.dc.b 0x01,0x3e,0x3d,0x00,0x0f
-		.dc.b 0x00,0x3c,0x00,0x11
-		.dc.b 0x00,0x3d,0x00,0x13
-		.dc.b 0x00,0x3e,0x00,0x12
-		.dc.b 0x00,0x3a,0x00,0x7c
-		.dc.b 0x00,0x40,0x00,0x9f
-		.dc.b 0x00,0x28,0x00,0x2e
-		.dc.b 0x00,0x28,0x00,0x9d
-		.dc.b 0x00,0x2c,0x00,0x9c
-		.dc.b 0x00,0x2b,0x00,0x1c
-		.dc.b 0x00,0x2c,0x00,0x40
-		.dc.b 0x00,0x3c,0x00,0x19
-		.dc.b 0x01,0x3c,0x3d,0x00,0x15
-		.dc.b 0x01,0x3c,0x3e,0x00,0x14
-		.dc.b 0x00,0x3d,0x00,0x1b
-		.dc.b 0x00,0x3d,0x00,0x45
-		.dc.b 0x01,0x3d,0x3c,0x00,0x16
-		.dc.b 0x01,0x3d,0x3e,0x00,0x18
-		.dc.b 0x00,0x3e,0x00,0x1a
-		.dc.b 0x01,0x3e,0x3d,0x00,0x17
-		.dc.b 0x00,0x2a,0xd0,0xbd
-		.dc.b 0x00,0x30,0x00,0xb8
-		.dc.b 0x00,0x31,0x00,0xb9
-		.dc.b 0x00,0x32,0x00,0xba
-		.dc.b 0x00,0x33,0x00,0xbb
-		.dc.b 0x01,0x29,0x3d,0x00,0x39
-		.dc.b 0x01,0x7d,0x3d,0x00,0x43
-		.dc.b 0x01,0x5d,0x3d,0x00,0x44
-		.dc.b 0x00,0x29,0x00,0x33
+		.dc.b 0,')',0,0x20
+		.dc.b 0,'*',0,0x07
+		.dc.b 0,'+',0,0x06
+		.dc.b 0,'-',0,0x05
+		.dc.b 0,'-',0,0x1e
+		.dc.b 0,',',0,0x21
+		.dc.b 0,';',0,0x22
+		.dc.b 1,'=','=',0,0x2d
+		.dc.b 1,'>','<',0,0x0c
+		.dc.b 1,'<','>',0,0x0c
+		.dc.b 1,'<','=',0,0x0d
+		.dc.b 1,'=','<',0,0x0e
+		.dc.b 1,'=','>',0,0x10
+		.dc.b 1,'>','=',0,0x0f
+		.dc.b 0,'<',0,0x11
+		.dc.b 0,'=',0,0x13
+		.dc.b 0,'>',0,0x12
+		.dc.b 0,0x3a,0,0x7c
+		.dc.b 0,0x40,0,0x9f
+		.dc.b 0,0x28,0,0x2e
+		.dc.b 0,0x28,0,0x9d
+		.dc.b 0,0x2c,0,0x9c
+		.dc.b 0,0x2b,0,0x1c
+		.dc.b 0,0x2c,0,0x40
+		.dc.b 0,'<',0,0x19
+		.dc.b 1,'<','=',0,0x15
+		.dc.b 1,'<','>',0,0x14
+		.dc.b 0,'=',0,0x1b
+		.dc.b 0,'=',0,0x45
+		.dc.b 1,'=','<',0,0x16
+		.dc.b 1,'=','>',0,0x18
+		.dc.b 0,'>',0,0x1a
+		.dc.b 1,'>','=',0,0x17
+		.dc.b 0,0x2a,TOK_SUBFUNC_208,0xbd
+		.dc.b 0,0x30,0,0xb8
+		.dc.b 0,0x31,0,0xb9
+		.dc.b 0,0x32,0,0xba
+		.dc.b 0,0x33,0,0xbb
+		.dc.b 1,0x29,'=',0,0x39
+		.dc.b 1,0x7d,'=',0,0x43
+		.dc.b 1,0x5d,'=',0,0x44
+		.dc.b 0,0x29,0,0x33
 
 func_table:
 func_a_table: /* 1297e */
@@ -4667,6 +4667,7 @@ func_i_table: /* 12f5e */
 		.dc.b 6
 		.ascii "INPMID$"
 		.dc.b 0,54
+func_j_table: /* 13048 */
 func_k_table: /* 13048 */
 		.dc.b 2
 		.ascii "KEY"
@@ -4931,6 +4932,7 @@ func_p_table: /* 13382 */
 		.dc.b 4
 		.ascii "PADT("
 		.dc.b TOK_SUBFUNC_208,230
+func_q_table: /* 13405 */
 func_r_table: /* 13405 */
 		.dc.b 6
 		.ascii "RANDOM("
@@ -5255,6 +5257,7 @@ func_x_table: /* 138c0 */
 		.dc.b TOK_SUBFUNC_208,7
 func_y_table:
 func_z_table:
+
 func_other_table:
 		.dc.b 0
 		.dc.b 0x5c
@@ -5869,7 +5872,7 @@ x13abe_7:
 		cmp.b      #'.',d1
 		beq.s      x13abe_8
 		cmp.b      #'0',d1
-		bcs.s      x13abe_8
+		bcs.s      x13abe_9
 		cmp.b      #'9',d1
 		bls.s      x13abe_8
 		cmp.b      #'A',d1
@@ -6222,7 +6225,7 @@ x13e02:
 		.dc.b (x13f82-x13696)/256,(x13f82-x13696)&255
 		.ascii "INV"
 		.dc.b 0
-		.dc.b (x13efb-x13696)/256,(x13efb-x13696)&255
+		.dc.b (x13feb-x13696)/256,(x13feb-x13696)&255
 		.ascii "INPUT"
 		.dc.b 0
 		.dc.b (x13fc8-x13696)/256,(x13fc8-x13696)&255
@@ -6241,7 +6244,7 @@ x13e02:
 		.ascii "PRINT"
 		.dc.b 0
 		.dc.b (x13fb0-x13696)/256,(x13fb0-x13696)&255
-		.ascii "/"
+		.ascii "?"
 		.dc.b 0
 		.dc.b (x13fb0-x13696)/256,(x13fb0-x13696)&255
 		.ascii "READ"
@@ -6250,7 +6253,7 @@ x13e02:
 		.ascii "RANG"
 		.dc.b 0
 		.dc.b (x13f88-x13696)/256,(x13f88-x13696)&255
-		.ascii "SET"
+		.ascii "SUB"
 		.dc.b 0
 		.dc.b (x13f04-x13696)/256,(x13f04-x13696)&255
 		.ascii "SET"
@@ -11413,9 +11416,9 @@ x152e0:
 	.dc.b 249,55
 x152e2:
 	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
-
 x152e4:
-	.dc.b 0xd2,0xfc /* ??? */
+	.dc.b -4
+	.even
 
 f152e6:
 		pea.l      (a0)
@@ -11867,11 +11870,11 @@ x156bc:
 		.ascii "%("
 		.ascii "!("
 		.ascii "& "
-		.ascii "| "
+		.dc.b 0x5c,' ' /* BUG: should be '|' */
 		.ascii ": "
 		.ascii "  "
 		.ascii "&("
-		.ascii "|("
+		.dc.b 0x5c,'(' /* BUG: should be '|' */
 		.ascii "  "
 		.ascii "$ "
 x156dc: .ascii "][Ok|Error]"
@@ -12704,7 +12707,7 @@ x15c52_27:
 		bra.s      x15c52_19
 x15c52_28:
 		cmp.b      #TOK_DEC_DBL_CONST_PAD,d0
-		beq.s      x15c52_23
+		beq.s      x15c52_32
 		cmp.b      #TOK_STRING_CONST,d0
 		beq.s      x15c52_29
 		cmp.b      #TOK_DEC_DBL_CONST,d0
@@ -12891,7 +12894,7 @@ x16028_5:
 
 x1607a:
 		lea.l      3372(a6),a0
-		move.w     #(1950/2)-1,d0
+		move.w     #(1952/2)-1,d0
 x1607a_1:
 		clr.w      (a0)+
 		dbf        d0,x1607a_1
@@ -12905,7 +12908,7 @@ x1607a_2:
 		move.b     3(a1,d0.w),d1
 		move.b     2(a1,d0.w),d2
 		beq.s      x1607a_3
-		addi.w     #TOK_SUBFUNC_208,d1
+		addi.w     #TOK_REF_FLOAT_SHORT,d1
 x1607a_3:
 		add.w      d1,d1
 		move.l     a1,d2
@@ -13276,6 +13279,7 @@ fsin_5:
 		rts
 
 sintable:
+	.dc.l 0x00000000,0x023be165
 	.dc.l 0x04779632,0x06b2f1d2
 	.dc.l 0x08edc7b6,0x0b27eb5c
 	.dc.l 0x0d61304d,0x0f996a26
@@ -13476,7 +13480,8 @@ columns:  .ds.w 1  /* 1677c */
 mtask:    .ds.w 1  /* 1677e */
 x16780:   .ds.w 1
 x16782:   .ds.l 1
-x16786:   .ds.b 6+4096
+x16786:   .ds.b 4096
+          .ds.b 22
 
 bss_end: /* 1779c */
 

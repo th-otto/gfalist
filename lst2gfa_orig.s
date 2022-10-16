@@ -5210,7 +5210,6 @@
 [0001373e] ee76                      roxr.w     d7,d6
 [00013740] eeb4                      roxr.l     d7,d4
 [00013742] eef1 eef1 eef1            bfset      -15(a1,a6.l*8){d?:d?} ; 68020+ only
-
 [00013748] f2e8 f3c0 f423            fb???.l    $F3C22B6D
 [0001374e] f4c2                      dc.w       $F4C2 ; illegal
 [00013750] f51b                      pflusha ; 68040+ only
@@ -5229,7 +5228,6 @@
 [00013774] feb8 ff86                 nfB??.w    $000136FC
 [00013778] ff9c                      dc.w       $FF9C ; illegal
 [0001377a] ff9c                      dc.w       $FF9C ; illegal
-
 [0001377c] 49ee 0352                 lea.l      850(a6),a4
 [00013780] 4bee 0452                 lea.l      1106(a6),a5
 [00013784] 101c                      move.b     (a4)+,d0
