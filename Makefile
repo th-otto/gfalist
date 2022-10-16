@@ -22,7 +22,7 @@ BINDIR=${exec_prefix}/bin
 MANDIR=${prefix}/share/man
 
 # Precious targets
-TARGETS = gfalist
+TARGETS = gfalist lst2gfa.ttp
 
 GFALIST_OBJS = gfalist.o charset.o sky.o tables.o
 
@@ -47,6 +47,9 @@ gfalist.ttp: $(CSRC)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
+
+lst2gfa.ttp: lst2gfa.s
+	$(TOSCC) -Wall -W -s -nostdlib -nostartfiles -o $@ $<
 
 clean:
 	rm -f $(OBJS) $(TARGETS) gfalist.exe gfalist.ttp $(TRASH)

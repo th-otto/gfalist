@@ -196,7 +196,7 @@ int main(void)
 	fprintf(out, "\n");
 	dump_table(fp, 0x145c6, 0x14be6);
 	fprintf(out, "\n");
-	dump_table(fp, 0x14ce8, 0x14d16);
+	dump_table(fp, 0x14c8e, 0x14d34);
 	fprintf(out, "\n");
 	dump_table(fp, 0x14ee8, 0x152e4);
 	fprintf(out, "\n");
