@@ -359,20 +359,20 @@ x10004_1:
 		subq.l     #5,a0
 		bsr        copy32b
 		andi.l     #0xFF5F5F5F,d0
-		cmp.l      #0x2E4C5354,d0 /* '.LST' */
+		cmpi.l     #0x2E4C5354,d0 /* '.LST' */
 		bne        x10194
 		subq.l     #1,a1
 		moveq.l    #0,d1
 x10004_2:
 		move.b     -(a1),d0
 		beq.s      x10004_3
-		cmp.b      #0x5c,d0
+		cmpi.b     #0x5c,d0
 		beq.s      x10004_3
-		cmp.b      #':',d0
+		cmpi.b     #':',d0
 		beq.s      x10004_3
-		cmp.b      #'a',d0
+		cmpi.b     #'a',d0
 		blt.s      x10004_2
-		cmp.b      #'z',d0
+		cmpi.b     #'z',d0
 		bgt.s      x10004_2
 		moveq.l    #-1,d1
 		bra.s      x10004_2
@@ -413,7 +413,7 @@ x1007a_1:
 		lea.l      bytes_msg(pc),a0
 		bsr        printstr
 		move.w     d6,d0
-		cmp.w      #6,d0
+		cmpi.w     #6,d0
 		blt.s      x1007a_2
 		add.w      d0,d0
 		add.w      d6,d0
@@ -490,7 +490,7 @@ x1007a_8:
 x1007a_9:
 		bsr        print_decimal
 		addq.w     #1,d1
-		cmp.w      #0x2000,d1
+		cmpi.w     #0x2000,d1
 		blt.s      x1007a_6
 x1007a_10:
 		bra.s      x101d0
@@ -611,14 +611,14 @@ print_decimal_2:
 print_decimal_3:
 		tst.w      d2
 		beq.s      print_decimal_6
-		cmp.w      #10,d2
+		cmpi.w     #10,d2
 		bmi.s      print_decimal_7
 		clr.l      -(a7)
 print_decimal_4:
 		ext.l      d2
 		divu.w     #10,d2
 		move.l     d2,-(a7)
-		cmp.w      #9,d2
+		cmpi.w     #9,d2
 		bgt.s      print_decimal_4
 print_decimal_5:
 		addi.w     #'0',d2
@@ -638,7 +638,7 @@ print_decimal_7:
 print_decimal_8:
 		moveq.l    #1,d1
 print_decimal_9:
-		cmp.w      #10,d4
+		cmpi.w     #10,d4
 		beq.s      print_decimal_13
 		moveq.l    #10,d2
 		moveq.l    #1,d5
@@ -701,15 +701,15 @@ x1030a_1:
 		lea.l      8(a7),a2
 		lea.l      1106(a6),a0
 		bsr        copy32b
-		cmp.l      #0x494E4C49,d0 /* 'INLI' */
+		cmpi.l     #0x494E4C49,d0 /* 'INLI' */
 		bne        x1030a_12
 		moveq.l    #1,d1
 		bsr        copy16b
-		cmp.w      #0x4E45,d0 /* 'NE' */
+		cmpi.w     #0x4E45,d0 /* 'NE' */
 		bne        x1030a_12
 x1030a_2:
 		move.b     (a0)+,d0
-		cmp.b      #' ',d0
+		cmpi.b     #' ',d0
 		beq.s      x1030a_2
 		subq.l     #1,a0
 		movea.l    a0,a1
@@ -717,13 +717,13 @@ x1030a_2:
 x1030a_3:
 		move.b     (a0)+,d0
 		addq.w     #1,d1
-		cmp.b      #'0',d0
+		cmpi.b     #'0',d0
 		bcc.s      x1030a_3
 		subq.w     #1,d1
 		ble        x1030a_12
 		subq.w     #1,d1
 		bmi        x1030a_12
-		cmp.w      #':',d1
+		cmpi.w     #':',d1
 		ble.s      x1030a_4
 		moveq.l    #58,d1
 x1030a_4:
@@ -809,7 +809,7 @@ x1030a_12:
 		lea.l      1106(a6),a0
 x1030a_13:
 		move.b     (a0)+,d0
-		cmp.b      #EOL,d0
+		cmpi.b     #EOL,d0
 		bne.s      x1030a_13
 		move.b     (a0),d0
 		movem.l    d0/a0,-(a7)
@@ -882,7 +882,7 @@ main_2:
 		beq.s      main_4
 		subi.w     #'0',d0
 		bmi.s      main_2
-		cmp.b      #9,d0
+		cmpi.b     #9,d0
 		bgt.s      main_2
 		lsl.l      #1,d1
 		move.l     d1,-(a7)
@@ -905,9 +905,9 @@ main_5:
 		move.w     -44(a0),d0
 		addq.w     #1,d0
 main_6:
-		cmp.w      #256,d0
+		cmpi.w     #256,d0
 		bgt.s      main_7
-		cmp.w      #40,d0
+		cmpi.w     #40,d0
 		bge.s      main_8
 		moveq.l    #40,d0
 		bra.s      main_8
@@ -932,7 +932,7 @@ main_8:
 		bsr        printstr
 		lea.l      version_msg(pc),a0
 		bsr        printstr
-		jmp        x10d1a
+		jmp        x10d1a.l
 
 x10590: .dc.w 0
 
@@ -1349,29 +1349,29 @@ Fval:
 		sf         489(a6)
 Fval_1:
 		move.b     (a0)+,d4
-		cmp.b      #' ',d4
+		cmpi.b     #' ',d4
 		beq.s      Fval_1
-		cmp.b      #'+',d4
+		cmpi.b     #'+',d4
 		beq.s      Fval_2
-		cmp.b      #'-',d4
+		cmpi.b     #'-',d4
 		bne.s      Fval_3
 		bset       #30,d6
 Fval_2:
 		move.b     (a0)+,d4
 Fval_3:
-		cmp.b      #'.',d4
+		cmpi.b     #'.',d4
 		beq.s      Fval_7
 		subi.b     #'0',d4
-		cmp.b      #9,d4
+		cmpi.b     #9,d4
 		bhi        Fval_23
 		move.b     d4,d1
 Fval_4:
 		move.b     (a0)+,d4
-		cmp.b      #'0',d4
+		cmpi.b     #'0',d4
 		bcs.s      Fval_6
-		cmp.b      #'9',d4
+		cmpi.b     #'9',d4
 		bhi.s      Fval_6
-		cmp.l      #0x0FFFFFFF,d0
+		cmpi.l     #0x0FFFFFFF,d0
 		bcc.s      Fval_5
 		bsr.s      Fvm10
 		bra.s      Fval_4
@@ -1379,37 +1379,37 @@ Fval_5:
 		addq.w     #1,d6
 		bra.s      Fval_4
 Fval_6:
-		cmp.b      #'.',d4
+		cmpi.b     #'.',d4
 		bne.s      Fval_9
 Fval_7:
 		move.b     (a0)+,d4
-		cmp.b      #'0',d4
+		cmpi.b     #'0',d4
 		bcs.s      Fval_9
-		cmp.b      #'9',d4
+		cmpi.b     #'9',d4
 		bhi.s      Fval_9
-		cmp.l      #0x0FFFFFFF,d0
+		cmpi.l     #0x0FFFFFFF,d0
 		bcc.s      Fval_8
 		bsr        Fvm10
 		subq.w     #1,d6
 Fval_8:
 		bra.s      Fval_7
 Fval_9:
-		cmp.b      #'E',d4
+		cmpi.b     #'E',d4
 		beq.s      Fval_10
-		cmp.b      #'e',d4
+		cmpi.b     #'e',d4
 		bne.s      Fval_17
 Fval_10:
 		move.b     (a0)+,d4
-		cmp.b      #'+',d4
+		cmpi.b     #'+',d4
 		beq.s      Fval_11
-		cmp.b      #'-',d4
+		cmpi.b     #'-',d4
 		bne.s      Fval_13
 		bset       #31,d6
 Fval_11:
 		move.b     (a0)+,d4
-		cmp.b      #'0',d4
+		cmpi.b     #'0',d4
 		bcs.s      Fval_12
-		cmp.b      #'9',d4
+		cmpi.b     #'9',d4
 		ble.s      Fval_13
 Fval_12:
 		subq.w     #1,a0
@@ -1417,18 +1417,18 @@ Fval_12:
 		bra.s      Fval_17
 Fval_13:
 		subi.b     #'0',d4
-		cmp.b      #9,d4
+		cmpi.b     #9,d4
 		bhi.s      Fval_17
 		ext.w      d4
 Fval_14:
 		moveq.l    #0,d5
 		move.b     (a0)+,d5
 		subi.b     #'0',d5
-		cmp.b      #9,d5
+		cmpi.b     #9,d5
 		bhi.s      Fval_15
 		mulu.w     #10,d4
 		add.w      d5,d4
-		cmp.w      #1000,d4
+		cmpi.w     #1000,d4
 		ble.s      Fval_14
 		bra.s      Fval_23
 Fval_15:
@@ -1482,7 +1482,7 @@ constone:
 	.dc.l 0x80000000,0,0x000003ff
 
 ftstr_restart:
-		cmp.w      #0x3FFE,d2
+		cmpi.w     #0x3FFE,d2
 		bhi        FTstr_12
 		move.w     #0x1FFF,d2
 		moveq.l    #-1,d1
@@ -1505,9 +1505,9 @@ FTstr_1:
 		moveq.l    #0,d6
 		tst.w      d2
 		beq        FTstr_12
-		cmp.w      #0x1FFF,d2
+		cmpi.w     #0x1FFF,d2
 		bhi.s      ftstr_restart
-		cmp.w      #0x03FF,d2
+		cmpi.w     #0x03FF,d2
 FTstr_2:
 		bmi.s      FTstr_4
 		movem.l    d0-d2,-(a7)
@@ -1528,10 +1528,10 @@ FTstr_3:
 FTstr_4:
 		bsr        Fmul10
 		subq.w     #1,d6
-		cmp.w      #0x03FF,d2
+		cmpi.w     #0x03FF,d2
 		bcs.s      FTstr_4
 FTstr_5:
-		cmp.w      #0x0402,d2
+		cmpi.w     #0x0402,d2
 		beq.s      FTstr_6
 		lsr.l      #1,d0
 		roxr.w     #1,d1
@@ -1541,7 +1541,7 @@ FTstr_6:
 		addq.w     #1,d1
 		bcc.s      FTstr_8
 		addq.l     #1,d0
-		cmp.l      #0x9FFFFFFF,d0
+		cmpi.l     #0x9FFFFFFF,d0
 		bcs.s      FTstr_8
 FTstr_7:
 		move.l     #0x10000000,d0
@@ -1594,21 +1594,21 @@ FTstr_12:
 roundup:
 		pea.l      (a1)
 		move.w     542(a6),d1
-		cmp.w      #14,d1
+		cmpi.w     #14,d1
 		bcs.s      roundup_1
 		beq.s      roundup_6
 		moveq.l    #13,d1
 roundup_1:
 		lea.l      1(a0,d1.w),a1
 		move.b     (a1),d2
-		cmp.b      #'5',d2
+		cmpi.b     #'5',d2
 		bcs.s      roundup_5
 roundup_2:
 		move.b     -(a1),d2
 		addq.b     #1,d2
-		cmp.b      #'0',d2
+		cmpi.b     #'0',d2
 		bls.s      roundup_3
-		cmp.b      #'9',d2
+		cmpi.b     #'9',d2
 		bls.s      roundup_4
 		move.b     #'0',(a1)
 		bra.s      roundup_2
@@ -1643,9 +1643,9 @@ Fstr_1:
 		tst.w      d1
 		beq.s      Fstr_7
 Fstr_2:
-		cmp.w      #13,d0
+		cmpi.w     #13,d0
 		bgt.s      Fstr_9
-		cmp.w      #-5,d0
+		cmpi.w     #-5,d0
 		blt.s      Fstr_9
 Fstr_3:
 		tst.w      d0
@@ -1694,7 +1694,7 @@ Fstr_11:
 		move.b     (a0)+,(a1)+
 		move.b     (a0)+,(a1)+
 		move.b     (a0)+,d0
-		cmp.b      #'0',d0
+		cmpi.b     #'0',d0
 		beq.s      Fstr_12
 		move.b     d0,(a1)+
 Fstr_12:
@@ -1703,7 +1703,7 @@ Fstr_12:
 		bra.s      Fstr_8
 
 DEFNUM:
-		cmp.w      #3,d0
+		cmpi.w     #3,d0
 		bcs.s      DEFNUM_1
 		move.w     d0,542(a6)
 DEFNUM_1:
@@ -1713,7 +1713,7 @@ FITOF:
 		moveq.l    #0,d1
 		move.l     d0,d2
 		ble.w      FITOF_5
-		cmp.l      #0x0000FFFF,d0
+		cmpi.l     #0x0000FFFF,d0
 		bhi.s      FITOF_3
 		move.w     #0x040D,d2
 		tst.w      d0
@@ -1737,7 +1737,7 @@ FITOF_5:
 		neg.l      d0
 		beq.s      FITOF_11
 		bmi.s      FITOF_10
-		cmp.l      #0x0000FFFF,d0
+		cmpi.l     #0x0000FFFF,d0
 		bhi.s      FITOF_8
 		move.w     #0x040D,d2
 		tst.w      d0
@@ -1934,12 +1934,12 @@ x10d1a_2:
 		move.w     #74,-(a7) /* Mshrink */
 		trap       #1
 		bsr        x16534
-		jsr        x11a44
+		jsr        x11a44.l
 		.dc.w 0xa000 /* ALINE      #0 */
 		move.l     a1,200(a6)
 		lea.l      196(a6),a1
 		move.l     a0,(a1)+
-		jsr        x11ab0
+		jsr        x11ab0.l
 		pea.l      (-1).w
 		move.w     #72,-(a7) /* Malloc */
 		trap       #1
@@ -1950,9 +1950,9 @@ x10d1a_2:
 		trap       #1
 		move.l     d0,8(a6)
 		lea.l      25856(a6),a7
-		move.w     x10ede,x1185a
-		jsr        x1185c
-		jsr        x1607a
+		move.w     x10ede.l,x1185a
+		jsr        x1185c.l
+		jsr        x1607a.l
 		movea.l    204(a6),a0
 		cmpi.b     #127,128(a0)
 		bne        x10d1a_10
@@ -1988,9 +1988,9 @@ x10d1a_6:
 		bne.s      x10d1a_5
 		movea.l    a0,a1
 		move.b     (a0),d0
-		cmp.b      #'"',d0
+		cmpi.b     #'"',d0
 		beq.s      x10d1a_7
-		cmp.b      #0x27,d0
+		cmpi.b     #0x27,d0
 		bne.s      x10d1a_8
 x10d1a_7:
 		tst.b      (a0)+
@@ -2037,7 +2037,7 @@ x10d1a_14:
 		move.b     (a0)+,(a1)+
 		bne.s      x10d1a_14
 		move.b     d7,-(a7)
-		jsr        x11838
+		jsr        x11838.l
 		bra        x10004
 
 x10ede: .dc.w 0
@@ -2365,7 +2365,7 @@ readstdin:
 FWrite:
 		move.l     d0,d3
 		beq.s      FWrite_4
-		cmp.w      #1,d6
+		cmpi.w     #1,d6
 		beq.s      putcstdout_1
 		bsr.s      GetFBuf
 		btst       #1,d2
@@ -2391,13 +2391,13 @@ FWrite_5:
 		move.w     d0,(a0)
 		bsr        FlushBuf
 		moveq.l    #0,d0
-		cmp.w      #4096,d3
+		cmpi.w     #4096,d3
 		bcs.s      FWrite_3
 		bra        x11328
 
 /* gfa: 00015872 */
 FGetc:
-		cmp.w      #1,d6
+		cmpi.w     #1,d6
 		beq.w      x1117e
 		bsr        GetFBuf
 		btst       #0,d2
@@ -2425,7 +2425,7 @@ eaccdn:
 		.ENDC
 
 x1121a:
-		cmp.w      #1,d6
+		cmpi.w     #1,d6
 		beq        putcstdout
 		move.w     d0,d3
 		bsr        GetFBuf
@@ -2726,9 +2726,9 @@ x11480_1:
 x11480_2:
 		move.b     -(a0),d1
 		beq.s      x11480_3
-		cmp.b      #0x5c,d1
+		cmpi.b     #0x5c,d1
 		beq.s      x11480_3
-		cmp.b      #'.',d1
+		cmpi.b     #'.',d1
 		dbeq       d0,x11480_2
 		beq.s      x11480_4
 x11480_3:
@@ -2844,7 +2844,7 @@ x11578_4:
 		bne.s      x11578_5
 		clr.b      (a0)
 x11578_5:
-		cmp.w      #6,d0
+		cmpi.w     #6,d0
 		blt.s      x11578_6
 		move.w     d0,d6
 		bra        FClose
@@ -2860,11 +2860,11 @@ x1160e_1:
 		lea.l      850(a6),a1
 		bsr        x1181c
 		move.b     850(a6),d0
-		cmp.b      #CR,d0
+		cmpi.b     #CR,d0
 		beq.s      x1160e_1
-		cmp.b      #NL,d0
+		cmpi.b     #NL,d0
 		beq.s      x1160e_1
-		cmp.b      #' ',d0
+		cmpi.b     #' ',d0
 		bcs        x10194_1
 		bsr        x118e2
 		lea.l      850(a6),a3
@@ -2916,7 +2916,7 @@ x1160e_10:
 		cmpi.b     #'>',850(a6)
 		bne.s      x1160e_12
 		move.b     #' ',850(a6)
-		jsr        x137d2
+		jsr        x137d2.l
 		cmpi.w     #40,1364(a6)
 		bne.s      x1160e_11
 		move.w     #1796,1364(a6)
@@ -2927,7 +2927,7 @@ x1160e_11:
 		move.w     #216,1364(a6)
 		bra.s      x1160e_13
 x1160e_12:
-		jsr        x137d2
+		jsr        x137d2.l
 x1160e_13:
 		move.l     a1,d1
 		beq.s      x1160e_14
@@ -2935,7 +2935,7 @@ x1160e_13:
 x1160e_14:
 		lea.l      x10306(pc),a0
 		move.l     (a0),d1
-		cmp.l      #8192-1,d1
+		cmpi.l     #8192-1,d1
 		bgt.s      x1160e_15
 		lsl.w      #2,d1
 		lea.l      x16782(pc),a1
@@ -2979,7 +2979,7 @@ x1160e_18:
 		add.l      d0,d1
 		addq.l     #1,d1
 		andi.w     #-2,d1
-		cmp.l      #0x00007FF8,d1
+		cmpi.l     #0x00007FF8,d1
 		bhi        x1160e_14
 		move.w     d1,1362(a6)
 		move.l     d0,-(a7)
@@ -3036,9 +3036,9 @@ x117bc_3:
 x117bc_4:
 		move.b     (a0)+,d1
 		beq.s      x117bc_6
-		cmp.b      #'a',d1
+		cmpi.b     #'a',d1
 		blt.s      x117bc_4
-		cmp.b      #'z',d1
+		cmpi.b     #'z',d1
 		bgt.s      x117bc_4
 x117bc_5:
 		eori.l     #0x00202020,d0
@@ -3084,7 +3084,7 @@ x11838:
 		clr.l      (a0)+
 		clr.l      654(a6)
 		clr.b      611(a6)
-		move.w     x1185a,x10ede
+		move.w     x1185a.l,x10ede
 		rts
 
 x1185a: .dc.w 0
@@ -3134,8 +3134,8 @@ x1185c_3:
 x1185c_4:
 		clr.l      (a0)+
 		dbf        d0,x1185c_4
-		lea.l      x1047e,a1
-		lea.l      deftype,a0
+		lea.l      x1047e.l,a1
+		lea.l      deftype.l,a0
 		moveq.l    #25,d0
 x1185c_5:
 		move.b     (a1)+,(a0)+
@@ -3258,7 +3258,7 @@ x119be_1:
 		bne.s      x119be_1
 		subq.l     #1,d1
 		add.l      d1,d1
-		movea.l    x10cae,a1
+		movea.l    x10cae.l,a1
 		suba.l     d1,a1
 		subq.l     #8,a1
 		move.l     a1,176(a6)
@@ -3299,7 +3299,7 @@ x119be_7:
 		or.w       d4,d2
 x119be_8:
 		move.w     d2,(a1)+
-		cmp.w      #44,d3
+		cmpi.w     #44,d3
 		beq.s      x119be_3
 		dbf        d1,x119be_7
 		bra.s      x119be_6
@@ -5548,7 +5548,7 @@ f1369e:
 
 f136a0:
 		bsr        x13abe
-		cmp.w      #136,d6
+		cmpi.w     #136,d6
 		bhi.s      f136a0_1
 		move.w     d6,d1
 		lsr.w      #1,d1
@@ -5668,16 +5668,16 @@ x1377c:
 x1377c_1:
 		move.b     (a4)+,d0
 		bne.s      x1377c_2
-		moveq.l    #13,d0
+		moveq.l    #EOL,d0
 x1377c_2:
-		cmp.b      #'z',d0
+		cmpi.b     #'z',d0
 		bhi.s      x1377c_3
-		cmp.b      #'a',d0
+		cmpi.b     #'a',d0
 		bcs.s      x1377c_3
 		subi.b     #' ',d0
 x1377c_3:
 		move.b     d0,(a5)+
-		cmp.b      #13,d0
+		cmpi.b     #CR,d0 /* FIXME: handle also LF */
 		bne.s      x1377c_1
 		lea.l      1106(a6),a0
 		rts
@@ -5757,7 +5757,7 @@ x137d2_2:
 x137d2_3:
 		move.b     (a0)+,d0
 		move.b     d0,(a1)+
-		cmp.b      #13,d0
+		cmpi.b     #13,d0
 		bne.s      x137d2_3
 x137d2_4:
 		movea.l    (a7)+,a0
@@ -5766,7 +5766,7 @@ x137d2_4:
 		sub.l      a1,d0
 		addq.w     #1,d0
 		andi.w     #0xFFFE,d0
-		cmp.w      #0x10FE,d0
+		cmpi.w     #0x10FE,d0
 		bhi.s      x137d2_6
 		move.w     d0,(a1)
 		asl.w      2(a1)
@@ -5786,7 +5786,7 @@ x13898: .dc.l 0
 x1389c:
 		moveq.l    #0,d2
 		move.b     (a0),d2
-		cmp.b      #'E',d2
+		cmpi.b     #'E',d2
 		bne.s      x1389c_4
 		cmpi.b     #'N',1(a0)
 		bne.s      x1389c_4
@@ -5814,7 +5814,7 @@ x1389c_4:
 		move.w     d2,d3
 		subi.w     #'A',d3
 		bmi.s      x1389c_2
-		cmp.w      #25,d3
+		cmpi.w     #25,d3
 		bhi.s      x1389c_3
 		add.w      d3,d3
 		move.w     0(a2,d3.w),d3
@@ -5855,7 +5855,7 @@ x1389c_9:
 		rts
 x1389c_10:
 		move.w     #152,(a1)+ /* TOK_CMD_ASSIGN_FLOAT*2 */
-		lea.l      x14083,a2
+		lea.l      x14083.l,a2
 		rts
 
 x1395a:
@@ -5870,7 +5870,7 @@ x1395a_1:
 		move.b     (a2)+,d0
 		cmpi.b     #240,d0
 		bhi.s      x1395a_5
-		cmp.b      #208,d0 /* secondary function table? */
+		cmpi.b     #TOK_SUBFUNC_208,d0 /* secondary function table? */
 		bne.s      x1395a_2
 		asl.w      #8,d0
 		move.b     (a2)+,d0
@@ -5887,7 +5887,7 @@ x1395a_3:
 		bne.s      x1395a_1
 		move.l     a1,d0
 		sub.l      a6,d0
-		cmp.l      #1842,d0
+		cmpi.l     #1842,d0
 		bcs.s      x1395a_4
 		lea.l      (-1).w,a1
 x1395a_4:
@@ -5946,7 +5946,7 @@ x1395a_10:
 		beq.s      x1395a_14
 x1395a_11:
 		move.b     (a2)+,d0
-		cmp.b      #249,d0
+		cmpi.b     #249,d0
 		beq.s      x1395a_12
 		cmpi.b     #252,d0
 		beq.s      x1395a_10
@@ -5976,14 +5976,14 @@ handle_function_1:
 		cmp.w      d0,d6
 		sne        d7
 		beq.s      handle_function_2
-		cmp.b      #TOK_LINE_COMMENT,d0
+		cmpi.b     #TOK_LINE_COMMENT,d0
 		beq.s      handle_function_6
 		cmpa.l     x137b8(pc),a0
 		bcs.s      handle_function_5
 		move.l     a0,x137b8
 		rts
 handle_function_2:
-		cmp.w      #255,d0
+		cmpi.w     #255,d0
 		bls.s      handle_function_3
 		rol.w      #8,d0
 		move.b     d0,(a1)+
@@ -6014,7 +6014,7 @@ handle_function_8:
 		bra.s      handle_function_1
 handle_function_9:
 		lea.l      func_misc_table(pc),a3
-		cmp.b      #238,d6
+		cmpi.b     #238,d6
 		beq.s      handle_function_10
 		moveq.l    #64,d6
 		bra.s      x13abe_1
@@ -6044,7 +6044,7 @@ x13abe:
 		move.b     (a0),d6
 		subi.w     #'A',d6
 		bmi.s      handle_function_9
-		cmp.w      #25,d6
+		cmpi.w      #25,d6
 		bcc.s      handle_function_12
 		lea.l      func_index_table(pc),a3
 		add.w      d6,d6
@@ -6085,20 +6085,20 @@ x13abe_7:
 		bcs.s      x13abe_9
 		cmpi.b     #'Z',-1(a0)
 		bhi.s      x13abe_9
-		cmp.b      #24,d6 /* wtf? why .b? */
+		cmpi.b     #24,d6 /* wtf? why .b? */
 		bls.s      x13abe_9
 		move.b     (a0),d1
-		cmp.b      #'_',d1
+		cmpi.b     #'_',d1
 		beq.s      x13abe_8
-		cmp.b      #'.',d1
+		cmpi.b     #'.',d1
 		beq.s      x13abe_8
-		cmp.b      #'0',d1
+		cmpi.b     #'0',d1
 		bcs.s      x13abe_9
-		cmp.b      #'9',d1
+		cmpi.b     #'9',d1
 		bls.s      x13abe_8
-		cmp.b      #'A',d1
+		cmpi.b     #'A',d1
 		bcs.s      x13abe_9
-		cmp.b      #'Z',d1
+		cmpi.b     #'Z',d1
 		bhi.s      x13abe_9
 x13abe_8:
 		moveq.l    #-1,d6
@@ -6202,7 +6202,7 @@ x13c10_1:
 		bhi.s      x13c10_2
 		asl.l      #3,d0
 		or.b       d1,d0
-		cmp.l      #0x20000000,d0
+		cmpi.l     #0x20000000,d0
 		bcs.s      x13c10_1
 		addq.l     #1,a0
 x13c10_2:
@@ -6212,11 +6212,11 @@ x13c10_2:
 x13c36:
 		addq.l     #1,a0
 		move.b     (a0)+,d0
-		cmp.b      #'X',d0
+		cmpi.b     #'X',d0
 		beq.s      x13bec_3
-		cmp.b      #'O',d0
+		cmpi.b     #'O',d0
 		beq.s      x13c10
-		cmp.b      #'H',d0
+		cmpi.b     #'H',d0
 		beq.s      x13c36_2
 		subq.l     #2,a0
 x13c36_1:
@@ -6239,7 +6239,7 @@ x13c36_6:
 x13c36_3:
 		asl.l      #4,d0
 		or.b       d1,d0
-		cmp.l      #0x10000000,d0
+		cmpi.l     #0x10000000,d0
 		bcs.s      x13c36_6
 		addq.l     #1,a0
 x13c36_4:
@@ -6264,23 +6264,23 @@ f13c9a:
 		cmpi.b     #'%',(a0)
 		beq        x13bec
 		move.w     d6,-(a7)
-		jsr        Fval
+		jsr        Fval.l
 		move.w     (a7)+,d6
 		tst.w      d2
 		bmi.s      f13c9a_6
 		beq.s      f13c9a_7
 		tst.w      d1
 		bne.s      f13c9a_2
-		cmp.w      #512,d2
+		cmpi.w     #512,d2
 		bne.s      f13c9a_1
-		cmp.l      #0x80000000,d0
+		cmpi.l     #0x80000000,d0
 		beq.s      f13c9a_8
 f13c9a_1:
-		cmp.w      #513,d2
+		cmpi.w     #513,d2
 		bne.s      f13c9a_2
-		cmp.l      #0x80000000,d0
+		cmpi.l     #0x80000000,d0
 		beq.s      f13c9a_9
-		cmp.l      #0xC0000000,d0
+		cmpi.l     #0xC0000000,d0
 		beq.s      f13c9a_10
 f13c9a_2:
 		move.b     #TOK_DEC_DBL_CONST,(a1)+
@@ -6412,9 +6412,9 @@ f13de4:
 		move.w     #840,1364(a6)
 		moveq.l    #0,d7
 		move.b     (a0)+,d0
-		cmp.b      #'&',d0
+		cmpi.b     #'&',d0
 		beq.s      f13de4_2
-		cmp.b      #'%',d0
+		cmpi.b     #'%',d0
 		beq.s      f13de4_1
 		moveq.l    #-1,d7
 f13de4_1:
@@ -6500,7 +6500,7 @@ f13e8c_1:
 		beq.s      f13e8c_4
 		cmp.b      d2,d3
 		beq.s      f13e8c_1
-		cmp.b      #' ',d2
+		cmpi.b     #' ',d2
 		beq.s      f13e8c_3
 f13e8c_2:
 		tst.b      (a1)+
@@ -7106,21 +7106,21 @@ x140d4:
 
 f140d6:
 		move.w     #352,d0
-		lea.l      x142c4,a2
+		lea.l      x142c4.l,a2
 		bra.s      f140fa_1
 
 f140e2:
 		move.w     #368,d0
-		lea.l      x142a6,a2
+		lea.l      x142a6.l,a2
 		bra.s      f140fa_1
 f140ee:
 
 		move.w     #384,d0
-		lea.l      x142e7,a2
+		lea.l      x142e7.l,a2
 		bra.s      f140fa_1
 f140fa:
 		move.w     #400,d0
-		lea.l      x142fc,a2
+		lea.l      x142fc.l,a2
 f140fa_1:
 		lea.l      1106(a6),a0
 		lea.l      1364(a6),a1
@@ -10049,7 +10049,7 @@ x14be5:
 x14be6:
 		move.w     d6,d0
 		bpl.s      x14be6_1
-		cmp.w      #(TOK_SUBFUNC_208<<8)+255,d0 /* token in range? */
+		cmpi.w     #(TOK_SUBFUNC_208<<8)+255,d0 /* token in range? */
 		bhi        f13c9a_6
 		lea.l      x14df8(pc),a2
 		move.b     #TOK_SUBFUNC_208,(a1)+ /* secondary function table */
@@ -11665,17 +11665,17 @@ f15306:
 f15310:
 		bsr        skip_spaces
 		move.b     (a0),d0
-		cmp.b      #'!',d0
+		cmpi.b     #'!',d0
 		beq.s      f15310_2
-		cmp.b      #'/',d0
+		cmpi.b     #'/',d0
 		beq.s      f15310_3
-		cmp.b      #',',d0
+		cmpi.b     #',',d0
 		beq.s      f15310_2
-		cmp.b      #';',d0
+		cmpi.b     #';',d0
 		beq.s      f15310_2
-		cmp.b      #CR,d0 /* FIXME: handle also LF */
+		cmpi.b     #CR,d0 /* FIXME: handle also LF */
 		beq.s      f15310_2
-		cmp.b      #0x27,d0
+		cmpi.b     #0x27,d0
 f15310_1:
 		beq.s      f15310_2
 		move.b     #'"',(a1)+
@@ -11684,9 +11684,9 @@ f15310_2:
 		rts
 f15310_3:
 		move.b     1(a0),d0
-		cmp.b      #'/',d0
+		cmpi.b     #'/',d0
 		beq.s      f15310_2
-		cmp.b      #'*',d0
+		cmpi.b     #'*',d0
 		bra.s      f15310_1
 
 x15352:
@@ -11696,9 +11696,9 @@ x15352:
 		sub.l      a6,d1
 		move.b     (a0)+,d0
 		move.b     d0,8401(a6)
-		cmp.b      #'A',d0
+		cmpi.b     #'A',d0
 		bcs        x15352_12
-		cmp.b      #'Z',d0
+		cmpi.b     #'Z',d0
 		bhi        x15352_12
 x15352_0:
 		moveq.l    #0,d3
@@ -11706,35 +11706,35 @@ x15352_1:
 		addq.w     #1,d3
 		beq        x15352_12
 		move.b     (a0)+,d0
-		cmp.b      #'_',d0
+		cmpi.b     #'_',d0
 		beq.s      x15352_1
-		cmp.b      #'.',d0
+		cmpi.b     #'.',d0
 		beq.s      x15352_1
-		cmp.b      #'A',d0
+		cmpi.b     #'A',d0
 		bcs.s      x15352_2
-		cmp.b      #'Z',d0
+		cmpi.b     #'Z',d0
 		bls.s      x15352_1
 		bra.s      x15352_3
 x15352_2:
-		cmp.b      #'0',d0
+		cmpi.b     #'0',d0
 		bcs.s      x15352_3
-		cmp.b      #'9',d0
+		cmpi.b     #'9',d0
 		bls.s      x15352_1
 x15352_3:
 		moveq.l    #TYPE_FLOAT,d2
-		cmp.b      #'{',d0
+		cmpi.b     #'{',d0
 		beq.s      x15352_12
-		cmp.b      #'%',d0
+		cmpi.b     #'%',d0
 		beq.s      x15352_7
-		cmp.b      #'$',d0
+		cmpi.b     #'$',d0
 		beq.s      x15352_8
-		cmp.b      #'&',d0
+		cmpi.b     #'&',d0
 		beq.s      x15352_5
-		cmp.b      #'|',d0
+		cmpi.b     #'|',d0
 		beq.s      x15352_6
-		cmp.b      #'!',d0
+		cmpi.b     #'!',d0
 		beq.s      x15352_4
-		cmp.b      #'#',d0
+		cmpi.b     #'#',d0
 		beq.s      x15352_9
 		cmpi.l     #x15492_1,(a7) /* WTF; compares PC to caller */
 		bne.s      x15352_10
@@ -11768,7 +11768,7 @@ x15352_8:
 x15352_9:
 		move.b     (a0)+,d0
 x15352_10:
-		cmp.b      #'(',d0
+		cmpi.b     #'(',d0
 		bne.s      x15352_11
 		addq.b     #TYPE_FLOAT_ARR-TYPE_FLOAT,d2
 		rts
@@ -11867,7 +11867,7 @@ f154aa:
 f154aa_1:
 		tst.b      d2      /* TYPE_FLOAT? */
 		beq.s      x15492_2
-		cmp.b      #TYPE_INT,d2
+		cmpi.b     #TYPE_INT,d2
 		beq.s      x15492_2
 		bra        f13c9a_6
 
@@ -11896,17 +11896,17 @@ f154da_1:
 x154f0:
 		lea.l      1364(a6),a0
 		move.w     (a0)+,d0
-		cmp.w      #228,d0 /* TOK_CMD_REM*2 */
+		cmpi.w     #228,d0 /* TOK_CMD_REM*2 */
 		beq.s      x154f0_1
-		cmp.w      #230,d0 /* TOK_CMD_COMMENT*2 */
+		cmpi.w     #230,d0 /* TOK_CMD_COMMENT*2 */
 		beq.s      x154f0_1
-		cmp.w      #232,d0 /* TOK_CMD_SYNERR*2 */
+		cmpi.w     #232,d0 /* TOK_CMD_SYNERR*2 */
 		beq.s      x154f0_1
-		cmp.w      #508,d0 /* TOK_CMD_DOT*2 */
+		cmpi.w     #508,d0 /* TOK_CMD_DOT*2 */
 		beq.s      x154f0_1
-		cmp.w      #822,d0 /* TOK_CMD_DOLLAR*2 */
+		cmpi.w     #822,d0 /* TOK_CMD_DOLLAR*2 */
 		beq.s      x154f0_1
-		cmp.w      #234,d0 /* TOK_CMD_DATA*2 */
+		cmpi.w     #234,d0 /* TOK_CMD_DATA*2 */
 		bne.s      x154f0_3
 x154f0_1:
 		rts
@@ -11914,20 +11914,20 @@ x154f0_2:
 		st         x137b2
 x154f0_3:
 		move.b     (a0)+,d0
-		cmp.b      #TOK_CHAR_CONST,d0
+		cmpi.b     #TOK_CHAR_CONST,d0
 		bcc.s      x154f0_4
-		cmp.b      #TOK_FNCALL,d0
+		cmpi.b     #TOK_FNCALL,d0
 		beq.s      x154f0_2
-		cmp.b      #TOK_GOSUB,d0
+		cmpi.b     #TOK_GOSUB,d0
 		beq.s      x154f0_2
-		cmp.b      #TOK_LINE_COMMENT,d0
+		cmpi.b     #TOK_LINE_COMMENT,d0
 		bne.s      x154f0_3
 		movea.l    a0,a1
 		rts
 x154f0_4:
-		cmp.b      #TOK_SUBFUNC_214,d0
+		cmpi.b     #TOK_SUBFUNC_214,d0
 		bcc.s      x154f0_11
-		cmp.b      #TOK_SUBFUNC_208,d0
+		cmpi.b     #TOK_SUBFUNC_208,d0
 		bcc.s      x154f0_6
 		lsr.b      #1,d0
 		bcc.s      x154f0_7
@@ -11956,12 +11956,12 @@ x154f0_9:
 x154f0_10:
 		bra.s      x154f0_3
 x154f0_11:
-		cmp.b      #TOK_STRING_CONST,d0
+		cmpi.b     #TOK_STRING_CONST,d0
 		beq.s      x154f0_15
-		cmp.b      #TOK_DEC_DBL_CONST,d0
+		cmpi.b     #TOK_DEC_DBL_CONST,d0
 		beq.s      x154f0_12
 		bhi.s      x154f0_16
-		cmp.b      #TOK_DEC_DBL_CONST_PAD,d0
+		cmpi.b     #TOK_DEC_DBL_CONST_PAD,d0
 		bne        x1578c
 		move.l     a0,d0
 		btst       #0,d0
@@ -12024,7 +12024,7 @@ x154f0_20:
 		dbne       d3,x154f0_20
 		bne.s      x154f0_18
 x154f0_21:
-		cmp.w      #255,d7
+		cmpi.w     #255,d7
 		bhi.s      x154f0_22
 		subq.l     #3,a0
 		subi.b     #16,(a0)+
@@ -12046,15 +12046,15 @@ x154f0_23:
 		lea.l      5360(a6),a0
 		move.l     #0x5B325D5B,(a0)+ /* '[2][' */
 		lea.l      newvar_msg,a1
-		cmp.w      #28,d0
+		cmpi.w     #28,d0
 		bcs.s      x154f0_24
 		lea.l      newfunc_msg,a1
 x154f0_24:
-		cmp.w      #20,d0
+		cmpi.w     #20,d0
 		bne.s      x154f0_25
 		lea.l      newlab_msg,a1
 x154f0_25:
-		cmp.w      #22,d0
+		cmpi.w     #22,d0
 		bne.s      x154f0_26
 		lea.l      newproc_msg,a1
 x154f0_26:
@@ -12105,7 +12105,7 @@ x156dc: .ascii "][Ok|Error]"
 x154f0_31:
 		moveq.l    #1,d0
 		lea.l      5360(a6),a0
-		jsr        x1018e
+		jsr        x1018e.l
 		subq.w     #1,d0
 		bne        x13886
 		movem.l    (a7),d0-d2/d7/a0-a2
@@ -12118,14 +12118,14 @@ x154f0_33:
 		andi.w     #254,d1
 		tst.b      MergeFlg+1
 		bne.s      x154f0_34
-		jsr        x1194e
+		jsr        x1194e.l
 x154f0_34:
 		lea.l      20(a6),a0
 		adda.w     d0,a0
 		movea.w    d0,a4
 		moveq.l    #0,d0
 		move.w     d1,d0
-		jsr        ALLOT
+		jsr        ALLOT.l
 		clr.b      -1(a0,d0.w)
 		movea.l    a0,a3
 		movem.l    (a7),d0-d2/d7/a0-a2
@@ -12141,10 +12141,10 @@ x154f0_36:
 		lea.l      96(a6),a0
 		adda.w     a4,a0
 		moveq.l    #4,d0
-		jsr        ALLOT
+		jsr        ALLOT.l
 		tst.b      MergeFlg+1
 		bne.s      x154f0_37
-		jsr        x118e2
+		jsr        x118e2.l
 x154f0_37:
 		movem.l    (a7)+,d0-d2/d7/a0-a2
 		bra        x154f0_21
@@ -12197,35 +12197,35 @@ x1578c_3:
 x157c8:
 		move.b     (a0)+,d0
 x157c8_1:
-		cmp.b      #' ',d0
+		cmpi.b     #' ',d0
 		beq.s      x157c8
 		rts
 
 x157d2:
 		clr.b      x1585a
 		moveq.l    #0,d2
-		cmp.b      #'"',d0
+		cmpi.b     #'"',d0
 		beq        x157d2_14
 x157d2_1:
-		cmp.b      #'+',d0
+		cmpi.b     #'+',d0
 		beq.s      x157d2_2
-		cmp.b      #'-',d0
+		cmpi.b     #'-',d0
 		bne.s      x157d2_3
 		not.b      x1585a
 x157d2_2:
 		bsr.s      x157c8
 		bra.s      x157d2_1
 x157d2_3:
-		cmp.b      #'&',d0
+		cmpi.b      #'&',d0
 		beq.s      x157d2_8
 		moveq.l    #(TOK_BIN_CONST-TOK_DEC_CONST)/2,d1
-		cmp.b      #'%',d0
+		cmpi.b     #'%',d0
 		beq        x157d2_13
 		moveq.l    #(TOK_HEX_CONST-TOK_DEC_CONST)/2,d1
-		cmp.b      #'$',d0
+		cmpi.b     #'$',d0
 		beq.s      x157d2_9
 		subi.b     #'0',d0
-		cmp.b      #9,d0
+		cmpi.b     #9,d0
 		bhi.s      x157d2_5
 		moveq.l    #0,d1
 		moveq.l    #15,d2
@@ -12233,9 +12233,9 @@ x157d2_3:
 x157d2_4:
 		moveq.l    #0,d0
 		move.b     (a0)+,d0
-		cmp.b      #'0',d0
+		cmpi.b     #'0',d0
 		bcs.s      x157d2_6
-		cmp.b      #'9',d0
+		cmpi.b     #'9',d0
 		bhi.s      x157d2_6
 		andi.b     #15,d0
 		add.l      d2,d2
@@ -12264,24 +12264,24 @@ x1585a: .dc.b 0
 x157d2_8:
 		move.b     (a0)+,d0
 		moveq.l    #(TOK_BIN_CONST-TOK_DEC_CONST)/2,d1
-		cmp.b      #'X',d0
+		cmpi.b     #'X',d0
 		beq.s      x157d2_13
 		moveq.l    #(TOK_OCT_CONST-TOK_DEC_CONST)/2,d1
-		cmp.b      #'O',d0
+		cmpi.b     #'O',d0
 		beq.s      x157d2_12
 		moveq.l    #(TOK_HEX_CONST-TOK_DEC_CONST)/2,d1
-		cmp.b      #'H',d0
+		cmpi.b     #'H',d0
 		bne.s      x157d2_10
 x157d2_9:
 		move.b     (a0)+,d0
 x157d2_10:
-		cmp.b      #'F',d0
+		cmpi.b     #'F',d0
 		bhi.s      x157d2_6
-		cmp.b      #'0',d0
+		cmpi.b     #'0',d0
 		bcs.s      x157d2_6
-		cmp.b      #'9',d0
+		cmpi.b     #'9',d0
 		bls.s      x157d2_11
-		cmp.b      #'A',d0
+		cmpi.b     #'A',d0
 		bcs.s      x157d2_5
 		subq.b     #7,d0
 x157d2_11:
@@ -12292,9 +12292,9 @@ x157d2_11:
 		bra.s      x157d2_9
 x157d2_12:
 		move.b     (a0)+,d0
-		cmp.b      #'0',d0
+		cmpi.b     #'0',d0
 		bcs.s      x157d2_6
-		cmp.b      #'9',d0
+		cmpi.b     #'9',d0
 		bhi.s      x157d2_6
 		andi.b     #7,d0
 		asl.l      #3,d2
@@ -12303,9 +12303,9 @@ x157d2_12:
 		bra.s      x157d2_12
 x157d2_13:
 		move.b     (a0)+,d0
-		cmp.b      #'0',d0
+		cmpi.b     #'0',d0
 		bcs.s      x157d2_6
-		cmp.b      #'1',d0
+		cmpi.b     #'1',d0
 		bhi.s      x157d2_6
 		lsr.b      #1,d0
 		roxl.l     #1,d2
@@ -12315,12 +12315,12 @@ x157d2_14:
 		moveq.l    #4,d1 /* string constant */
 x157d2_15:
 		move.b     (a0)+,d0
-		cmp.b      #CR,d0 /* FIXME: handle also LF */
+		cmpi.b     #CR,d0 /* FIXME: handle also LF */
 		beq        x157d2_6
-		cmp.b      #'"',d0
+		cmpi.b     #'"',d0
 		bne.s      x157d2_16
 		move.b     (a0)+,d0
-		cmp.b      #'"',d0
+		cmpi.b     #'"',d0
 		bne        x157d2_6
 x157d2_16:
 		asl.l      #8,d2
@@ -12332,25 +12332,25 @@ f158f8:
 		pea.l      (a0)
 		bsr        x157c8
 		bsr        x157d2
-		cmp.b      #4,d1 /* string constant? */
+		cmpi.b     #4,d1 /* string constant? */
 		beq.s      f158f8_4
 f158f8_0:
-		cmp.b      #',',d0
+		cmpi.b     #',',d0
 		beq.s      f158f8_2
-		cmp.b      #')',d0
+		cmpi.b     #')',d0
 		beq.s      f158f8_2
-		cmp.b      #'T',d0
+		cmpi.b     #'T',d0
 		beq.s      f158f8_2
-		cmp.b      #'!',d0
+		cmpi.b     #'!',d0
 		beq.s      f158f8_2
-		cmp.b      #'/',d0
+		cmpi.b     #'/',d0
 		bne.s      f158f8_1
 		cmp.b      (a0),d0
 		beq.s      f158f8_2
 		cmpi.b     #'*',(a0)
 		beq.s      f158f8_2
 f158f8_1:
-		cmp.b      #CR,d0
+		cmpi.b     #CR,d0
 		bne.s      f158f8_4
 f158f8_2:
 		moveq.l    #TOK_DEC_CONST-256,d3
@@ -12377,7 +12377,7 @@ f1595a:
 		pea.l      (a0)
 		bsr        x157c8
 		bsr        x157d2
-		cmp.b      #4,d1 /* string constant? */
+		cmpi.b     #4,d1 /* string constant? */
 		bne.s      f158f8_0
 		moveq.l    #-1,d1
 		bra.s      f158f8_0
@@ -12402,28 +12402,28 @@ x15980: .dc.b 0
 x15982:
 		lea.l      1364(a6),a0
 		move.w     (a0)+,d0
-		cmp.w      #120,d0 /* TOK_CMD_GOSUB_IMP*2 */
+		cmpi.w     #120,d0 /* TOK_CMD_GOSUB_IMP*2 */
 		beq.s      x15982_1
-		cmp.w      #122,d0 /* TOK_CMD_GOSUB*2 */
+		cmpi.w     #122,d0 /* TOK_CMD_GOSUB*2 */
 		beq.s      x15982_1
-		cmp.w      #124,d0 /* TOK_CMD_GOSUB_EXP*2 */
+		cmpi.w     #124,d0 /* TOK_CMD_GOSUB_EXP*2 */
 		beq.s      x15982_1
-		cmp.w      #12,d0 /* TOK_CMD_PROCEDURE*2 */
+		cmpi.w     #12,d0 /* TOK_CMD_PROCEDURE*2 */
 x15982_1:
 		beq        x15982_33
-		cmp.w      #320,d0 /* TOK_CMD_INC_FLOAT*2 */
+		cmpi.w     #320,d0 /* TOK_CMD_INC_FLOAT*2 */
 		bcs.s      x15982_2
-		cmp.w      #400,d0 /* TOK_CMD_DIV_FLOAT*2 */
+		cmpi.w     #400,d0 /* TOK_CMD_DIV_FLOAT*2 */
 		bls        x15982_29
 		rts
 x15982_2:
-		cmp.w      #128,d0 /* TOK_CMD_LET_FLOAT*2 */
+		cmpi.w     #128,d0 /* TOK_CMD_LET_FLOAT*2 */
 		beq        x15982_8
-		cmp.w      #152,d0 /* TOK_CMD_ASSIGN_FLOAT*2 */
+		cmpi.w     #152,d0 /* TOK_CMD_ASSIGN_FLOAT*2 */
 		beq.s      x15982_8
-		cmp.w      #38,d0 /* TOK_CMD_FOR_FLOAT*2 */
+		cmpi.w     #38,d0 /* TOK_CMD_FOR_FLOAT*2 */
 		beq.s      x15982_3
-		cmp.w      #62,d0 /* TOK_CMD_NEXT_FLOAT*2 */
+		cmpi.w     #62,d0 /* TOK_CMD_NEXT_FLOAT*2 */
 		beq.s      x15982_5
 		rts
 x15982_3:
@@ -12431,7 +12431,7 @@ x15982_3:
 		and.b      (a0),d1
 		moveq.l    #38,d0
 		add.b      x15a04(pc,d1.w),d0
-		add.b      x15980,d0
+		add.b      x15980.l,d0
 		move.b     d0,-1(a0)
 		btst       #4,(a0)
 		beq.s      x15982_4
@@ -12503,7 +12503,7 @@ x15982_13:
 		dbf        d0,x15982_12
 		bra.s      x15982_16
 x15982_14:
-		cmp.b      #TOK_REF_FLOAT,d0
+		cmpi.b     #TOK_REF_FLOAT,d0
 		bcs.s      x15982_15
 		move.b     (a1)+,(a0)+
 x15982_15:
@@ -12511,13 +12511,13 @@ x15982_15:
 x15982_16:
 		move.b     (a1)+,d0
 		move.b     d0,(a0)+
-		cmp.b      #TOK_LINE_COMMENT,d0
+		cmpi.b     #TOK_LINE_COMMENT,d0
 		beq.s      x15982_25
-		cmp.b      #TOK_CHAR_CONST,d0
+		cmpi.b     #TOK_CHAR_CONST,d0
 		bcs.s      x15982_16
-		cmp.b      #TOK_SUBFUNC_214,d0
+		cmpi.b     #TOK_SUBFUNC_214,d0
 		bcc.s      x15982_21
-		cmp.b      #TOK_SUBFUNC_208,d0
+		cmpi.b      #TOK_SUBFUNC_208,d0
 		bcc.s      x15982_20
 		lsr.b      #1,d0
 		bcc.s      x15982_17
@@ -12543,10 +12543,10 @@ x15982_20:
 		move.b     (a1)+,(a0)+
 		bra.s      x15982_16
 x15982_21:
-		cmp.b      #TOK_DEC_DBL_CONST,d0
+		cmpi.b     #TOK_DEC_DBL_CONST,d0
 		beq.s      x15982_26
 		bhi.s      x15982_14
-		cmp.b      #TOK_DEC_DBL_CONST_PAD,d0
+		cmpi.b     #TOK_DEC_DBL_CONST_PAD,d0
 		beq.s      x15982_27
 		bhi.s      x15982_11
 		lsr.b      #1,d0
@@ -12653,14 +12653,14 @@ execute_defint_2:
 		rts
 execute_defint_3:
 		move.b     (a0)+,d2
-		cmp.b      #',',d2
+		cmpi.b     #',',d2
 		beq.s      execute_defint_1
-		cmp.b      #' ',d2
+		cmpi.b     #' ',d2
 		beq.s      execute_defint_1
 		andi.w     #0x00DF,d2 /* make it uppercase */
-		cmp.b      #'A',d2
+		cmpi.b     #'A',d2
 		bcs.s      execute_defint_2
-		cmp.b      #'Z',d2
+		cmpi.b     #'Z',d2
 		bhi.s      execute_defint_2
 		move.b     d0,-65(a1,d2.w)
 		cmpi.b     #'-',(a0)
@@ -12670,9 +12670,9 @@ execute_defint_3:
 		andi.w     #0x00DF,d3 /* make it uppercase */
 		subq.b     #2,d1
 		bmi.s      execute_defint_2
-		cmp.w      #'A',d3
+		cmpi.w     #'A',d3
 		bcs.s      execute_defint_2
-		cmp.w      #'Z',d3
+		cmpi.w     #'Z',d3
 		bhi.s      execute_defint_2
 		cmp.w      d2,d3
 		bhi.s      execute_defint_4
@@ -12714,9 +12714,9 @@ x15c52:
 		bra.s      x15c52_3
 x15c52_1:
 		move.b     (a3)+,d0
-		cmp.b      #'A',d0
+		cmpi.b     #'A',d0
 		bcs.s      x15c52_2
-		cmp.b      #'Z',d0
+		cmpi.b     #'Z',d0
 		bhi.s      x15c52_2
 		add.b      8398(a6),d0
 x15c52_2:
@@ -12732,84 +12732,84 @@ x15c52_3:
 		bne.s      x15c52_4
 		move.b     #' ',(a0)+
 x15c52_4:
-		cmp.w      #228,d6 /* TOK_CMD_REM*2 */
+		cmpi.w     #228,d6 /* TOK_CMD_REM*2 */
 		beq.s      x15c52_5
-		cmp.w      #230,d6 /* TOK_CMD_COMMENT*2 */
+		cmpi.w     #230,d6 /* TOK_CMD_COMMENT*2 */
 		beq.s      x15c52_5
-		cmp.w      #232,d6 /* TOK_CMD_SYNERR*2 */
+		cmpi.w     #232,d6 /* TOK_CMD_SYNERR*2 */
 		beq.s      x15c52_5
-		cmp.w      #234,d6 /* TOK_CMD_DATA*2 */
+		cmpi.w     #234,d6 /* TOK_CMD_DATA*2 */
 		beq.s      x15c52_5
-		cmp.w      #508,d6 /* TOK_CMD_DOT*2 */
+		cmpi.w     #508,d6 /* TOK_CMD_DOT*2 */
 		beq.s      x15c52_5
-		cmp.w      #822,d6 /* TOK_CMD_DOLLAR*2 */
+		cmpi.w     #822,d6 /* TOK_CMD_DOLLAR*2 */
 x15c52_5:
 		beq        x15c52_27
-		cmp.w      #128,d6 /* TOK_CMD_LET_FLOAT*2 */
+		cmpi.w     #128,d6 /* TOK_CMD_LET_FLOAT*2 */
 		bcc.s      x15c52_8
-		cmp.w      #98,d6 /* TOK_CMD_DO_WHILE*2 */
+		cmpi.w     #98,d6 /* TOK_CMD_DO_WHILE*2 */
 		bcs.s      x15c52_6
-		cmp.w      #104,d6 /* TOK_CMD_LOOP_UNTIL*2 */
+		cmpi.w      #104,d6 /* TOK_CMD_LOOP_UNTIL*2 */
 		bls.s      x15c52_7
 x15c52_6:
-		cmp.w      #2,d6 /* TOK_CMD_LOOP*2 */
+		cmpi.w     #2,d6 /* TOK_CMD_LOOP*2 */
 		beq.s      x15c52_7
-		cmp.w      #6,d6 /* TOK_CMD_UNTIL*2 */
+		cmpi.w     #6,d6 /* TOK_CMD_UNTIL*2 */
 		beq.s      x15c52_7
-		cmp.w      #8,d6 /* TOK_CMD_WHILE*2 */
+		cmpi.w     #8,d6 /* TOK_CMD_WHILE*2 */
 		beq.s      x15c52_7
-		cmp.w      #10,d6 /* TOK_CMD_WEND*2 */
+		cmpi.w     #10,d6 /* TOK_CMD_WEND*2 */
 		beq.s      x15c52_7
-		cmp.w      #16,d6 /* TOK_CMD_IF*2 */
+		cmpi.w     #16,d6 /* TOK_CMD_IF*2 */
 		beq.s      x15c52_7
-		cmp.w      #24,d6 /* TOK_CMD_SELECT*2 */
+		cmpi.w     #24,d6 /* TOK_CMD_SELECT*2 */
 		beq.s      x15c52_7
-		cmp.w      #88,d6 /* TOK_CMD_SELECT_STR*2 */
+		cmpi.w     #88,d6 /* TOK_CMD_SELECT_STR*2 */
 		beq.s      x15c52_7
-		cmp.w      #28,d6 /* TOK_CMD_ELSE*2 */
+		cmpi.w     #28,d6 /* TOK_CMD_ELSE*2 */
 		beq.s      x15c52_7
-		cmp.w      #30,d6 /* TOK_CMD_DEFAULT*2 */
+		cmpi.w     #30,d6 /* TOK_CMD_DEFAULT*2 */
 		beq.s      x15c52_7
-		cmp.w      #32,d6 /* TOK_CMD_ELSEIF*2 */
+		cmpi.w     #32,d6 /* TOK_CMD_ELSEIF*2 */
 		beq.s      x15c52_7
-		cmp.w      #110,d6 /* TOK_CMD_EXITIF2*2 */
+		cmpi.w     #110,d6 /* TOK_CMD_EXITIF2*2 */
 		beq.s      x15c52_7
-		cmp.w      #112,d6 /* TOK_CMD_CASE*2 */
+		cmpi.w     #112,d6 /* TOK_CMD_CASE*2 */
 		beq.s      x15c52_7
-		cmp.w      #62,d6 /* TOK_CMD_NEXT_FLOAT*2 */
+		cmpi.w     #62,d6 /* TOK_CMD_NEXT_FLOAT*2 */
 		bcs.s      x15c52_8
-		cmp.w      #86,d6 /* TOK_CMD_EXITIF*2 */
+		cmpi.w     #86,d6 /* TOK_CMD_EXITIF*2 */
 		bhi.s      x15c52_8
 x15c52_7:
 		addq.l     #4,a1
 x15c52_8:
-		cmp.w      #12,d6 /* TOK_CMD_PROCEDURE*2 */
+		cmpi.w     #12,d6 /* TOK_CMD_PROCEDURE*2 */
 		beq        x16338
-		cmp.w      #108,d6 /* TOK_CMD_PROCEDURE2*2 */
+		cmpi.w     #108,d6 /* TOK_CMD_PROCEDURE2*2 */
 		beq        x16338
-		cmp.w      #38,d6 /* TOK_CMD_FOR_FLOAT*2 */
+		cmpi.w     #38,d6 /* TOK_CMD_FOR_FLOAT*2 */
 		bcs.s      x15c52_13
-		cmp.w      #120,d6 /* TOK_CMD_GOSUB_IMP*2 */
+		cmpi.w     #120,d6 /* TOK_CMD_GOSUB_IMP*2 */
 		beq.s      x15c52_9
-		cmp.w      #122,d6 /* TOK_CMD_GOSUB*2 */
+		cmpi.w     #122,d6 /* TOK_CMD_GOSUB*2 */
 		beq.s      x15c52_9
-		cmp.w      #124,d6 /* TOK_CMD_GOSUB_EXP*2 */
+		cmpi.w     #124,d6 /* TOK_CMD_GOSUB_EXP*2 */
 		bne.s      x15c52_10
 x15c52_9:
 		bra        x16338_1
 x15c52_10:
-		cmp.w      #62,d6 /* TOK_CMD_NEXT_FLOAT*2 */
+		cmpi.w     #62,d6 /* TOK_CMD_NEXT_FLOAT*2 */
 		bcs        x162f2
-		cmp.w      #86,d6 /* TOK_CMD_EXITIF*2 */
+		cmpi.w     #86,d6 /* TOK_CMD_EXITIF*2 */
 		bcs        x162fc
-		cmp.w      #320,d6 /* TOK_CMD_INC_FLOAT*2 */
+		cmpi.w     #320,d6 /* TOK_CMD_INC_FLOAT*2 */
 		bcs.s      x15c52_11
-		cmp.w      #414,d6 /* TOK_CMD_DIV_BYTE_ARR*2 */
+		cmpi.w     #414,d6 /* TOK_CMD_DIV_BYTE_ARR*2 */
 		bls        x16318
 x15c52_11:
-		cmp.w      #128,d6 /* TOK_CMD_LET_FLOAT*2 */
+		cmpi.w     #128,d6 /* TOK_CMD_LET_FLOAT*2 */
 		bcs.s      x15c52_13
-		cmp.w      #174,d6 /* TOK_CMD_ASSIGN_BYTE_ARR*2 */
+		cmpi.w     #174,d6 /* TOK_CMD_ASSIGN_BYTE_ARR*2 */
 		bhi.s      x15c52_13
 		move.w     d6,d1
 		subi.w     #152,d1 /* TOK_CMD_ASSIGN_FLOAT*2 */
@@ -12817,7 +12817,7 @@ x15c52_11:
 		addi.w     #24,d1
 x15c52_12:
 		lsr.w      #1,d1
-		cmp.w      #6,d1
+		cmpi.w     #6,d1
 		bcc.s      x15c52_46
 		move.b     #'=',8400(a6)
 x15c52_46:
@@ -12829,13 +12829,13 @@ x15c52_13:
 		moveq.l    #0,d0
 		move.b     (a1)+,d0
 x15c52_14:
-		cmp.b      #TOK_LINE_COMMENT,d0
+		cmpi.b     #TOK_LINE_COMMENT,d0
 		beq.s      x15c52_19
-		cmp.b      #55,d0
+		cmpi.b     #55,d0
 		beq.s      x15c52_13
-		cmp.b      #TOK_SUBFUNC_214,d0
+		cmpi.b     #TOK_SUBFUNC_214,d0
 		bcc        x15c52_28
-		cmp.b      #TOK_CHAR_CONST,d0
+		cmpi.b     #TOK_CHAR_CONST,d0
 		bcc        x162ac
 		lea.l      x15fe8(pc),a3
 		move.w     d0,d1
@@ -12856,9 +12856,9 @@ x15c52_15:
 		bra.s      x15c52_18
 x15c52_16:
 		move.b     (a3)+,d0
-		cmp.b      #'A',d0
+		cmpi.b     #'A',d0
 		bcs.s      x15c52_17
-		cmp.b      #'Z',d0
+		cmpi.b     #'Z',d0
 		bhi.s      x15c52_17
 		add.b      8398(a6),d0
 x15c52_17:
@@ -12923,15 +12923,15 @@ x15c52_26:
 		move.b     d0,(a0)+
 x15c52_27:
 		move.b     (a1)+,d0
-		cmp.b      #EOL,d0
+		cmpi.b     #EOL,d0
 		bne.s      x15c52_26
 		bra.s      x15c52_19
 x15c52_28:
-		cmp.b      #TOK_DEC_DBL_CONST_PAD,d0
+		cmpi.b     #TOK_DEC_DBL_CONST_PAD,d0
 		beq.s      x15c52_32
-		cmp.b      #TOK_STRING_CONST,d0
+		cmpi.b     #TOK_STRING_CONST,d0
 		beq.s      x15c52_29
-		cmp.b      #TOK_DEC_DBL_CONST,d0
+		cmpi.b     #TOK_DEC_DBL_CONST,d0
 		beq.s      x15c52_33
 		bhi.s      x15c52_34
 		bra        x16028
@@ -12944,7 +12944,7 @@ x15c52_29:
 x15c52_30:
 		move.b     (a1)+,d1
 		move.b     d1,(a0)+
-		cmp.b      #'"',d1
+		cmpi.b     #'"',d1
 		dbeq       d0,x15c52_30
 		bne.s      x15c52_31
 		move.b     d1,(a0)+
@@ -12962,7 +12962,7 @@ x15c52_33:
 		bra        x15c52_13
 x15c52_34:
 		moveq.l    #0,d1
-		cmp.b      #TOK_REF_FLOAT,d0
+		cmpi.b     #TOK_REF_FLOAT,d0
 		bcs.s      x15c52_35
 		move.b     (a1)+,-(a7)
 		move.w     (a7)+,d1
@@ -13007,9 +13007,9 @@ x15c52_38:
 		bmi.s      x15c52_40
 x15c52_39:
 		move.b     (a2)+,d1
-		cmp.b      #'A',d1
+		cmpi.b     #'A',d1
 		bcs.s      x15c52_45
-		cmp.b      #'Z',d1
+		cmpi.b      #'Z',d1
 		bhi.s      x15c52_45
 		addi.b     #' ',d1
 x15c52_45:
@@ -13193,7 +13193,7 @@ x1612c_1:
 		rol.l      #8,d2
 		move.b     d2,(a0)
 		beq.s      x1612c_3
-		cmp.b      #'"',d2
+		cmpi.b     #'"',d2
 		bne.s      x1612c_2
 		move.b     d2,(a0)+
 x1612c_2:
@@ -13223,7 +13223,7 @@ print_hex:
 		beq.s      print_hex_4
 		moveq.l    #7,d1
 print_hex_1:
-		cmp.l      #0x10000000,d0
+		cmpi.l     #0x10000000,d0
 		bcc.s      print_hex_2
 		asl.l      #4,d0
 		dbf        d1,print_hex_1
@@ -13232,7 +13232,7 @@ print_hex_2:
 		move.b     d0,d2
 		andi.b     #15,d2
 		ori.b      #'0',d2
-		cmp.b      #'9',d2
+		cmpi.b     #'9',d2
 		bls.s      print_hex_3
 		addq.b     #7,d2
 print_hex_3:
@@ -13288,7 +13288,7 @@ print_bin_3:
 		rts
 
 print_dec:
-		cmp.l      #10000,d0
+		cmpi.l     #10000,d0
 		bcc.s      print_int
 		divu.w     #100,d0
 		move.w     d0,d1
@@ -13331,11 +13331,11 @@ print_dec_7:
 		rts
 
 print_int:
-		jsr        FITOF
+		jsr        FITOF.l
 print_float:
 		movem.l    a0-a1,-(a7)
 		st         542(a6)
-		jsr        Fstr
+		jsr        Fstr.l
 		sf         542(a6)
 		movea.l    a0,a2
 		movem.l    (a7)+,a0-a1
@@ -13363,7 +13363,7 @@ x16294_2:
 		bra        x15c52_13
 
 x162ac:
-		cmp.b      #TOK_SUBFUNC_208,d0
+		cmpi.b     #TOK_SUBFUNC_208,d0
 		bne.s      x16294
 		moveq.l    #0,d0
 		move.b     (a1)+,d0
@@ -13380,9 +13380,9 @@ x162ac:
 		bra.s      x162ac_3
 x162ac_1:
 		move.b     (a3)+,d0
-		cmp.b      #'A',d0
+		cmpi.b     #'A',d0
 		bcs.s      x162ac_2
-		cmp.b      #'Z',d0
+		cmpi.b     #'Z',d0
 		bhi.s      x162ac_2
 		add.b      8398(a6),d0
 x162ac_2:
@@ -13417,7 +13417,7 @@ x16318:
 		move.b     x16310(pc,d1.w),d0
 		subq.w     #4,d1
 		bge.s      x16318_1
-		cmp.w      #350,d6
+		cmpi.w     #350,d6
 		bls.s      x16318_1
 		move.b     #',',8400(a6)
 x16318_1:
@@ -13589,9 +13589,9 @@ find_mtask:
 find_mtask1:
 		move.l     (a0)+,d1
 		move.l     (a0)+,d0
-		cmp.l      #0x4D616758,d1 /* 'MagX' */
+		cmpi.l     #0x4D616758,d1 /* 'MagX' */
 		beq.s      find_mtask3
-		cmp.l      #0x4D694E54,d1 /* 'MiNT' */
+		cmpi.l     #0x4D694E54,d1 /* 'MiNT' */
 		beq.s      find_mtask3
 		tst.l      d1
 		bne.s      find_mtask1
@@ -13711,7 +13711,8 @@ bss_end: /* 1779c */
 490: tmpbuf for Fstr
 512: outbuf for FTstr
 542: decimal_digits
-1106: offsets / genereal buffer
+850: linebuffer
+1106: general buffer
 1364: token buffer
 2772: filetable, xx*6
 3372: offsets to func_table
