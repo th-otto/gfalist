@@ -1,4 +1,5 @@
 FOR_LIB = 0
+GBE = 0
 STRANGE_CHECK = 1
 
 
@@ -3379,7 +3380,8 @@ x11ae8:
 x11af6: .dc.l 0
 
 /* gfa: 0002111e */
-cmd_table:
+/* gbe: 50c42 */
+cmd_table: /* 11afa */
 		.dc.b 0
 		.ascii "!"
 		.dc.b ((115*2)/256),((115*2)&255),(x1465e-x13696)/256,(x1465e-x13696)&255
@@ -3452,6 +3454,11 @@ cmd_addrout:
 		.dc.b 8
 		.ascii "ARRAYFILL"
 		.dc.b ((397*2)/256),((397*2)&255),(x14a66-x13696)/256,(x14a66-x13696)&255
+		.IFNE GBE
+		.dc.b 5
+		.ascii "AMOUSE"
+		.dc.b ((474*2)/256),((474*2)&255),(x14481-x13696)/256,(x14481-x13696)&255
+		.ENDC
 cmd_b_table: /* 11bc6 */
 		.dc.b 4
 		.ascii "BMOVE"
@@ -3480,6 +3487,23 @@ cmd_b_table: /* 11bc6 */
 		.dc.b 4
 		.ascii "BLOAD"
 		.dc.b ((405*2)/256),((405*2)&255),(x146e1-x13696)/256,(x146e1-x13696)&255
+		.IFNE GBE
+		.dc.b 5
+		.ascii "BCLEAR"
+		.dc.b ((462*2)/256),((462*2)&255),(x1447e-x13696)/256,(x1447e-x13696)&255
+		.dc.b 4
+		.ascii "BFILL"
+		.dc.b ((463*2)/256),((463*2)&255),(x1447b-x13696)/256,(x1447b-x13696)&255
+		.dc.b 3
+		.ascii "BEEP"
+		.dc.b ((465*2)/256),((465*2)&255),(x14484-x13696)/256,(x14484-x13696)&255
+		.dc.b 5
+		.ascii "BCRYPT"
+		.dc.b ((477*2)/256),((477*2)&255),(x146f1-x13696)/256,(x146f1-x13696)&255
+		.dc.b 5
+		.ascii "BXLATE"
+		.dc.b ((464*2)/256),((464*2)&255),(x1447b-x13696)/256,(x1447b-x13696)&255
+		.ENDC
 cmd_c_table: /* 11c20 */
 		.dc.b 4
 		.ascii "COLOR"
@@ -3500,6 +3524,11 @@ cmd_contrl:
 		.dc.b 4
 		.ascii "CHAR{"
 		.dc.b ((235*2)/256),((235*2)&255),(x14175-x13696)/256,(x14175-x13696)&255
+		.IFNE GBE
+		.dc.b 4
+		.ascii "CHAR$"
+		.dc.b ((494*2)/256),((494*2)&255),(x1467b-x13696)/256,(x1467b-x13696)&255
+		.ENDC
 		.dc.b 4
 		.ascii "CLOSE"
 		.dc.b ((268*2)/256),((268*2)&255),(x14603-x13696)/256,(x14603-x13696)&255
@@ -3533,6 +3562,11 @@ cmd_contrl:
 		.dc.b 4
 		.ascii "CURVE"
 		.dc.b ((422*2)/256),((422*2)&255),(x1447a-x13696)/256,(x1447a-x13696)&255
+		.IFNE GBE
+		.dc.b 7
+		.ascii "CPUFLUSH"
+		.dc.b ((476*2)/256),((476*2)&255),(x14484-x13696)/256,(x14484-x13696)&255
+		.ENDC
 cmd_d_table: /* 11cc7 */
 		.dc.b 3
 		.ascii "DATA"
@@ -3741,6 +3775,20 @@ cmd_g_table: /* 11f49 */
 		.dc.b 8
 		.ascii "GRAPHMODE"
 		.dc.b ((278*2)/256),((278*2)&255),(x14467-x13696)/256,(x14467-x13696)&255
+		.IFNE GBE
+		.dc.b 5
+		.ascii "GSTICK"
+		.dc.b ((478*2)/256),((478*2)&255),(x14481-x13696)/256,(x14481-x13696)&255
+		.dc.b 5
+		.ascii "GHIDEM"
+		.dc.b ((466*2)/256),((466*2)&255),(x14484-x13696)/256,(x14484-x13696)&255
+		.dc.b 5
+		.ascii "GSHOWM"
+		.dc.b ((467*2)/256),((467*2)&255),(x14484-x13696)/256,(x14484-x13696)&255
+		.dc.b 5
+		.ascii "GMOUSE"
+		.dc.b ((468*2)/256),((468*2)&255),(x14ae1-x13696)/256,(x14ae1-x13696)&255
+		.ENDC
 cmd_h_table: /* 11fa3 */
 		.dc.b 7
 		.ascii "HARDCOPY"
@@ -3844,6 +3892,20 @@ cmd_l_table: /* 12081 */
 		.dc.b 3
 		.ascii "LOAD"
 		.dc.b ((395*2)/256),((395*2)&255),(x1454c-x13696)/256,(x1454c-x13696)&255
+		.IFNE GBE
+		.dc.b 6
+		.ascii "LOG_MSG"
+		.dc.b ((484*2)/256),((484*2)&255),(x14569-x13696)/256,(x14569-x13696)&255
+		.dc.b 6
+		.ascii "LOG_SET"
+		.dc.b ((485*2)/256),((485*2)&255),(x14481-x13696)/256,(x14481-x13696)&255
+		.dc.b 7
+		.ascii "LOG_FILE"
+		.dc.b ((486*2)/256),((486*2)&255),(x14569-x13696)/256,(x14569-x13696)&255
+		.dc.b 7
+		.ascii "LOG_KILL"
+		.dc.b ((487*2)/256),((487*2)&255),(x14484-x13696)/256,(x14484-x13696)&255
+		.ENDC
 cmd_m_table: /* 120f4 */
 		.dc.b 2
 		.ascii "MAT"
@@ -3937,6 +3999,56 @@ cmd_o_table: /* 12165 */
 		.dc.b 5
 		.ascii "OPTION"
 		.dc.b ((410*2)/256),((410*2)&255),(x1453f-x13696)/256,(x1453f-x13696)&255
+		.IFNE GBE
+		.dc.b 8
+		.ascii "OB.STATE("
+		.dc.b ((504*2)/256),((504*2)&255),(x14166-x13696)/256,(x14166-x13696)&255
+		.dc.b 8
+		.ascii "OB.FLAGS("
+		.dc.b ((505*2)/256),((505*2)&255),(x14166-x13696)/256,(x14166-x13696)&255
+		.dc.b 11
+		.ascii "OB_SELECTED("
+		.dc.b ((506*2)/256),((506*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b 10
+		.ascii "OB_CROSSED("
+		.dc.b ((507*2)/256),((507*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b 10
+		.ascii "OB_CHECKED("
+		.dc.b ((508*2)/256),((508*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b 11
+		.ascii "OB_DISABLED("
+		.dc.b ((509*2)/256),((509*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b 13
+		.ascii "OB_SELECTABLE("
+		.dc.b ((512*2)/256),((512*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b 10
+		.ascii "OB_DEFAULT("
+		.dc.b ((513*2)/256),((513*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b 7
+		.ascii "OB_EXIT("
+		.dc.b ((514*2)/256),((514*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b 11
+		.ascii "OB_EDITABLE("
+		.dc.b ((515*2)/256),((515*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b 10
+		.ascii "OB_RBUTTON("
+		.dc.b ((516*2)/256),((516*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b 9
+		.ascii "OB_LASTOB("
+		.dc.b ((517*2)/256),((517*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b 12
+		.ascii "OB_TOUCHEXIT("
+		.dc.b ((518*2)/256),((518*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b 11
+		.ascii "OB_HIDETREE("
+		.dc.b ((519*2)/256),((519*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b 10
+		.ascii "OB.RBUTTON("
+		.dc.b ((510*2)/256),((510*2)&255),(x14166-x13696)/256,(x14166-x13696)&255
+		.dc.b 8
+		.ascii "OB_TEXT$("
+		.dc.b ((511*2)/256),((511*2)&255),(x14157-x13696)/256,(x14157-x13696)&255
+		.ENDC
 cmd_p_table: /* 1222d */
 		.dc.b 4
 		.ascii "PRINT"
@@ -3989,6 +4101,14 @@ cmd_p_table: /* 1222d */
 		.dc.b 4
 		.ascii "PSAVE"
 		.dc.b ((391*2)/256),((391*2)&255),(x1454c-x13696)/256,(x1454c-x13696)&255
+		.IFNE GBE
+		.dc.b 5
+		.ascii "PALGET"
+		.dc.b ((482*2)/256),((482*2)&255),(x14481-x13696)/256,(x14481-x13696)&255
+		.dc.b 5
+		.ascii "PALSET"
+		.dc.b ((483*2)/256),((483*2)&255),(x14481-x13696)/256,(x14481-x13696)&255
+		.ENDC
 cmd_q_table: /* 122e6 */
 		.dc.b 3
 		.ascii "QUIT"
@@ -4127,6 +4247,23 @@ cmd_s_table: /* 123c3 */
 		.dc.b 5
 		.ascii "SPRITE"
 		.dc.b ((409*2)/256),((409*2)&255),(x152b2-x13696)/256,(x152b2-x13696)&255
+		.IFNE GBE
+		.dc.b 4
+		.ascii "SCALL"
+		.dc.b ((491*2)/256),((491*2)&255),(x14481-x13696)/256,(x14481-x13696)&255
+		.dc.b 7
+		.ascii "SET.MFDB"
+		.dc.b ((460*2)/256),((460*2)&255),(x1449d-x13696)/256,(x1449d-x13696)&255
+		.dc.b 8
+		.ascii "SET.PXYWH"
+		.dc.b ((461*2)/256),((461*2)&255),(x1449d-x13696)/256,(x1449d-x13696)&255
+		.dc.b 8
+		.ascii "SET.PXYXY"
+		.dc.b ((488*2)/256),((488*2)&255),(x14497-x13696)/256,(x14497-x13696)&255
+		.dc.b 11
+		.ascii "SET.SOCKADDR"
+		.dc.b ((495*2)/256),((495*2)&255),(x14478-x13696)/256,(x14478-x13696)&255
+		.ENDC
 cmd_t_table: /* 124bd */
 		.dc.b 3
 		.ascii "TEXT"
@@ -4149,6 +4286,11 @@ cmd_t_table: /* 124bd */
 		.dc.b 5
 		.ascii "TIME$="
 		.dc.b ((407*2)/256),((407*2)&255),(x1454c-x13696)/256,(x1454c-x13696)&255
+		.IFNE GBE
+		.dc.b 8
+		.ascii "TIMESTAMP"
+		.dc.b ((473*2)/256),((473*2)&255),(x14569-x13696)/256,(x14569-x13696)&255
+		.ENDC
 cmd_u_table: /* 12502 */
 		.dc.b 4
 		.ascii "UNTIL"
@@ -4172,6 +4314,41 @@ cmd_v_table: /* 1250c */
 		.dc.b 8
 		.ascii "VSETCOLOR"
 		.dc.b ((419*2)/256),((419*2)&255),(x144b2-x13696)/256,(x144b2-x13696)&255
+		.IFNE GBE
+		.dc.b 7
+		.ascii "VRC_COPY"
+		.dc.b ((470*2)/256),((470*2)&255),(x14ba2-x13696)/256,(x14ba2-x13696)&255
+		.dc.b 5
+		.ascii "VCURVE"
+		.dc.b ((469*2)/256),((469*2)&255),(x14497-x13696)/256,(x14497-x13696)&255
+		.dc.b 3
+		.ascii "VCLS"
+		.dc.b ((481*2)/256),((481*2)&255),(x14b5a-x13696)/256,(x14b5a-x13696)&255
+		.dc.b 3
+		.ascii "VGET"
+		.dc.b ((471*2)/256),((471*2)&255),(x144a0-x13696)/256,(x144a0-x13696)&255
+		.dc.b 3
+		.ascii "VPUT"
+		.dc.b ((492*2)/256),((492*2)&255),(x14771-x13696)/256,(x14771-x13696)&255
+		.dc.b 4
+		.ascii "VSGET"
+		.dc.b ((479*2)/256),((479*2)&255),(x14481-x13696)/256,(x14481-x13696)&255
+		.dc.b 4
+		.ascii "VSPUT"
+		.dc.b ((480*2)/256),((480*2)&255),(x14481-x13696)/256,(x14481-x13696)&255
+		.dc.b 4
+		.ascii "VPLOT"
+		.dc.b ((472*2)/256),((472*2)&255),(x1447e-x13696)/256,(x1447e-x13696)&255
+		.dc.b 4
+		.ascii "VLINE"
+		.dc.b ((475*2)/256),((475*2)&255),(x14478-x13696)/256,(x14478-x13696)&255
+		.dc.b 3
+		.ascii "VBOX"
+		.dc.b ((489*2)/256),((489*2)&255),(x14478-x13696)/256,(x14478-x13696)&255
+		.dc.b 6
+		.ascii "VBITBLT"
+		.dc.b ((490*2)/256),((490*2)&255),(x1447b-x13696)/256,(x1447b-x13696)&255
+		.ENDC
 cmd_w_table: /* 1254a */
 		.dc.b 4
 		.ascii "WHILE"
@@ -4427,6 +4604,7 @@ func_misc_table:
 		.dc.b 1,']','=',0,TOK_RES_68
 		.dc.b 0,')',0,TOK_RPAREN2
 
+/* gbe: 51d51 */
 func_table:
 func_a_table: /* 1297e */
 		.dc.b 2
@@ -4495,6 +4673,68 @@ func_a_table: /* 1297e */
 		.dc.b 10
 		.ascii "APPL_EXIT()"
 		.dc.b TOK_SUBFUNC_208,141
+		.IFNE GBE
+		.dc.b 9
+		.ascii "APPL.FIND("
+		.dc.b TOK_SUBFUNC_210,120
+		.dc.b 12
+		.ascii "APPL_CONTROL("
+		.dc.b TOK_SUBFUNC_209,23
+		.dc.b 11
+		.ascii "APPL_SEARCH("
+		.dc.b TOK_SUBFUNC_209,167
+		.dc.b 12
+		.ascii "APPL_GETINFO("
+		.dc.b TOK_SUBFUNC_209,22
+		.dc.b 11
+		.ascii "APPL_YIELD()"
+		.dc.b TOK_SUBFUNC_209,86
+		.dc.b 5
+		.ascii "ALIGN("
+		.dc.b TOK_SUBFUNC_210,9
+		.dc.b 2
+		.ascii "A~I"
+		.dc.b TOK_SUBFUNC_208,244
+		.dc.b 5
+		.ascii "ALERT("
+		.dc.b TOK_SUBFUNC_209,250
+		.dc.b 7
+		.ascii "AP_SEND("
+		.dc.b TOK_SUBFUNC_209,252
+		.dc.b 8
+		.ascii "AV_INIT()"
+		.dc.b TOK_SUBFUNC_210,93
+		.dc.b 12
+		.ascii "AV_PROTOKOLL("
+		.dc.b TOK_SUBFUNC_210,94
+		.dc.b 10
+		.ascii "AV_SENDKEY("
+		.dc.b TOK_SUBFUNC_210,97
+		.dc.b 12
+		.ascii "AV_STARTPROG("
+		.dc.b TOK_SUBFUNC_210,101
+		.dc.b 14
+		.ascii "AV_ACCWINDOPEN("
+		.dc.b TOK_SUBFUNC_210,102
+		.dc.b 16
+		.ascii "AV_ACCWINDCLOSED("
+		.dc.b TOK_SUBFUNC_210,103
+		.dc.b 14
+		.ascii "AV_PATH_UPDATE("
+		.dc.b TOK_SUBFUNC_210,105
+		.dc.b 12
+		.ascii "AV_WHAT_IZIT("
+		.dc.b TOK_SUBFUNC_210,106
+		.dc.b 8
+		.ascii "AV_EXIT()"
+		.dc.b TOK_SUBFUNC_210,108
+		.dc.b 10
+		.ascii "AV_STARTED("
+		.dc.b TOK_SUBFUNC_210,109
+		.dc.b 8
+		.ascii "AV_XWIND("
+		.dc.b TOK_SUBFUNC_210,110
+		.ENDC
 func_b_table: /* 12a82 */
 		.dc.b 4
 		.ascii "BIN$("
@@ -4532,6 +4772,59 @@ func_b_table: /* 12a82 */
 		.dc.b 4
 		.ascii "BYTE{"
 		.dc.b TOK_SUBFUNC_208,116
+		.IFNE GBE
+		.dc.b 5
+		.ascii "BFIND("
+		.dc.b TOK_SUBFUNC_209,96
+		.dc.b 6
+		.ascii "BINSTR("
+		.dc.b TOK_SUBFUNC_209,95
+		.dc.b 7
+		.ascii "BCONOUT("
+		.dc.b TOK_SUBFUNC_209,152
+		.dc.b 8
+		.ascii "BCONSTAT("
+		.dc.b TOK_SUBFUNC_209,154
+		.dc.b 7
+		.ascii "BCOSTAT("
+		.dc.b TOK_SUBFUNC_209,153
+		.dc.b 6
+		.ascii "BCONIN("
+		.dc.b TOK_SUBFUNC_209,151
+		.dc.b 8
+		.ascii "BUFFOPER("
+		.dc.b TOK_SUBFUNC_209,35
+		.dc.b 7
+		.ascii "BUFFPTR("
+		.dc.b TOK_SUBFUNC_209,40
+		.dc.b 6
+		.ascii "BSWAP&("
+		.dc.b TOK_SUBFUNC_209,99
+		.dc.b 5
+		.ascii "BSWAP("
+		.dc.b TOK_SUBFUNC_209,100
+		.dc.b 6
+		.ascii "BSWAP3("
+		.dc.b TOK_SUBFUNC_210,10
+		.dc.b 8
+		.ascii "BLITMODE("
+		.dc.b TOK_SUBFUNC_209,76
+		.dc.b 7
+		.ascii "BCONMAP("
+		.dc.b TOK_SUBFUNC_209,206
+		.dc.b 6
+		.ascii "BCOUNT("
+		.dc.b TOK_SUBFUNC_209,97
+		.dc.b 8
+		.ascii "BREPLACE("
+		.dc.b TOK_SUBFUNC_209,98
+		.dc.b 9
+		.ascii "BIOSKEYS()"
+		.dc.b TOK_SUBFUNC_209,222
+		.dc.b 9
+		.ascii "BYTE2WORD("
+		.dc.b TOK_SUBFUNC_210,116
+		.ENDC
 func_c_table: /* 12afd */
 		.dc.b 3
 		.ascii "COS("
@@ -4557,6 +4850,11 @@ func_c_table: /* 12afd */
 		.dc.b 3
 		.ascii "CVD("
 		.dc.b 0,107
+		.IFNE GBE
+		.dc.b 7
+		.ascii "CONTERM("
+		.dc.b TOK_SUBFUNC_210,16
+		.ENDC
 		.dc.b 6
 		.ascii "CONTRL("
 		.dc.b TOK_SUBFUNC_208,22
@@ -4584,6 +4882,11 @@ func_c_table: /* 12afd */
 		.dc.b 4
 		.ascii "CHAR{"
 		.dc.b 0,97
+		.IFNE GBE
+		.dc.b 5
+		.ascii "CHAR$("
+		.dc.b 0,169
+		.ENDC
 		.dc.b 4
 		.ascii "CINT("
 		.dc.b TOK_SUBFUNC_208,103
@@ -4593,6 +4896,50 @@ func_c_table: /* 12afd */
 		.dc.b 6
 		.ascii "COMBIN("
 		.dc.b 0,141
+		.IFNE GBE
+		.dc.b 7
+		.ascii "CMDLINE$"
+		.dc.b 0,136
+		.dc.b 8
+		.ascii "CHECKSUM("
+		.dc.b TOK_SUBFUNC_210,34
+		.dc.b 6
+		.ascii "CFREE()"
+		.dc.b TOK_SUBFUNC_210,5
+		.dc.b 7
+		.ascii "CPU020()"
+		.dc.b TOK_SUBFUNC_208,245
+		.dc.b 6
+		.ascii "CCONWS("
+		.dc.b TOK_SUBFUNC_209,101
+		.dc.b 5
+		.ascii "CRC16("
+		.dc.b TOK_SUBFUNC_209,246
+		.dc.b 5
+		.ascii "CRC32("
+		.dc.b TOK_SUBFUNC_209,247
+		.dc.b 8
+		.ascii "CURSCONF("
+		.dc.b TOK_SUBFUNC_209,205
+		.dc.b 9
+		.ascii "CACHECTRL("
+		.dc.b TOK_SUBFUNC_209,77
+		.dc.b 10
+		.ascii "CT60_CACHE("
+		.dc.b TOK_SUBFUNC_209,78
+		.dc.b 17
+		.ascii "CT60_FLUSH_CACHE()"
+		.dc.b TOK_SUBFUNC_209,79
+		.dc.b 26
+		.ascii "CT60_READ_CORE_TEMPERATURE("
+		.dc.b TOK_SUBFUNC_209,80
+		.dc.b 17
+		.ascii "CT60_RW_PARAMETER("
+		.dc.b TOK_SUBFUNC_209,81
+		.dc.b 12
+		.ascii "CT60_VMALLOC("
+		.dc.b TOK_SUBFUNC_209,82
+		.ENDC
 func_d_table: /* 12bc4 */
 		.dc.b 2
 		.ascii "DIV"
@@ -4609,6 +4956,11 @@ func_d_table: /* 12bc4 */
 		.dc.b 4
 		.ascii "DIM?("
 		.dc.b TOK_SUBFUNC_208,81
+		.IFNE GBE
+		.dc.b 5
+		.ascii "DATE$("
+		.dc.b 0,164
+		.ENDC
 		.dc.b 4
 		.ascii "DATE$"
 		.dc.b 0,126
@@ -4627,6 +4979,53 @@ func_d_table: /* 12bc4 */
 		.dc.b 4
 		.ascii "DRAW("
 		.dc.b 0,134
+		.IFNE GBE
+		.dc.b 7
+		.ascii "DCREATE("
+		.dc.b TOK_SUBFUNC_209,103
+		.dc.b 7
+		.ascii "DDELETE("
+		.dc.b TOK_SUBFUNC_209,104
+		.dc.b 8
+		.ascii "DSETPATH("
+		.dc.b TOK_SUBFUNC_209,108
+		.dc.b 7
+		.ascii "DOSOUND("
+		.dc.b TOK_SUBFUNC_209,8
+		.dc.b 10
+		.ascii "DEVCONNECT("
+		.dc.b TOK_SUBFUNC_209,38
+		.dc.b 11
+		.ascii "DSPTRISTATE("
+		.dc.b TOK_SUBFUNC_209,36
+		.dc.b 8
+		.ascii "DGETDRV()"
+		.dc.b TOK_SUBFUNC_209,11
+		.dc.b 7
+		.ascii "DSETDRV("
+		.dc.b TOK_SUBFUNC_209,102
+		.dc.b 9
+		.ascii "DPATHCONF("
+		.dc.b TOK_SUBFUNC_209,114
+		.dc.b 7
+		.ascii "DRVMAP()"
+		.dc.b TOK_SUBFUNC_209,112
+		.dc.b 7
+		.ascii "DMAREAD("
+		.dc.b TOK_SUBFUNC_209,218
+		.dc.b 8
+		.ascii "DMAWRITE("
+		.dc.b TOK_SUBFUNC_209,219
+		.dc.b 6
+		.ascii "D_FREE("
+		.dc.b TOK_SUBFUNC_209,116
+		.dc.b 8
+		.ascii "DGETPATH("
+		.dc.b TOK_SUBFUNC_209,107
+		.dc.b 2
+		.ascii "DTA"
+		.dc.b TOK_SUBFUNC_209,56
+		.ENDC
 func_e_table: /* 12c33 */
 		.dc.b 4
 		.ascii "EOF(#"
@@ -4682,6 +5081,38 @@ func_e_table: /* 12c33 */
 		.dc.b 11
 		.ascii "EVNT_DCLICK("
 		.dc.b TOK_SUBFUNC_208,142
+		.IFNE GBE
+		.dc.b 2
+		.ascii "ERL"
+		.dc.b TOK_SUBFUNC_210,2
+		.dc.b 6
+		.ascii "ENVIRON"
+		.dc.b TOK_SUBFUNC_210,121
+		.dc.b 10
+		.ascii "EGETSHIFT()"
+		.dc.b TOK_SUBFUNC_209,238
+		.dc.b 9
+		.ascii "ESETSHIFT("
+		.dc.b TOK_SUBFUNC_209,239
+		.dc.b 8
+		.ascii "ESETBANK("
+		.dc.b TOK_SUBFUNC_209,240
+		.dc.b 9
+		.ascii "ESETCOLOR("
+		.dc.b TOK_SUBFUNC_209,241
+		.dc.b 8
+		.ascii "ESETGRAY("
+		.dc.b TOK_SUBFUNC_209,242
+		.dc.b 9
+		.ascii "ESETSMEAR("
+		.dc.b TOK_SUBFUNC_209,243
+		.dc.b 11
+		.ascii "EGETPALETTE("
+		.dc.b TOK_SUBFUNC_209,244
+		.dc.b 11
+		.ascii "ESETPALETTE("
+		.dc.b TOK_SUBFUNC_209,245
+		.ENDC
 func_f_table: /* 12d0e */
 		.dc.b 4
 		.ascii "FRAC("
@@ -4743,6 +5174,215 @@ func_f_table: /* 12d0e */
 		.dc.b 4
 		.ascii "FACT("
 		.dc.b 0,140
+		.IFNE GBE
+		.dc.b 7
+		.ascii "FPU882()"
+		.dc.b TOK_SUBFUNC_208,246
+		.dc.b 7
+		.ascii "FRENAME("
+		.dc.b TOK_SUBFUNC_209,111
+		.dc.b 7
+		.ascii "FDELETE("
+		.dc.b TOK_SUBFUNC_209,49
+		.dc.b 7
+		.ascii "FCREATE("
+		.dc.b TOK_SUBFUNC_209,47
+		.dc.b 6
+		.ascii "FCLOSE("
+		.dc.b TOK_SUBFUNC_209,44
+		.dc.b 6
+		.ascii "FWRITE("
+		.dc.b TOK_SUBFUNC_209,46
+		.dc.b 5
+		.ascii "FOPEN("
+		.dc.b TOK_SUBFUNC_209,43
+		.dc.b 5
+		.ascii "FREAD("
+		.dc.b TOK_SUBFUNC_209,45
+		.dc.b 5
+		.ascii "FSEEK("
+		.dc.b TOK_SUBFUNC_209,48
+		.dc.b 10
+		.ascii "FORM_POPUP("
+		.dc.b TOK_SUBFUNC_209,160
+		.dc.b 12
+		.ascii "FSEL_EXINPUT("
+		.dc.b TOK_SUBFUNC_209,25
+		.dc.b 7
+		.ascii "FINSTAT("
+		.dc.b TOK_SUBFUNC_209,175
+		.dc.b 5
+		.ascii "FCNTL("
+		.dc.b TOK_SUBFUNC_209,177
+		.dc.b 7
+		.ascii "FSELECT("
+		.dc.b TOK_SUBFUNC_209,178
+		.dc.b 8
+		.ascii "FGETCHAR("
+		.dc.b TOK_SUBFUNC_209,83
+		.dc.b 8
+		.ascii "FPUTCHAR("
+		.dc.b TOK_SUBFUNC_209,84
+		.dc.b 7
+		.ascii "FDATIME("
+		.dc.b TOK_SUBFUNC_209,113
+		.dc.b 8
+		.ascii "FOUTSTAT("
+		.dc.b TOK_SUBFUNC_209,176
+		.dc.b 7
+		.ascii "FATTRIB("
+		.dc.b TOK_SUBFUNC_209,115
+		.dc.b 4
+		.ascii "FDUP("
+		.dc.b TOK_SUBFUNC_209,171
+		.dc.b 6
+		.ascii "FFORCE("
+		.dc.b TOK_SUBFUNC_209,172
+		.dc.b 6
+		.ascii "FCHMOD("
+		.dc.b TOK_SUBFUNC_209,254
+		.dc.b 6
+		.ascii "FLOPRD("
+		.dc.b TOK_SUBFUNC_209,213
+		.dc.b 6
+		.ascii "FLOPWR("
+		.dc.b TOK_SUBFUNC_209,214
+		.dc.b 7
+		.ascii "FLOPFMT("
+		.dc.b TOK_SUBFUNC_209,215
+		.dc.b 7
+		.ascii "FLOPVER("
+		.dc.b TOK_SUBFUNC_209,216
+		.dc.b 8
+		.ascii "FLOPRATE("
+		.dc.b TOK_SUBFUNC_209,217
+		.dc.b 5
+		.ascii "FLOCK("
+		.dc.b TOK_SUBFUNC_209,173
+		.dc.b 5
+		.ascii "F_INP("
+		.dc.b TOK_SUBFUNC_209,63
+		.dc.b 6
+		.ascii "F_INP&("
+		.dc.b TOK_SUBFUNC_209,64
+		.dc.b 6
+		.ascii "F_INP%("
+		.dc.b TOK_SUBFUNC_209,65
+		.dc.b 5
+		.ascii "F_OUT("
+		.dc.b TOK_SUBFUNC_209,60
+		.dc.b 6
+		.ascii "F_OUT&("
+		.dc.b TOK_SUBFUNC_209,61
+		.dc.b 6
+		.ascii "F_OUT%("
+		.dc.b TOK_SUBFUNC_209,62
+		.dc.b 6
+		.ascii "F_BGET("
+		.dc.b TOK_SUBFUNC_209,51
+		.dc.b 6
+		.ascii "F_BPUT("
+		.dc.b TOK_SUBFUNC_209,52
+		.dc.b 6
+		.ascii "F_OPEN("
+		.dc.b TOK_SUBFUNC_209,59
+		.dc.b 12
+		.ascii "F_LINE_INPUT("
+		.dc.b TOK_SUBFUNC_209,68
+		.dc.b 13
+		.ascii "F_LINE_OUTPUT("
+		.dc.b TOK_SUBFUNC_209,67
+		.dc.b 7
+		.ascii "F_INPUT("
+		.dc.b TOK_SUBFUNC_209,90
+		.dc.b 8
+		.ascii "F_OUTPUT("
+		.dc.b TOK_SUBFUNC_209,89
+		.dc.b 7
+		.ascii "F_PREAD("
+		.dc.b TOK_SUBFUNC_209,92
+		.dc.b 8
+		.ascii "F_PWRITE("
+		.dc.b TOK_SUBFUNC_209,91
+		.dc.b 5
+		.ascii "F_LOF("
+		.dc.b TOK_SUBFUNC_209,55
+		.dc.b 5
+		.ascii "F_LOC("
+		.dc.b TOK_SUBFUNC_209,54
+		.dc.b 5
+		.ascii "F_EOF("
+		.dc.b TOK_SUBFUNC_209,53
+		.dc.b 7
+		.ascii "F_BLOAD("
+		.dc.b TOK_SUBFUNC_209,69
+		.dc.b 7
+		.ascii "F_BSAVE("
+		.dc.b TOK_SUBFUNC_209,70
+		.dc.b 6
+		.ascii "F_SEEK("
+		.dc.b TOK_SUBFUNC_209,71
+		.dc.b 9
+		.ascii "F_RELSEEK("
+		.dc.b TOK_SUBFUNC_209,72
+		.dc.b 6
+		.ascii "F_LOAD("
+		.dc.b TOK_SUBFUNC_210,18
+		.dc.b 7
+		.ascii "F_CLOSE("
+		.dc.b TOK_SUBFUNC_210,119
+		.dc.b 7
+		.ascii "FSOCKET("
+		.dc.b TOK_SUBFUNC_210,35
+		.dc.b 11
+		.ascii "FSOCKETPAIR("
+		.dc.b TOK_SUBFUNC_210,36
+		.dc.b 7
+		.ascii "FACCEPT("
+		.dc.b TOK_SUBFUNC_210,37
+		.dc.b 8
+		.ascii "FCONNECT("
+		.dc.b TOK_SUBFUNC_210,38
+		.dc.b 5
+		.ascii "FBIND("
+		.dc.b TOK_SUBFUNC_210,39
+		.dc.b 7
+		.ascii "FLISTEN("
+		.dc.b TOK_SUBFUNC_210,40
+		.dc.b 8
+		.ascii "FRECVMSG("
+		.dc.b TOK_SUBFUNC_210,41
+		.dc.b 8
+		.ascii "FSENDMSG("
+		.dc.b TOK_SUBFUNC_210,42
+		.dc.b 9
+		.ascii "FRECVFROM("
+		.dc.b TOK_SUBFUNC_210,43
+		.dc.b 7
+		.ascii "FSENDTO("
+		.dc.b TOK_SUBFUNC_210,44
+		.dc.b 11
+		.ascii "FSETSOCKOPT("
+		.dc.b TOK_SUBFUNC_210,45
+		.dc.b 11
+		.ascii "FGETSOCKOPT("
+		.dc.b TOK_SUBFUNC_210,46
+		.dc.b 12
+		.ascii "FGETPEERNAME("
+		.dc.b TOK_SUBFUNC_210,47
+		.dc.b 12
+		.ascii "FGETSOCKNAME("
+		.dc.b TOK_SUBFUNC_210,48
+		.dc.b 9
+		.ascii "FSHUTDOWN("
+		.dc.b TOK_SUBFUNC_210,49
+		.dc.b 10
+		.ascii "FONT_INIT()"
+		.dc.b TOK_SUBFUNC_210,89
+		.dc.b 11
+		.ascii "FONT_SELECT("
+		.dc.b TOK_SUBFUNC_210,90
+		.ENDC
 func_g_table: /* 12e0d */
 		.dc.b 4
 		.ascii "GOSUB"
@@ -4774,6 +5414,14 @@ func_g_table: /* 12e0d */
 		.dc.b 6
 		.ascii "GINTOUT"
 		.dc.b TOK_SUBFUNC_208,29
+		.IFNE GBE
+		.dc.b 6
+		.ascii "GLOBAL("
+		.dc.b TOK_SUBFUNC_208,250
+		.dc.b 5
+		.ascii "GLOBAL"
+		.dc.b TOK_SUBFUNC_208,251
+		.ENDC
 		.dc.b 14
 		.ascii "GRAF_RUBBERBOX("
 		.dc.b TOK_SUBFUNC_208,162
@@ -4810,6 +5458,44 @@ func_g_table: /* 12e0d */
 		.dc.b 7
 		.ascii "GETSIZE("
 		.dc.b TOK_SUBFUNC_208,239
+		.IFNE GBE
+		.dc.b 9
+		.ascii "GETCOOKIE("
+		.dc.b TOK_SUBFUNC_208,252
+		.dc.b 6
+		.ascii "GMOUSEK"
+		.dc.b TOK_SUBFUNC_208,247
+		.dc.b 6
+		.ascii "GMOUSEX"
+		.dc.b TOK_SUBFUNC_208,248
+		.dc.b 6
+		.ascii "GMOUSEY"
+		.dc.b TOK_SUBFUNC_208,249
+		.dc.b 16
+		.ascii "GRAF_MULTIRUBBER("
+		.dc.b TOK_SUBFUNC_209,168
+		.dc.b 4
+		.ascii "GPIO("
+		.dc.b TOK_SUBFUNC_209,37
+		.dc.b 7
+		.ascii "GETREZ()"
+		.dc.b TOK_SUBFUNC_209,118
+		.dc.b 8
+		.ascii "GETTIME()"
+		.dc.b TOK_SUBFUNC_209,109
+		.dc.b 6
+		.ascii "GETBPB("
+		.dc.b TOK_SUBFUNC_209,158
+		.dc.b 8
+		.ascii "GIACCESS("
+		.dc.b TOK_SUBFUNC_209,212
+		.dc.b 7
+		.ascii "GSTICK()"
+		.dc.b TOK_SUBFUNC_209,74
+		.dc.b 7
+		.ascii "GSTRIG()"
+		.dc.b TOK_SUBFUNC_209,75
+		.ENDC
 func_h_table: /* 12f4a */
 		.dc.b 4
 		.ascii "HEX$("
@@ -4817,6 +5503,11 @@ func_h_table: /* 12f4a */
 		.dc.b 4
 		.ascii "HIMEM"
 		.dc.b TOK_SUBFUNC_208,30
+		.IFNE GBE
+		.dc.b 8
+		.ascii "HARDWARE?"
+		.dc.b TOK_SUBFUNC_208,254
+		.ENDC
 func_i_table: /* 12f5e */
 		.dc.b 1
 		.ascii "IF"
@@ -4887,14 +5578,49 @@ func_i_table: /* 12f5e */
 		.dc.b 6
 		.ascii "INPMID$"
 		.dc.b 0,54
+		.IFNE GBE
+		.dc.b 5
+		.ascii "IOREC("
+		.dc.b TOK_SUBFUNC_209,209
+		.dc.b 6
+		.ascii "IKBDWS("
+		.dc.b TOK_SUBFUNC_209,210
+		.ENDC
 func_j_table: /* 13048 */
+		.IFNE GBE
+		.dc.b 6
+		.ascii "JOYPAD("
+		.dc.b TOK_SUBFUNC_209,93
+		.dc.b 7
+		.ascii "JDISINT("
+		.dc.b TOK_SUBFUNC_209,224
+		.dc.b 8
+		.ascii "JENABINT("
+		.dc.b TOK_SUBFUNC_209,225
+		.ENDC
 func_k_table: /* 13048 */
+		.IFNE GBE
+		.dc.b 6
+		.ascii "KEYTBL("
+		.dc.b TOK_SUBFUNC_209,26
+		.dc.b 7
+		.ascii "KBSHIFT("
+		.dc.b TOK_SUBFUNC_209,10
+		.ENDC
 		.dc.b 2
 		.ascii "KEY"
 		.dc.b 0,170
 		.dc.b 3
 		.ascii "KILL"
 		.dc.b 0,176
+		.IFNE GBE
+		.dc.b 6
+		.ascii "KBRATE("
+		.dc.b TOK_SUBFUNC_209,203
+		.dc.b 9
+		.ascii "KBDVBASE()"
+		.dc.b TOK_SUBFUNC_209,207
+		.ENDC
 func_l_table: /* 13059 */
 		.dc.b 5
 		.ascii "LEFT$("
@@ -4941,6 +5667,44 @@ func_l_table: /* 13059 */
 		.dc.b 4
 		.ascii "LPENY"
 		.dc.b TOK_SUBFUNC_208,232
+		.IFNE GBE
+		.dc.b 6
+		.ascii "LCASE$("
+		.dc.b 0,146
+		.dc.b 6
+		.ascii "LTRIM$("
+		.dc.b 0,144
+		.dc.b 6
+		.ascii "LOWER$("
+		.dc.b 0,148
+		.dc.b 8
+		.ascii "LOCKSND()"
+		.dc.b TOK_SUBFUNC_209,27
+		.dc.b 8
+		.ascii "LOGBASE()"
+		.dc.b TOK_SUBFUNC_209,119
+		.dc.b 6
+		.ascii "LRWABS("
+		.dc.b TOK_SUBFUNC_209,251
+		.dc.b 9
+		.ascii "LDG_INIT()"
+		.dc.b TOK_SUBFUNC_210,50
+		.dc.b 8
+		.ascii "LDG_OPEN("
+		.dc.b TOK_SUBFUNC_210,51
+		.dc.b 8
+		.ascii "LDG_FIND("
+		.dc.b TOK_SUBFUNC_210,52
+		.dc.b 9
+		.ascii "LDG_CLOSE("
+		.dc.b TOK_SUBFUNC_210,53
+		.dc.b 11
+		.ascii "LDG_LIBPATH("
+		.dc.b TOK_SUBFUNC_210,54
+		.dc.b 10
+		.ascii "LDG_ERROR()"
+		.dc.b TOK_SUBFUNC_210,55
+		.ENDC
 func_m_table: /* 130e9 */
 		.dc.b 3
 		.ascii "MAX("
@@ -4990,6 +5754,23 @@ func_m_table: /* 130e9 */
 		.dc.b 13
 		.ascii "MENU_REGISTER("
 		.dc.b TOK_SUBFUNC_208,148
+		.IFNE GBE
+		.dc.b 9
+		.ascii "MENU.TEXT("
+		.dc.b TOK_SUBFUNC_210,6
+		.dc.b 10
+		.ascii "MENU_POPUP("
+		.dc.b TOK_SUBFUNC_209,163
+		.dc.b 11
+		.ascii "MENU_ISTART("
+		.dc.b TOK_SUBFUNC_209,162
+		.dc.b 11
+		.ascii "MENU_ATTACH("
+		.dc.b TOK_SUBFUNC_209,161
+		.dc.b 13
+		.ascii "MENU_SETTINGS("
+		.dc.b TOK_SUBFUNC_209,164
+		.ENDC
 		.dc.b 5
 		.ascii "MOUSEK"
 		.dc.b TOK_SUBFUNC_208,60
@@ -5020,6 +5801,35 @@ func_m_table: /* 130e9 */
 		.dc.b 7
 		.ascii "MSHRINK("
 		.dc.b TOK_SUBFUNC_208,186
+		.IFNE GBE
+		.dc.b 7
+		.ascii "M_ALLOC("
+		.dc.b TOK_SUBFUNC_209,66
+		.dc.b 7
+		.ascii "MXALLOC("
+		.dc.b TOK_SUBFUNC_209,9
+		.dc.b 7
+		.ascii "MEDIACH("
+		.dc.b TOK_SUBFUNC_209,157
+		.dc.b 6
+		.ascii "MIDIWS("
+		.dc.b TOK_SUBFUNC_209,211
+		.dc.b 7
+		.ascii "MIRROR|("
+		.dc.b TOK_SUBFUNC_210,11
+		.dc.b 7
+		.ascii "MIRROR&("
+		.dc.b TOK_SUBFUNC_210,12
+		.dc.b 6
+		.ascii "MIRROR("
+		.dc.b TOK_SUBFUNC_210,13
+		.dc.b 7
+		.ascii "MIRROR3("
+		.dc.b TOK_SUBFUNC_210,14
+		.dc.b 7
+		.ascii "MIRROR$("
+		.dc.b 0,160
+		.ENDC
 func_n_table: /* 1321a */
 		.dc.b 3
 		.ascii "NEXT"
@@ -5027,6 +5837,17 @@ func_n_table: /* 1321a */
 		.dc.b 2
 		.ascii "NOT"
 		.dc.b 0,31
+		.IFNE GBE
+		.dc.b 3
+		.ascii "NULL"
+		.dc.b 0,183
+		.dc.b 9
+		.ascii "NVMACCESS("
+		.dc.b TOK_SUBFUNC_209,208
+		.dc.b 10
+		.ascii "NYBLE2BYTE("
+		.dc.b TOK_SUBFUNC_210,118
+		.ENDC
 func_o_table: /* 1322b */
 		.dc.b 3
 		.ascii "OBOX"
@@ -5037,6 +5858,11 @@ func_o_table: /* 1322b */
 		.dc.b 3
 		.ascii "ODD("
 		.dc.b TOK_SUBFUNC_208,102
+		.IFNE GBE
+		.dc.b 8
+		.ascii "OFFGIBIT("
+		.dc.b TOK_SUBFUNC_209,221
+		.ENDC
 		.dc.b 5
 		.ascii "OFFSET"
 		.dc.b 0,109
@@ -5076,6 +5902,14 @@ func_o_table: /* 1322b */
 		.dc.b 11
 		.ascii "OBJC_CHANGE("
 		.dc.b TOK_SUBFUNC_208,156
+		.IFNE GBE
+		.dc.b 10
+		.ascii "OBJC_XFIND("
+		.dc.b TOK_SUBFUNC_209,165
+		.dc.b 11
+		.ascii "OBJC_SYSVAR("
+		.dc.b TOK_SUBFUNC_209,24
+		.ENDC
 		.dc.b 6
 		.ascii "OB_ADR("
 		.dc.b TOK_SUBFUNC_208,191
@@ -5112,6 +5946,59 @@ func_o_table: /* 1322b */
 		.dc.b 4
 		.ascii "OB_H("
 		.dc.b TOK_SUBFUNC_208,202
+		.IFNE GBE
+		.dc.b 8
+		.ascii "OB.STATE("
+		.dc.b TOK_SUBFUNC_210,19
+		.dc.b 8
+		.ascii "OB.FLAGS("
+		.dc.b TOK_SUBFUNC_210,20
+		.dc.b 11
+		.ascii "OB_SELECTED("
+		.dc.b TOK_SUBFUNC_210,21
+		.dc.b 10
+		.ascii "OB_CROSSED("
+		.dc.b TOK_SUBFUNC_210,22
+		.dc.b 10
+		.ascii "OB_CHECKED("
+		.dc.b TOK_SUBFUNC_210,23
+		.dc.b 11
+		.ascii "OB_DISABLED("
+		.dc.b TOK_SUBFUNC_210,24
+		.dc.b 13
+		.ascii "OB_SELECTABLE("
+		.dc.b TOK_SUBFUNC_210,25
+		.dc.b 10
+		.ascii "OB_DEFAULT("
+		.dc.b TOK_SUBFUNC_210,26
+		.dc.b 7
+		.ascii "OB_EXIT("
+		.dc.b TOK_SUBFUNC_210,27
+		.dc.b 11
+		.ascii "OB_EDITABLE("
+		.dc.b TOK_SUBFUNC_210,28
+		.dc.b 10
+		.ascii "OB_RBUTTON("
+		.dc.b TOK_SUBFUNC_210,29
+		.dc.b 9
+		.ascii "OB_LASTOB("
+		.dc.b TOK_SUBFUNC_210,30
+		.dc.b 12
+		.ascii "OB_TOUCHEXIT("
+		.dc.b TOK_SUBFUNC_210,31
+		.dc.b 11
+		.ascii "OB_HIDETREE("
+		.dc.b TOK_SUBFUNC_210,32
+		.dc.b 10
+		.ascii "OB.RBUTTON("
+		.dc.b TOK_SUBFUNC_210,33
+		.dc.b 8
+		.ascii "OB_TEXT$("
+		.dc.b 0,149
+		.dc.b 7
+		.ascii "ONGIBIT("
+		.dc.b TOK_SUBFUNC_209,220
+		.ENDC
 func_p_table: /* 13382 */
 		.dc.b 4
 		.ascii "PEEK("
@@ -5152,6 +6039,35 @@ func_p_table: /* 13382 */
 		.dc.b 4
 		.ascii "PADT("
 		.dc.b TOK_SUBFUNC_208,230
+		.IFNE GBE
+		.dc.b 7
+		.ascii "PSYSCTL("
+		.dc.b TOK_SUBFUNC_209,180
+		.dc.b 7
+		.ascii "PDOMAIN("
+		.dc.b TOK_SUBFUNC_209,17
+		.dc.b 5
+		.ascii "PEXEC("
+		.dc.b TOK_SUBFUNC_209,16
+		.dc.b 9
+		.ascii "PHYSBASE()"
+		.dc.b TOK_SUBFUNC_209,120
+		.dc.b 7
+		.ascii "PROTOBT("
+		.dc.b TOK_SUBFUNC_209,226
+		.dc.b 6
+		.ascii "PRTBLK("
+		.dc.b TOK_SUBFUNC_209,228
+		.dc.b 8
+		.ascii "PTERMRES("
+		.dc.b TOK_SUBFUNC_209,255
+		.dc.b 3
+		.ascii "PCR?"
+		.dc.b TOK_SUBFUNC_210,15
+		.dc.b 3
+		.ascii "PCR("
+		.dc.b TOK_SUBFUNC_210,17
+		.ENDC
 func_q_table: /* 13405 */
 func_r_table: /* 13405 */
 		.dc.b 6
@@ -5163,6 +6079,11 @@ func_r_table: /* 13405 */
 		.dc.b 6
 		.ascii "RIGHT$("
 		.dc.b 0,60
+		.IFNE GBE
+		.dc.b 6
+		.ascii "RTRIM$("
+		.dc.b 0,145
+		.ENDC
 		.dc.b 3
 		.ascii "RND("
 		.dc.b 0,84
@@ -5202,6 +6123,11 @@ func_r_table: /* 13405 */
 		.dc.b 10
 		.ascii "RSRC_OBFIX("
 		.dc.b TOK_SUBFUNC_208,128
+		.IFNE GBE
+		.dc.b 10
+		.ascii "RSRC_RCFIX("
+		.dc.b TOK_SUBFUNC_209,166
+		.ENDC
 		.dc.b 3
 		.ascii "RAD("
 		.dc.b 0,104
@@ -5214,6 +6140,17 @@ func_r_table: /* 13405 */
 		.dc.b 12
 		.ascii "RC_INTERSECT("
 		.dc.b TOK_SUBFUNC_208,217
+		.IFNE GBE
+		.dc.b 6
+		.ascii "RSCONF("
+		.dc.b TOK_SUBFUNC_209,204
+		.dc.b 8
+		.ascii "RANDOM%()"
+		.dc.b TOK_SUBFUNC_209,117
+		.dc.b 5
+		.ascii "RWABS("
+		.dc.b TOK_SUBFUNC_209,159
+		.ENDC
 func_s_table: /* 134f3 */
 		.dc.b 3
 		.ascii "SGN("
@@ -5311,6 +6248,134 @@ func_s_table: /* 134f3 */
 		.dc.b 5
 		.ascii "SCALE("
 		.dc.b TOK_SUBFUNC_208,235
+		.IFNE GBE
+		.dc.b 10
+		.ascii "SHEL.WRITE("
+		.dc.b TOK_SUBFUNC_210,7
+		.dc.b 1
+		.ascii "S:"
+		.dc.b TOK_SUBFUNC_210,1
+		.dc.b 6
+		.ascii "SUBPTR("
+		.dc.b TOK_SUBFUNC_210,0
+		.dc.b 7
+		.ascii "SSYSTEM("
+		.dc.b TOK_SUBFUNC_209,13
+		.dc.b 7
+		.ascii "SYSCONF("
+		.dc.b TOK_SUBFUNC_209,12
+		.dc.b 9
+		.ascii "SETBUFFER("
+		.dc.b TOK_SUBFUNC_209,30
+		.dc.b 7
+		.ascii "SETMODE("
+		.dc.b TOK_SUBFUNC_209,31
+		.dc.b 12
+		.ascii "SETMONTRACKS("
+		.dc.b TOK_SUBFUNC_209,33
+		.dc.b 9
+		.ascii "SETTRACKS("
+		.dc.b TOK_SUBFUNC_209,32
+		.dc.b 9
+		.ascii "SNDSTATUS("
+		.dc.b TOK_SUBFUNC_209,39
+		.dc.b 8
+		.ascii "SOUNDCMD("
+		.dc.b TOK_SUBFUNC_209,29
+		.dc.b 12
+		.ascii "SETINTERRUPT("
+		.dc.b TOK_SUBFUNC_209,34
+		.dc.b 5
+		.ascii "SUPER("
+		.dc.b TOK_SUBFUNC_209,50
+		.dc.b 7
+		.ascii "SUPEXEC("
+		.dc.b TOK_SUBFUNC_209,202
+		.dc.b 6
+		.ascii "SETEXC("
+		.dc.b TOK_SUBFUNC_209,155
+		.dc.b 9
+		.ascii "SETSCREEN("
+		.dc.b TOK_SUBFUNC_209,200
+		.dc.b 10
+		.ascii "SETPALETTE("
+		.dc.b TOK_SUBFUNC_209,201
+		.dc.b 7
+		.ascii "SYIELD()"
+		.dc.b TOK_SUBFUNC_209,174
+		.dc.b 8
+		.ascii "SHUTDOWN("
+		.dc.b TOK_SUBFUNC_209,179
+		.dc.b 7
+		.ascii "SETTIME("
+		.dc.b TOK_SUBFUNC_209,110
+		.dc.b 6
+		.ascii "SETPRT("
+		.dc.b TOK_SUBFUNC_209,223
+		.dc.b 8
+		.ascii "SETCOLOR("
+		.dc.b TOK_SUBFUNC_209,199
+		.dc.b 3
+		.ascii "SND?"
+		.dc.b TOK_SUBFUNC_209,58
+		.dc.b 6
+		.ascii "SALERT("
+		.dc.b TOK_SUBFUNC_209,253
+		.dc.b 6
+		.ascii "SYSTAB?"
+		.dc.b TOK_SUBFUNC_210,8
+		.dc.b 6
+		.ascii "SYSTAB("
+		.dc.b TOK_SUBFUNC_210,3
+		.dc.b 5
+		.ascii "SYSTAB"
+		.dc.b TOK_SUBFUNC_210,4
+		.dc.b 9
+		.ascii "STIK_INIT("
+		.dc.b TOK_SUBFUNC_210,56
+		.dc.b 11
+		.ascii "STIK_KRFREE("
+		.dc.b TOK_SUBFUNC_210,58
+		.dc.b 14
+		.ascii "STIK_KRGETFREE("
+		.dc.b TOK_SUBFUNC_210,59
+		.dc.b 17
+		.ascii "STIK_GET_ERR_TEXT("
+		.dc.b TOK_SUBFUNC_210,61
+		.dc.b 12
+		.ascii "STIK_GETVSTR("
+		.dc.b TOK_SUBFUNC_210,62
+		.dc.b 13
+		.ascii "STIK_TCP_OPEN("
+		.dc.b TOK_SUBFUNC_210,64
+		.dc.b 14
+		.ascii "STIK_TCP_CLOSE("
+		.dc.b TOK_SUBFUNC_210,65
+		.dc.b 13
+		.ascii "STIK_TCP_SEND("
+		.dc.b TOK_SUBFUNC_210,66
+		.dc.b 19
+		.ascii "STIK_TCP_WAIT_STATE("
+		.dc.b TOK_SUBFUNC_210,67
+		.dc.b 11
+		.ascii "STIK_CNKICK("
+		.dc.b TOK_SUBFUNC_210,72
+		.dc.b 17
+		.ascii "STIK_CNBYTE_COUNT("
+		.dc.b TOK_SUBFUNC_210,73
+		.dc.b 15
+		.ascii "STIK_CNGET_CHAR("
+		.dc.b TOK_SUBFUNC_210,74
+		.dc.b 16
+		.ascii "STIK_CNGET_BLOCK("
+		.dc.b TOK_SUBFUNC_210,76
+		.dc.b 12
+		.ascii "STIK_RESOLVE("
+		.dc.b TOK_SUBFUNC_210,78
+		.dc.b 14
+		.ascii "STIK_CNGETINFO("
+		.dc.b TOK_SUBFUNC_210,83
+		.ENDC
 func_t_table: /* 1365c */
 		.dc.b 3
 		.ascii "TAB("
@@ -5321,12 +6386,22 @@ func_t_table: /* 1365c */
 		.dc.b 3
 		.ascii "THEN"
 		.dc.b 0,74
+		.IFNE GBE
+		.dc.b 5
+		.ascii "TIME$("
+		.dc.b 0,165
+		.ENDC
 		.dc.b 4
 		.ascii "TIME$"
 		.dc.b 0,56
 		.dc.b 4
 		.ascii "TIMER"
 		.dc.b TOK_SUBFUNC_208,62
+		.IFNE GBE
+		.dc.b 10
+		.ascii "TIMESTAMP$("
+		.dc.b 0,166
+		.ENDC
 		.dc.b 1
 		.ascii "TO"
 		.dc.b 0,71
@@ -5348,6 +6423,23 @@ func_t_table: /* 1365c */
 		.dc.b 2
 		.ascii "TT?"
 		.dc.b TOK_SUBFUNC_208,234
+		.IFNE GBE
+		.dc.b 9
+		.ascii "TGETDATE()"
+		.dc.b TOK_SUBFUNC_209,19
+		.dc.b 9
+		.ascii "TGETTIME()"
+		.dc.b TOK_SUBFUNC_209,20
+		.dc.b 8
+		.ascii "TSETDATE("
+		.dc.b TOK_SUBFUNC_209,105
+		.dc.b 8
+		.ascii "TSETTIME("
+		.dc.b TOK_SUBFUNC_209,106
+		.dc.b 8
+		.ascii "TICKCAL()"
+		.dc.b TOK_SUBFUNC_209,156
+		.ENDC
 func_u_table: /* 136ce */
 		.dc.b 6
 		.ascii "UPPER$("
@@ -5355,6 +6447,17 @@ func_u_table: /* 136ce */
 		.dc.b 4
 		.ascii "USING"
 		.dc.b 0,163
+		.IFNE GBE
+		.dc.b 6
+		.ascii "UCASE$("
+		.dc.b 0,147
+		.dc.b 10
+		.ascii "UNLOCKSND()"
+		.dc.b TOK_SUBFUNC_209,28
+		.dc.b 6
+		.ascii "UNPACK("
+		.dc.b TOK_SUBFUNC_209,94
+		.ENDC
 func_v_table: /* 136e4 */
 		.dc.b 3
 		.ascii "VAL("
@@ -5410,6 +6513,230 @@ func_v_table: /* 136e4 */
 		.dc.b 10
 		.ascii "VQT_EXTENT("
 		.dc.b TOK_SUBFUNC_208,216
+		.IFNE GBE
+		.dc.b 9
+		.ascii "VQ_VGDOS()"
+		.dc.b TOK_SUBFUNC_209,14
+		.dc.b 7
+		.ascii "V_OPNBM("
+		.dc.b TOK_SUBFUNC_209,6
+		.dc.b 8
+		.ascii "VQ_COLOR("
+		.dc.b TOK_SUBFUNC_209,0
+		.dc.b 9
+		.ascii "VST_POINT("
+		.dc.b TOK_SUBFUNC_209,21
+		.dc.b 12
+		.ascii "VGETMONITOR()"
+		.dc.b TOK_SUBFUNC_209,229
+		.dc.b 8
+		.ascii "VGETSIZE("
+		.dc.b TOK_SUBFUNC_209,230
+		.dc.b 8
+		.ascii "VSETMODE("
+		.dc.b TOK_SUBFUNC_209,231
+		.dc.b 10
+		.ascii "VCHECKMODE("
+		.dc.b TOK_SUBFUNC_209,232
+		.dc.b 10
+		.ascii "VSETSCREEN("
+		.dc.b TOK_SUBFUNC_209,233
+		.dc.b 11
+		.ascii "V_GET_PIXEL("
+		.dc.b TOK_SUBFUNC_209,73
+		.dc.b 10
+		.ascii "V_BEZ_QUAL("
+		.dc.b TOK_SUBFUNC_209,135
+		.dc.b 9
+		.ascii "V_HIDE_C()"
+		.dc.b TOK_SUBFUNC_209,88
+		.dc.b 9
+		.ascii "V_SHOW_C()"
+		.dc.b TOK_SUBFUNC_209,87
+		.dc.b 15
+		.ascii "VQF_ATTRIBUTES()"
+		.dc.b TOK_SUBFUNC_209,127
+		.dc.b 15
+		.ascii "VQL_ATTRIBUTES()"
+		.dc.b TOK_SUBFUNC_209,128
+		.dc.b 15
+		.ascii "VQM_ATTRIBUTES()"
+		.dc.b TOK_SUBFUNC_209,129
+		.dc.b 15
+		.ascii "VQT_ATTRIBUTES()"
+		.dc.b TOK_SUBFUNC_209,130
+		.dc.b 12
+		.ascii "VQT_FONTINFO("
+		.dc.b TOK_SUBFUNC_209,42
+		.dc.b 9
+		.ascii "VQT_WIDTH("
+		.dc.b TOK_SUBFUNC_209,41
+		.dc.b 9
+		.ascii "VRO_CPYFM("
+		.dc.b TOK_SUBFUNC_209,4
+		.dc.b 9
+		.ascii "VRT_CPYFM("
+		.dc.b TOK_SUBFUNC_209,5
+		.dc.b 8
+		.ascii "VR_TRNFM("
+		.dc.b TOK_SUBFUNC_209,131
+		.dc.b 8
+		.ascii "VQ_EXTND("
+		.dc.b TOK_SUBFUNC_209,132
+		.dc.b 11
+		.ascii "VQ_SCRNINFO("
+		.dc.b TOK_SUBFUNC_209,133
+		.dc.b 8
+		.ascii "V_CLSBM()"
+		.dc.b TOK_SUBFUNC_209,7
+		.dc.b 8
+		.ascii "VQ_MOUSE("
+		.dc.b TOK_SUBFUNC_209,136
+		.dc.b 13
+		.ascii "VST_ALIGNMENT("
+		.dc.b TOK_SUBFUNC_209,15
+		.dc.b 8
+		.ascii "VS_COLOR("
+		.dc.b TOK_SUBFUNC_208,253
+		.dc.b 5
+		.ascii "V_BEZ("
+		.dc.b TOK_SUBFUNC_209,134
+		.dc.b 7
+		.ascii "VGETRGB("
+		.dc.b TOK_SUBFUNC_209,234
+		.dc.b 7
+		.ascii "VSETRGB("
+		.dc.b TOK_SUBFUNC_209,235
+		.dc.b 8
+		.ascii "VSETMASK("
+		.dc.b TOK_SUBFUNC_209,236
+		.dc.b 8
+		.ascii "VSETSYNC("
+		.dc.b TOK_SUBFUNC_209,237
+		.dc.b 9
+		.ascii "V_CURTEXT("
+		.dc.b TOK_SUBFUNC_209,121
+		.dc.b 9
+		.ascii "VST_COLOR("
+		.dc.b TOK_SUBFUNC_209,122
+		.dc.b 11
+		.ascii "VST_EFFECTS("
+		.dc.b TOK_SUBFUNC_209,123
+		.dc.b 12
+		.ascii "VST_ROTATION("
+		.dc.b TOK_SUBFUNC_209,124
+		.dc.b 10
+		.ascii "VST_HEIGHT("
+		.dc.b TOK_SUBFUNC_209,125
+		.dc.b 8
+		.ascii "VST_FONT("
+		.dc.b TOK_SUBFUNC_209,126
+		.dc.b 8
+		.ascii "VSL_TYPE("
+		.dc.b TOK_SUBFUNC_209,137
+		.dc.b 9
+		.ascii "VSL_WIDTH("
+		.dc.b TOK_SUBFUNC_209,138
+		.dc.b 8
+		.ascii "VSL_ENDS("
+		.dc.b TOK_SUBFUNC_209,139
+		.dc.b 9
+		.ascii "VSL_UDSTY("
+		.dc.b TOK_SUBFUNC_209,140
+		.dc.b 9
+		.ascii "VSL_COLOR("
+		.dc.b TOK_SUBFUNC_209,141
+		.dc.b 9
+		.ascii "VSM_COLOR("
+		.dc.b TOK_SUBFUNC_209,142
+		.dc.b 10
+		.ascii "VSM_HEIGHT("
+		.dc.b TOK_SUBFUNC_209,143
+		.dc.b 8
+		.ascii "VSM_TYPE("
+		.dc.b TOK_SUBFUNC_209,144
+		.dc.b 9
+		.ascii "VSWR_MODE("
+		.dc.b TOK_SUBFUNC_209,145
+		.dc.b 9
+		.ascii "VSF_COLOR("
+		.dc.b TOK_SUBFUNC_209,146
+		.dc.b 12
+		.ascii "VSF_INTERIOR("
+		.dc.b TOK_SUBFUNC_209,147
+		.dc.b 13
+		.ascii "VSF_PERIMETER("
+		.dc.b TOK_SUBFUNC_209,148
+		.dc.b 9
+		.ascii "VSF_STYLE("
+		.dc.b TOK_SUBFUNC_209,149
+		.dc.b 9
+		.ascii "VSF_UDPAT("
+		.dc.b TOK_SUBFUNC_209,150
+		.dc.b 7
+		.ascii "VS_CLIP("
+		.dc.b TOK_SUBFUNC_209,169
+		.dc.b 9
+		.ascii "VSC_FORM()"
+		.dc.b TOK_SUBFUNC_209,170
+		.dc.b 5
+		.ascii "V_BAR("
+		.dc.b TOK_SUBFUNC_209,181
+		.dc.b 6
+		.ascii "V_RBOX("
+		.dc.b TOK_SUBFUNC_209,182
+		.dc.b 7
+		.ascii "V_RFBOX("
+		.dc.b TOK_SUBFUNC_209,183
+		.dc.b 8
+		.ascii "VR_RECFL("
+		.dc.b TOK_SUBFUNC_209,184
+		.dc.b 5
+		.ascii "V_ARC("
+		.dc.b TOK_SUBFUNC_209,185
+		.dc.b 8
+		.ascii "V_CIRCLE("
+		.dc.b TOK_SUBFUNC_209,186
+		.dc.b 8
+		.ascii "V_ELLARC("
+		.dc.b TOK_SUBFUNC_209,187
+		.dc.b 8
+		.ascii "V_ELLPIE("
+		.dc.b TOK_SUBFUNC_209,188
+		.dc.b 9
+		.ascii "V_ELLIPSE("
+		.dc.b TOK_SUBFUNC_209,189
+		.dc.b 10
+		.ascii "V_PIESLICE("
+		.dc.b TOK_SUBFUNC_209,190
+		.dc.b 13
+		.ascii "V_CONTOURFILL("
+		.dc.b TOK_SUBFUNC_209,191
+		.dc.b 7
+		.ascii "V_GTEXT("
+		.dc.b TOK_SUBFUNC_209,192
+		.dc.b 7
+		.ascii "V_PLINE("
+		.dc.b TOK_SUBFUNC_209,193
+		.dc.b 9
+		.ascii "V_PMARKER("
+		.dc.b TOK_SUBFUNC_209,194
+		.dc.b 10
+		.ascii "V_FILLAREA("
+		.dc.b TOK_SUBFUNC_209,195
+		.dc.b 11
+		.ascii "V_JUSTIFIED("
+		.dc.b TOK_SUBFUNC_209,196
+		.dc.b 8
+		.ascii "VQ_KEY_S("
+		.dc.b TOK_SUBFUNC_209,197
+		.dc.b 10
+		.ascii "V_BEZ_FILL("
+		.dc.b TOK_SUBFUNC_209,198
+		.dc.b 8
+		.ascii "VA_START("
+		.dc.b TOK_SUBFUNC_210,115
+		.ENDC
 func_w_table: /* 137ce */
 		.dc.b 1
 		.ascii "W:"
@@ -5465,6 +6792,26 @@ func_w_table: /* 137ce */
 		.dc.b 4
 		.ascii "WORD{"
 		.dc.b TOK_SUBFUNC_208,222
+		.IFNE GBE
+		.dc.b 9
+		.ascii "WIND_NEW()"
+		.dc.b TOK_SUBFUNC_209,85
+		.dc.b 8
+		.ascii "WAKETIME("
+		.dc.b TOK_SUBFUNC_209,227
+		.dc.b 7
+		.ascii "WF_NAME("
+		.dc.b TOK_SUBFUNC_209,248
+		.dc.b 7
+		.ascii "WF_INFO("
+		.dc.b TOK_SUBFUNC_209,249
+		.dc.b 7
+		.ascii "WEEKDAY("
+		.dc.b TOK_SUBFUNC_210,91
+		.dc.b 9
+		.ascii "WORD2LONG("
+		.dc.b TOK_SUBFUNC_210,117
+		.ENDC
 func_x_table: /* 138c0 */
 		.dc.b 5
 		.ascii "XBIOS("
@@ -5477,6 +6824,11 @@ func_x_table: /* 138c0 */
 		.dc.b TOK_SUBFUNC_208,7
 func_y_table:
 func_z_table:
+		.IFNE GBE
+		.dc.b 6
+		.ascii "ZTRIM$("
+		.dc.b 0,150
+		.ENDC
 
 func_other_table:
 		.dc.b 0
@@ -5491,15 +6843,48 @@ func_other_table:
 		.dc.b 4
 		.ascii "_DATA"
 		.dc.b TOK_SUBFUNC_208,227
+		.IFNE GBE
+		.dc.b 6
+		.ascii "_GEMDOS"
+		.dc.b TOK_SUBFUNC_209,18
+		.dc.b 4
+		.ascii "_MINT"
+		.dc.b TOK_SUBFUNC_209,1
+		.dc.b 3
+		.ascii "_AES"
+		.dc.b TOK_SUBFUNC_208,242
+		.dc.b 3
+		.ascii "_CPU"
+		.dc.b TOK_SUBFUNC_209,57
+		.dc.b 3
+		.ascii "_TOS"
+		.dc.b TOK_SUBFUNC_208,243
+		.dc.b 2
+		.ascii "_SW"
+		.dc.b TOK_SUBFUNC_209,2
+		.dc.b 2
+		.ascii "_SH"
+		.dc.b TOK_SUBFUNC_209,3
+		.ENDC
 		.dc.b 1
 		.ascii "_X"
 		.dc.b TOK_SUBFUNC_208,236
 		.dc.b 1
 		.ascii "_Y"
 		.dc.b TOK_SUBFUNC_208,237
+		.IFNE GBE
+		.dc.b 1
+		.ascii "_P"
+		.dc.b TOK_SUBFUNC_208,255
+		.ENDC
 		.dc.b 1
 		.ascii "_C"
 		.dc.b TOK_SUBFUNC_208,238
+		.IFNE GBE
+		.dc.b 1
+		.ascii "_B"
+		.dc.b TOK_SUBFUNC_208,241
+		.ENDC
 		.dc.b 0
 		.ascii "^"
 		.dc.b 0,TOK_POWER
@@ -6534,6 +7919,7 @@ f13e8c_4:
  * 0xfe,-2: two bytes offset to function follow
  * 0xff,-1: two bytes offset to subtable follow
  */
+/* gbe: 544b0 */
 x13ed2:
 	.dc.b -2,(f13e8c-x13696)/256,(f13e8c-x13696)&255
 x13ed5:
@@ -10016,7 +11402,7 @@ x14bce:
 x14bcf:
 	.dc.b -4
 x14bd0:
-	.dc.b -2,(f14bde-x13696)/256,(f14bde-x13696)&255 /* BUG? x14bde is a subtable */
+	.dc.b -2,(f14bde-x13696)/256,(f14bde-x13696)&255
 x14bd3:
 	.dc.b -3
 x14bd4:
@@ -10027,24 +11413,10 @@ x14bda:
 	.dc.b -1,(x14962-x13696)/256,(x14962-x13696)&255
 x14bdd:
 	.dc.b -4
-x14bde:
-f14bde:
-	.dc.b 97
-x14bdf:
-	.dc.b 0
-x14be0:
-	.dc.b 238
-x14be1:
-	.dc.b 222
-x14be2:
-	.dc.b 69
-x14be3:
-	.dc.b -6
-x14be4:
-	.dc.b 1
-x14be5:
-	.dc.b 80
 
+f14bde:
+		bsr x13abe
+		lea.l      x14d34(pc),a2
 
 x14be6:
 		move.w     d6,d0
@@ -10063,6 +11435,7 @@ x14be6_1:
 		addq.l     #4,a7
 		bra        x1395a_1
 
+/* gbe: 55256 */
 x14c16:
 		.dc.w x13696-x13696
 		.dc.w x14d00-x13696

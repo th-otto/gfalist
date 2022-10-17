@@ -669,21 +669,21 @@ const char *const gfapft[256] = {
 	/*  133 */ "PRED(",
 	/*  134 */ "DRAW(",
 	/*  135 */ "TRIM$(",
-	/*  136 */ "CMDLINE$",
-	/*  137 */ "CMDLINE$",
+	/*  136 */ "CMDLINE$", /* new in 3.7 */
+	/*  137 */ "CMDLINE$", /* new in 3.7 */
 	/*  138 */ "L:",
 	/*  139 */ "W:",
 	/*  140 */ "FACT(",
 	/*  141 */ "COMBIN(",
 	/*  142 */ "COMBIN(",
 	/*  143 */ "VARIAT(",
-	/*  144 */ "LTRIM$(",
-	/*  145 */ "RTRIM$(",
-	/*  146 */ "LCASE$(",
-	/*  147 */ "UCASE$(",
-	/*  148 */ "LOWER$(",
-	/*  149 */ "OB_TEXT$(",
-	/*  150 */ "ZTRIM$(",
+	/*  144 */ "LTRIM$(", /* new in 3.7 */
+	/*  145 */ "RTRIM$(", /* new in 3.7 */
+	/*  146 */ "LCASE$(", /* new in 3.7 */
+	/*  147 */ "UCASE$(", /* new in 3.7 */
+	/*  148 */ "LOWER$(", /* new in 3.7 */
+	/*  149 */ "OB_TEXT$(", /* new in 3.7 */
+	/*  150 */ "ZTRIM$(", /* new in 3.7 */
 	/*  151 */ "ERROR",
 	/*  152 */ "STOP",
 	/*  153 */ "BREAK",
@@ -693,16 +693,16 @@ const char *const gfapft[256] = {
 	/*  157 */ "(",
 	/*  158 */ "FN ",
 	/*  159 */ "@",
-	/*  160 */ "MIRROR$(",
+	/*  160 */ "MIRROR$(", /* new in 3.7 */
 	/*  161 */ "TAB(",
 	/*  162 */ "SPC(",
 	/*  163 */ "USING ",
-	/*  164 */ "DATE$(", /* 1 argument */
-	/*  165 */ "TIME$(", /* 1 argument */
-	/*  166 */ "TIMESTAMP$(",
+	/*  164 */ "DATE$(", /* 1 argument */ /* new in 3.7 */
+	/*  165 */ "TIME$(", /* 1 argument */ /* new in 3.7 */
+	/*  166 */ "TIMESTAMP$(", /* new in 3.7 */
 	/*  167 */ "MENU",
 	/*  168 */ "NEXT",
-	/*  169 */ "CHAR$(",
+	/*  169 */ "CHAR$(", /* new in 3.7 */
 	/*  170 */ "KEY",
 	/*  171 */ "BUTTON",
 	/*  172 */ "IBOX",
@@ -716,11 +716,11 @@ const char *const gfapft[256] = {
 	/*  180 */ "KILL",
 	/*  181 */ "KILL",
 	/*  182 */ "BASE ",
-	/*  183 */ "NULL",
+	/*  183 */ "NULL", /* new in 3.7 */
 	/*  184 */ "0",
 	/*  185 */ "1",
-	/*  186 */ "2",
-	/*  187 */ "3",
+	/*  186 */ "2", /* new in 3.7 */
+	/*  187 */ "3", /* new in 3.7 */
 	/*  188 */ "TRUE",
 	/*  189 */ "FALSE",
 	/*  190 */ "STR$(", /* 1 argument */
@@ -1033,6 +1033,9 @@ const char *const gfasft_208[256] = {
 	/*  237 */ "_Y",
 	/*  238 */ "_C",
 	/*  239 */ "GETSIZE(",
+	/*
+	 * below are new in 3.7 (GBE)
+	 */
 	/*  240 */ "GETSIZE(",
 	/*  241 */ "_B",
 	/*  242 */ "_AES",
