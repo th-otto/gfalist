@@ -49,8 +49,8 @@ const char *const gfalct[] = {
 	/*  43 */ "EXIT IF ",
 	/*  44 */ "SELECT ",					/* SELECT string */
 	/*  45 */ "",							/* End of program */
-	/*  46 */ "SELECT ",					/* SELECT AND ??? */
-	/*  47 */ "SELECT ",					/* SELECT AND ??? */
+	/*  46 */ "SELECT ",					/* SELECT ??? */
+	/*  47 */ "SELECT ",					/* SELECT ??? */
 	/*  48 */ "MONITOR",
 	/*  49 */ "DO WHILE ",
 	/*  50 */ "DO UNTIL ",
@@ -723,14 +723,14 @@ const char *const gfapft[256] = {
 	/*  187 */ "3",
 	/*  188 */ "TRUE",
 	/*  189 */ "FALSE",
-	/*  190 */ "STR$(",
-	/*  191 */ "STR$(",
-	/*  192 */ "STR$(",
-	/*  193 */ "HEX$(",
-	/*  194 */ "HEX$(",
-	/*  195 */ "OCT$(",
-	/*  196 */ "OCT$(",
-	/*  197 */ "OCT$(",
+	/*  190 */ "STR$(", /* 1 argument */
+	/*  191 */ "STR$(", /* 2 arguments */
+	/*  192 */ "STR$(", /* 3 arguments */
+	/*  193 */ "HEX$(", /* 1 argument */
+	/*  194 */ "HEX$(", /* 2 arguments */
+	/*  195 */ "OCT$(", /* 1 argument */
+	/*  196 */ "OCT$(", /* 2 arguments */
+	/*  197 */ "OCT$(", /* ??? */
 	/*  198 */ NULL, /* string constant */
 	/*  199 */ NULL, /* string constant (pad byte) */
 	/*  200 */ NULL, /* decimal constant */
