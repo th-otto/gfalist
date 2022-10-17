@@ -49,7 +49,9 @@ TOK_CMD_SYNERR             = 116
 TOK_CMD_DATA               = 117
 TOK_CMD_END                = 124
 TOK_CMD_INC_FLOAT          = 160
-TOK_CMD_OFF                = 175
+TOK_CMD_ADD_FLOAT          = 176
+TOK_CMD_SUB_FLOAT          = 184
+TOK_CMD_MUL_FLOAT          = 192
 TOK_CMD_DIV_FLOAT          = 200
 TOK_CMD_DIV_BYTE_ARR       = 207
 TOK_CMD_ADDRIN             = 224
@@ -436,7 +438,7 @@ x1007a_3:
 		bne.s      x1007a_5
 		move.l     (a7),d0
 		bpl.s      x1007a_4
-		moveq.l    #45,d0
+		moveq.l    #'-',d0
 		bsr        cconout
 		move.l     (a7),d0
 		neg.l      d0
@@ -3115,7 +3117,7 @@ x1185c_1:
 		movea.l    8(a6),a0
 		add.l      a0,d1
 		lea.l      16(a6),a1
-		moveq.l    #18,d0
+		moveq.l    #19-1,d0
 x1185c_2:
 		move.l     a0,(a1)+
 		dbf        d0,x1185c_2
@@ -6930,10 +6932,9 @@ f1369a:
 
 f1369e:
 		moveq.l    #2,d0
-
 f136a0:
 		bsr        x13abe
-		cmpi.w     #136,d6
+		cmpi.w     #TOK_CMDLINE,d6
 		bhi.s      f136a0_1
 		move.w     d6,d1
 		lsr.w      #1,d1
@@ -7352,7 +7353,7 @@ x1395a_14:
 
 /*
  * function code in d0.w
- * bit 7-8: secondary table code
+ * bits 8-15: secondary table code
  */
 /* gbe: 00054000 */
 handle_function:
@@ -7420,6 +7421,10 @@ handle_function_12:
 		moveq.l    #127,d6
 		bra.s      x13abe_1
 
+/*
+ * find a function name in table
+ * return code in d6 (bits 8-15: secondary table code)
+ */
 x13abe:
 		cmpa.l     8438(a6),a0
 		beq.s      x13abe_5
@@ -7429,7 +7434,7 @@ x13abe:
 		move.b     (a0),d6
 		subi.w     #'A',d6
 		bmi.s      handle_function_9
-		cmpi.w      #25,d6
+		cmpi.w     #25,d6
 		bcc.s      handle_function_12
 		lea.l      func_index_table(pc),a3
 		add.w      d6,d6
@@ -7470,7 +7475,7 @@ x13abe_7:
 		bcs.s      x13abe_9
 		cmpi.b     #'Z',-1(a0)
 		bhi.s      x13abe_9
-		cmpi.b     #24,d6 /* wtf? why .b? */
+		cmpi.b     #TOK_GE2_STR,d6 /* wtf? why .b? */
 		bls.s      x13abe_9
 		move.b     (a0),d1
 		cmpi.b     #'_',d1
@@ -7633,7 +7638,7 @@ x13c36_5:
 		subq.l     #1,a0
 		tst.w      d2
 		bmi.s      f13c9a_6
-		jsr        322(a6)
+		jsr        322(a6) /* -> FITOF */
 		move.l     a1,d3
 		lsr.b      #1,d3
 		bcc.s      f13c9a_4 /* odd address? */
@@ -8491,21 +8496,21 @@ x140d4:
 	.even
 
 f140d6:
-		move.w     #352,d0
+		move.w     #TOK_CMD_ADD_FLOAT*2,d0
 		lea.l      x142c4.l,a2
 		bra.s      f140fa_1
 
 f140e2:
-		move.w     #368,d0
+		move.w     #TOK_CMD_SUB_FLOAT*2,d0
 		lea.l      x142a6.l,a2
 		bra.s      f140fa_1
-f140ee:
 
-		move.w     #384,d0
+f140ee:
+		move.w     #TOK_CMD_MUL_FLOAT*2,d0
 		lea.l      x142e7.l,a2
 		bra.s      f140fa_1
 f140fa:
-		move.w     #400,d0
+		move.w     #TOK_CMD_DIV_FLOAT*2,d0
 		lea.l      x142fc.l,a2
 f140fa_1:
 		lea.l      1106(a6),a0
@@ -11415,7 +11420,7 @@ x14bdd:
 	.dc.b -4
 
 f14bde:
-		bsr x13abe
+		bsr        x13abe
 		lea.l      x14d34(pc),a2
 
 x14be6:
@@ -13589,7 +13594,7 @@ x157d2_2:
 		bsr.s      x157c8
 		bra.s      x157d2_1
 x157d2_3:
-		cmpi.b      #'&',d0
+		cmpi.b     #'&',d0
 		beq.s      x157d2_8
 		moveq.l    #(TOK_BIN_CONST-TOK_DEC_CONST)/2,d1
 		cmpi.b     #'%',d0
@@ -13890,7 +13895,7 @@ x15982_16:
 		bcs.s      x15982_16
 		cmpi.b     #TOK_SUBFUNC_214,d0
 		bcc.s      x15982_21
-		cmpi.b      #TOK_SUBFUNC_208,d0
+		cmpi.b     #TOK_SUBFUNC_208,d0
 		bcc.s      x15982_20
 		lsr.b      #1,d0
 		bcc.s      x15982_17
@@ -14122,7 +14127,7 @@ x15c52_5:
 		bcc.s      x15c52_8
 		cmpi.w     #98,d6 /* TOK_CMD_DO_WHILE*2 */
 		bcs.s      x15c52_6
-		cmpi.w      #104,d6 /* TOK_CMD_LOOP_UNTIL*2 */
+		cmpi.w     #104,d6 /* TOK_CMD_LOOP_UNTIL*2 */
 		bls.s      x15c52_7
 x15c52_6:
 		cmpi.w     #2,d6 /* TOK_CMD_LOOP*2 */
@@ -14382,7 +14387,7 @@ x15c52_39:
 		move.b     (a2)+,d1
 		cmpi.b     #'A',d1
 		bcs.s      x15c52_45
-		cmpi.b      #'Z',d1
+		cmpi.b     #'Z',d1
 		bhi.s      x15c52_45
 		addi.b     #' ',d1
 x15c52_45:
@@ -14464,7 +14469,7 @@ x16028_1:
 		move.l     (a1)+,d0
 		move.w     (a1)+,d1
 		move.w     (a1)+,d2
-		jsr        328(a6)
+		jsr        328(a6) /* -> dummy */
 		bsr        print_hex
 		bra        x15c52_13
 x16028_2:
@@ -14473,7 +14478,7 @@ x16028_3:
 		move.l     (a1)+,d0
 		move.w     (a1)+,d1
 		move.w     (a1)+,d2
-		jsr        328(a6)
+		jsr        328(a6) /* -> dummy */
 		bsr        print_oct
 		bra        x15c52_13
 x16028_4:
@@ -14482,7 +14487,7 @@ x16028_5:
 		move.l     (a1)+,d0
 		move.w     (a1)+,d1
 		move.w     (a1)+,d2
-		jsr        328(a6)
+		jsr        328(a6) /* -> dummy */
 		bsr        print_bin
 		bra        x15c52_13
 
@@ -15087,6 +15092,7 @@ bss_end: /* 1779c */
 850: linebuffer
 1106: general buffer
 1364: token buffer
+2314: 
 2772: filetable, xx*6
 3372: offsets to func_table
 4300: offsets to cmd table

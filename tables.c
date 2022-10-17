@@ -187,7 +187,7 @@ const char *const gfalct[] = {
 	/* 181 */ "ADD ",						/* ADD x%() */
 	/* 182 */ "ADD ",						/* ADD x&() */
 	/* 183 */ "ADD ",						/* ADD x|() */
-	/* 184 */ "SUB ",						/* ADD x# */
+	/* 184 */ "SUB ",						/* SUB x# */
 	/* 185 */ "SUB ",						/* SUB x% */
 	/* 186 */ "SUB ",						/* SUB x& */
 	/* 187 */ "SUB ",						/* SUB x|, */
@@ -584,7 +584,7 @@ const char *const gfapft[256] = {
 	/*   48 */ "LOG(",
 	/*   49 */ "LOG10(",
 	/*   50 */ "VAR ",
-	/*   51 */ ")",
+	/*   51 */ ")", /* appears in VAR a() */
 	/*   52 */ "INPAUX$",
 	/*   53 */ "VAL(",
 	/*   54 */ "INPMID$",
@@ -608,8 +608,8 @@ const char *const gfapft[256] = {
 	/*   72 */ " STEP ",
 	/*   73 */ " DOWNTO ",
 	/*   74 */ " THEN",
-	/*   75 */ " GOTO ",
-	/*   76 */ " GOSUB ",
+	/*   75 */ " GOTO ", /* on x GOTO */
+	/*   76 */ " GOSUB ", /* on x GOSUB */
 	/*   77 */ "#",
 	/*   78 */ "SQR(",
 	/*   79 */ "PI",
@@ -655,7 +655,7 @@ const char *const gfapft[256] = {
 	/*  119 */ "MAX(", /* numbers */
 	/*  120 */ "MAX(", /* strings */
 	/*  121 */ "SINGLE{",
-	/*  122 */ " AT(",
+	/*  122 */ " AT(", /* FIELD #x,num AT(x) */
 	/*  123 */ "SINQ(",
 	/*  124 */ ":",
 	/*  125 */ "COSQ(",
@@ -670,12 +670,12 @@ const char *const gfapft[256] = {
 	/*  134 */ "DRAW(",
 	/*  135 */ "TRIM$(",
 	/*  136 */ "CMDLINE$", /* new in 3.7 */
-	/*  137 */ "CMDLINE$", /* new in 3.7 */
+	/*  137 */ "CMDLINE$", /* new in 3.7, unused */
 	/*  138 */ "L:",
 	/*  139 */ "W:",
 	/*  140 */ "FACT(",
 	/*  141 */ "COMBIN(",
-	/*  142 */ "COMBIN(",
+	/*  142 */ "COMBIN(", /* new in 3.7, unused */
 	/*  143 */ "VARIAT(",
 	/*  144 */ "LTRIM$(", /* new in 3.7 */
 	/*  145 */ "RTRIM$(", /* new in 3.7 */
@@ -689,8 +689,8 @@ const char *const gfapft[256] = {
 	/*  153 */ "BREAK",
 	/*  154 */ " CONT",
 	/*  155 */ "FIX(",
-	/*  156 */ ",",
-	/*  157 */ "(",
+	/*  156 */ ",", /* precedes string parameter in parameter list */
+	/*  157 */ "(", /* starts parameter list of C: or CALL */
 	/*  158 */ "FN ",
 	/*  159 */ "@",
 	/*  160 */ "MIRROR$(", /* new in 3.7 */
@@ -701,7 +701,7 @@ const char *const gfapft[256] = {
 	/*  165 */ "TIME$(", /* 1 argument */ /* new in 3.7 */
 	/*  166 */ "TIMESTAMP$(", /* new in 3.7 */
 	/*  167 */ "MENU",
-	/*  168 */ "NEXT",
+	/*  168 */ "NEXT", /* RESUME NEXT */
 	/*  169 */ "CHAR$(", /* new in 3.7 */
 	/*  170 */ "KEY",
 	/*  171 */ "BUTTON",
@@ -709,12 +709,12 @@ const char *const gfapft[256] = {
 	/*  173 */ "OBOX",
 	/*  174 */ "MESSAGE",
 	/*  175 */ "OFF",
-	/*  176 */ "KILL",
-	/*  177 */ "KILL",
-	/*  178 */ "KILL",
-	/*  179 */ "KILL",
-	/*  180 */ "KILL",
-	/*  181 */ "KILL",
+	/*  176 */ "KILL", /* unknown */
+	/*  177 */ "KILL", /* unknown */
+	/*  178 */ "KILL", /* unknown */
+	/*  179 */ "KILL", /* unknown */
+	/*  180 */ "KILL", /* unknown */
+	/*  181 */ "KILL", /* unknown */
 	/*  182 */ "BASE ",
 	/*  183 */ "NULL", /* new in 3.7 */
 	/*  184 */ "0",
@@ -730,7 +730,7 @@ const char *const gfapft[256] = {
 	/*  194 */ "HEX$(", /* 2 arguments */
 	/*  195 */ "OCT$(", /* 1 argument */
 	/*  196 */ "OCT$(", /* 2 arguments */
-	/*  197 */ "OCT$(", /* ??? */
+	/*  197 */ "OCT$(", /* unknown */
 	/*  198 */ NULL, /* string constant */
 	/*  199 */ NULL, /* string constant (pad byte) */
 	/*  200 */ NULL, /* decimal constant */
