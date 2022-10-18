@@ -51,7 +51,7 @@ gfalist.ttp: $(CSRC)
 lst2gfa.ttp: lst2gfa.s
 	$(TOSCC) -Wall -W -s -nostdlib -nostartfiles -o $@ $<
 	stripex $@
-	cmp -l -x lst2gfa_orig.ttp $@
+	cmp -l lst2gfa_orig.ttp $@
 
 clean:
 	rm -f $(OBJS) $(TARGETS) gfalist.exe gfalist.ttp $(TRASH)

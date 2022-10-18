@@ -116,14 +116,12 @@ int main(void)
 					}
 					first_char = c;
 				}
-				fprintf(out, "\t\t.dc.b %d\n", len);
-				fprintf(out, "\t\t.ascii \"");
+				fprintf(out, "\t\t.dc.b %d", len);
 			}
-			putc(c, out);
+			fprintf(out, ",'%c'", c);
 		}
-		fprintf(out, "\"\n");
 		c = getc(fp);
-		fprintf(out, "\t\t.dc.b %d", c);
+		fprintf(out, ",%d", c);
 		c = getc(fp);
 		fprintf(out, ",%d\n", c);
 

@@ -347,12 +347,30 @@ TYPE_FUNCTION      = 14
 TYPE_FUNCTION_STR  = 15
 
 
+/*
+ * storage area
+ */
+
+		.offset 0
+error_jmp:          ds.b 8  /*    0 */
+file_buffer:        ds.l 1  /*    8 */
+file_buffer_size:   ds.l 1  /*   12 */
+ptr_table:          ds.l 38 /*   16 */
+                    ds.l 1  /*  168 */
+                    ds.l 1  /*  172 */
+                    ds.l 1  /*  176 */
+                    ds.l 1  /*  180 */
+                    ds.l 1  /*  184 */
+                    ds.l 1  /*  188 */
+
+		.text
+
 _entry:
 		bra        _main_entry
 
 x10004:
 		movea.l    a6,a0
-		move.l     #x1007a,4(a6)
+		move.l     #x1007a,error_jmp+4(a6)
 		movea.l    204(a6),a0
 		lea.l      128(a0),a0
 x10004_1:
@@ -394,7 +412,7 @@ x10004_3:
 x1007a:
 		bsr        x1022c
 		bsr        x11ae8
-		move.l     #x1018e,4(a6)
+		move.l     #ERROR,error_jmp+4(a6)
 		lea.l      1106(a6),a0
 		movea.l    204(a6),a1
 		lea.l      128(a1),a1
@@ -498,7 +516,7 @@ x1007a_9:
 x1007a_10:
 		bra.s      x101d0
 
-x1018e:
+ERROR:
 		lea.l      error_str(pc),a0
 		bra.s      failure
 
@@ -1011,11 +1029,11 @@ FADD_9:
 		rts
 FADD_10:
 		moveq.l    #1,d0
-		.IFNE FOR_LIB
+	.IFNE FOR_LIB
 		bra        ERROR
-		.ELSE
+	.ELSE
 		jmp        (a6) /* ERROR */
-		.ENDC
+	.ENDC
 FADD_11:
 		subx.w     d4,d1
 		subx.l     d3,d0
@@ -1166,11 +1184,11 @@ FDIV_1:
 		rts
 FDIV_2:
 		moveq.l    #0,d0
-		.IFNE FOR_LIB
+	.IFNE FOR_LIB
 		bra        ERROR
-		.ELSE
+	.ELSE
 		jmp        (a6) /* ERROR */
-		.ENDC
+	.ENDC
 FDIV_3:
 		moveq.l    #0,d2
 		rts
@@ -1927,7 +1945,7 @@ x10d1a_2:
 		move.w     x10590(pc),d0
 		bsr        x10ee0
 		lea.l      25856(a6),a7
-		move.l     #0x4E714EF9,(a6)
+		move.l     #0x4E714EF9,(a6) /* nop; jmp */
 		move.l     a5,204(a6)
 		suba.l     a5,a0
 		pea.l      (a0)
@@ -1947,11 +1965,11 @@ x10d1a_2:
 		move.w     #72,-(a7) /* Malloc */
 		trap       #1
 		subi.l     #0x00004000,d0
-		move.l     d0,12(a6)
+		move.l     d0,file_buffer_size(a6)
 		move.l     d0,-(a7)
 		move.w     #72,-(a7) /* Malloc */
 		trap       #1
-		move.l     d0,8(a6)
+		move.l     d0,file_buffer(a6)
 		lea.l      25856(a6),a7
 		move.w     x10ede.l,x1185a
 		jsr        x1185c.l
@@ -2094,11 +2112,11 @@ ALLOT_5:
 		rts
 ALLOT_2:
 		moveq.l    #8,d0
-		.IFNE FOR_LIB
+	.IFNE FOR_LIB
 		bra        ERROR
-		.ELSE
+	.ELSE
 		jmp        (a6) /* ERROR */
-		.ENDC
+	.ENDC
 
 Lddre:
 		movem.l    d1-d7/a2-a6,-(a7)
@@ -2238,11 +2256,11 @@ STcreat:
 		cmpa.l     168(a6),a1
 		bcc.s      STcreat_4
 		moveq.l    #8,d0
-		.IFNE FOR_LIB
+	.IFNE FOR_LIB
 		bra        ERROR
-		.ELSE
+	.ELSE
 		jmp        (a6) /* ERROR */
-		.ENDC
+	.ENDC
 
 GarColl:
 		movem.l    d0/a0-a3,-(a7)
@@ -2302,7 +2320,7 @@ GarColl_1:
 
 /* gfa: 00014e66 */
 x1111c:
-		movea.l    80(a6),a0
+		movea.l    ptr_table+16*4(a6),a0
 x1111c_1:
 		cmpi.w     #468,2(a0)
 		beq.s      x1111c_2
@@ -2330,11 +2348,11 @@ GetFBuf:
 		movem.w    (a0),d0-d2
 		rts
 x11162:
-		.IFNE FOR_LIB
+	.IFNE FOR_LIB
 		bra        ERROR
-		.ELSE
+	.ELSE
 		jmp        (a6) /* ERROR */
-		.ENDC
+	.ENDC
 
 /* gfa: 000157be */
 putcstdout:
@@ -2375,7 +2393,7 @@ FWrite:
 		beq.w      eaccdn
 		tst.w      d1
 		beq.s      FWrite_1
-		bsr        x1124e
+		bsr        seekfile
 FWrite_1:
 		bset       #7,4(a0)
 		move.w     #4096,d1
@@ -2421,11 +2439,11 @@ FGetc_2:
 
 eaccdn:
 		moveq.l    #-36,d0
-		.IFNE FOR_LIB
+	.IFNE FOR_LIB
 		bra        ERROR
-		.ELSE
+	.ELSE
 		jmp        (a6) /* ERROR */
-		.ENDC
+	.ENDC
 
 x1121a:
 		cmpi.w     #1,d6
@@ -2436,7 +2454,7 @@ x1121a:
 		beq.s      eaccdn
 		tst.w      d1
 		beq.s      x1121a_1
-		bsr.w      x1124e
+		bsr.w      seekfile
 x1121a_1:
 		cmpi.w     #4096,d0
 		bcs.s      x1121a_2
@@ -2447,7 +2465,7 @@ x1121a_2:
 		bset       #7,4(a0)
 		rts
 
-x1124e:
+seekfile:
 		movem.l    a0-a1,-(a7)
 		sub.l      d1,d0
 		add.l      d0,6(a0)
@@ -2480,11 +2498,11 @@ FClose_1:
 		moveq.l    #0,d0
 		rts
 FClose_2:
-		.IFNE FOR_LIB
+	.IFNE FOR_LIB
 		bra        ERROR
-		.ELSE
+	.ELSE
 		jmp        (a6) /* ERROR */
-		.ENDC
+	.ENDC
 
 /* gfa: 00015986 */
 FlushBuf:
@@ -2512,11 +2530,11 @@ FlushBuf_2:
 		bmi.s      FlushBuf_3
 		moveq.l    #37,d0
 FlushBuf_3:
-		.IFNE FOR_LIB
+	.IFNE FOR_LIB
 		bra        ERROR
-		.ELSE
+	.ELSE
 		jmp        (a6) /* ERROR */
-		.ENDC
+	.ENDC
 
 /* gfa: 000159c2 */
 _FillBuf:
@@ -2540,7 +2558,7 @@ _FillBuf_1:
 		move.w     MergeFlg(pc),d1
 		beq.w      _FillBuf_2
 		tst.b      d1
-		beq        x1018e
+		beq        ERROR
 		moveq.l    #0,d1
 		rts
 
@@ -2550,11 +2568,11 @@ MergeFlg: .dc.w 0
 _FillBuf_2:
 		moveq.l    #26,d0
 _FillBuf_3:
-		.IFNE FOR_LIB
+	.IFNE FOR_LIB
 		bra        ERROR
-		.ELSE
+	.ELSE
 		jmp        (a6) /* ERROR */
-		.ENDC
+	.ENDC
 
 
 /* gfa: 00015a2e */
@@ -2806,8 +2824,8 @@ x11578:
 		lea.l      x1156c(pc),a1
 		moveq.l    #12,d0
 		bsr        x1134c
-		lea.l      16(a6),a0
-		lea.l      168(a6),a1
+		lea.l      ptr_table(a6),a0
+		lea.l      ptr_table+38*4(a6),a1
 		lea.l      1106(a6),a2
 		move.l     (a0),d0
 		tst.b      x1156c
@@ -2825,13 +2843,13 @@ x11578_2:
 		lea.l      1106(a6),a1
 		move.l     #152,d0 /* write the offsets */
 		bsr        x1134c
-		movea.l    16(a6),a1
+		movea.l    ptr_table(a6),a1
 		tst.b      x1156c
 		beq.s      x11578_3
 		clr.b      x1156c
-		movea.l    80(a6),a1
+		movea.l    ptr_table+16*4(a6),a1
 x11578_3:
-		move.l     92(a6),d0
+		move.l     ptr_table+19*4(a6),d0
 		sub.l      a1,d0
 		bsr        x1134c
 		clr.w      x11ae6
@@ -2966,7 +2984,7 @@ x1160e_16:
 		move.w     d0,1362(a6)
 x1160e_17:
 		moveq.l    #0,d0
-		lea.l      88(a6),a0
+		lea.l      ptr_table+18*4(a6),a0
 		lea.l      1362(a6),a1
 		move.w     (a1)+,d0
 		cmpi.w     #1668,(a1)+
@@ -3112,11 +3130,11 @@ x1185c:
 x1185c_1:
 		lsr.l      #3,d0
 		move.l     d0,x11a54
-		move.l     12(a6),d1
+		move.l     file_buffer_size(a6),d1
 		sub.l      d0,d1
-		movea.l    8(a6),a0
+		movea.l    file_buffer(a6),a0
 		add.l      a0,d1
-		lea.l      16(a6),a1
+		lea.l      ptr_table(a6),a1
 		moveq.l    #19-1,d0
 x1185c_2:
 		move.l     a0,(a1)+
@@ -3156,8 +3174,8 @@ x118e2_1:
 		clr.w      698(a6)
 		bsr        x119be
 		move.l     176(a6),172(a6)
-		movea.l    156(a6),a0
-		move.l     160(a6),d0
+		movea.l    ptr_table+35*4(a6),a0
+		move.l     ptr_table+36*4(a6),d0
 		sub.l      a0,d0
 		beq.s      x118e2_8
 		moveq.l    #0,d1
@@ -3194,55 +3212,55 @@ x118e2_8:
 		bra        x1111c
 
 x1194e:
-		lea.l      156(a6),a0
+		lea.l      ptr_table+35*4(a6),a0
 		move.l     (a0)+,(a0)
 		move.l     (a0)+,(a0)
 		move.l     (a0)+,(a0)+
 		move.l     4(a0),(a0)
 		rts
 
-x1195e:
+gen_vartable:
 		movem.l    (a1),a0/a2
 		cmpa.l     a0,a2
-		beq.s      x1195e_2
-x1195e_1:
+		beq.s      gen_vartable_2
+gen_vartable_1:
 		move.l     d1,(a0)+
 		add.l      d0,d1
 		cmpa.l     a0,a2
-		bne.s      x1195e_1
-x1195e_2:
+		bne.s      gen_vartable_1
+gen_vartable_2:
 		addq.l     #4,a1
 		rts
 
 x11972:
-		move.l     156(a6),d1
-		lea.l      92(a6),a1
-		moveq.l    #8,d0
-		bsr.s      x1195e
-		moveq.l    #6,d0
-		bsr.s      x1195e
-		moveq.l    #4,d0
-		bsr.s      x1195e
-		moveq.l    #1,d0
-		bsr.s      x1195e
-		addq.l     #1,d1
+		move.l     ptr_table+35*4(a6),d1
+		lea.l      ptr_table+19*4(a6),a1
+		moveq.l    #8,d0 /* float: 8 bytes */
+		bsr.s      gen_vartable
+		moveq.l    #6,d0 /* string: 6 bytes */
+		bsr.s      gen_vartable
+		moveq.l    #4,d0 /* int: 4 bytes */
+		bsr.s      gen_vartable
+		moveq.l    #1,d0 /* bool: 1 byte */
+		bsr.s      gen_vartable
+		addq.l     #1,d1 /* make it even */
 		andi.w     #-2,d1
-		moveq.l    #6,d0
-		bsr.s      x1195e
-		bsr.s      x1195e
-		bsr.s      x1195e
-		bsr.s      x1195e
-		moveq.l    #2,d0
-		bsr.s      x1195e
-		moveq.l    #1,d0
-		bsr.s      x1195e
-		addq.l     #1,d1
+		moveq.l    #6,d0 /* array: 6 bytes */
+		bsr.s      gen_vartable /* float arrays */
+		bsr.s      gen_vartable /* string arrays */
+		bsr.s      gen_vartable /* int arrays */
+		bsr.s      gen_vartable /* bool arrays */
+		moveq.l    #2,d0 /* word: 2 byte */
+		bsr.s      gen_vartable
+		moveq.l    #1,d0 /* byte: 1 byte */
+		bsr.s      gen_vartable
+		addq.l     #1,d1 /* make it even */
 		andi.w     #-2,d1
-		lea.l      140(a6),a1
-		moveq.l    #6,d0
-		bsr.s      x1195e
-		bsr.s      x1195e
-		lea.l      160(a6),a0
+		lea.l      ptr_table+31*4(a6),a1
+		moveq.l    #6,d0 /* array: 6 bytes */
+		bsr.s      gen_vartable /* word arrays */
+		bsr.s      gen_vartable /* byte arrays */
+		lea.l      ptr_table+36*4(a6),a0
 		move.l     d1,(a0)+
 		move.l     d1,(a0)+
 		move.l     d1,(a0)+
@@ -3250,7 +3268,7 @@ x11972:
 
 x119be:
 		bsr.s      x11972
-		movea.l    80(a6),a1
+		movea.l    ptr_table+16*4(a6),a1
 		move.w     #180,d0
 		moveq.l    #0,d1
 x119be_1:
@@ -3267,7 +3285,7 @@ x119be_1:
 		move.l     a1,176(a6)
 		move.l     a1,172(a6)
 		lsr.l      #1,d1
-		movea.l    80(a6),a0
+		movea.l    ptr_table+16*4(a6),a0
 		move.w     #0x8000,d4
 		moveq.l    #28,d5
 		move.w     #216,d6
@@ -3374,9 +3392,9 @@ x11abc_3:
 x11ae6:    .dc.w 0
 
 x11ae8:
-		movea.l    84(a6),a1
+		movea.l    ptr_table+17*4(a6),a1
 		movea.l    176(a6),a2
-		move.l     a1,88(a6)
+		move.l     a1,ptr_table+18*4(a6)
 		rts
 
 x11af6: .dc.l 0
@@ -3386,1174 +3404,1174 @@ x11af6: .dc.l 0
 cmd_table: /* 11afa */
 		.dc.b 0
 		.ascii "!"
-		.dc.b ((115*2)/256),((115*2)&255),(x1465e-x13696)/256,(x1465e-x13696)&255
+		.dc.b ((115*2)/256),((115*2)&255),(x1465e-jmpbase)/256,(x1465e-jmpbase)&255
 		.dc.b 1
 		.ascii "//"
-		.dc.b ((115*2)/256),((115*2)&255),(x1465e-x13696)/256,(x1465e-x13696)&255
+		.dc.b ((115*2)/256),((115*2)&255),(x1465e-jmpbase)/256,(x1465e-jmpbase)&255
 		.dc.b 1
 		.ascii "/*"
-		.dc.b ((115*2)/256),((115*2)&255),(x1465e-x13696)/256,(x1465e-x13696)&255
+		.dc.b ((115*2)/256),((115*2)&255),(x1465e-jmpbase)/256,(x1465e-jmpbase)&255
 		.dc.b 0
 		.ascii "'"
-		.dc.b ((115*2)/256),((115*2)&255),(x1465e-x13696)/256,(x1465e-x13696)&255
+		.dc.b ((115*2)/256),((115*2)&255),(x1465e-jmpbase)/256,(x1465e-jmpbase)&255
 		.dc.b 0
 		.ascii "*"
-		.dc.b ((121*2)/256),((121*2)&255),(x144c0-x13696)/256,(x144c0-x13696)&255
+		.dc.b ((121*2)/256),((121*2)&255),(x144c0-jmpbase)/256,(x144c0-jmpbase)&255
 		.dc.b 0
 		.ascii "."
-		.dc.b ((254*2)/256),((254*2)&255),(x1465e-x13696)/256,(x1465e-x13696)&255
+		.dc.b ((254*2)/256),((254*2)&255),(x1465e-jmpbase)/256,(x1465e-jmpbase)&255
 		.dc.b 2
 		.ascii "==>"
-		.dc.b ((116*2)/256),((116*2)&255),(x1465e-x13696)/256,(x1465e-x13696)&255
+		.dc.b ((116*2)/256),((116*2)&255),(x1465e-jmpbase)/256,(x1465e-jmpbase)&255
 		.dc.b 0
 		.ascii "?"
-		.dc.b ((147*2)/256),((147*2)&255),(x1522e-x13696)/256,(x1522e-x13696)&255
+		.dc.b ((147*2)/256),((147*2)&255),(x1522e-jmpbase)/256,(x1522e-jmpbase)&255
 		.dc.b 0
 		.ascii "$"
-		.dc.b ((411*2)/256),((411*2)&255),(x1465e-x13696)/256,(x1465e-x13696)&255
+		.dc.b ((411*2)/256),((411*2)&255),(x1465e-jmpbase)/256,(x1465e-jmpbase)&255
 		.dc.b 0
 		.ascii "@"
-		.dc.b ((62*2)/256),((62*2)&255),(x1495a-x13696)/256,(x1495a-x13696)&255
+		.dc.b ((62*2)/256),((62*2)&255),(x1495a-jmpbase)/256,(x1495a-jmpbase)&255
 cmd_a_table: /* 11b3a */
 		.dc.b 4
 		.ascii "ALERT"
-		.dc.b ((256*2)/256),((256*2)&255),(x14ac7-x13696)/256,(x14ac7-x13696)&255
+		.dc.b ((256*2)/256),((256*2)&255),(x14ac7-jmpbase)/256,(x14ac7-jmpbase)&255
 		.dc.b 2
 		.ascii "ADD"
-		.dc.b ((176*2)/256),((176*2)&255),(x142c4-x13696)/256,(x142c4-x13696)&255
+		.dc.b ((176*2)/256),((176*2)&255),(x142c4-jmpbase)/256,(x142c4-jmpbase)&255
 		.dc.b 4
 		.ascii "ALINE"
-		.dc.b ((90*2)/256),((90*2)&255),(x1447d-x13696)/256,(x1447d-x13696)&255
+		.dc.b ((90*2)/256),((90*2)&255),(x1447d-jmpbase)/256,(x1447d-jmpbase)&255
 		.dc.b 4
 		.ascii "ARECT"
-		.dc.b ((92*2)/256),((92*2)&255),(x1447a-x13696)/256,(x1447a-x13696)&255
+		.dc.b ((92*2)/256),((92*2)&255),(x1447a-jmpbase)/256,(x1447a-jmpbase)&255
 		.dc.b 4
 		.ascii "APOLY"
-		.dc.b ((93*2)/256),((93*2)&255),(x1448a-x13696)/256,(x1448a-x13696)&255
+		.dc.b ((93*2)/256),((93*2)&255),(x1448a-jmpbase)/256,(x1448a-jmpbase)&255
 		.dc.b 4
 		.ascii "ACHAR"
-		.dc.b ((94*2)/256),((94*2)&255),(x14480-x13696)/256,(x14480-x13696)&255
+		.dc.b ((94*2)/256),((94*2)&255),(x14480-jmpbase)/256,(x14480-jmpbase)&255
 		.dc.b 4
 		.ascii "ACLIP"
-		.dc.b ((95*2)/256),((95*2)&255),(x14490-x13696)/256,(x14490-x13696)&255
+		.dc.b ((95*2)/256),((95*2)&255),(x14490-jmpbase)/256,(x14490-jmpbase)&255
 cmd_addrin:
 		.dc.b 6
 		.ascii "ADDRIN("
-		.dc.b ((224*2)/256),((224*2)&255),(x14152-x13696)/256,(x14152-x13696)&255
+		.dc.b ((224*2)/256),((224*2)&255),(x14152-jmpbase)/256,(x14152-jmpbase)&255
 cmd_addrout:
 		.dc.b 7
 		.ascii "ADDROUT("
-		.dc.b ((225*2)/256),((225*2)&255),(x14152-x13696)/256,(x14152-x13696)&255
+		.dc.b ((225*2)/256),((225*2)&255),(x14152-jmpbase)/256,(x14152-jmpbase)&255
 		.dc.b 7
 		.ascii "ABSOLUTE"
-		.dc.b ((253*2)/256),((253*2)&255),(x15015-x13696)/256,(x15015-x13696)&255
+		.dc.b ((253*2)/256),((253*2)&255),(x15015-jmpbase)/256,(x15015-jmpbase)&255
 		.dc.b 4
 		.ascii "AFTER"
-		.dc.b ((365*2)/256),((365*2)&255),(x148b7-x13696)/256,(x148b7-x13696)&255
+		.dc.b ((365*2)/256),((365*2)&255),(x148b7-jmpbase)/256,(x148b7-jmpbase)&255
 		.dc.b 4
 		.ascii "ATEXT"
-		.dc.b ((113*2)/256),((113*2)&255),(x151bb-x13696)/256,(x151bb-x13696)&255
+		.dc.b ((113*2)/256),((113*2)&255),(x151bb-jmpbase)/256,(x151bb-jmpbase)&255
 		.dc.b 8
 		.ascii "ARRAYFILL"
-		.dc.b ((397*2)/256),((397*2)&255),(x14a66-x13696)/256,(x14a66-x13696)&255
-		.IFNE GBE
+		.dc.b ((397*2)/256),((397*2)&255),(x14a66-jmpbase)/256,(x14a66-jmpbase)&255
+	.IFNE GBE
 		.dc.b 5
 		.ascii "AMOUSE"
-		.dc.b ((474*2)/256),((474*2)&255),(x14481-x13696)/256,(x14481-x13696)&255
-		.ENDC
+		.dc.b ((474*2)/256),((474*2)&255),(x14481-jmpbase)/256,(x14481-jmpbase)&255
+	.ENDC
 cmd_b_table: /* 11bc6 */
 		.dc.b 4
 		.ascii "BMOVE"
-		.dc.b ((213*2)/256),((213*2)&255),(x14461-x13696)/256,(x14461-x13696)&255
+		.dc.b ((213*2)/256),((213*2)&255),(x14461-jmpbase)/256,(x14461-jmpbase)&255
 		.dc.b 4
 		.ascii "BYTE{"
-		.dc.b ((234*2)/256),((234*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b ((234*2)/256),((234*2)&255),(x14169-jmpbase)/256,(x14169-jmpbase)&255
 		.dc.b 2
 		.ascii "BOX"
-		.dc.b ((287*2)/256),((287*2)&255),(x1445e-x13696)/256,(x1445e-x13696)&255
+		.dc.b ((287*2)/256),((287*2)&255),(x1445e-jmpbase)/256,(x1445e-jmpbase)&255
 		.dc.b 3
 		.ascii "BGET"
-		.dc.b ((111*2)/256),((111*2)&255),(x14b22-x13696)/256,(x14b22-x13696)&255
+		.dc.b ((111*2)/256),((111*2)&255),(x14b22-jmpbase)/256,(x14b22-jmpbase)&255
 		.dc.b 3
 		.ascii "BPUT"
-		.dc.b ((112*2)/256),((112*2)&255),(x14b22-x13696)/256,(x14b22-x13696)&255
+		.dc.b ((112*2)/256),((112*2)&255),(x14b22-jmpbase)/256,(x14b22-jmpbase)&255
 		.dc.b 7
 		.ascii "BOUNDARY"
-		.dc.b ((387*2)/256),((387*2)&255),(x14467-x13696)/256,(x14467-x13696)&255
+		.dc.b ((387*2)/256),((387*2)&255),(x14467-jmpbase)/256,(x14467-jmpbase)&255
 		.dc.b 5
 		.ascii "BITBLT"
-		.dc.b ((399*2)/256),((399*2)&255),(x14a78-x13696)/256,(x14a78-x13696)&255
+		.dc.b ((399*2)/256),((399*2)&255),(x14a78-jmpbase)/256,(x14a78-jmpbase)&255
 		.dc.b 4
 		.ascii "BSAVE"
-		.dc.b ((404*2)/256),((404*2)&255),(x146d6-x13696)/256,(x146d6-x13696)&255
+		.dc.b ((404*2)/256),((404*2)&255),(x146d6-jmpbase)/256,(x146d6-jmpbase)&255
 		.dc.b 4
 		.ascii "BLOAD"
-		.dc.b ((405*2)/256),((405*2)&255),(x146e1-x13696)/256,(x146e1-x13696)&255
-		.IFNE GBE
+		.dc.b ((405*2)/256),((405*2)&255),(x146e1-jmpbase)/256,(x146e1-jmpbase)&255
+	.IFNE GBE
 		.dc.b 5
 		.ascii "BCLEAR"
-		.dc.b ((462*2)/256),((462*2)&255),(x1447e-x13696)/256,(x1447e-x13696)&255
+		.dc.b ((462*2)/256),((462*2)&255),(x1447e-jmpbase)/256,(x1447e-jmpbase)&255
 		.dc.b 4
 		.ascii "BFILL"
-		.dc.b ((463*2)/256),((463*2)&255),(x1447b-x13696)/256,(x1447b-x13696)&255
+		.dc.b ((463*2)/256),((463*2)&255),(x1447b-jmpbase)/256,(x1447b-jmpbase)&255
 		.dc.b 3
 		.ascii "BEEP"
-		.dc.b ((465*2)/256),((465*2)&255),(x14484-x13696)/256,(x14484-x13696)&255
+		.dc.b ((465*2)/256),((465*2)&255),(x14484-jmpbase)/256,(x14484-jmpbase)&255
 		.dc.b 5
 		.ascii "BCRYPT"
-		.dc.b ((477*2)/256),((477*2)&255),(x146f1-x13696)/256,(x146f1-x13696)&255
+		.dc.b ((477*2)/256),((477*2)&255),(x146f1-jmpbase)/256,(x146f1-jmpbase)&255
 		.dc.b 5
 		.ascii "BXLATE"
-		.dc.b ((464*2)/256),((464*2)&255),(x1447b-x13696)/256,(x1447b-x13696)&255
-		.ENDC
+		.dc.b ((464*2)/256),((464*2)&255),(x1447b-jmpbase)/256,(x1447b-jmpbase)&255
+	.ENDC
 cmd_c_table: /* 11c20 */
 		.dc.b 4
 		.ascii "COLOR"
-		.dc.b ((96*2)/256),((96*2)&255),(x14467-x13696)/256,(x14467-x13696)&255
+		.dc.b ((96*2)/256),((96*2)&255),(x14467-jmpbase)/256,(x14467-jmpbase)&255
 		.dc.b 3
 		.ascii "CASE"
-		.dc.b ((56*2)/256),((56*2)&255),(x14259-x13696)/256,(x14259-x13696)&255
+		.dc.b ((56*2)/256),((56*2)&255),(x14259-jmpbase)/256,(x14259-jmpbase)&255
 		.dc.b 3
 		.ascii "CONT"
-		.dc.b ((317*2)/256),((317*2)&255),(x1415e-x13696)/256,(x1415e-x13696)&255
+		.dc.b ((317*2)/256),((317*2)&255),(x1415e-jmpbase)/256,(x1415e-jmpbase)&255
 cmd_contrl:
 		.dc.b 6
 		.ascii "CONTRL("
-		.dc.b ((228*2)/256),((228*2)&255),(x14152-x13696)/256,(x14152-x13696)&255
+		.dc.b ((228*2)/256),((228*2)&255),(x14152-jmpbase)/256,(x14152-jmpbase)&255
 		.dc.b 4
 		.ascii "CARD{"
-		.dc.b ((233*2)/256),((233*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b ((233*2)/256),((233*2)&255),(x14169-jmpbase)/256,(x14169-jmpbase)&255
 		.dc.b 4
 		.ascii "CHAR{"
-		.dc.b ((235*2)/256),((235*2)&255),(x14175-x13696)/256,(x14175-x13696)&255
-		.IFNE GBE
+		.dc.b ((235*2)/256),((235*2)&255),(x14175-jmpbase)/256,(x14175-jmpbase)&255
+	.IFNE GBE
 		.dc.b 4
 		.ascii "CHAR$"
-		.dc.b ((494*2)/256),((494*2)&255),(x1467b-x13696)/256,(x1467b-x13696)&255
-		.ENDC
+		.dc.b ((494*2)/256),((494*2)&255),(x1467b-jmpbase)/256,(x1467b-jmpbase)&255
+	.ENDC
 		.dc.b 4
 		.ascii "CLOSE"
-		.dc.b ((268*2)/256),((268*2)&255),(x14603-x13696)/256,(x14603-x13696)&255
+		.dc.b ((268*2)/256),((268*2)&255),(x14603-jmpbase)/256,(x14603-jmpbase)&255
 		.dc.b 4
 		.ascii "CLEAR"
-		.dc.b ((271*2)/256),((271*2)&255),(x14630-x13696)/256,(x14630-x13696)&255
+		.dc.b ((271*2)/256),((271*2)&255),(x14630-jmpbase)/256,(x14630-jmpbase)&255
 		.dc.b 5
 		.ascii "CIRCLE"
-		.dc.b ((291*2)/256),((291*2)&255),(x1467b-x13696)/256,(x1467b-x13696)&255
+		.dc.b ((291*2)/256),((291*2)&255),(x1467b-jmpbase)/256,(x1467b-jmpbase)&255
 		.dc.b 4
 		.ascii "CHDIR"
-		.dc.b ((311*2)/256),((311*2)&255),(x1454c-x13696)/256,(x1454c-x13696)&255
+		.dc.b ((311*2)/256),((311*2)&255),(x1454c-jmpbase)/256,(x1454c-jmpbase)&255
 		.dc.b 6
 		.ascii "CHDRIVE"
-		.dc.b ((312*2)/256),((312*2)&255),(x14494-x13696)/256,(x14494-x13696)&255
+		.dc.b ((312*2)/256),((312*2)&255),(x14494-jmpbase)/256,(x14494-jmpbase)&255
 		.dc.b 2
 		.ascii "CLR"
-		.dc.b ((314*2)/256),((314*2)&255),(x14aa9-x13696)/256,(x14aa9-x13696)&255
+		.dc.b ((314*2)/256),((314*2)&255),(x14aa9-jmpbase)/256,(x14aa9-jmpbase)&255
 		.dc.b 2
 		.ascii "CLS"
-		.dc.b ((315*2)/256),((315*2)&255),(x1460f-x13696)/256,(x1460f-x13696)&255
+		.dc.b ((315*2)/256),((315*2)&255),(x1460f-jmpbase)/256,(x1460f-jmpbase)&255
 		.dc.b 3
 		.ascii "CLIP"
-		.dc.b ((356*2)/256),((356*2)&255),(x14764-x13696)/256,(x14764-x13696)&255
+		.dc.b ((356*2)/256),((356*2)&255),(x14764-jmpbase)/256,(x14764-jmpbase)&255
 		.dc.b 4
 		.ascii "CHAIN"
-		.dc.b ((392*2)/256),((392*2)&255),(x1454c-x13696)/256,(x1454c-x13696)&255
+		.dc.b ((392*2)/256),((392*2)&255),(x1454c-jmpbase)/256,(x1454c-jmpbase)&255
 		.dc.b 3
 		.ascii "CALL"
-		.dc.b ((152*2)/256),((152*2)&255),(x152bf-x13696)/256,(x152bf-x13696)&255
+		.dc.b ((152*2)/256),((152*2)&255),(x152bf-jmpbase)/256,(x152bf-jmpbase)&255
 		.dc.b 4
 		.ascii "CURVE"
-		.dc.b ((422*2)/256),((422*2)&255),(x1447a-x13696)/256,(x1447a-x13696)&255
-		.IFNE GBE
+		.dc.b ((422*2)/256),((422*2)&255),(x1447a-jmpbase)/256,(x1447a-jmpbase)&255
+	.IFNE GBE
 		.dc.b 7
 		.ascii "CPUFLUSH"
-		.dc.b ((476*2)/256),((476*2)&255),(x14484-x13696)/256,(x14484-x13696)&255
-		.ENDC
+		.dc.b ((476*2)/256),((476*2)&255),(x14484-jmpbase)/256,(x14484-jmpbase)&255
+	.ENDC
 cmd_d_table: /* 11cc7 */
 		.dc.b 3
 		.ascii "DATA"
-		.dc.b ((117*2)/256),((117*2)&255),(x1465e-x13696)/256,(x1465e-x13696)&255
+		.dc.b ((117*2)/256),((117*2)&255),(x1465e-jmpbase)/256,(x1465e-jmpbase)&255
 		.dc.b 1
 		.ascii "DO"
-		.dc.b ((0*2)/256),((0*2)&255),(x141bc-x13696)/256,(x141bc-x13696)&255
+		.dc.b ((0*2)/256),((0*2)&255),(x141bc-jmpbase)/256,(x141bc-jmpbase)&255
 		.dc.b 6
 		.ascii "DEFLINE"
-		.dc.b ((277*2)/256),((277*2)&255),(x14aed-x13696)/256,(x14aed-x13696)&255
+		.dc.b ((277*2)/256),((277*2)&255),(x14aed-jmpbase)/256,(x14aed-jmpbase)&255
 		.dc.b 7
 		.ascii "DEFMOUSE"
-		.dc.b ((279*2)/256),((279*2)&255),(x152a8-x13696)/256,(x152a8-x13696)&255
+		.dc.b ((279*2)/256),((279*2)&255),(x152a8-jmpbase)/256,(x152a8-jmpbase)&255
 		.dc.b 6
 		.ascii "DEFLIST"
-		.dc.b ((281*2)/256),((281*2)&255),(x14467-x13696)/256,(x14467-x13696)&255
+		.dc.b ((281*2)/256),((281*2)&255),(x14467-jmpbase)/256,(x14467-jmpbase)&255
 		.dc.b 6
 		.ascii "DEFMARK"
-		.dc.b ((282*2)/256),((282*2)&255),(x14afe-x13696)/256,(x14afe-x13696)&255
+		.dc.b ((282*2)/256),((282*2)&255),(x14afe-jmpbase)/256,(x14afe-jmpbase)&255
 		.dc.b 5
 		.ascii "DEFNUM"
-		.dc.b ((283*2)/256),((283*2)&255),(x14467-x13696)/256,(x14467-x13696)&255
+		.dc.b ((283*2)/256),((283*2)&255),(x14467-jmpbase)/256,(x14467-jmpbase)&255
 		.dc.b 6
 		.ascii "DEFTEXT"
-		.dc.b ((284*2)/256),((284*2)&255),(x14ae1-x13696)/256,(x14ae1-x13696)&255
+		.dc.b ((284*2)/256),((284*2)&255),(x14ae1-jmpbase)/256,(x14ae1-jmpbase)&255
 		.dc.b 6
 		.ascii "DEFFILL"
-		.dc.b ((285*2)/256),((285*2)&255),(x14756-x13696)/256,(x14756-x13696)&255
+		.dc.b ((285*2)/256),((285*2)&255),(x14756-jmpbase)/256,(x14756-jmpbase)&255
 		.dc.b 4
 		.ascii "DEFFN"
-		.dc.b ((57*2)/256),((57*2)&255),(x148fc-x13696)/256,(x148fc-x13696)&255
+		.dc.b ((57*2)/256),((57*2)&255),(x148fc-jmpbase)/256,(x148fc-jmpbase)&255
 		.dc.b 6
 		.ascii "DEFAULT"
-		.dc.b ((15*2)/256),((15*2)&255),(x1429f-x13696)/256,(x1429f-x13696)&255
+		.dc.b ((15*2)/256),((15*2)&255),(x1429f-jmpbase)/256,(x1429f-jmpbase)&255
 		.dc.b 2
 		.ascii "DEC"
-		.dc.b ((168*2)/256),((168*2)&255),(x14331-x13696)/256,(x14331-x13696)&255
+		.dc.b ((168*2)/256),((168*2)&255),(x14331-jmpbase)/256,(x14331-jmpbase)&255
 		.dc.b 2
 		.ascii "DIV"
-		.dc.b ((200*2)/256),((200*2)&255),(x142fc-x13696)/256,(x142fc-x13696)&255
+		.dc.b ((200*2)/256),((200*2)&255),(x142fc-jmpbase)/256,(x142fc-jmpbase)&255
 		.dc.b 4
 		.ascii "DPOKE"
-		.dc.b ((98*2)/256),((98*2)&255),(x14464-x13696)/256,(x14464-x13696)&255
+		.dc.b ((98*2)/256),((98*2)&255),(x14464-jmpbase)/256,(x14464-jmpbase)&255
 		.dc.b 2
 		.ascii "DIM"
-		.dc.b ((210*2)/256),((210*2)&255),(x147fc-x13696)/256,(x147fc-x13696)&255
+		.dc.b ((210*2)/256),((210*2)&255),(x147fc-jmpbase)/256,(x147fc-jmpbase)&255
 		.dc.b 7
 		.ascii "DMASOUND"
-		.dc.b ((450*2)/256),((450*2)&255),(x14796-x13696)/256,(x14796-x13696)&255
+		.dc.b ((450*2)/256),((450*2)&255),(x14796-jmpbase)/256,(x14796-jmpbase)&255
 		.dc.b 9
 		.ascii "DMACONTROL"
-		.dc.b ((451*2)/256),((451*2)&255),(x14467-x13696)/256,(x14467-x13696)&255
+		.dc.b ((451*2)/256),((451*2)&255),(x14467-jmpbase)/256,(x14467-jmpbase)&255
 cmd_double_ref:
 		.dc.b 6
 		.ascii "DOUBLE{"
-		.dc.b ((237*2)/256),((237*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b ((237*2)/256),((237*2)&255),(x14169-jmpbase)/256,(x14169-jmpbase)&255
 		.dc.b 2
 		.ascii "DIR"
-		.dc.b ((319*2)/256),((319*2)&255),(x14520-x13696)/256,(x14520-x13696)&255
+		.dc.b ((319*2)/256),((319*2)&255),(x14520-jmpbase)/256,(x14520-jmpbase)&255
 		.dc.b 5
 		.ascii "DELETE"
-		.dc.b ((351*2)/256),((351*2)&255),(x14116-x13696)/256,(x14116-x13696)&255
+		.dc.b ((351*2)/256),((351*2)&255),(x14116-jmpbase)/256,(x14116-jmpbase)&255
 		.dc.b 3
 		.ascii "DRAW"
-		.dc.b ((370*2)/256),((370*2)&255),(x1469c-x13696)/256,(x1469c-x13696)&255
+		.dc.b ((370*2)/256),((370*2)&255),(x1469c-jmpbase)/256,(x1469c-jmpbase)&255
 		.dc.b 4
 		.ascii "DELAY"
-		.dc.b ((110*2)/256),((110*2)&255),(x14467-x13696)/256,(x14467-x13696)&255
+		.dc.b ((110*2)/256),((110*2)&255),(x14467-jmpbase)/256,(x14467-jmpbase)&255
 		.dc.b 5
 		.ascii "DEFINT"
-		.dc.b ((381*2)/256),((381*2)&255),(x14555-x13696)/256,(x14555-x13696)&255
+		.dc.b ((381*2)/256),((381*2)&255),(x14555-jmpbase)/256,(x14555-jmpbase)&255
 		.dc.b 5
 		.ascii "DEFBYT"
-		.dc.b ((383*2)/256),((383*2)&255),(x14555-x13696)/256,(x14555-x13696)&255
+		.dc.b ((383*2)/256),((383*2)&255),(x14555-jmpbase)/256,(x14555-jmpbase)&255
 		.dc.b 5
 		.ascii "DEFWRD"
-		.dc.b ((384*2)/256),((384*2)&255),(x14555-x13696)/256,(x14555-x13696)&255
+		.dc.b ((384*2)/256),((384*2)&255),(x14555-jmpbase)/256,(x14555-jmpbase)&255
 		.dc.b 5
 		.ascii "DEFBIT"
-		.dc.b ((385*2)/256),((385*2)&255),(x14555-x13696)/256,(x14555-x13696)&255
+		.dc.b ((385*2)/256),((385*2)&255),(x14555-jmpbase)/256,(x14555-jmpbase)&255
 		.dc.b 5
 		.ascii "DEFSTR"
-		.dc.b ((386*2)/256),((386*2)&255),(x14555-x13696)/256,(x14555-x13696)&255
+		.dc.b ((386*2)/256),((386*2)&255),(x14555-jmpbase)/256,(x14555-jmpbase)&255
 		.dc.b 5
 		.ascii "DEFSNG"
-		.dc.b ((382*2)/256),((382*2)&255),(x14555-x13696)/256,(x14555-x13696)&255
+		.dc.b ((382*2)/256),((382*2)&255),(x14555-jmpbase)/256,(x14555-jmpbase)&255
 		.dc.b 5
 		.ascii "DEFDBL"
-		.dc.b ((382*2)/256),((382*2)&255),(x14555-x13696)/256,(x14555-x13696)&255
+		.dc.b ((382*2)/256),((382*2)&255),(x14555-jmpbase)/256,(x14555-jmpbase)&255
 		.dc.b 5
 		.ascii "DEFFLT"
-		.dc.b ((382*2)/256),((382*2)&255),(x14555-x13696)/256,(x14555-x13696)&255
+		.dc.b ((382*2)/256),((382*2)&255),(x14555-jmpbase)/256,(x14555-jmpbase)&255
 		.dc.b 3
 		.ascii "DUMP"
-		.dc.b ((398*2)/256),((398*2)&255),(x14520-x13696)/256,(x14520-x13696)&255
+		.dc.b ((398*2)/256),((398*2)&255),(x14520-jmpbase)/256,(x14520-jmpbase)&255
 		.dc.b 5
 		.ascii "DATE$="
-		.dc.b ((408*2)/256),((408*2)&255),(x1454c-x13696)/256,(x1454c-x13696)&255
+		.dc.b ((408*2)/256),((408*2)&255),(x1454c-jmpbase)/256,(x1454c-jmpbase)&255
 cmd_e_table: /* 11e1d */
 		.dc.b 3
 		.ascii "ELSE"
-		.dc.b ((14*2)/256),((14*2)&255),(x141da-x13696)/256,(x141da-x13696)&255
+		.dc.b ((14*2)/256),((14*2)&255),(x141da-jmpbase)/256,(x141da-jmpbase)&255
 		.dc.b 4
 		.ascii "ENDIF"
-		.dc.b ((9*2)/256),((9*2)&255),(x1446a-x13696)/256,(x1446a-x13696)&255
+		.dc.b ((9*2)/256),((9*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
 		.dc.b 6
 		.ascii "ENDFUNC"
-		.dc.b ((11*2)/256),((11*2)&255),(x1446a-x13696)/256,(x1446a-x13696)&255
+		.dc.b ((11*2)/256),((11*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
 		.dc.b 8
 		.ascii "ENDSWITCH"
-		.dc.b ((13*2)/256),((13*2)&255),(x142a4-x13696)/256,(x142a4-x13696)&255
+		.dc.b ((13*2)/256),((13*2)&255),(x142a4-jmpbase)/256,(x142a4-jmpbase)&255
 		.dc.b 8
 		.ascii "ENDSELECT"
-		.dc.b ((13*2)/256),((13*2)&255),(x142a4-x13696)/256,(x142a4-x13696)&255
+		.dc.b ((13*2)/256),((13*2)&255),(x142a4-jmpbase)/256,(x142a4-jmpbase)&255
 		.dc.b 7
 		.ascii "ENDWHILE"
-		.dc.b ((5*2)/256),((5*2)&255),(x141b7-x13696)/256,(x141b7-x13696)&255
+		.dc.b ((5*2)/256),((5*2)&255),(x141b7-jmpbase)/256,(x141b7-jmpbase)&255
 		.dc.b 4
 		.ascii "ENDDO"
-		.dc.b ((1*2)/256),((1*2)&255),(x141cd-x13696)/256,(x141cd-x13696)&255
+		.dc.b ((1*2)/256),((1*2)&255),(x141cd-jmpbase)/256,(x141cd-jmpbase)&255
 		.dc.b 8
 		.ascii "ENDREPEAT"
-		.dc.b ((3*2)/256),((3*2)&255),(x141a8-x13696)/256,(x141a8-x13696)&255
+		.dc.b ((3*2)/256),((3*2)&255),(x141a8-jmpbase)/256,(x141a8-jmpbase)&255
 		.dc.b 5
 		.ascii "ENDFOR"
-		.dc.b ((31*2)/256),((31*2)&255),(x14251-x13696)/256,(x14251-x13696)&255
+		.dc.b ((31*2)/256),((31*2)&255),(x14251-jmpbase)/256,(x14251-jmpbase)&255
 		.dc.b 6
 		.ascii "ENDPROC"
-		.dc.b ((7*2)/256),((7*2)&255),(x141ec-x13696)/256,(x141ec-x13696)&255
+		.dc.b ((7*2)/256),((7*2)&255),(x141ec-jmpbase)/256,(x141ec-jmpbase)&255
 		.dc.b 5
 		.ascii "ENDSUB"
-		.dc.b ((7*2)/256),((7*2)&255),(x141ec-x13696)/256,(x141ec-x13696)&255
+		.dc.b ((7*2)/256),((7*2)&255),(x141ec-jmpbase)/256,(x141ec-jmpbase)&255
 		.dc.b 6
 		.ascii "EXIT IF"
-		.dc.b ((43*2)/256),((43*2)&255),(x141e1-x13696)/256,(x141e1-x13696)&255
+		.dc.b ((43*2)/256),((43*2)&255),(x141e1-jmpbase)/256,(x141e1-jmpbase)&255
 		.dc.b 6
 		.ascii "EXIT IF"
-		.dc.b ((55*2)/256),((55*2)&255),(x141e1-x13696)/256,(x141e1-x13696)&255
+		.dc.b ((55*2)/256),((55*2)&255),(x141e1-jmpbase)/256,(x141e1-jmpbase)&255
 		.dc.b 6
 		.ascii "ELLIPSE"
-		.dc.b ((295*2)/256),((295*2)&255),(x14670-x13696)/256,(x14670-x13696)&255
+		.dc.b ((295*2)/256),((295*2)&255),(x14670-jmpbase)/256,(x14670-jmpbase)&255
 		.dc.b 4
 		.ascii "ERROR"
-		.dc.b ((299*2)/256),((299*2)&255),(x14467-x13696)/256,(x14467-x13696)&255
+		.dc.b ((299*2)/256),((299*2)&255),(x14467-jmpbase)/256,(x14467-jmpbase)&255
 		.dc.b 3
 		.ascii "EDIT"
-		.dc.b ((328*2)/256),((328*2)&255),(x1446a-x13696)/256,(x1446a-x13696)&255
+		.dc.b ((328*2)/256),((328*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
 		.dc.b 4
 		.ascii "ERASE"
-		.dc.b ((322*2)/256),((322*2)&255),(x1441d-x13696)/256,(x1441d-x13696)&255
+		.dc.b ((322*2)/256),((322*2)&255),(x1441d-jmpbase)/256,(x1441d-jmpbase)&255
 		.dc.b 3
 		.ascii "EXEC"
-		.dc.b ((323*2)/256),((323*2)&255),(x144d8-x13696)/256,(x144d8-x13696)&255
+		.dc.b ((323*2)/256),((323*2)&255),(x144d8-jmpbase)/256,(x144d8-jmpbase)&255
 		.dc.b 4
 		.ascii "EVERY"
-		.dc.b ((362*2)/256),((362*2)&255),(x148b7-x13696)/256,(x148b7-x13696)&255
+		.dc.b ((362*2)/256),((362*2)&255),(x148b7-jmpbase)/256,(x148b7-jmpbase)&255
 cmd_f_table: /* 11ef3 */
 		.dc.b 2
 		.ascii "FOR"
-		.dc.b ((19*2)/256),((19*2)&255),(x141fb-x13696)/256,(x141fb-x13696)&255
+		.dc.b ((19*2)/256),((19*2)&255),(x141fb-jmpbase)/256,(x141fb-jmpbase)&255
 		.dc.b 7
 		.ascii "FUNCTION"
-		.dc.b ((10*2)/256),((10*2)&255),(x148ec-x13696)/256,(x148ec-x13696)&255
+		.dc.b ((10*2)/256),((10*2)&255),(x148ec-jmpbase)/256,(x148ec-jmpbase)&255
 		.dc.b 5
 		.ascii "FLOAT{"
-		.dc.b ((236*2)/256),((236*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b ((236*2)/256),((236*2)&255),(x14169-jmpbase)/256,(x14169-jmpbase)&255
 		.dc.b 3
 		.ascii "FILL"
-		.dc.b ((300*2)/256),((300*2)&255),(x1449f-x13696)/256,(x1449f-x13696)&255
+		.dc.b ((300*2)/256),((300*2)&255),(x1449f-jmpbase)/256,(x1449f-jmpbase)&255
 		.dc.b 4
 		.ascii "FIELD"
-		.dc.b ((324*2)/256),((324*2)&255),(x146ed-x13696)/256,(x146ed-x13696)&255
+		.dc.b ((324*2)/256),((324*2)&255),(x146ed-jmpbase)/256,(x146ed-jmpbase)&255
 cmd_files:
 		.dc.b 4
 		.ascii "FILES"
-		.dc.b ((325*2)/256),((325*2)&255),(x1450a-x13696)/256,(x1450a-x13696)&255
+		.dc.b ((325*2)/256),((325*2)&255),(x1450a-jmpbase)/256,(x1450a-jmpbase)&255
 cmd_fileselect:
 		.dc.b 9
 		.ascii "FILESELECT"
-		.dc.b ((329*2)/256),((329*2)&255),(x1450a-x13696)/256,(x1450a-x13696)&255
+		.dc.b ((329*2)/256),((329*2)&255),(x1450a-jmpbase)/256,(x1450a-jmpbase)&255
 		.dc.b 4
 		.ascii "FULLW"
-		.dc.b ((361*2)/256),((361*2)&255),(x14644-x13696)/256,(x14644-x13696)&255
+		.dc.b ((361*2)/256),((361*2)&255),(x14644-jmpbase)/256,(x14644-jmpbase)&255
 cmd_g_table: /* 11f49 */
 		.dc.b 4
 		.ascii "GOSUB"
-		.dc.b ((61*2)/256),((61*2)&255),(x1495a-x13696)/256,(x1495a-x13696)&255
+		.dc.b ((61*2)/256),((61*2)&255),(x1495a-jmpbase)/256,(x1495a-jmpbase)&255
 		.dc.b 3
 		.ascii "GOTO"
-		.dc.b ((58*2)/256),((58*2)&255),(x149a7-x13696)/256,(x149a7-x13696)&255
+		.dc.b ((58*2)/256),((58*2)&255),(x149a7-jmpbase)/256,(x149a7-jmpbase)&255
 		.dc.b 5
 		.ascii "GEMSYS"
-		.dc.b ((218*2)/256),((218*2)&255),(x14b88-x13696)/256,(x14b88-x13696)&255
+		.dc.b ((218*2)/256),((218*2)&255),(x14b88-jmpbase)/256,(x14b88-jmpbase)&255
 		.dc.b 6
 		.ascii "GINTIN("
-		.dc.b ((226*2)/256),((226*2)&255),(x14152-x13696)/256,(x14152-x13696)&255
+		.dc.b ((226*2)/256),((226*2)&255),(x14152-jmpbase)/256,(x14152-jmpbase)&255
 		.dc.b 7
 		.ascii "GINTOUT("
-		.dc.b ((227*2)/256),((227*2)&255),(x14152-x13696)/256,(x14152-x13696)&255
+		.dc.b ((227*2)/256),((227*2)&255),(x14152-jmpbase)/256,(x14152-jmpbase)&255
 		.dc.b 7
 		.ascii "GCONTRL("
-		.dc.b ((229*2)/256),((229*2)&255),(x14152-x13696)/256,(x14152-x13696)&255
+		.dc.b ((229*2)/256),((229*2)&255),(x14152-jmpbase)/256,(x14152-jmpbase)&255
 		.dc.b 2
 		.ascii "GET"
-		.dc.b ((257*2)/256),((257*2)&255),(x14714-x13696)/256,(x14714-x13696)&255
+		.dc.b ((257*2)/256),((257*2)&255),(x14714-jmpbase)/256,(x14714-jmpbase)&255
 		.dc.b 8
 		.ascii "GRAPHMODE"
-		.dc.b ((278*2)/256),((278*2)&255),(x14467-x13696)/256,(x14467-x13696)&255
-		.IFNE GBE
+		.dc.b ((278*2)/256),((278*2)&255),(x14467-jmpbase)/256,(x14467-jmpbase)&255
+	.IFNE GBE
 		.dc.b 5
 		.ascii "GSTICK"
-		.dc.b ((478*2)/256),((478*2)&255),(x14481-x13696)/256,(x14481-x13696)&255
+		.dc.b ((478*2)/256),((478*2)&255),(x14481-jmpbase)/256,(x14481-jmpbase)&255
 		.dc.b 5
 		.ascii "GHIDEM"
-		.dc.b ((466*2)/256),((466*2)&255),(x14484-x13696)/256,(x14484-x13696)&255
+		.dc.b ((466*2)/256),((466*2)&255),(x14484-jmpbase)/256,(x14484-jmpbase)&255
 		.dc.b 5
 		.ascii "GSHOWM"
-		.dc.b ((467*2)/256),((467*2)&255),(x14484-x13696)/256,(x14484-x13696)&255
+		.dc.b ((467*2)/256),((467*2)&255),(x14484-jmpbase)/256,(x14484-jmpbase)&255
 		.dc.b 5
 		.ascii "GMOUSE"
-		.dc.b ((468*2)/256),((468*2)&255),(x14ae1-x13696)/256,(x14ae1-x13696)&255
-		.ENDC
+		.dc.b ((468*2)/256),((468*2)&255),(x14ae1-jmpbase)/256,(x14ae1-jmpbase)&255
+	.ENDC
 cmd_h_table: /* 11fa3 */
 		.dc.b 7
 		.ascii "HARDCOPY"
-		.dc.b ((343*2)/256),((343*2)&255),(x1446a-x13696)/256,(x1446a-x13696)&255
+		.dc.b ((343*2)/256),((343*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
 		.dc.b 4
 		.ascii "HIDEM"
-		.dc.b ((302*2)/256),((302*2)&255),(x1446a-x13696)/256,(x1446a-x13696)&255
+		.dc.b ((302*2)/256),((302*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
 		.dc.b 4
 		.ascii "HLINE"
-		.dc.b ((91*2)/256),((91*2)&255),(x1447d-x13696)/256,(x1447d-x13696)&255
+		.dc.b ((91*2)/256),((91*2)&255),(x1447d-jmpbase)/256,(x1447d-jmpbase)&255
 		.dc.b 3
 		.ascii "HTAB"
-		.dc.b ((320*2)/256),((320*2)&255),(x14467-x13696)/256,(x14467-x13696)&255
+		.dc.b ((320*2)/256),((320*2)&255),(x14467-jmpbase)/256,(x14467-jmpbase)&255
 cmd_i_table: /* 11fcd */
 		.dc.b 1
 		.ascii "IF"
-		.dc.b ((8*2)/256),((8*2)&255),(x1419d-x13696)/256,(x1419d-x13696)&255
+		.dc.b ((8*2)/256),((8*2)&255),(x1419d-jmpbase)/256,(x1419d-jmpbase)&255
 		.dc.b 2
 		.ascii "INC"
-		.dc.b ((160*2)/256),((160*2)&255),(x14331-x13696)/256,(x14331-x13696)&255
+		.dc.b ((160*2)/256),((160*2)&255),(x14331-jmpbase)/256,(x14331-jmpbase)&255
 		.dc.b 5
 		.ascii "INTIN("
-		.dc.b ((222*2)/256),((222*2)&255),(x14152-x13696)/256,(x14152-x13696)&255
+		.dc.b ((222*2)/256),((222*2)&255),(x14152-jmpbase)/256,(x14152-jmpbase)&255
 		.dc.b 6
 		.ascii "INTOUT("
-		.dc.b ((223*2)/256),((223*2)&255),(x14152-x13696)/256,(x14152-x13696)&255
+		.dc.b ((223*2)/256),((223*2)&255),(x14152-jmpbase)/256,(x14152-jmpbase)&255
 		.dc.b 3
 		.ascii "INT{"
-		.dc.b ((232*2)/256),((232*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b ((232*2)/256),((232*2)&255),(x14169-jmpbase)/256,(x14169-jmpbase)&255
 		.dc.b 4
 		.ascii "INFOW"
-		.dc.b ((276*2)/256),((276*2)&255),(x14654-x13696)/256,(x14654-x13696)&255
+		.dc.b ((276*2)/256),((276*2)&255),(x14654-jmpbase)/256,(x14654-jmpbase)&255
 		.dc.b 6
 		.ascii "INFOW #"
-		.dc.b ((276*2)/256),((276*2)&255),(x14654-x13696)/256,(x14654-x13696)&255
+		.dc.b ((276*2)/256),((276*2)&255),(x14654-jmpbase)/256,(x14654-jmpbase)&255
 		.dc.b 5
 		.ascii "INSERT"
-		.dc.b ((350*2)/256),((350*2)&255),(x1411e-x13696)/256,(x1411e-x13696)&255
+		.dc.b ((350*2)/256),((350*2)&255),(x1411e-jmpbase)/256,(x1411e-jmpbase)&255
 		.dc.b 4
 		.ascii "INPUT"
-		.dc.b ((368*2)/256),((368*2)&255),(x151da-x13696)/256,(x151da-x13696)&255
+		.dc.b ((368*2)/256),((368*2)&255),(x151da-jmpbase)/256,(x151da-jmpbase)&255
 		.dc.b 5
 		.ascii "INLINE"
-		.dc.b ((417*2)/256),((417*2)&255),(x1446c-x13696)/256,(x1446c-x13696)&255
+		.dc.b ((417*2)/256),((417*2)&255),(x1446c-jmpbase)/256,(x1446c-jmpbase)&255
 cmd_k_table: /* 12032 */
 		.dc.b 5
 		.ascii "KEYPAD"
-		.dc.b ((375*2)/256),((375*2)&255),(x14467-x13696)/256,(x14467-x13696)&255
+		.dc.b ((375*2)/256),((375*2)&255),(x14467-jmpbase)/256,(x14467-jmpbase)&255
 		.dc.b 6
 		.ascii "KEYTEST"
-		.dc.b ((376*2)/256),((376*2)&255),(x14ac2-x13696)/256,(x14ac2-x13696)&255
+		.dc.b ((376*2)/256),((376*2)&255),(x14ac2-jmpbase)/256,(x14ac2-jmpbase)&255
 		.dc.b 5
 		.ascii "KEYGET"
-		.dc.b ((377*2)/256),((377*2)&255),(x14ac2-x13696)/256,(x14ac2-x13696)&255
+		.dc.b ((377*2)/256),((377*2)&255),(x14ac2-jmpbase)/256,(x14ac2-jmpbase)&255
 		.dc.b 6
 		.ascii "KEYLOOK"
-		.dc.b ((378*2)/256),((378*2)&255),(x14ac2-x13696)/256,(x14ac2-x13696)&255
+		.dc.b ((378*2)/256),((378*2)&255),(x14ac2-jmpbase)/256,(x14ac2-jmpbase)&255
 		.dc.b 7
 		.ascii "KEYPRESS"
-		.dc.b ((379*2)/256),((379*2)&255),(x14467-x13696)/256,(x14467-x13696)&255
+		.dc.b ((379*2)/256),((379*2)&255),(x14467-jmpbase)/256,(x14467-jmpbase)&255
 		.dc.b 5
 		.ascii "KEYDEF"
-		.dc.b ((380*2)/256),((380*2)&255),(x14ada-x13696)/256,(x14ada-x13696)&255
+		.dc.b ((380*2)/256),((380*2)&255),(x14ada-jmpbase)/256,(x14ada-jmpbase)&255
 		.dc.b 3
 		.ascii "KILL"
-		.dc.b ((333*2)/256),((333*2)&255),(x1454c-x13696)/256,(x1454c-x13696)&255
+		.dc.b ((333*2)/256),((333*2)&255),(x1454c-jmpbase)/256,(x1454c-jmpbase)&255
 cmd_l_table: /* 12081 */
 		.dc.b 3
 		.ascii "LOOP"
-		.dc.b ((1*2)/256),((1*2)&255),(x141cd-x13696)/256,(x141cd-x13696)&255
+		.dc.b ((1*2)/256),((1*2)&255),(x141cd-jmpbase)/256,(x141cd-jmpbase)&255
 		.dc.b 2
 		.ascii "LET"
-		.dc.b ((64*2)/256),((64*2)&255),(x14083-x13696)/256,(x14083-x13696)&255
+		.dc.b ((64*2)/256),((64*2)&255),(x14083-jmpbase)/256,(x14083-jmpbase)&255
 		.dc.b 3
 		.ascii "LINE"
-		.dc.b ((155*2)/256),((155*2)&255),(x14439-x13696)/256,(x14439-x13696)&255
+		.dc.b ((155*2)/256),((155*2)&255),(x14439-jmpbase)/256,(x14439-jmpbase)&255
 		.dc.b 4
 		.ascii "LPOKE"
-		.dc.b ((99*2)/256),((99*2)&255),(x14464-x13696)/256,(x14464-x13696)&255
+		.dc.b ((99*2)/256),((99*2)&255),(x14464-jmpbase)/256,(x14464-jmpbase)&255
 		.dc.b 4
 		.ascii "LONG{"
-		.dc.b ((231*2)/256),((231*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b ((231*2)/256),((231*2)&255),(x14169-jmpbase)/256,(x14169-jmpbase)&255
 		.dc.b 4
 		.ascii "LOCAL"
-		.dc.b ((53*2)/256),((53*2)&255),(x14aa9-x13696)/256,(x14aa9-x13696)&255
+		.dc.b ((53*2)/256),((53*2)&255),(x14aa9-jmpbase)/256,(x14aa9-jmpbase)&255
 		.dc.b 5
 		.ascii "LPRINT"
-		.dc.b ((303*2)/256),((303*2)&255),(x15247-x13696)/256,(x15247-x13696)&255
+		.dc.b ((303*2)/256),((303*2)&255),(x15247-jmpbase)/256,(x15247-jmpbase)&255
 		.dc.b 3
 		.ascii "LSET"
-		.dc.b ((304*2)/256),((304*2)&255),(x14181-x13696)/256,(x14181-x13696)&255
+		.dc.b ((304*2)/256),((304*2)&255),(x14181-jmpbase)/256,(x14181-jmpbase)&255
 		.dc.b 5
 		.ascii "LOCATE"
-		.dc.b ((125*2)/256),((125*2)&255),(x14464-x13696)/256,(x14464-x13696)&255
+		.dc.b ((125*2)/256),((125*2)&255),(x14464-jmpbase)/256,(x14464-jmpbase)&255
 		.dc.b 3
 		.ascii "LIST"
-		.dc.b ((388*2)/256),((388*2)&255),(x1454c-x13696)/256,(x1454c-x13696)&255
+		.dc.b ((388*2)/256),((388*2)&255),(x1454c-jmpbase)/256,(x1454c-jmpbase)&255
 		.dc.b 4
 		.ascii "LLIST"
-		.dc.b ((389*2)/256),((389*2)&255),(x1454c-x13696)/256,(x1454c-x13696)&255
+		.dc.b ((389*2)/256),((389*2)&255),(x1454c-jmpbase)/256,(x1454c-jmpbase)&255
 		.dc.b 3
 		.ascii "LOAD"
-		.dc.b ((395*2)/256),((395*2)&255),(x1454c-x13696)/256,(x1454c-x13696)&255
-		.IFNE GBE
+		.dc.b ((395*2)/256),((395*2)&255),(x1454c-jmpbase)/256,(x1454c-jmpbase)&255
+	.IFNE GBE
 		.dc.b 6
 		.ascii "LOG_MSG"
-		.dc.b ((484*2)/256),((484*2)&255),(x14569-x13696)/256,(x14569-x13696)&255
+		.dc.b ((484*2)/256),((484*2)&255),(x14569-jmpbase)/256,(x14569-jmpbase)&255
 		.dc.b 6
 		.ascii "LOG_SET"
-		.dc.b ((485*2)/256),((485*2)&255),(x14481-x13696)/256,(x14481-x13696)&255
+		.dc.b ((485*2)/256),((485*2)&255),(x14481-jmpbase)/256,(x14481-jmpbase)&255
 		.dc.b 7
 		.ascii "LOG_FILE"
-		.dc.b ((486*2)/256),((486*2)&255),(x14569-x13696)/256,(x14569-x13696)&255
+		.dc.b ((486*2)/256),((486*2)&255),(x14569-jmpbase)/256,(x14569-jmpbase)&255
 		.dc.b 7
 		.ascii "LOG_KILL"
-		.dc.b ((487*2)/256),((487*2)&255),(x14484-x13696)/256,(x14484-x13696)&255
-		.ENDC
+		.dc.b ((487*2)/256),((487*2)&255),(x14484-jmpbase)/256,(x14484-jmpbase)&255
+	.ENDC
 cmd_m_table: /* 120f4 */
 		.dc.b 2
 		.ascii "MAT"
-		.dc.b ((424*2)/256),((424*2)&255),(x13ed2-x13696)/256,(x13ed2-x13696)&255
+		.dc.b ((424*2)/256),((424*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
 		.dc.b 6
 		.ascii "MONITOR"
-		.dc.b ((48*2)/256),((48*2)&255),(x14b14-x13696)/256,(x14b14-x13696)&255
+		.dc.b ((48*2)/256),((48*2)&255),(x14b14-jmpbase)/256,(x14b14-jmpbase)&255
 		.dc.b 2
 		.ascii "MUL"
-		.dc.b ((192*2)/256),((192*2)&255),(x142e7-x13696)/256,(x142e7-x13696)&255
+		.dc.b ((192*2)/256),((192*2)&255),(x142e7-jmpbase)/256,(x142e7-jmpbase)&255
 		.dc.b 3
 		.ascii "MENU"
-		.dc.b ((139*2)/256),((139*2)&255),(x14a40-x13696)/256,(x14a40-x13696)&255
+		.dc.b ((139*2)/256),((139*2)&255),(x14a40-jmpbase)/256,(x14a40-jmpbase)&255
 		.dc.b 4
 		.ascii "MID$("
-		.dc.b ((305*2)/256),((305*2)&255),(x14662-x13696)/256,(x14662-x13696)&255
+		.dc.b ((305*2)/256),((305*2)&255),(x14662-jmpbase)/256,(x14662-jmpbase)&255
 		.dc.b 4
 		.ascii "MKDIR"
-		.dc.b ((331*2)/256),((331*2)&255),(x1454c-x13696)/256,(x1454c-x13696)&255
+		.dc.b ((331*2)/256),((331*2)&255),(x1454c-jmpbase)/256,(x1454c-jmpbase)&255
 		.dc.b 4
 		.ascii "MOUSE"
-		.dc.b ((332*2)/256),((332*2)&255),(x14aba-x13696)/256,(x14aba-x13696)&255
+		.dc.b ((332*2)/256),((332*2)&255),(x14aba-jmpbase)/256,(x14aba-jmpbase)&255
 		.dc.b 3
 		.ascii "MODE"
-		.dc.b ((414*2)/256),((414*2)&255),(x14467-x13696)/256,(x14467-x13696)&255
+		.dc.b ((414*2)/256),((414*2)&255),(x14467-jmpbase)/256,(x14467-jmpbase)&255
 		.dc.b 5
 		.ascii "MW_OUT"
-		.dc.b ((452*2)/256),((452*2)&255),(x14464-x13696)/256,(x14464-x13696)&255
+		.dc.b ((452*2)/256),((452*2)&255),(x14464-jmpbase)/256,(x14464-jmpbase)&255
 cmd_n_table: /* 1214b */
 		.dc.b 3
 		.ascii "NEXT"
-		.dc.b ((31*2)/256),((31*2)&255),(x14251-x13696)/256,(x14251-x13696)&255
+		.dc.b ((31*2)/256),((31*2)&255),(x14251-jmpbase)/256,(x14251-jmpbase)&255
 		.dc.b 3
 		.ascii "NAME"
-		.dc.b ((330*2)/256),((330*2)&255),(x14566-x13696)/256,(x14566-x13696)&255
+		.dc.b ((330*2)/256),((330*2)&255),(x14566-jmpbase)/256,(x14566-jmpbase)&255
 		.dc.b 2
 		.ascii "NEW"
-		.dc.b ((306*2)/256),((306*2)&255),(x1446a-x13696)/256,(x1446a-x13696)&255
+		.dc.b ((306*2)/256),((306*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
 cmd_o_table: /* 12165 */
 		.dc.b 3
 		.ascii "OPEN"
-		.dc.b ((265*2)/256),((265*2)&255),(x145d3-x13696)/256,(x145d3-x13696)&255
+		.dc.b ((265*2)/256),((265*2)&255),(x145d3-jmpbase)/256,(x145d3-jmpbase)&255
 		.dc.b 1
 		.ascii "ON"
-		.dc.b ((126*2)/256),((126*2)&255),(x1482d-x13696)/256,(x1482d-x13696)&255
+		.dc.b ((126*2)/256),((126*2)&255),(x1482d-jmpbase)/256,(x1482d-jmpbase)&255
 		.dc.b 7
 		.ascii "OB_NEXT("
-		.dc.b ((242*2)/256),((242*2)&255),(x1414f-x13696)/256,(x1414f-x13696)&255
+		.dc.b ((242*2)/256),((242*2)&255),(x1414f-jmpbase)/256,(x1414f-jmpbase)&255
 		.dc.b 7
 		.ascii "OB_HEAD("
-		.dc.b ((243*2)/256),((243*2)&255),(x1414f-x13696)/256,(x1414f-x13696)&255
+		.dc.b ((243*2)/256),((243*2)&255),(x1414f-jmpbase)/256,(x1414f-jmpbase)&255
 		.dc.b 7
 		.ascii "OB_TAIL("
-		.dc.b ((244*2)/256),((244*2)&255),(x1414f-x13696)/256,(x1414f-x13696)&255
+		.dc.b ((244*2)/256),((244*2)&255),(x1414f-jmpbase)/256,(x1414f-jmpbase)&255
 		.dc.b 7
 		.ascii "OB_TYPE("
-		.dc.b ((245*2)/256),((245*2)&255),(x1414f-x13696)/256,(x1414f-x13696)&255
+		.dc.b ((245*2)/256),((245*2)&255),(x1414f-jmpbase)/256,(x1414f-jmpbase)&255
 		.dc.b 8
 		.ascii "OB_FLAGS("
-		.dc.b ((246*2)/256),((246*2)&255),(x1414f-x13696)/256,(x1414f-x13696)&255
+		.dc.b ((246*2)/256),((246*2)&255),(x1414f-jmpbase)/256,(x1414f-jmpbase)&255
 		.dc.b 8
 		.ascii "OB_STATE("
-		.dc.b ((247*2)/256),((247*2)&255),(x1414f-x13696)/256,(x1414f-x13696)&255
+		.dc.b ((247*2)/256),((247*2)&255),(x1414f-jmpbase)/256,(x1414f-jmpbase)&255
 		.dc.b 7
 		.ascii "OB_SPEC("
-		.dc.b ((248*2)/256),((248*2)&255),(x1414f-x13696)/256,(x1414f-x13696)&255
+		.dc.b ((248*2)/256),((248*2)&255),(x1414f-jmpbase)/256,(x1414f-jmpbase)&255
 		.dc.b 4
 		.ascii "OB_X("
-		.dc.b ((249*2)/256),((249*2)&255),(x1414f-x13696)/256,(x1414f-x13696)&255
+		.dc.b ((249*2)/256),((249*2)&255),(x1414f-jmpbase)/256,(x1414f-jmpbase)&255
 		.dc.b 4
 		.ascii "OB_Y("
-		.dc.b ((250*2)/256),((250*2)&255),(x1414f-x13696)/256,(x1414f-x13696)&255
+		.dc.b ((250*2)/256),((250*2)&255),(x1414f-jmpbase)/256,(x1414f-jmpbase)&255
 		.dc.b 4
 		.ascii "OB_W("
-		.dc.b ((251*2)/256),((251*2)&255),(x1414f-x13696)/256,(x1414f-x13696)&255
+		.dc.b ((251*2)/256),((251*2)&255),(x1414f-jmpbase)/256,(x1414f-jmpbase)&255
 		.dc.b 4
 		.ascii "OB_H("
-		.dc.b ((252*2)/256),((252*2)&255),(x1414f-x13696)/256,(x1414f-x13696)&255
+		.dc.b ((252*2)/256),((252*2)&255),(x1414f-jmpbase)/256,(x1414f-jmpbase)&255
 		.dc.b 2
 		.ascii "OUT"
-		.dc.b ((307*2)/256),((307*2)&255),(x147c1-x13696)/256,(x147c1-x13696)&255
+		.dc.b ((307*2)/256),((307*2)&255),(x147c1-jmpbase)/256,(x147c1-jmpbase)&255
 		.dc.b 3
 		.ascii "OUT%"
-		.dc.b ((421*2)/256),((421*2)&255),(x147c1-x13696)/256,(x147c1-x13696)&255
+		.dc.b ((421*2)/256),((421*2)&255),(x147c1-jmpbase)/256,(x147c1-jmpbase)&255
 		.dc.b 3
 		.ascii "OUT&"
-		.dc.b ((420*2)/256),((420*2)&255),(x147c1-x13696)/256,(x147c1-x13696)&255
+		.dc.b ((420*2)/256),((420*2)&255),(x147c1-jmpbase)/256,(x147c1-jmpbase)&255
 		.dc.b 8
 		.ascii "OTHERWISE"
-		.dc.b ((15*2)/256),((15*2)&255),(x1429f-x13696)/256,(x1429f-x13696)&255
+		.dc.b ((15*2)/256),((15*2)&255),(x1429f-jmpbase)/256,(x1429f-jmpbase)&255
 		.dc.b 5
 		.ascii "OPTION"
-		.dc.b ((410*2)/256),((410*2)&255),(x1453f-x13696)/256,(x1453f-x13696)&255
-		.IFNE GBE
+		.dc.b ((410*2)/256),((410*2)&255),(x1453f-jmpbase)/256,(x1453f-jmpbase)&255
+	.IFNE GBE
 		.dc.b 8
 		.ascii "OB.STATE("
-		.dc.b ((504*2)/256),((504*2)&255),(x14166-x13696)/256,(x14166-x13696)&255
+		.dc.b ((504*2)/256),((504*2)&255),(x14166-jmpbase)/256,(x14166-jmpbase)&255
 		.dc.b 8
 		.ascii "OB.FLAGS("
-		.dc.b ((505*2)/256),((505*2)&255),(x14166-x13696)/256,(x14166-x13696)&255
+		.dc.b ((505*2)/256),((505*2)&255),(x14166-jmpbase)/256,(x14166-jmpbase)&255
 		.dc.b 11
 		.ascii "OB_SELECTED("
-		.dc.b ((506*2)/256),((506*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b ((506*2)/256),((506*2)&255),(x14169-jmpbase)/256,(x14169-jmpbase)&255
 		.dc.b 10
 		.ascii "OB_CROSSED("
-		.dc.b ((507*2)/256),((507*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b ((507*2)/256),((507*2)&255),(x14169-jmpbase)/256,(x14169-jmpbase)&255
 		.dc.b 10
 		.ascii "OB_CHECKED("
-		.dc.b ((508*2)/256),((508*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b ((508*2)/256),((508*2)&255),(x14169-jmpbase)/256,(x14169-jmpbase)&255
 		.dc.b 11
 		.ascii "OB_DISABLED("
-		.dc.b ((509*2)/256),((509*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b ((509*2)/256),((509*2)&255),(x14169-jmpbase)/256,(x14169-jmpbase)&255
 		.dc.b 13
 		.ascii "OB_SELECTABLE("
-		.dc.b ((512*2)/256),((512*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b ((512*2)/256),((512*2)&255),(x14169-jmpbase)/256,(x14169-jmpbase)&255
 		.dc.b 10
 		.ascii "OB_DEFAULT("
-		.dc.b ((513*2)/256),((513*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b ((513*2)/256),((513*2)&255),(x14169-jmpbase)/256,(x14169-jmpbase)&255
 		.dc.b 7
 		.ascii "OB_EXIT("
-		.dc.b ((514*2)/256),((514*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b ((514*2)/256),((514*2)&255),(x14169-jmpbase)/256,(x14169-jmpbase)&255
 		.dc.b 11
 		.ascii "OB_EDITABLE("
-		.dc.b ((515*2)/256),((515*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b ((515*2)/256),((515*2)&255),(x14169-jmpbase)/256,(x14169-jmpbase)&255
 		.dc.b 10
 		.ascii "OB_RBUTTON("
-		.dc.b ((516*2)/256),((516*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b ((516*2)/256),((516*2)&255),(x14169-jmpbase)/256,(x14169-jmpbase)&255
 		.dc.b 9
 		.ascii "OB_LASTOB("
-		.dc.b ((517*2)/256),((517*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b ((517*2)/256),((517*2)&255),(x14169-jmpbase)/256,(x14169-jmpbase)&255
 		.dc.b 12
 		.ascii "OB_TOUCHEXIT("
-		.dc.b ((518*2)/256),((518*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b ((518*2)/256),((518*2)&255),(x14169-jmpbase)/256,(x14169-jmpbase)&255
 		.dc.b 11
 		.ascii "OB_HIDETREE("
-		.dc.b ((519*2)/256),((519*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b ((519*2)/256),((519*2)&255),(x14169-jmpbase)/256,(x14169-jmpbase)&255
 		.dc.b 10
 		.ascii "OB.RBUTTON("
-		.dc.b ((510*2)/256),((510*2)&255),(x14166-x13696)/256,(x14166-x13696)&255
+		.dc.b ((510*2)/256),((510*2)&255),(x14166-jmpbase)/256,(x14166-jmpbase)&255
 		.dc.b 8
 		.ascii "OB_TEXT$("
-		.dc.b ((511*2)/256),((511*2)&255),(x14157-x13696)/256,(x14157-x13696)&255
-		.ENDC
+		.dc.b ((511*2)/256),((511*2)&255),(x14157-jmpbase)/256,(x14157-jmpbase)&255
+	.ENDC
 cmd_p_table: /* 1222d */
 		.dc.b 4
 		.ascii "PRINT"
-		.dc.b ((147*2)/256),((147*2)&255),(x1522e-x13696)/256,(x1522e-x13696)&255
+		.dc.b ((147*2)/256),((147*2)&255),(x1522e-jmpbase)/256,(x1522e-jmpbase)&255
 		.dc.b 3
 		.ascii "PLOT"
-		.dc.b ((88*2)/256),((88*2)&255),(x14464-x13696)/256,(x14464-x13696)&255
+		.dc.b ((88*2)/256),((88*2)&255),(x14464-jmpbase)/256,(x14464-jmpbase)&255
 		.dc.b 3
 		.ascii "PSET"
-		.dc.b ((89*2)/256),((89*2)&255),(x14461-x13696)/256,(x14461-x13696)&255
+		.dc.b ((89*2)/256),((89*2)&255),(x14461-jmpbase)/256,(x14461-jmpbase)&255
 		.dc.b 3
 		.ascii "POKE"
-		.dc.b ((97*2)/256),((97*2)&255),(x14464-x13696)/256,(x14464-x13696)&255
+		.dc.b ((97*2)/256),((97*2)&255),(x14464-jmpbase)/256,(x14464-jmpbase)&255
 		.dc.b 5
 		.ascii "PTSIN("
-		.dc.b ((220*2)/256),((220*2)&255),(x14152-x13696)/256,(x14152-x13696)&255
+		.dc.b ((220*2)/256),((220*2)&255),(x14152-jmpbase)/256,(x14152-jmpbase)&255
 		.dc.b 6
 		.ascii "PTSOUT("
-		.dc.b ((221*2)/256),((221*2)&255),(x14152-x13696)/256,(x14152-x13696)&255
+		.dc.b ((221*2)/256),((221*2)&255),(x14152-jmpbase)/256,(x14152-jmpbase)&255
 		.dc.b 8
 		.ascii "PROCEDURE"
-		.dc.b ((6*2)/256),((6*2)&255),(x148e4-x13696)/256,(x148e4-x13696)&255
+		.dc.b ((6*2)/256),((6*2)&255),(x148e4-jmpbase)/256,(x148e4-jmpbase)&255
 		.dc.b 2
 		.ascii "PUT"
-		.dc.b ((260*2)/256),((260*2)&255),(x1472e-x13696)/256,(x1472e-x13696)&255
+		.dc.b ((260*2)/256),((260*2)&255),(x1472e-jmpbase)/256,(x1472e-jmpbase)&255
 		.dc.b 3
 		.ascii "PBOX"
-		.dc.b ((288*2)/256),((288*2)&255),(x1445e-x13696)/256,(x1445e-x13696)&255
+		.dc.b ((288*2)/256),((288*2)&255),(x1445e-jmpbase)/256,(x1445e-jmpbase)&255
 		.dc.b 4
 		.ascii "PRBOX"
-		.dc.b ((290*2)/256),((290*2)&255),(x1445e-x13696)/256,(x1445e-x13696)&255
+		.dc.b ((290*2)/256),((290*2)&255),(x1445e-jmpbase)/256,(x1445e-jmpbase)&255
 		.dc.b 6
 		.ascii "PCIRCLE"
-		.dc.b ((293*2)/256),((293*2)&255),(x1467b-x13696)/256,(x1467b-x13696)&255
+		.dc.b ((293*2)/256),((293*2)&255),(x1467b-jmpbase)/256,(x1467b-jmpbase)&255
 		.dc.b 7
 		.ascii "PELLIPSE"
-		.dc.b ((297*2)/256),((297*2)&255),(x14670-x13696)/256,(x14670-x13696)&255
+		.dc.b ((297*2)/256),((297*2)&255),(x14670-jmpbase)/256,(x14670-jmpbase)&255
 		.dc.b 4
 		.ascii "PAUSE"
-		.dc.b ((344*2)/256),((344*2)&255),(x14467-x13696)/256,(x14467-x13696)&255
+		.dc.b ((344*2)/256),((344*2)&255),(x14467-jmpbase)/256,(x14467-jmpbase)&255
 		.dc.b 7
 		.ascii "POLYLINE"
-		.dc.b ((347*2)/256),((347*2)&255),(x14a94-x13696)/256,(x14a94-x13696)&255
+		.dc.b ((347*2)/256),((347*2)&255),(x14a94-jmpbase)/256,(x14a94-jmpbase)&255
 		.dc.b 7
 		.ascii "POLYFILL"
-		.dc.b ((348*2)/256),((348*2)&255),(x14a94-x13696)/256,(x14a94-x13696)&255
+		.dc.b ((348*2)/256),((348*2)&255),(x14a94-jmpbase)/256,(x14a94-jmpbase)&255
 		.dc.b 7
 		.ascii "POLYMARK"
-		.dc.b ((349*2)/256),((349*2)&255),(x14a94-x13696)/256,(x14a94-x13696)&255
+		.dc.b ((349*2)/256),((349*2)&255),(x14a94-jmpbase)/256,(x14a94-jmpbase)&255
 		.dc.b 4
 		.ascii "PSAVE"
-		.dc.b ((391*2)/256),((391*2)&255),(x1454c-x13696)/256,(x1454c-x13696)&255
-		.IFNE GBE
+		.dc.b ((391*2)/256),((391*2)&255),(x1454c-jmpbase)/256,(x1454c-jmpbase)&255
+	.IFNE GBE
 		.dc.b 5
 		.ascii "PALGET"
-		.dc.b ((482*2)/256),((482*2)&255),(x14481-x13696)/256,(x14481-x13696)&255
+		.dc.b ((482*2)/256),((482*2)&255),(x14481-jmpbase)/256,(x14481-jmpbase)&255
 		.dc.b 5
 		.ascii "PALSET"
-		.dc.b ((483*2)/256),((483*2)&255),(x14481-x13696)/256,(x14481-x13696)&255
-		.ENDC
+		.dc.b ((483*2)/256),((483*2)&255),(x14481-jmpbase)/256,(x14481-jmpbase)&255
+	.ENDC
 cmd_q_table: /* 122e6 */
 		.dc.b 3
 		.ascii "QUIT"
-		.dc.b ((309*2)/256),((309*2)&255),(x14b14-x13696)/256,(x14b14-x13696)&255
+		.dc.b ((309*2)/256),((309*2)&255),(x14b14-jmpbase)/256,(x14b14-jmpbase)&255
 		.dc.b 4
 		.ascii "QSORT"
-		.dc.b ((345*2)/256),((345*2)&255),(x14031-x13696)/256,(x14031-x13696)&255
+		.dc.b ((345*2)/256),((345*2)&255),(x14031-jmpbase)/256,(x14031-jmpbase)&255
 cmd_r_table: /* 122f9 */
 		.dc.b 2
 		.ascii "REM"
-		.dc.b ((114*2)/256),((114*2)&255),(x1465e-x13696)/256,(x1465e-x13696)&255
+		.dc.b ((114*2)/256),((114*2)&255),(x1465e-jmpbase)/256,(x1465e-jmpbase)&255
 		.dc.b 5
 		.ascii "REPEAT"
-		.dc.b ((2*2)/256),((2*2)&255),(x1446a-x13696)/256,(x1446a-x13696)&255
+		.dc.b ((2*2)/256),((2*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
 		.dc.b 6
 		.ascii "RESTORE"
-		.dc.b ((59*2)/256),((59*2)&255),(x149a5-x13696)/256,(x149a5-x13696)&255
+		.dc.b ((59*2)/256),((59*2)&255),(x149a5-jmpbase)/256,(x149a5-jmpbase)&255
 		.dc.b 5
 		.ascii "RETURN"
-		.dc.b ((7*2)/256),((7*2)&255),(x141ec-x13696)/256,(x141ec-x13696)&255
+		.dc.b ((7*2)/256),((7*2)&255),(x141ec-jmpbase)/256,(x141ec-jmpbase)&255
 		.dc.b 5
 		.ascii "RETURN"
-		.dc.b ((17*2)/256),((17*2)&255),(x141ec-x13696)/256,(x141ec-x13696)&255
+		.dc.b ((17*2)/256),((17*2)&255),(x141ec-jmpbase)/256,(x141ec-jmpbase)&255
 		.dc.b 6
 		.ascii "RELSEEK"
-		.dc.b ((209*2)/256),((209*2)&255),(x147eb-x13696)/256,(x147eb-x13696)&255
+		.dc.b ((209*2)/256),((209*2)&255),(x147eb-jmpbase)/256,(x147eb-jmpbase)&255
 		.dc.b 6
 		.ascii "RESERVE"
-		.dc.b ((103*2)/256),((103*2)&255),(x14b1a-x13696)/256,(x14b1a-x13696)&255
+		.dc.b ((103*2)/256),((103*2)&255),(x14b1a-jmpbase)/256,(x14b1a-jmpbase)&255
 		.dc.b 8
 		.ascii "RANDOMIZE"
-		.dc.b ((255*2)/256),((255*2)&255),(x14b14-x13696)/256,(x14b14-x13696)&255
+		.dc.b ((255*2)/256),((255*2)&255),(x14b14-jmpbase)/256,(x14b14-jmpbase)&255
 		.dc.b 3
 		.ascii "RBOX"
-		.dc.b ((289*2)/256),((289*2)&255),(x1445e-x13696)/256,(x1445e-x13696)&255
+		.dc.b ((289*2)/256),((289*2)&255),(x1445e-jmpbase)/256,(x1445e-jmpbase)&255
 		.dc.b 4
 		.ascii "RMDIR"
-		.dc.b ((334*2)/256),((334*2)&255),(x1454c-x13696)/256,(x1454c-x13696)&255
+		.dc.b ((334*2)/256),((334*2)&255),(x1454c-jmpbase)/256,(x1454c-jmpbase)&255
 		.dc.b 3
 		.ascii "RSET"
-		.dc.b ((335*2)/256),((335*2)&255),(x14181-x13696)/256,(x14181-x13696)&255
+		.dc.b ((335*2)/256),((335*2)&255),(x14181-jmpbase)/256,(x14181-jmpbase)&255
 		.dc.b 5
 		.ascii "RENAME"
-		.dc.b ((352*2)/256),((352*2)&255),(x14566-x13696)/256,(x14566-x13696)&255
+		.dc.b ((352*2)/256),((352*2)&255),(x14566-jmpbase)/256,(x14566-jmpbase)&255
 		.dc.b 4
 		.ascii "RCALL"
-		.dc.b ((151*2)/256),((151*2)&255),(x14a6f-x13696)/256,(x14a6f-x13696)&255
+		.dc.b ((151*2)/256),((151*2)&255),(x14a6f-jmpbase)/256,(x14a6f-jmpbase)&255
 		.dc.b 5
 		.ascii "RESUME"
-		.dc.b ((105*2)/256),((105*2)&255),(x148d7-x13696)/256,(x148d7-x13696)&255
+		.dc.b ((105*2)/256),((105*2)&255),(x148d7-jmpbase)/256,(x148d7-jmpbase)&255
 		.dc.b 3
 		.ascii "READ"
-		.dc.b ((372*2)/256),((372*2)&255),(x15201-x13696)/256,(x15201-x13696)&255
+		.dc.b ((372*2)/256),((372*2)&255),(x15201-jmpbase)/256,(x15201-jmpbase)&255
 		.dc.b 5
 		.ascii "RECORD"
-		.dc.b ((109*2)/256),((109*2)&255),(x147f2-x13696)/256,(x147f2-x13696)&255
+		.dc.b ((109*2)/256),((109*2)&255),(x147f2-jmpbase)/256,(x147f2-jmpbase)&255
 		.dc.b 2
 		.ascii "RUN"
-		.dc.b ((393*2)/256),((393*2)&255),(x14547-x13696)/256,(x14547-x13696)&255
+		.dc.b ((393*2)/256),((393*2)&255),(x14547-jmpbase)/256,(x14547-jmpbase)&255
 		.dc.b 5
 		.ascii "RECALL"
-		.dc.b ((403*2)/256),((403*2)&255),(x14b37-x13696)/256,(x14b37-x13696)&255
+		.dc.b ((403*2)/256),((403*2)&255),(x14b37-jmpbase)/256,(x14b37-jmpbase)&255
 		.dc.b 6
 		.ascii "RC_COPY"
-		.dc.b ((413*2)/256),((413*2)&255),(x14b5c-x13696)/256,(x14b5c-x13696)&255
+		.dc.b ((413*2)/256),((413*2)&255),(x14b5c-jmpbase)/256,(x14b5c-jmpbase)&255
 cmd_s_table: /* 123c3 */
 		.dc.b 5
 		.ascii "SWITCH"
-		.dc.b ((12*2)/256),((12*2)&255),(x1428f-x13696)/256,(x1428f-x13696)&255
+		.dc.b ((12*2)/256),((12*2)&255),(x1428f-jmpbase)/256,(x1428f-jmpbase)&255
 		.dc.b 5
 		.ascii "SELECT"
-		.dc.b ((12*2)/256),((12*2)&255),(x1428f-x13696)/256,(x1428f-x13696)&255
+		.dc.b ((12*2)/256),((12*2)&255),(x1428f-jmpbase)/256,(x1428f-jmpbase)&255
 		.dc.b 3
 		.ascii "SWAP"
-		.dc.b ((118*2)/256),((118*2)&255),(x149ac-x13696)/256,(x149ac-x13696)&255
+		.dc.b ((118*2)/256),((118*2)&255),(x149ac-jmpbase)/256,(x149ac-jmpbase)&255
 		.dc.b 2
 		.ascii "SUB"
-		.dc.b ((184*2)/256),((184*2)&255),(x142a6-x13696)/256,(x142a6-x13696)&255
+		.dc.b ((184*2)/256),((184*2)&255),(x142a6-jmpbase)/256,(x142a6-jmpbase)&255
 		.dc.b 4
 		.ascii "SPOKE"
-		.dc.b ((100*2)/256),((100*2)&255),(x14464-x13696)/256,(x14464-x13696)&255
+		.dc.b ((100*2)/256),((100*2)&255),(x14464-jmpbase)/256,(x14464-jmpbase)&255
 		.dc.b 5
 		.ascii "SDPOKE"
-		.dc.b ((101*2)/256),((101*2)&255),(x14464-x13696)/256,(x14464-x13696)&255
+		.dc.b ((101*2)/256),((101*2)&255),(x14464-jmpbase)/256,(x14464-jmpbase)&255
 		.dc.b 5
 		.ascii "SLPOKE"
-		.dc.b ((102*2)/256),((102*2)&255),(x14464-x13696)/256,(x14464-x13696)&255
+		.dc.b ((102*2)/256),((102*2)&255),(x14464-jmpbase)/256,(x14464-jmpbase)&255
 		.dc.b 7
 		.ascii "SETCOLOR"
-		.dc.b ((211*2)/256),((211*2)&255),(x14b6a-x13696)/256,(x14b6a-x13696)&255
+		.dc.b ((211*2)/256),((211*2)&255),(x14b6a-jmpbase)/256,(x14b6a-jmpbase)&255
 		.dc.b 3
 		.ascii "SEEK"
-		.dc.b ((208*2)/256),((208*2)&255),(x147eb-x13696)/256,(x147eb-x13696)&255
+		.dc.b ((208*2)/256),((208*2)&255),(x147eb-jmpbase)/256,(x147eb-jmpbase)&255
 		.dc.b 6
 		.ascii "SETTIME"
-		.dc.b ((336*2)/256),((336*2)&255),(x145c6-x13696)/256,(x145c6-x13696)&255
+		.dc.b ((336*2)/256),((336*2)&255),(x145c6-jmpbase)/256,(x145c6-jmpbase)&255
 		.dc.b 3
 		.ascii "SGET"
-		.dc.b ((337*2)/256),((337*2)&255),(x1420e-x13696)/256,(x1420e-x13696)&255
+		.dc.b ((337*2)/256),((337*2)&255),(x1420e-jmpbase)/256,(x1420e-jmpbase)&255
 		.dc.b 3
 		.ascii "SPUT"
-		.dc.b ((339*2)/256),((339*2)&255),(x1420e-x13696)/256,(x1420e-x13696)&255
+		.dc.b ((339*2)/256),((339*2)&255),(x1420e-jmpbase)/256,(x1420e-jmpbase)&255
 		.dc.b 4
 		.ascii "SHOWM"
-		.dc.b ((338*2)/256),((338*2)&255),(x1446a-x13696)/256,(x1446a-x13696)&255
+		.dc.b ((338*2)/256),((338*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
 		.dc.b 3
 		.ascii "STOP"
-		.dc.b ((340*2)/256),((340*2)&255),(x1446a-x13696)/256,(x1446a-x13696)&255
+		.dc.b ((340*2)/256),((340*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
 		.dc.b 5
 		.ascii "SYSTEM"
-		.dc.b ((341*2)/256),((341*2)&255),(x14b14-x13696)/256,(x14b14-x13696)&255
+		.dc.b ((341*2)/256),((341*2)&255),(x14b14-jmpbase)/256,(x14b14-jmpbase)&255
 		.dc.b 4
 		.ascii "SSORT"
-		.dc.b ((346*2)/256),((346*2)&255),(x14031-x13696)/256,(x14031-x13696)&255
+		.dc.b ((346*2)/256),((346*2)&255),(x14031-jmpbase)/256,(x14031-jmpbase)&255
 		.dc.b 4
 		.ascii "STICK"
-		.dc.b ((353*2)/256),((353*2)&255),(x14467-x13696)/256,(x14467-x13696)&255
+		.dc.b ((353*2)/256),((353*2)&255),(x14467-jmpbase)/256,(x14467-jmpbase)&255
 		.dc.b 4
 		.ascii "SOUND"
-		.dc.b ((354*2)/256),((354*2)&255),(x1479e-x13696)/256,(x1479e-x13696)&255
+		.dc.b ((354*2)/256),((354*2)&255),(x1479e-jmpbase)/256,(x1479e-jmpbase)&255
 		.dc.b 6
 		.ascii "SINGLE{"
-		.dc.b ((123*2)/256),((123*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b ((123*2)/256),((123*2)&255),(x14169-jmpbase)/256,(x14169-jmpbase)&255
 		.dc.b 7
 		.ascii "SETMOUSE"
-		.dc.b ((374*2)/256),((374*2)&255),(x144aa-x13696)/256,(x144aa-x13696)&255
+		.dc.b ((374*2)/256),((374*2)&255),(x144aa-jmpbase)/256,(x144aa-jmpbase)&255
 		.dc.b 3
 		.ascii "SAVE"
-		.dc.b ((390*2)/256),((390*2)&255),(x1454c-x13696)/256,(x1454c-x13696)&255
+		.dc.b ((390*2)/256),((390*2)&255),(x1454c-jmpbase)/256,(x1454c-jmpbase)&255
 		.dc.b 6
 		.ascii "SETDRAW"
-		.dc.b ((396*2)/256),((396*2)&255),(x14461-x13696)/256,(x14461-x13696)&255
+		.dc.b ((396*2)/256),((396*2)&255),(x14461-jmpbase)/256,(x14461-jmpbase)&255
 		.dc.b 4
 		.ascii "STORE"
-		.dc.b ((402*2)/256),((402*2)&255),(x14b2a-x13696)/256,(x14b2a-x13696)&255
+		.dc.b ((402*2)/256),((402*2)&255),(x14b2a-jmpbase)/256,(x14b2a-jmpbase)&255
 		.dc.b 5
 		.ascii "SPRITE"
-		.dc.b ((409*2)/256),((409*2)&255),(x152b2-x13696)/256,(x152b2-x13696)&255
-		.IFNE GBE
+		.dc.b ((409*2)/256),((409*2)&255),(x152b2-jmpbase)/256,(x152b2-jmpbase)&255
+	.IFNE GBE
 		.dc.b 4
 		.ascii "SCALL"
-		.dc.b ((491*2)/256),((491*2)&255),(x14481-x13696)/256,(x14481-x13696)&255
+		.dc.b ((491*2)/256),((491*2)&255),(x14481-jmpbase)/256,(x14481-jmpbase)&255
 		.dc.b 7
 		.ascii "SET.MFDB"
-		.dc.b ((460*2)/256),((460*2)&255),(x1449d-x13696)/256,(x1449d-x13696)&255
+		.dc.b ((460*2)/256),((460*2)&255),(x1449d-jmpbase)/256,(x1449d-jmpbase)&255
 		.dc.b 8
 		.ascii "SET.PXYWH"
-		.dc.b ((461*2)/256),((461*2)&255),(x1449d-x13696)/256,(x1449d-x13696)&255
+		.dc.b ((461*2)/256),((461*2)&255),(x1449d-jmpbase)/256,(x1449d-jmpbase)&255
 		.dc.b 8
 		.ascii "SET.PXYXY"
-		.dc.b ((488*2)/256),((488*2)&255),(x14497-x13696)/256,(x14497-x13696)&255
+		.dc.b ((488*2)/256),((488*2)&255),(x14497-jmpbase)/256,(x14497-jmpbase)&255
 		.dc.b 11
 		.ascii "SET.SOCKADDR"
-		.dc.b ((495*2)/256),((495*2)&255),(x14478-x13696)/256,(x14478-x13696)&255
-		.ENDC
+		.dc.b ((495*2)/256),((495*2)&255),(x14478-jmpbase)/256,(x14478-jmpbase)&255
+	.ENDC
 cmd_t_table: /* 124bd */
 		.dc.b 3
 		.ascii "TEXT"
-		.dc.b ((149*2)/256),((149*2)&255),(x151af-x13696)/256,(x151af-x13696)&255
+		.dc.b ((149*2)/256),((149*2)&255),(x151af-jmpbase)/256,(x151af-jmpbase)&255
 		.dc.b 3
 		.ascii "TRON"
-		.dc.b ((143*2)/256),((143*2)&255),(x14616-x13696)/256,(x14616-x13696)&255
+		.dc.b ((143*2)/256),((143*2)&255),(x14616-jmpbase)/256,(x14616-jmpbase)&255
 		.dc.b 4
 		.ascii "TROFF"
-		.dc.b ((146*2)/256),((146*2)&255),(x1446a-x13696)/256,(x1446a-x13696)&255
+		.dc.b ((146*2)/256),((146*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
 		.dc.b 3
 		.ascii "TOPW"
-		.dc.b ((274*2)/256),((274*2)&255),(x1464d-x13696)/256,(x1464d-x13696)&255
+		.dc.b ((274*2)/256),((274*2)&255),(x1464d-jmpbase)/256,(x1464d-jmpbase)&255
 		.dc.b 5
 		.ascii "TITLEW"
-		.dc.b ((275*2)/256),((275*2)&255),(x14654-x13696)/256,(x14654-x13696)&255
+		.dc.b ((275*2)/256),((275*2)&255),(x14654-jmpbase)/256,(x14654-jmpbase)&255
 		.dc.b 4
 		.ascii "TOUCH"
-		.dc.b ((326*2)/256),((326*2)&255),(x1464d-x13696)/256,(x1464d-x13696)&255
+		.dc.b ((326*2)/256),((326*2)&255),(x1464d-jmpbase)/256,(x1464d-jmpbase)&255
 		.dc.b 5
 		.ascii "TIME$="
-		.dc.b ((407*2)/256),((407*2)&255),(x1454c-x13696)/256,(x1454c-x13696)&255
-		.IFNE GBE
+		.dc.b ((407*2)/256),((407*2)&255),(x1454c-jmpbase)/256,(x1454c-jmpbase)&255
+	.IFNE GBE
 		.dc.b 8
 		.ascii "TIMESTAMP"
-		.dc.b ((473*2)/256),((473*2)&255),(x14569-x13696)/256,(x14569-x13696)&255
-		.ENDC
+		.dc.b ((473*2)/256),((473*2)&255),(x14569-jmpbase)/256,(x14569-jmpbase)&255
+	.ENDC
 cmd_u_table: /* 12502 */
 		.dc.b 4
 		.ascii "UNTIL"
-		.dc.b ((3*2)/256),((3*2)&255),(x141a8-x13696)/256,(x141a8-x13696)&255
+		.dc.b ((3*2)/256),((3*2)&255),(x141a8-jmpbase)/256,(x141a8-jmpbase)&255
 cmd_v_table: /* 1250c */
 		.dc.b 5
 		.ascii "VDISYS"
-		.dc.b ((214*2)/256),((214*2)&255),(x14b74-x13696)/256,(x14b74-x13696)&255
+		.dc.b ((214*2)/256),((214*2)&255),(x14b74-jmpbase)/256,(x14b74-jmpbase)&255
 		.dc.b 3
 		.ascii "VOID"
-		.dc.b ((240*2)/256),((240*2)&255),(x1407e-x13696)/256,(x1407e-x13696)&255
+		.dc.b ((240*2)/256),((240*2)&255),(x1407e-jmpbase)/256,(x1407e-jmpbase)&255
 		.dc.b 4
 		.ascii "VSYNC"
-		.dc.b ((342*2)/256),((342*2)&255),(x1446a-x13696)/256,(x1446a-x13696)&255
+		.dc.b ((342*2)/256),((342*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
 		.dc.b 3
 		.ascii "VTAB"
-		.dc.b ((321*2)/256),((321*2)&255),(x14467-x13696)/256,(x14467-x13696)&255
+		.dc.b ((321*2)/256),((321*2)&255),(x14467-jmpbase)/256,(x14467-jmpbase)&255
 		.dc.b 3
 		.ascii "V~H="
-		.dc.b ((406*2)/256),((406*2)&255),(x14467-x13696)/256,(x14467-x13696)&255
+		.dc.b ((406*2)/256),((406*2)&255),(x14467-jmpbase)/256,(x14467-jmpbase)&255
 		.dc.b 8
 		.ascii "VSETCOLOR"
-		.dc.b ((419*2)/256),((419*2)&255),(x144b2-x13696)/256,(x144b2-x13696)&255
-		.IFNE GBE
+		.dc.b ((419*2)/256),((419*2)&255),(x144b2-jmpbase)/256,(x144b2-jmpbase)&255
+	.IFNE GBE
 		.dc.b 7
 		.ascii "VRC_COPY"
-		.dc.b ((470*2)/256),((470*2)&255),(x14ba2-x13696)/256,(x14ba2-x13696)&255
+		.dc.b ((470*2)/256),((470*2)&255),(x14ba2-jmpbase)/256,(x14ba2-jmpbase)&255
 		.dc.b 5
 		.ascii "VCURVE"
-		.dc.b ((469*2)/256),((469*2)&255),(x14497-x13696)/256,(x14497-x13696)&255
+		.dc.b ((469*2)/256),((469*2)&255),(x14497-jmpbase)/256,(x14497-jmpbase)&255
 		.dc.b 3
 		.ascii "VCLS"
-		.dc.b ((481*2)/256),((481*2)&255),(x14b5a-x13696)/256,(x14b5a-x13696)&255
+		.dc.b ((481*2)/256),((481*2)&255),(x14b5a-jmpbase)/256,(x14b5a-jmpbase)&255
 		.dc.b 3
 		.ascii "VGET"
-		.dc.b ((471*2)/256),((471*2)&255),(x144a0-x13696)/256,(x144a0-x13696)&255
+		.dc.b ((471*2)/256),((471*2)&255),(x144a0-jmpbase)/256,(x144a0-jmpbase)&255
 		.dc.b 3
 		.ascii "VPUT"
-		.dc.b ((492*2)/256),((492*2)&255),(x14771-x13696)/256,(x14771-x13696)&255
+		.dc.b ((492*2)/256),((492*2)&255),(x14771-jmpbase)/256,(x14771-jmpbase)&255
 		.dc.b 4
 		.ascii "VSGET"
-		.dc.b ((479*2)/256),((479*2)&255),(x14481-x13696)/256,(x14481-x13696)&255
+		.dc.b ((479*2)/256),((479*2)&255),(x14481-jmpbase)/256,(x14481-jmpbase)&255
 		.dc.b 4
 		.ascii "VSPUT"
-		.dc.b ((480*2)/256),((480*2)&255),(x14481-x13696)/256,(x14481-x13696)&255
+		.dc.b ((480*2)/256),((480*2)&255),(x14481-jmpbase)/256,(x14481-jmpbase)&255
 		.dc.b 4
 		.ascii "VPLOT"
-		.dc.b ((472*2)/256),((472*2)&255),(x1447e-x13696)/256,(x1447e-x13696)&255
+		.dc.b ((472*2)/256),((472*2)&255),(x1447e-jmpbase)/256,(x1447e-jmpbase)&255
 		.dc.b 4
 		.ascii "VLINE"
-		.dc.b ((475*2)/256),((475*2)&255),(x14478-x13696)/256,(x14478-x13696)&255
+		.dc.b ((475*2)/256),((475*2)&255),(x14478-jmpbase)/256,(x14478-jmpbase)&255
 		.dc.b 3
 		.ascii "VBOX"
-		.dc.b ((489*2)/256),((489*2)&255),(x14478-x13696)/256,(x14478-x13696)&255
+		.dc.b ((489*2)/256),((489*2)&255),(x14478-jmpbase)/256,(x14478-jmpbase)&255
 		.dc.b 6
 		.ascii "VBITBLT"
-		.dc.b ((490*2)/256),((490*2)&255),(x1447b-x13696)/256,(x1447b-x13696)&255
-		.ENDC
+		.dc.b ((490*2)/256),((490*2)&255),(x1447b-jmpbase)/256,(x1447b-jmpbase)&255
+	.ENDC
 cmd_w_table: /* 1254a */
 		.dc.b 4
 		.ascii "WHILE"
-		.dc.b ((4*2)/256),((4*2)&255),(x141a8-x13696)/256,(x141a8-x13696)&255
+		.dc.b ((4*2)/256),((4*2)&255),(x141a8-jmpbase)/256,(x141a8-jmpbase)&255
 		.dc.b 3
 		.ascii "WEND"
-		.dc.b ((5*2)/256),((5*2)&255),(x141b7-x13696)/256,(x141b7-x13696)&255
+		.dc.b ((5*2)/256),((5*2)&255),(x141b7-jmpbase)/256,(x141b7-jmpbase)&255
 		.dc.b 3
 		.ascii "WAVE"
-		.dc.b ((355*2)/256),((355*2)&255),(x147a9-x13696)/256,(x147a9-x13696)&255
+		.dc.b ((355*2)/256),((355*2)&255),(x147a9-jmpbase)/256,(x147a9-jmpbase)&255
 		.dc.b 7
 		.ascii "WINDTAB("
-		.dc.b ((412*2)/256),((412*2)&255),(x1414f-x13696)/256,(x1414f-x13696)&255
+		.dc.b ((412*2)/256),((412*2)&255),(x1414f-jmpbase)/256,(x1414f-jmpbase)&255
 		.dc.b 4
 		.ascii "WRITE"
-		.dc.b ((416*2)/256),((416*2)&255),(x15205-x13696)/256,(x15205-x13696)&255
+		.dc.b ((416*2)/256),((416*2)&255),(x15205-jmpbase)/256,(x15205-jmpbase)&255
 		.dc.b 4
 		.ascii "WORD{"
-		.dc.b ((418*2)/256),((418*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b ((418*2)/256),((418*2)&255),(x14169-jmpbase)/256,(x14169-jmpbase)&255
 cmd_other_table:
 		.dc.b 5
 		.ascii "_DATA="
-		.dc.b ((423*2)/256),((423*2)&255),(x14467-x13696)/256,(x14467-x13696)&255
+		.dc.b ((423*2)/256),((423*2)&255),(x14467-jmpbase)/256,(x14467-jmpbase)&255
 		.dc.b 0
 		.ascii "{"
-		.dc.b ((230*2)/256),((230*2)&255),(x14169-x13696)/256,(x14169-x13696)&255
+		.dc.b ((230*2)/256),((230*2)&255),(x14169-jmpbase)/256,(x14169-jmpbase)&255
 		.dc.b 0
 		.ascii "~"
-		.dc.b ((241*2)/256),((241*2)&255),(x14467-x13696)/256,(x14467-x13696)&255
+		.dc.b ((241*2)/256),((241*2)&255),(x14467-jmpbase)/256,(x14467-jmpbase)&255
 		.dc.b 9
 		.ascii "FORM INPUT"
-		.dc.b ((153*2)/256),((153*2)&255),(x14202-x13696)/256,(x14202-x13696)&255
+		.dc.b ((153*2)/256),((153*2)&255),(x14202-jmpbase)/256,(x14202-jmpbase)&255
 		.dc.b 9
 		.ascii "LINE INPUT"
-		.dc.b ((154*2)/256),((154*2)&255),(x14439-x13696)/256,(x14439-x13696)&255
+		.dc.b ((154*2)/256),((154*2)&255),(x14439-jmpbase)/256,(x14439-jmpbase)&255
 		.dc.b 6
 		.ascii "ELSE IF"
-		.dc.b ((16*2)/256),((16*2)&255),(x141da-x13696)/256,(x141da-x13696)&255
+		.dc.b ((16*2)/256),((16*2)&255),(x141da-jmpbase)/256,(x141da-jmpbase)&255
 		.dc.b 2
 		.ascii "END"
-		.dc.b ((124*2)/256),((124*2)&255),(x1446a-x13696)/256,(x1446a-x13696)&255
+		.dc.b ((124*2)/256),((124*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
 		.dc.b 7
 		.ascii "DO WHILE"
-		.dc.b ((49*2)/256),((49*2)&255),(x1446a-x13696)/256,(x1446a-x13696)&255
+		.dc.b ((49*2)/256),((49*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
 		.dc.b 7
 		.ascii "DO UNTIL"
-		.dc.b ((50*2)/256),((50*2)&255),(x1446a-x13696)/256,(x1446a-x13696)&255
+		.dc.b ((50*2)/256),((50*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
 		.dc.b 9
 		.ascii "LOOP WHILE"
-		.dc.b ((51*2)/256),((51*2)&255),(x1446a-x13696)/256,(x1446a-x13696)&255
+		.dc.b ((51*2)/256),((51*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
 		.dc.b 9
 		.ascii "LOOP UNTIL"
-		.dc.b ((52*2)/256),((52*2)&255),(x1446a-x13696)/256,(x1446a-x13696)&255
+		.dc.b ((52*2)/256),((52*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
 		.dc.b 7
 		.ascii "ON ERROR"
-		.dc.b ((128*2)/256),((128*2)&255),(x1482d-x13696)/256,(x1482d-x13696)&255
+		.dc.b ((128*2)/256),((128*2)&255),(x1482d-jmpbase)/256,(x1482d-jmpbase)&255
 		.dc.b 13
 		.ascii "ON ERROR GOSUB"
-		.dc.b ((129*2)/256),((129*2)&255),(x1482d-x13696)/256,(x1482d-x13696)&255
+		.dc.b ((129*2)/256),((129*2)&255),(x1482d-jmpbase)/256,(x1482d-jmpbase)&255
 		.dc.b 7
 		.ascii "ON BREAK"
-		.dc.b ((130*2)/256),((130*2)&255),(x1482d-x13696)/256,(x1482d-x13696)&255
+		.dc.b ((130*2)/256),((130*2)&255),(x1482d-jmpbase)/256,(x1482d-jmpbase)&255
 		.dc.b 12
 		.ascii "ON BREAK CONT"
-		.dc.b ((131*2)/256),((131*2)&255),(x1482d-x13696)/256,(x1482d-x13696)&255
+		.dc.b ((131*2)/256),((131*2)&255),(x1482d-jmpbase)/256,(x1482d-jmpbase)&255
 		.dc.b 13
 		.ascii "ON BREAK GOSUB"
-		.dc.b ((132*2)/256),((132*2)&255),(x1482d-x13696)/256,(x1482d-x13696)&255
+		.dc.b ((132*2)/256),((132*2)&255),(x1482d-jmpbase)/256,(x1482d-jmpbase)&255
 		.dc.b 12
 		.ascii "ON MENU GOSUB"
-		.dc.b ((133*2)/256),((133*2)&255),(x1482d-x13696)/256,(x1482d-x13696)&255
+		.dc.b ((133*2)/256),((133*2)&255),(x1482d-jmpbase)/256,(x1482d-jmpbase)&255
 		.dc.b 20
 		.ascii "ON MENU MESSAGE GOSUB"
-		.dc.b ((134*2)/256),((134*2)&255),(x1482d-x13696)/256,(x1482d-x13696)&255
+		.dc.b ((134*2)/256),((134*2)&255),(x1482d-jmpbase)/256,(x1482d-jmpbase)&255
 		.dc.b 16
 		.ascii "ON MENU KEY GOSUB"
-		.dc.b ((135*2)/256),((135*2)&255),(x1482d-x13696)/256,(x1482d-x13696)&255
+		.dc.b ((135*2)/256),((135*2)&255),(x1482d-jmpbase)/256,(x1482d-jmpbase)&255
 		.dc.b 13
 		.ascii "ON MENU BUTTON"
-		.dc.b ((136*2)/256),((136*2)&255),(x1482d-x13696)/256,(x1482d-x13696)&255
+		.dc.b ((136*2)/256),((136*2)&255),(x1482d-jmpbase)/256,(x1482d-jmpbase)&255
 		.dc.b 6
 		.ascii "ON MENU"
-		.dc.b ((137*2)/256),((137*2)&255),(x1482d-x13696)/256,(x1482d-x13696)&255
+		.dc.b ((137*2)/256),((137*2)&255),(x1482d-jmpbase)/256,(x1482d-jmpbase)&255
 		.dc.b 11
 		.ascii "ON MENU IBOX"
-		.dc.b ((238*2)/256),((238*2)&255),(x1482d-x13696)/256,(x1482d-x13696)&255
+		.dc.b ((238*2)/256),((238*2)&255),(x1482d-jmpbase)/256,(x1482d-jmpbase)&255
 		.dc.b 11
 		.ascii "ON MENU OBOX"
-		.dc.b ((239*2)/256),((239*2)&255),(x1482d-x13696)/256,(x1482d-x13696)&255
+		.dc.b ((239*2)/256),((239*2)&255),(x1482d-jmpbase)/256,(x1482d-jmpbase)&255
 		.dc.b 7
 		.ascii "MENU OFF"
-		.dc.b ((140*2)/256),((140*2)&255),(x14a40-x13696)/256,(x14a40-x13696)&255
+		.dc.b ((140*2)/256),((140*2)&255),(x14a40-jmpbase)/256,(x14a40-jmpbase)&255
 		.dc.b 8
 		.ascii "MENU KILL"
-		.dc.b ((141*2)/256),((141*2)&255),(x14a40-x13696)/256,(x14a40-x13696)&255
+		.dc.b ((141*2)/256),((141*2)&255),(x14a40-jmpbase)/256,(x14a40-jmpbase)&255
 		.dc.b 3
 		.ascii "MENU"
-		.dc.b ((142*2)/256),((142*2)&255),(x14a40-x13696)/256,(x14a40-x13696)&255
+		.dc.b ((142*2)/256),((142*2)&255),(x14a40-jmpbase)/256,(x14a40-jmpbase)&255
 		.dc.b 4
 		.ascii "OPENW"
-		.dc.b ((266*2)/256),((266*2)&255),(x14467-x13696)/256,(x14467-x13696)&255
+		.dc.b ((266*2)/256),((266*2)&255),(x14467-jmpbase)/256,(x14467-jmpbase)&255
 		.dc.b 6
 		.ascii "OPENW #"
-		.dc.b ((267*2)/256),((267*2)&255),(x14467-x13696)/256,(x14467-x13696)&255
+		.dc.b ((267*2)/256),((267*2)&255),(x14467-jmpbase)/256,(x14467-jmpbase)&255
 		.dc.b 5
 		.ascii "CLOSEW"
-		.dc.b ((269*2)/256),((269*2)&255),(x14467-x13696)/256,(x14467-x13696)&255
+		.dc.b ((269*2)/256),((269*2)&255),(x14467-jmpbase)/256,(x14467-jmpbase)&255
 		.dc.b 7
 		.ascii "CLOSEW #"
-		.dc.b ((270*2)/256),((270*2)&255),(x14467-x13696)/256,(x14467-x13696)&255
+		.dc.b ((270*2)/256),((270*2)&255),(x14467-jmpbase)/256,(x14467-jmpbase)&255
 		.dc.b 5
 		.ascii "CLEARW"
-		.dc.b ((272*2)/256),((272*2)&255),(x14467-x13696)/256,(x14467-x13696)&255
+		.dc.b ((272*2)/256),((272*2)&255),(x14467-jmpbase)/256,(x14467-jmpbase)&255
 		.dc.b 7
 		.ascii "CLEARW #"
-		.dc.b ((273*2)/256),((273*2)&255),(x14467-x13696)/256,(x14467-x13696)&255
+		.dc.b ((273*2)/256),((273*2)&255),(x14467-jmpbase)/256,(x14467-jmpbase)&255
 		.dc.b 10
 		.ascii "> PROCEDURE"
-		.dc.b ((54*2)/256),((54*2)&255),(x1446a-x13696)/256,(x1446a-x13696)&255
+		.dc.b ((54*2)/256),((54*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
 		.dc.b 9
 		.ascii "> FUNCTION"
-		.dc.b ((449*2)/256),((449*2)&255),(x1446a-x13696)/256,(x1446a-x13696)&255
+		.dc.b ((449*2)/256),((449*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
 		.dc.b 8
 		.ascii "RELSEEK #"
-		.dc.b ((209*2)/256),((209*2)&255),(x147eb-x13696)/256,(x147eb-x13696)&255
+		.dc.b ((209*2)/256),((209*2)&255),(x147eb-jmpbase)/256,(x147eb-jmpbase)&255
 		.dc.b 5
 		.ascii "SEEK #"
-		.dc.b ((208*2)/256),((208*2)&255),(x147eb-x13696)/256,(x147eb-x13696)&255
+		.dc.b ((208*2)/256),((208*2)&255),(x147eb-jmpbase)/256,(x147eb-jmpbase)&255
 		.dc.b 5
 		.ascii "TOPW #"
-		.dc.b ((274*2)/256),((274*2)&255),(x1464d-x13696)/256,(x1464d-x13696)&255
+		.dc.b ((274*2)/256),((274*2)&255),(x1464d-jmpbase)/256,(x1464d-jmpbase)&255
 		.dc.b 7
 		.ascii "TITLEW #"
-		.dc.b ((275*2)/256),((275*2)&255),(x14654-x13696)/256,(x14654-x13696)&255
+		.dc.b ((275*2)/256),((275*2)&255),(x14654-jmpbase)/256,(x14654-jmpbase)&255
 		.dc.b 6
 		.ascii "TOUCH #"
-		.dc.b ((326*2)/256),((326*2)&255),(x1464d-x13696)/256,(x1464d-x13696)&255
+		.dc.b ((326*2)/256),((326*2)&255),(x1464d-jmpbase)/256,(x1464d-jmpbase)&255
 		.dc.b 6
 		.ascii "DEFAULT"
-		.dc.b ((15*2)/256),((15*2)&255),(x1429f-x13696)/256,(x1429f-x13696)&255
+		.dc.b ((15*2)/256),((15*2)&255),(x1429f-jmpbase)/256,(x1429f-jmpbase)&255
 		.dc.b 5
 		.ascii "SELECT"
-		.dc.b ((44*2)/256),((44*2)&255),(x1446a-x13696)/256,(x1446a-x13696)&255
+		.dc.b ((44*2)/256),((44*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
 		.dc.b 6
 		.ascii "MAT ADD"
-		.dc.b ((424*2)/256),((424*2)&255),(x13ed2-x13696)/256,(x13ed2-x13696)&255
+		.dc.b ((424*2)/256),((424*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
 		.dc.b 6
 		.ascii "MAT SUB"
-		.dc.b ((426*2)/256),((426*2)&255),(x13ed2-x13696)/256,(x13ed2-x13696)&255
+		.dc.b ((426*2)/256),((426*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
 		.dc.b 6
 		.ascii "MAT CPY"
-		.dc.b ((428*2)/256),((428*2)&255),(x13ed2-x13696)/256,(x13ed2-x13696)&255
+		.dc.b ((428*2)/256),((428*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
 		.dc.b 7
 		.ascii "MAT XCPY"
-		.dc.b ((429*2)/256),((429*2)&255),(x13ed2-x13696)/256,(x13ed2-x13696)&255
+		.dc.b ((429*2)/256),((429*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
 		.dc.b 6
 		.ascii "MAT DET"
-		.dc.b ((430*2)/256),((430*2)&255),(x13ed2-x13696)/256,(x13ed2-x13696)&255
+		.dc.b ((430*2)/256),((430*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
 		.dc.b 6
 		.ascii "MAT NEG"
-		.dc.b ((431*2)/256),((431*2)&255),(x13ed2-x13696)/256,(x13ed2-x13696)&255
+		.dc.b ((431*2)/256),((431*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
 		.dc.b 6
 		.ascii "MAT ABS"
-		.dc.b ((432*2)/256),((432*2)&255),(x13ed2-x13696)/256,(x13ed2-x13696)&255
+		.dc.b ((432*2)/256),((432*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
 		.dc.b 7
 		.ascii "MAT NORM"
-		.dc.b ((433*2)/256),((433*2)&255),(x13ed2-x13696)/256,(x13ed2-x13696)&255
+		.dc.b ((433*2)/256),((433*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
 		.dc.b 7
 		.ascii "MAT READ"
-		.dc.b ((434*2)/256),((434*2)&255),(x13ed2-x13696)/256,(x13ed2-x13696)&255
+		.dc.b ((434*2)/256),((434*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
 		.dc.b 8
 		.ascii "MAT PRINT"
-		.dc.b ((435*2)/256),((435*2)&255),(x13ed2-x13696)/256,(x13ed2-x13696)&255
+		.dc.b ((435*2)/256),((435*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
 		.dc.b 8
 		.ascii "MAT TRANS"
-		.dc.b ((436*2)/256),((436*2)&255),(x13ed2-x13696)/256,(x13ed2-x13696)&255
+		.dc.b ((436*2)/256),((436*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
 		.dc.b 6
 		.ascii "MAT CLR"
-		.dc.b ((437*2)/256),((437*2)&255),(x13ed2-x13696)/256,(x13ed2-x13696)&255
+		.dc.b ((437*2)/256),((437*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
 		.dc.b 6
 		.ascii "MAT SET"
-		.dc.b ((438*2)/256),((438*2)&255),(x13ed2-x13696)/256,(x13ed2-x13696)&255
+		.dc.b ((438*2)/256),((438*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
 		.dc.b 6
 		.ascii "MAT ONE"
-		.dc.b ((439*2)/256),((439*2)&255),(x13ed2-x13696)/256,(x13ed2-x13696)&255
+		.dc.b ((439*2)/256),((439*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
 		.dc.b 7
 		.ascii "MAT BASE"
-		.dc.b ((440*2)/256),((440*2)&255),(x13ed2-x13696)/256,(x13ed2-x13696)&255
+		.dc.b ((440*2)/256),((440*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
 		.dc.b 7
 		.ascii "MAT QDET"
-		.dc.b ((441*2)/256),((441*2)&255),(x13ed2-x13696)/256,(x13ed2-x13696)&255
+		.dc.b ((441*2)/256),((441*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
 		.dc.b 8
 		.ascii "MAT INPUT"
-		.dc.b ((442*2)/256),((442*2)&255),(x13ed2-x13696)/256,(x13ed2-x13696)&255
+		.dc.b ((442*2)/256),((442*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
 		.dc.b 7
 		.ascii "MAT RANG"
-		.dc.b ((443*2)/256),((443*2)&255),(x13ed2-x13696)/256,(x13ed2-x13696)&255
+		.dc.b ((443*2)/256),((443*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
 		.dc.b 6
 		.ascii "MAT MUL"
-		.dc.b ((444*2)/256),((444*2)&255),(x13ed2-x13696)/256,(x13ed2-x13696)&255
+		.dc.b ((444*2)/256),((444*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
 		.dc.b 6
 		.ascii "MAT INV"
-		.dc.b ((448*2)/256),((448*2)&255),(x13ed2-x13696)/256,(x13ed2-x13696)&255
+		.dc.b ((448*2)/256),((448*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
 		.dc.b -1
 /* gfa: 21edb */
 /* gbe: 00051c8a */
@@ -4609,2319 +4627,2273 @@ func_misc_table:
 /* gbe: 51d51 */
 func_table:
 func_a_table: /* 1297e */
-		.dc.b 2
-		.ascii "AND"
-		.dc.b 0,0
-		.dc.b 3
-		.ascii "AND("
-		.dc.b TOK_SUBFUNC_208,5
-		.dc.b 3
-		.ascii "ABS("
-		.dc.b 0,40
-		.dc.b 3
-		.ascii "ATN("
-		.dc.b 0,44
-		.dc.b 3
-		.ascii "ASC("
-		.dc.b TOK_SUBFUNC_208,67
-		.dc.b 2
-		.ascii "AT("
-		.dc.b 0,89
-		.dc.b 4
-		.ascii "ASIN("
-		.dc.b 0,65
-		.dc.b 4
-		.ascii "ACOS("
-		.dc.b 0,82
-		.dc.b 1
-		.ascii "AS"
-		.dc.b 0,108
-		.dc.b 6
-		.ascii "ARRPTR("
-		.dc.b TOK_SUBFUNC_208,188
-		.dc.b 3
-		.ascii "ADD("
-		.dc.b TOK_SUBFUNC_208,2
-		.dc.b 6
-		.ascii "ADDRIN("
-		.dc.b TOK_SUBFUNC_208,18
-		.dc.b 5
-		.ascii "ADDRIN"
-		.dc.b TOK_SUBFUNC_208,19
-		.dc.b 7
-		.ascii "ADDROUT("
-		.dc.b TOK_SUBFUNC_208,20
-		.dc.b 6
-		.ascii "ADDROUT"
-		.dc.b TOK_SUBFUNC_208,21
-		.dc.b 10
-		.ascii "APPL_INIT()"
-		.dc.b TOK_SUBFUNC_208,135
-		.dc.b 9
-		.ascii "APPL_READ("
-		.dc.b TOK_SUBFUNC_208,136
-		.dc.b 10
-		.ascii "APPL_WRITE("
-		.dc.b TOK_SUBFUNC_208,137
-		.dc.b 9
-		.ascii "APPL_FIND("
-		.dc.b TOK_SUBFUNC_208,138
-		.dc.b 10
-		.ascii "APPL_TPLAY("
-		.dc.b TOK_SUBFUNC_208,139
-		.dc.b 12
-		.ascii "APPL_TRECORD("
-		.dc.b TOK_SUBFUNC_208,140
-		.dc.b 10
-		.ascii "APPL_EXIT()"
-		.dc.b TOK_SUBFUNC_208,141
-		.IFNE GBE
-		.dc.b 9
-		.ascii "APPL.FIND("
+		.dc.b 2,'A','N','D',0,TOK_AND
+		.dc.b 3,'A','N','D','(',TOK_SUBFUNC_208,5
+		.dc.b 3,'A','B','S','(',0,TOK_ABS
+		.dc.b 3,'A','T','N','(',0,44
+		.dc.b 3,'A','S','C','(',TOK_SUBFUNC_208,67
+		.dc.b 2,'A','T','(',0,89
+		.dc.b 4,'A','S','I','N','(',0,65
+		.dc.b 4,'A','C','O','S','(',0,82
+		.dc.b 1,'A','S',0,108
+		.dc.b 6,'A','R','R','P','T','R','(',TOK_SUBFUNC_208,188
+		.dc.b 3,'A','D','D','(',TOK_SUBFUNC_208,2
+		.dc.b 6,'A','D','D','R','I','N','(',TOK_SUBFUNC_208,18
+		.dc.b 5,'A','D','D','R','I','N',TOK_SUBFUNC_208,19
+		.dc.b 7,'A','D','D','R','O','U','T','(',TOK_SUBFUNC_208,20
+		.dc.b 6,'A','D','D','R','O','U','T',TOK_SUBFUNC_208,21
+		.dc.b 10,'A','P','P','L','_','I','N','I','T','(',')',TOK_SUBFUNC_208,135
+		.dc.b 9,'A','P','P','L','_','R','E','A','D','(',TOK_SUBFUNC_208,136
+		.dc.b 10,'A','P','P','L','_','W','R','I','T','E','(',TOK_SUBFUNC_208,137
+		.dc.b 9,'A','P','P','L','_','F','I','N','D','(',TOK_SUBFUNC_208,138
+		.dc.b 10,'A','P','P','L','_','T','P','L','A','Y','(',TOK_SUBFUNC_208,139
+		.dc.b 12,'A','P','P','L','_','T','R','E','C','O','R','D','(',TOK_SUBFUNC_208,140
+		.dc.b 10,'A','P','P','L','_','E','X','I','T','(',')',TOK_SUBFUNC_208,141
+	.IFNE GBE
+		.dc.b 9,'A','P','P','L','.','F','I','N','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,120
-		.dc.b 12
-		.ascii "APPL_CONTROL("
+		.dc.b 12,'A','P','P','L','_','C','O','N','T','R','O','L','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,23
-		.dc.b 11
-		.ascii "APPL_SEARCH("
+		.dc.b 11,'A','P','P','L','_','S','E','A','R','C','H','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,167
-		.dc.b 12
-		.ascii "APPL_GETINFO("
+		.dc.b 12,'A','P','P','L','_','G','E','T','I','N','F','O','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,22
-		.dc.b 11
-		.ascii "APPL_YIELD()"
+		.dc.b 11,'A','P','P','L','_','Y','I','E','L','D','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,86
-		.dc.b 5
-		.ascii "ALIGN("
+		.dc.b 5,'A','L','I','G','N','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,9
-		.dc.b 2
-		.ascii "A~I"
+		.dc.b 2,'A','~','I'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,244
-		.dc.b 5
-		.ascii "ALERT("
+		.dc.b 5,'A','L','E','R','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,250
-		.dc.b 7
-		.ascii "AP_SEND("
+		.dc.b 7,'A','P','_','S','E','N','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,252
-		.dc.b 8
-		.ascii "AV_INIT()"
+		.dc.b 8,'A','V','_','I','N','I','T','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,93
-		.dc.b 12
-		.ascii "AV_PROTOKOLL("
+		.dc.b 12,'A','V','_','P','R','O','T','O','K','O','L','L','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,94
-		.dc.b 10
-		.ascii "AV_SENDKEY("
+		.dc.b 10,'A','V','_','S','E','N','D','K','E','Y','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,97
-		.dc.b 12
-		.ascii "AV_STARTPROG("
+		.dc.b 12,'A','V','_','S','T','A','R','T','P','R','O','G','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,101
-		.dc.b 14
-		.ascii "AV_ACCWINDOPEN("
+		.dc.b 14,'A','V','_','A','C','C','W','I','N','D','O','P','E','N','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,102
-		.dc.b 16
-		.ascii "AV_ACCWINDCLOSED("
+		.dc.b 16,'A','V','_','A','C','C','W','I','N','D','C','L','O','S','E','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,103
-		.dc.b 14
-		.ascii "AV_PATH_UPDATE("
+		.dc.b 14,'A','V','_','P','A','T','H','_','U','P','D','A','T','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,105
-		.dc.b 12
-		.ascii "AV_WHAT_IZIT("
+		.dc.b 12,'A','V','_','W','H','A','T','_','I','Z','I','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,106
-		.dc.b 8
-		.ascii "AV_EXIT()"
+		.dc.b 8,'A','V','_','E','X','I','T','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,108
-		.dc.b 10
-		.ascii "AV_STARTED("
+		.dc.b 10,'A','V','_','S','T','A','R','T','E','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,109
-		.dc.b 8
-		.ascii "AV_XWIND("
+		.dc.b 8,'A','V','_','X','W','I','N','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,110
-		.ENDC
+	.ENDC
 func_b_table: /* 12a82 */
-		.dc.b 4
-		.ascii "BIN$("
+		.dc.b 4,'B','I','N','$','('
+		.ascii ""
 		.dc.b 0,115
-		.dc.b 7
-		.ascii "BASEPAGE"
+		.dc.b 7,'B','A','S','E','P','A','G','E'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,31
-		.dc.b 4
-		.ascii "BIOS("
+		.dc.b 4,'B','I','O','S','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,85
-		.dc.b 4
-		.ascii "BREAK"
+		.dc.b 4,'B','R','E','A','K'
+		.ascii ""
 		.dc.b 0,153
-		.dc.b 5
-		.ascii "BUTTON"
+		.dc.b 5,'B','U','T','T','O','N'
+		.ascii ""
 		.dc.b 0,171
-		.dc.b 3
-		.ascii "BASE"
+		.dc.b 3,'B','A','S','E'
+		.ascii ""
 		.dc.b 0,182
-		.dc.b 4
-		.ascii "BYTE("
+		.dc.b 4,'B','Y','T','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,16
-		.dc.b 4
-		.ascii "BTST("
+		.dc.b 4,'B','T','S','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,44
-		.dc.b 4
-		.ascii "BSET("
+		.dc.b 4,'B','S','E','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,45
-		.dc.b 4
-		.ascii "BCLR("
+		.dc.b 4,'B','C','L','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,46
-		.dc.b 4
-		.ascii "BCHG("
+		.dc.b 4,'B','C','H','G','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,47
-		.dc.b 4
-		.ascii "BYTE{"
+		.dc.b 4,'B','Y','T','E','{'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,116
-		.IFNE GBE
-		.dc.b 5
-		.ascii "BFIND("
+	.IFNE GBE
+		.dc.b 5,'B','F','I','N','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,96
-		.dc.b 6
-		.ascii "BINSTR("
+		.dc.b 6,'B','I','N','S','T','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,95
-		.dc.b 7
-		.ascii "BCONOUT("
+		.dc.b 7,'B','C','O','N','O','U','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,152
-		.dc.b 8
-		.ascii "BCONSTAT("
+		.dc.b 8,'B','C','O','N','S','T','A','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,154
-		.dc.b 7
-		.ascii "BCOSTAT("
+		.dc.b 7,'B','C','O','S','T','A','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,153
-		.dc.b 6
-		.ascii "BCONIN("
+		.dc.b 6,'B','C','O','N','I','N','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,151
-		.dc.b 8
-		.ascii "BUFFOPER("
+		.dc.b 8,'B','U','F','F','O','P','E','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,35
-		.dc.b 7
-		.ascii "BUFFPTR("
+		.dc.b 7,'B','U','F','F','P','T','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,40
-		.dc.b 6
-		.ascii "BSWAP&("
+		.dc.b 6,'B','S','W','A','P','&','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,99
-		.dc.b 5
-		.ascii "BSWAP("
+		.dc.b 5,'B','S','W','A','P','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,100
-		.dc.b 6
-		.ascii "BSWAP3("
+		.dc.b 6,'B','S','W','A','P','3','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,10
-		.dc.b 8
-		.ascii "BLITMODE("
+		.dc.b 8,'B','L','I','T','M','O','D','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,76
-		.dc.b 7
-		.ascii "BCONMAP("
+		.dc.b 7,'B','C','O','N','M','A','P','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,206
-		.dc.b 6
-		.ascii "BCOUNT("
+		.dc.b 6,'B','C','O','U','N','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,97
-		.dc.b 8
-		.ascii "BREPLACE("
+		.dc.b 8,'B','R','E','P','L','A','C','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,98
-		.dc.b 9
-		.ascii "BIOSKEYS()"
+		.dc.b 9,'B','I','O','S','K','E','Y','S','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,222
-		.dc.b 9
-		.ascii "BYTE2WORD("
+		.dc.b 9,'B','Y','T','E','2','W','O','R','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,116
-		.ENDC
+	.ENDC
 func_c_table: /* 12afd */
-		.dc.b 3
-		.ascii "COS("
+		.dc.b 3,'C','O','S','('
+		.ascii ""
 		.dc.b 0,42
-		.dc.b 4
-		.ascii "COSQ("
+		.dc.b 4,'C','O','S','Q','('
+		.ascii ""
 		.dc.b 0,125
-		.dc.b 4
-		.ascii "CHR$("
+		.dc.b 4,'C','H','R','$','('
+		.ascii ""
 		.dc.b 0,66
-		.dc.b 3
-		.ascii "CVI("
+		.dc.b 3,'C','V','I','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,75
-		.dc.b 3
-		.ascii "CVL("
+		.dc.b 3,'C','V','L','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,76
-		.dc.b 3
-		.ascii "CVS("
+		.dc.b 3,'C','V','S','('
+		.ascii ""
 		.dc.b 0,105
-		.dc.b 3
-		.ascii "CVF("
+		.dc.b 3,'C','V','F','('
+		.ascii ""
 		.dc.b 0,106
-		.dc.b 3
-		.ascii "CVD("
+		.dc.b 3,'C','V','D','('
+		.ascii ""
 		.dc.b 0,107
-		.IFNE GBE
-		.dc.b 7
-		.ascii "CONTERM("
+	.IFNE GBE
+		.dc.b 7,'C','O','N','T','E','R','M','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,16
-		.ENDC
-		.dc.b 6
-		.ascii "CONTRL("
+	.ENDC
+		.dc.b 6,'C','O','N','T','R','L','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,22
-		.dc.b 5
-		.ascii "CONTRL"
+		.dc.b 5,'C','O','N','T','R','L'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,23
-		.dc.b 3
-		.ascii "CONT"
+		.dc.b 3,'C','O','N','T'
+		.ascii ""
 		.dc.b 0,154
-		.dc.b 1
-		.ascii "C:"
+		.dc.b 1,'C',':'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,117
-		.dc.b 5
-		.ascii "CRSLIN"
+		.dc.b 5,'C','R','S','L','I','N'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,56
-		.dc.b 5
-		.ascii "CRSCOL"
+		.dc.b 5,'C','R','S','C','O','L'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,57
-		.dc.b 4
-		.ascii "CARD("
+		.dc.b 4,'C','A','R','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,15
-		.dc.b 4
-		.ascii "CARD{"
+		.dc.b 4,'C','A','R','D','{'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,115
-		.dc.b 4
-		.ascii "CHAR{"
+		.dc.b 4,'C','H','A','R','{'
+		.ascii ""
 		.dc.b 0,97
-		.IFNE GBE
-		.dc.b 5
-		.ascii "CHAR$("
+	.IFNE GBE
+		.dc.b 5,'C','H','A','R','$','('
+		.ascii ""
 		.dc.b 0,169
-		.ENDC
-		.dc.b 4
-		.ascii "CINT("
+	.ENDC
+		.dc.b 4,'C','I','N','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,103
-		.dc.b 6
-		.ascii "CFLOAT("
+		.dc.b 6,'C','F','L','O','A','T','('
+		.ascii ""
 		.dc.b 0,110
-		.dc.b 6
-		.ascii "COMBIN("
+		.dc.b 6,'C','O','M','B','I','N','('
+		.ascii ""
 		.dc.b 0,141
-		.IFNE GBE
-		.dc.b 7
-		.ascii "CMDLINE$"
+	.IFNE GBE
+		.dc.b 7,'C','M','D','L','I','N','E','$'
+		.ascii ""
 		.dc.b 0,136
-		.dc.b 8
-		.ascii "CHECKSUM("
+		.dc.b 8,'C','H','E','C','K','S','U','M','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,34
-		.dc.b 6
-		.ascii "CFREE()"
+		.dc.b 6,'C','F','R','E','E','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,5
-		.dc.b 7
-		.ascii "CPU020()"
+		.dc.b 7,'C','P','U','0','2','0','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,245
-		.dc.b 6
-		.ascii "CCONWS("
+		.dc.b 6,'C','C','O','N','W','S','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,101
-		.dc.b 5
-		.ascii "CRC16("
+		.dc.b 5,'C','R','C','1','6','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,246
-		.dc.b 5
-		.ascii "CRC32("
+		.dc.b 5,'C','R','C','3','2','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,247
-		.dc.b 8
-		.ascii "CURSCONF("
+		.dc.b 8,'C','U','R','S','C','O','N','F','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,205
-		.dc.b 9
-		.ascii "CACHECTRL("
+		.dc.b 9,'C','A','C','H','E','C','T','R','L','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,77
-		.dc.b 10
-		.ascii "CT60_CACHE("
+		.dc.b 10,'C','T','6','0','_','C','A','C','H','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,78
-		.dc.b 17
-		.ascii "CT60_FLUSH_CACHE()"
+		.dc.b 17,'C','T','6','0','_','F','L','U','S','H','_','C','A','C','H','E','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,79
-		.dc.b 26
-		.ascii "CT60_READ_CORE_TEMPERATURE("
+		.dc.b 26,'C','T','6','0','_','R','E','A','D','_','C','O','R','E','_','T','E','M','P','E','R','A','T','U','R','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,80
-		.dc.b 17
-		.ascii "CT60_RW_PARAMETER("
+		.dc.b 17,'C','T','6','0','_','R','W','_','P','A','R','A','M','E','T','E','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,81
-		.dc.b 12
-		.ascii "CT60_VMALLOC("
+		.dc.b 12,'C','T','6','0','_','V','M','A','L','L','O','C','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,82
-		.ENDC
+	.ENDC
 func_d_table: /* 12bc4 */
-		.dc.b 2
-		.ascii "DIV"
+		.dc.b 2,'D','I','V'
+		.ascii ""
 		.dc.b 0,11
-		.dc.b 3
-		.ascii "DIV("
+		.dc.b 3,'D','I','V','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,1
-		.dc.b 5
-		.ascii "DOWNTO"
+		.dc.b 5,'D','O','W','N','T','O'
+		.ascii ""
 		.dc.b 0,73
-		.dc.b 5
-		.ascii "DPEEK("
+		.dc.b 5,'D','P','E','E','K','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,64
-		.dc.b 4
-		.ascii "DIM?("
+		.dc.b 4,'D','I','M','?','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,81
-		.IFNE GBE
-		.dc.b 5
-		.ascii "DATE$("
+	.IFNE GBE
+		.dc.b 5,'D','A','T','E','$','('
+		.ascii ""
 		.dc.b 0,164
-		.ENDC
-		.dc.b 4
-		.ascii "DATE$"
+	.ENDC
+		.dc.b 4,'D','A','T','E','$'
+		.ascii ""
 		.dc.b 0,126
-		.dc.b 4
-		.ascii "DIR$("
+		.dc.b 4,'D','I','R','$','('
+		.ascii ""
 		.dc.b 0,132
-		.dc.b 5
-		.ascii "DFREE("
+		.dc.b 5,'D','F','R','E','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,83
-		.dc.b 6
-		.ascii "DOUBLE{"
+		.dc.b 6,'D','O','U','B','L','E','{'
+		.ascii ""
 		.dc.b 0,93
-		.dc.b 3
-		.ascii "DEG("
+		.dc.b 3,'D','E','G','('
+		.ascii ""
 		.dc.b 0,103
-		.dc.b 4
-		.ascii "DRAW("
+		.dc.b 4,'D','R','A','W','('
+		.ascii ""
 		.dc.b 0,134
-		.IFNE GBE
-		.dc.b 7
-		.ascii "DCREATE("
+	.IFNE GBE
+		.dc.b 7,'D','C','R','E','A','T','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,103
-		.dc.b 7
-		.ascii "DDELETE("
+		.dc.b 7,'D','D','E','L','E','T','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,104
-		.dc.b 8
-		.ascii "DSETPATH("
+		.dc.b 8,'D','S','E','T','P','A','T','H','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,108
-		.dc.b 7
-		.ascii "DOSOUND("
+		.dc.b 7,'D','O','S','O','U','N','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,8
-		.dc.b 10
-		.ascii "DEVCONNECT("
+		.dc.b 10,'D','E','V','C','O','N','N','E','C','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,38
-		.dc.b 11
-		.ascii "DSPTRISTATE("
+		.dc.b 11,'D','S','P','T','R','I','S','T','A','T','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,36
-		.dc.b 8
-		.ascii "DGETDRV()"
+		.dc.b 8,'D','G','E','T','D','R','V','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,11
-		.dc.b 7
-		.ascii "DSETDRV("
+		.dc.b 7,'D','S','E','T','D','R','V','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,102
-		.dc.b 9
-		.ascii "DPATHCONF("
+		.dc.b 9,'D','P','A','T','H','C','O','N','F','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,114
-		.dc.b 7
-		.ascii "DRVMAP()"
+		.dc.b 7,'D','R','V','M','A','P','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,112
-		.dc.b 7
-		.ascii "DMAREAD("
+		.dc.b 7,'D','M','A','R','E','A','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,218
-		.dc.b 8
-		.ascii "DMAWRITE("
+		.dc.b 8,'D','M','A','W','R','I','T','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,219
-		.dc.b 6
-		.ascii "D_FREE("
+		.dc.b 6,'D','_','F','R','E','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,116
-		.dc.b 8
-		.ascii "DGETPATH("
+		.dc.b 8,'D','G','E','T','P','A','T','H','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,107
-		.dc.b 2
-		.ascii "DTA"
+		.dc.b 2,'D','T','A'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,56
-		.ENDC
+	.ENDC
 func_e_table: /* 12c33 */
-		.dc.b 4
-		.ascii "EOF(#"
+		.dc.b 4,'E','O','F','(','#'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,78
-		.dc.b 3
-		.ascii "EOF("
+		.dc.b 3,'E','O','F','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,78
-		.dc.b 2
-		.ascii "EQV"
+		.dc.b 2,'E','Q','V'
+		.ascii ""
 		.dc.b 0,4
-		.dc.b 3
-		.ascii "EQV("
+		.dc.b 3,'E','Q','V','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,8
-		.dc.b 4
-		.ascii "ERROR"
+		.dc.b 4,'E','R','R','O','R'
+		.ascii ""
 		.dc.b 0,151
-		.dc.b 4
-		.ascii "ERR$("
+		.dc.b 4,'E','R','R','$','('
+		.ascii ""
 		.dc.b 0,36
-		.dc.b 2
-		.ascii "ERR"
+		.dc.b 2,'E','R','R'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,88
-		.dc.b 4
-		.ascii "EVEN("
+		.dc.b 4,'E','V','E','N','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,101
-		.dc.b 4
-		.ascii "EXEC("
+		.dc.b 4,'E','X','E','C','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,95
-		.dc.b 5
-		.ascii "EXIST("
+		.dc.b 5,'E','X','I','S','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,84
-		.dc.b 3
-		.ascii "EXP("
+		.dc.b 3,'E','X','P','('
+		.ascii ""
 		.dc.b 0,47
-		.dc.b 11
-		.ascii "EVNT_KEYBD()"
+		.dc.b 11,'E','V','N','T','_','K','E','Y','B','D','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,118
-		.dc.b 11
-		.ascii "EVNT_BUTTON("
+		.dc.b 11,'E','V','N','T','_','B','U','T','T','O','N','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,119
-		.dc.b 10
-		.ascii "EVNT_MOUSE("
+		.dc.b 10,'E','V','N','T','_','M','O','U','S','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,120
-		.dc.b 10
-		.ascii "EVNT_MESAG("
+		.dc.b 10,'E','V','N','T','_','M','E','S','A','G','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,121
-		.dc.b 10
-		.ascii "EVNT_TIMER("
+		.dc.b 10,'E','V','N','T','_','T','I','M','E','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,122
-		.dc.b 10
-		.ascii "EVNT_MULTI("
+		.dc.b 10,'E','V','N','T','_','M','U','L','T','I','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,123
-		.dc.b 11
-		.ascii "EVNT_DCLICK("
+		.dc.b 11,'E','V','N','T','_','D','C','L','I','C','K','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,142
-		.IFNE GBE
-		.dc.b 2
-		.ascii "ERL"
+	.IFNE GBE
+		.dc.b 2,'E','R','L'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,2
-		.dc.b 6
-		.ascii "ENVIRON"
+		.dc.b 6,'E','N','V','I','R','O','N'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,121
-		.dc.b 10
-		.ascii "EGETSHIFT()"
+		.dc.b 10,'E','G','E','T','S','H','I','F','T','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,238
-		.dc.b 9
-		.ascii "ESETSHIFT("
+		.dc.b 9,'E','S','E','T','S','H','I','F','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,239
-		.dc.b 8
-		.ascii "ESETBANK("
+		.dc.b 8,'E','S','E','T','B','A','N','K','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,240
-		.dc.b 9
-		.ascii "ESETCOLOR("
+		.dc.b 9,'E','S','E','T','C','O','L','O','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,241
-		.dc.b 8
-		.ascii "ESETGRAY("
+		.dc.b 8,'E','S','E','T','G','R','A','Y','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,242
-		.dc.b 9
-		.ascii "ESETSMEAR("
+		.dc.b 9,'E','S','E','T','S','M','E','A','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,243
-		.dc.b 11
-		.ascii "EGETPALETTE("
+		.dc.b 11,'E','G','E','T','P','A','L','E','T','T','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,244
-		.dc.b 11
-		.ascii "ESETPALETTE("
+		.dc.b 11,'E','S','E','T','P','A','L','E','T','T','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,245
-		.ENDC
+	.ENDC
 func_f_table: /* 12d0e */
-		.dc.b 4
-		.ascii "FRAC("
+		.dc.b 4,'F','R','A','C','('
+		.ascii ""
 		.dc.b 0,39
-		.dc.b 3
-		.ascii "FRE("
+		.dc.b 3,'F','R','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,71
-		.dc.b 4
-		.ascii "FALSE"
+		.dc.b 4,'F','A','L','S','E'
+		.ascii ""
 		.dc.b 0,189
-		.dc.b 4
-		.ascii "FATAL"
+		.dc.b 4,'F','A','T','A','L'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,89
-		.dc.b 3
-		.ascii "FIX("
+		.dc.b 3,'F','I','X','('
+		.ascii ""
 		.dc.b 0,155
-		.dc.b 1
-		.ascii "FN"
+		.dc.b 1,'F','N'
+		.ascii ""
 		.dc.b 0,158
-		.dc.b 5
-		.ascii "FLOAT{"
+		.dc.b 5,'F','L','O','A','T','{'
+		.ascii ""
 		.dc.b 0,92
-		.dc.b 7
-		.ascii "FORM_DO("
+		.dc.b 7,'F','O','R','M','_','D','O','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,157
-		.dc.b 9
-		.ascii "FORM_DIAL("
+		.dc.b 9,'F','O','R','M','_','D','I','A','L','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,158
-		.dc.b 10
-		.ascii "FORM_ALERT("
+		.dc.b 10,'F','O','R','M','_','A','L','E','R','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,159
-		.dc.b 10
-		.ascii "FORM_ERROR("
+		.dc.b 10,'F','O','R','M','_','E','R','R','O','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,160
-		.dc.b 11
-		.ascii "FORM_CENTER("
+		.dc.b 11,'F','O','R','M','_','C','E','N','T','E','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,161
-		.dc.b 10
-		.ascii "FORM_KEYBD("
+		.dc.b 10,'F','O','R','M','_','K','E','Y','B','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,204
-		.dc.b 11
-		.ascii "FORM_BUTTON("
+		.dc.b 11,'F','O','R','M','_','B','U','T','T','O','N','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,205
-		.dc.b 10
-		.ascii "FSEL_INPUT("
+		.dc.b 10,'F','S','E','L','_','I','N','P','U','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,174
-		.dc.b 7
-		.ascii "FSFIRST("
+		.dc.b 7,'F','S','F','I','R','S','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,218
-		.dc.b 7
-		.ascii "FSNEXT()"
+		.dc.b 7,'F','S','N','E','X','T','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,219
-		.dc.b 7
-		.ascii "FSETDTA("
+		.dc.b 7,'F','S','E','T','D','T','A','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,220
-		.dc.b 8
-		.ascii "FGETDTA()"
+		.dc.b 8,'F','G','E','T','D','T','A','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,221
-		.dc.b 4
-		.ascii "FACT("
+		.dc.b 4,'F','A','C','T','('
+		.ascii ""
 		.dc.b 0,140
-		.IFNE GBE
-		.dc.b 7
-		.ascii "FPU882()"
+	.IFNE GBE
+		.dc.b 7,'F','P','U','8','8','2','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,246
-		.dc.b 7
-		.ascii "FRENAME("
+		.dc.b 7,'F','R','E','N','A','M','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,111
-		.dc.b 7
-		.ascii "FDELETE("
+		.dc.b 7,'F','D','E','L','E','T','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,49
-		.dc.b 7
-		.ascii "FCREATE("
+		.dc.b 7,'F','C','R','E','A','T','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,47
-		.dc.b 6
-		.ascii "FCLOSE("
+		.dc.b 6,'F','C','L','O','S','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,44
-		.dc.b 6
-		.ascii "FWRITE("
+		.dc.b 6,'F','W','R','I','T','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,46
-		.dc.b 5
-		.ascii "FOPEN("
+		.dc.b 5,'F','O','P','E','N','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,43
-		.dc.b 5
-		.ascii "FREAD("
+		.dc.b 5,'F','R','E','A','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,45
-		.dc.b 5
-		.ascii "FSEEK("
+		.dc.b 5,'F','S','E','E','K','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,48
-		.dc.b 10
-		.ascii "FORM_POPUP("
+		.dc.b 10,'F','O','R','M','_','P','O','P','U','P','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,160
-		.dc.b 12
-		.ascii "FSEL_EXINPUT("
+		.dc.b 12,'F','S','E','L','_','E','X','I','N','P','U','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,25
-		.dc.b 7
-		.ascii "FINSTAT("
+		.dc.b 7,'F','I','N','S','T','A','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,175
-		.dc.b 5
-		.ascii "FCNTL("
+		.dc.b 5,'F','C','N','T','L','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,177
-		.dc.b 7
-		.ascii "FSELECT("
+		.dc.b 7,'F','S','E','L','E','C','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,178
-		.dc.b 8
-		.ascii "FGETCHAR("
+		.dc.b 8,'F','G','E','T','C','H','A','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,83
-		.dc.b 8
-		.ascii "FPUTCHAR("
+		.dc.b 8,'F','P','U','T','C','H','A','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,84
-		.dc.b 7
-		.ascii "FDATIME("
+		.dc.b 7,'F','D','A','T','I','M','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,113
-		.dc.b 8
-		.ascii "FOUTSTAT("
+		.dc.b 8,'F','O','U','T','S','T','A','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,176
-		.dc.b 7
-		.ascii "FATTRIB("
+		.dc.b 7,'F','A','T','T','R','I','B','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,115
-		.dc.b 4
-		.ascii "FDUP("
+		.dc.b 4,'F','D','U','P','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,171
-		.dc.b 6
-		.ascii "FFORCE("
+		.dc.b 6,'F','F','O','R','C','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,172
-		.dc.b 6
-		.ascii "FCHMOD("
+		.dc.b 6,'F','C','H','M','O','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,254
-		.dc.b 6
-		.ascii "FLOPRD("
+		.dc.b 6,'F','L','O','P','R','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,213
-		.dc.b 6
-		.ascii "FLOPWR("
+		.dc.b 6,'F','L','O','P','W','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,214
-		.dc.b 7
-		.ascii "FLOPFMT("
+		.dc.b 7,'F','L','O','P','F','M','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,215
-		.dc.b 7
-		.ascii "FLOPVER("
+		.dc.b 7,'F','L','O','P','V','E','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,216
-		.dc.b 8
-		.ascii "FLOPRATE("
+		.dc.b 8,'F','L','O','P','R','A','T','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,217
-		.dc.b 5
-		.ascii "FLOCK("
+		.dc.b 5,'F','L','O','C','K','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,173
-		.dc.b 5
-		.ascii "F_INP("
+		.dc.b 5,'F','_','I','N','P','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,63
-		.dc.b 6
-		.ascii "F_INP&("
+		.dc.b 6,'F','_','I','N','P','&','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,64
-		.dc.b 6
-		.ascii "F_INP%("
+		.dc.b 6,'F','_','I','N','P','%','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,65
-		.dc.b 5
-		.ascii "F_OUT("
+		.dc.b 5,'F','_','O','U','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,60
-		.dc.b 6
-		.ascii "F_OUT&("
+		.dc.b 6,'F','_','O','U','T','&','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,61
-		.dc.b 6
-		.ascii "F_OUT%("
+		.dc.b 6,'F','_','O','U','T','%','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,62
-		.dc.b 6
-		.ascii "F_BGET("
+		.dc.b 6,'F','_','B','G','E','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,51
-		.dc.b 6
-		.ascii "F_BPUT("
+		.dc.b 6,'F','_','B','P','U','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,52
-		.dc.b 6
-		.ascii "F_OPEN("
+		.dc.b 6,'F','_','O','P','E','N','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,59
-		.dc.b 12
-		.ascii "F_LINE_INPUT("
+		.dc.b 12,'F','_','L','I','N','E','_','I','N','P','U','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,68
-		.dc.b 13
-		.ascii "F_LINE_OUTPUT("
+		.dc.b 13,'F','_','L','I','N','E','_','O','U','T','P','U','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,67
-		.dc.b 7
-		.ascii "F_INPUT("
+		.dc.b 7,'F','_','I','N','P','U','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,90
-		.dc.b 8
-		.ascii "F_OUTPUT("
+		.dc.b 8,'F','_','O','U','T','P','U','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,89
-		.dc.b 7
-		.ascii "F_PREAD("
+		.dc.b 7,'F','_','P','R','E','A','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,92
-		.dc.b 8
-		.ascii "F_PWRITE("
+		.dc.b 8,'F','_','P','W','R','I','T','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,91
-		.dc.b 5
-		.ascii "F_LOF("
+		.dc.b 5,'F','_','L','O','F','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,55
-		.dc.b 5
-		.ascii "F_LOC("
+		.dc.b 5,'F','_','L','O','C','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,54
-		.dc.b 5
-		.ascii "F_EOF("
+		.dc.b 5,'F','_','E','O','F','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,53
-		.dc.b 7
-		.ascii "F_BLOAD("
+		.dc.b 7,'F','_','B','L','O','A','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,69
-		.dc.b 7
-		.ascii "F_BSAVE("
+		.dc.b 7,'F','_','B','S','A','V','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,70
-		.dc.b 6
-		.ascii "F_SEEK("
+		.dc.b 6,'F','_','S','E','E','K','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,71
-		.dc.b 9
-		.ascii "F_RELSEEK("
+		.dc.b 9,'F','_','R','E','L','S','E','E','K','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,72
-		.dc.b 6
-		.ascii "F_LOAD("
+		.dc.b 6,'F','_','L','O','A','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,18
-		.dc.b 7
-		.ascii "F_CLOSE("
+		.dc.b 7,'F','_','C','L','O','S','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,119
-		.dc.b 7
-		.ascii "FSOCKET("
+		.dc.b 7,'F','S','O','C','K','E','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,35
-		.dc.b 11
-		.ascii "FSOCKETPAIR("
+		.dc.b 11,'F','S','O','C','K','E','T','P','A','I','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,36
-		.dc.b 7
-		.ascii "FACCEPT("
+		.dc.b 7,'F','A','C','C','E','P','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,37
-		.dc.b 8
-		.ascii "FCONNECT("
+		.dc.b 8,'F','C','O','N','N','E','C','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,38
-		.dc.b 5
-		.ascii "FBIND("
+		.dc.b 5,'F','B','I','N','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,39
-		.dc.b 7
-		.ascii "FLISTEN("
+		.dc.b 7,'F','L','I','S','T','E','N','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,40
-		.dc.b 8
-		.ascii "FRECVMSG("
+		.dc.b 8,'F','R','E','C','V','M','S','G','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,41
-		.dc.b 8
-		.ascii "FSENDMSG("
+		.dc.b 8,'F','S','E','N','D','M','S','G','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,42
-		.dc.b 9
-		.ascii "FRECVFROM("
+		.dc.b 9,'F','R','E','C','V','F','R','O','M','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,43
-		.dc.b 7
-		.ascii "FSENDTO("
+		.dc.b 7,'F','S','E','N','D','T','O','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,44
-		.dc.b 11
-		.ascii "FSETSOCKOPT("
+		.dc.b 11,'F','S','E','T','S','O','C','K','O','P','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,45
-		.dc.b 11
-		.ascii "FGETSOCKOPT("
+		.dc.b 11,'F','G','E','T','S','O','C','K','O','P','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,46
-		.dc.b 12
-		.ascii "FGETPEERNAME("
+		.dc.b 12,'F','G','E','T','P','E','E','R','N','A','M','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,47
-		.dc.b 12
-		.ascii "FGETSOCKNAME("
+		.dc.b 12,'F','G','E','T','S','O','C','K','N','A','M','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,48
-		.dc.b 9
-		.ascii "FSHUTDOWN("
+		.dc.b 9,'F','S','H','U','T','D','O','W','N','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,49
-		.dc.b 10
-		.ascii "FONT_INIT()"
+		.dc.b 10,'F','O','N','T','_','I','N','I','T','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,89
-		.dc.b 11
-		.ascii "FONT_SELECT("
+		.dc.b 11,'F','O','N','T','_','S','E','L','E','C','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,90
-		.ENDC
+	.ENDC
 func_g_table: /* 12e0d */
-		.dc.b 4
-		.ascii "GOSUB"
+		.dc.b 4,'G','O','S','U','B'
+		.ascii ""
 		.dc.b 0,76
-		.dc.b 3
-		.ascii "GOTO"
+		.dc.b 3,'G','O','T','O'
+		.ascii ""
 		.dc.b 0,75
-		.dc.b 1
-		.ascii "GB"
+		.dc.b 1,'G','B'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,61
-		.dc.b 7
-		.ascii "GCONTRL("
+		.dc.b 7,'G','C','O','N','T','R','L','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,24
-		.dc.b 6
-		.ascii "GCONTRL"
+		.dc.b 6,'G','C','O','N','T','R','L'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,25
-		.dc.b 6
-		.ascii "GEMDOS("
+		.dc.b 6,'G','E','M','D','O','S','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,87
-		.dc.b 6
-		.ascii "GINTIN("
+		.dc.b 6,'G','I','N','T','I','N','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,26
-		.dc.b 5
-		.ascii "GINTIN"
+		.dc.b 5,'G','I','N','T','I','N'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,27
-		.dc.b 7
-		.ascii "GINTOUT("
+		.dc.b 7,'G','I','N','T','O','U','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,28
-		.dc.b 6
-		.ascii "GINTOUT"
+		.dc.b 6,'G','I','N','T','O','U','T'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,29
-		.IFNE GBE
-		.dc.b 6
-		.ascii "GLOBAL("
+	.IFNE GBE
+		.dc.b 6,'G','L','O','B','A','L','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,250
-		.dc.b 5
-		.ascii "GLOBAL"
+		.dc.b 5,'G','L','O','B','A','L'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,251
-		.ENDC
-		.dc.b 14
-		.ascii "GRAF_RUBBERBOX("
+	.ENDC
+		.dc.b 14,'G','R','A','F','_','R','U','B','B','E','R','B','O','X','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,162
-		.dc.b 12
-		.ascii "GRAF_DRAGBOX("
+		.dc.b 12,'G','R','A','F','_','D','R','A','G','B','O','X','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,163
-		.dc.b 12
-		.ascii "GRAF_MOVEBOX("
+		.dc.b 12,'G','R','A','F','_','M','O','V','E','B','O','X','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,164
-		.dc.b 12
-		.ascii "GRAF_GROWBOX("
+		.dc.b 12,'G','R','A','F','_','G','R','O','W','B','O','X','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,165
-		.dc.b 14
-		.ascii "GRAF_SHRINKBOX("
+		.dc.b 14,'G','R','A','F','_','S','H','R','I','N','K','B','O','X','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,166
-		.dc.b 13
-		.ascii "GRAF_WATCHBOX("
+		.dc.b 13,'G','R','A','F','_','W','A','T','C','H','B','O','X','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,167
-		.dc.b 13
-		.ascii "GRAF_SLIDEBOX("
+		.dc.b 13,'G','R','A','F','_','S','L','I','D','E','B','O','X','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,168
-		.dc.b 11
-		.ascii "GRAF_HANDLE("
+		.dc.b 11,'G','R','A','F','_','H','A','N','D','L','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,169
-		.dc.b 10
-		.ascii "GRAF_MOUSE("
+		.dc.b 10,'G','R','A','F','_','M','O','U','S','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,170
-		.dc.b 12
-		.ascii "GRAF_MKSTATE("
+		.dc.b 12,'G','R','A','F','_','M','K','S','T','A','T','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,171
-		.dc.b 4
-		.ascii "GDOS?"
+		.dc.b 4,'G','D','O','S','?'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,104
-		.dc.b 7
-		.ascii "GETSIZE("
+		.dc.b 7,'G','E','T','S','I','Z','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,239
-		.IFNE GBE
-		.dc.b 9
-		.ascii "GETCOOKIE("
+	.IFNE GBE
+		.dc.b 9,'G','E','T','C','O','O','K','I','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,252
-		.dc.b 6
-		.ascii "GMOUSEK"
+		.dc.b 6,'G','M','O','U','S','E','K'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,247
-		.dc.b 6
-		.ascii "GMOUSEX"
+		.dc.b 6,'G','M','O','U','S','E','X'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,248
-		.dc.b 6
-		.ascii "GMOUSEY"
+		.dc.b 6,'G','M','O','U','S','E','Y'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,249
-		.dc.b 16
-		.ascii "GRAF_MULTIRUBBER("
+		.dc.b 16,'G','R','A','F','_','M','U','L','T','I','R','U','B','B','E','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,168
-		.dc.b 4
-		.ascii "GPIO("
+		.dc.b 4,'G','P','I','O','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,37
-		.dc.b 7
-		.ascii "GETREZ()"
+		.dc.b 7,'G','E','T','R','E','Z','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,118
-		.dc.b 8
-		.ascii "GETTIME()"
+		.dc.b 8,'G','E','T','T','I','M','E','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,109
-		.dc.b 6
-		.ascii "GETBPB("
+		.dc.b 6,'G','E','T','B','P','B','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,158
-		.dc.b 8
-		.ascii "GIACCESS("
+		.dc.b 8,'G','I','A','C','C','E','S','S','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,212
-		.dc.b 7
-		.ascii "GSTICK()"
+		.dc.b 7,'G','S','T','I','C','K','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,74
-		.dc.b 7
-		.ascii "GSTRIG()"
+		.dc.b 7,'G','S','T','R','I','G','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,75
-		.ENDC
+	.ENDC
 func_h_table: /* 12f4a */
-		.dc.b 4
-		.ascii "HEX$("
+		.dc.b 4,'H','E','X','$','('
+		.ascii ""
 		.dc.b 0,193
-		.dc.b 4
-		.ascii "HIMEM"
+		.dc.b 4,'H','I','M','E','M'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,30
-		.IFNE GBE
-		.dc.b 8
-		.ascii "HARDWARE?"
+	.IFNE GBE
+		.dc.b 8,'H','A','R','D','W','A','R','E','?'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,254
-		.ENDC
+	.ENDC
 func_i_table: /* 12f5e */
-		.dc.b 1
-		.ascii "IF"
+		.dc.b 1,'I','F'
+		.ascii ""
 		.dc.b 0,90
-		.dc.b 2
-		.ascii "IMP"
+		.dc.b 2,'I','M','P'
+		.ascii ""
 		.dc.b 0,3
-		.dc.b 3
-		.ascii "IMP("
+		.dc.b 3,'I','M','P','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,9
-		.dc.b 5
-		.ascii "INKEY$"
+		.dc.b 5,'I','N','K','E','Y','$'
+		.ascii ""
 		.dc.b 0,83
-		.dc.b 6
-		.ascii "INPUT$("
+		.dc.b 6,'I','N','P','U','T','$','('
+		.ascii ""
 		.dc.b 0,94
-		.dc.b 4
-		.ascii "INP(#"
+		.dc.b 4,'I','N','P','(','#'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,77
-		.dc.b 3
-		.ascii "INP("
+		.dc.b 3,'I','N','P','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,74
-		.dc.b 5
-		.ascii "INP&(#"
+		.dc.b 5,'I','N','P','&','(','#'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,224
-		.dc.b 4
-		.ascii "INP&("
+		.dc.b 4,'I','N','P','&','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,223
-		.dc.b 5
-		.ascii "INP%(#"
+		.dc.b 5,'I','N','P','%','(','#'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,226
-		.dc.b 4
-		.ascii "INP%("
+		.dc.b 4,'I','N','P','%','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,225
-		.dc.b 4
-		.ascii "INP?("
+		.dc.b 4,'I','N','P','?','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,93
-		.dc.b 4
-		.ascii "INPUT"
+		.dc.b 4,'I','N','P','U','T'
+		.ascii ""
 		.dc.b 0,96
-		.dc.b 5
-		.ascii "INSTR("
+		.dc.b 5,'I','N','S','T','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,68
-		.dc.b 3
-		.ascii "INT("
+		.dc.b 3,'I','N','T','('
+		.ascii ""
 		.dc.b 0,37
-		.dc.b 3
-		.ascii "IBOX"
+		.dc.b 3,'I','B','O','X'
+		.ascii ""
 		.dc.b 0,172
-		.dc.b 5
-		.ascii "INTIN("
+		.dc.b 5,'I','N','T','I','N','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,32
-		.dc.b 4
-		.ascii "INTIN"
+		.dc.b 4,'I','N','T','I','N'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,33
-		.dc.b 6
-		.ascii "INTOUT("
+		.dc.b 6,'I','N','T','O','U','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,34
-		.dc.b 5
-		.ascii "INTOUT"
+		.dc.b 5,'I','N','T','O','U','T'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,35
-		.dc.b 3
-		.ascii "INT{"
+		.dc.b 3,'I','N','T','{'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,114
-		.dc.b 6
-		.ascii "INPAUX$"
+		.dc.b 6,'I','N','P','A','U','X','$'
+		.ascii ""
 		.dc.b 0,52
-		.dc.b 6
-		.ascii "INPMID$"
+		.dc.b 6,'I','N','P','M','I','D','$'
+		.ascii ""
 		.dc.b 0,54
-		.IFNE GBE
-		.dc.b 5
-		.ascii "IOREC("
+	.IFNE GBE
+		.dc.b 5,'I','O','R','E','C','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,209
-		.dc.b 6
-		.ascii "IKBDWS("
+		.dc.b 6,'I','K','B','D','W','S','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,210
-		.ENDC
+	.ENDC
 func_j_table: /* 13048 */
-		.IFNE GBE
-		.dc.b 6
-		.ascii "JOYPAD("
+	.IFNE GBE
+		.dc.b 6,'J','O','Y','P','A','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,93
-		.dc.b 7
-		.ascii "JDISINT("
+		.dc.b 7,'J','D','I','S','I','N','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,224
-		.dc.b 8
-		.ascii "JENABINT("
+		.dc.b 8,'J','E','N','A','B','I','N','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,225
-		.ENDC
+	.ENDC
 func_k_table: /* 13048 */
-		.IFNE GBE
-		.dc.b 6
-		.ascii "KEYTBL("
+	.IFNE GBE
+		.dc.b 6,'K','E','Y','T','B','L','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,26
-		.dc.b 7
-		.ascii "KBSHIFT("
+		.dc.b 7,'K','B','S','H','I','F','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,10
-		.ENDC
-		.dc.b 2
-		.ascii "KEY"
+	.ENDC
+		.dc.b 2,'K','E','Y'
+		.ascii ""
 		.dc.b 0,170
-		.dc.b 3
-		.ascii "KILL"
+		.dc.b 3,'K','I','L','L'
+		.ascii ""
 		.dc.b 0,176
-		.IFNE GBE
-		.dc.b 6
-		.ascii "KBRATE("
+	.IFNE GBE
+		.dc.b 6,'K','B','R','A','T','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,203
-		.dc.b 9
-		.ascii "KBDVBASE()"
+		.dc.b 9,'K','B','D','V','B','A','S','E','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,207
-		.ENDC
+	.ENDC
 func_l_table: /* 13059 */
-		.dc.b 5
-		.ascii "LEFT$("
+		.dc.b 5,'L','E','F','T','$','('
+		.ascii ""
 		.dc.b 0,58
-		.dc.b 3
-		.ascii "LEN("
+		.dc.b 3,'L','E','N','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,66
-		.dc.b 4
-		.ascii "LOC(#"
+		.dc.b 4,'L','O','C','(','#'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,80
-		.dc.b 3
-		.ascii "LOC("
+		.dc.b 3,'L','O','C','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,80
-		.dc.b 4
-		.ascii "LOF(#"
+		.dc.b 4,'L','O','F','(','#'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,79
-		.dc.b 3
-		.ascii "LOF("
+		.dc.b 3,'L','O','F','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,79
-		.dc.b 3
-		.ascii "LOG("
+		.dc.b 3,'L','O','G','('
+		.ascii ""
 		.dc.b 0,48
-		.dc.b 5
-		.ascii "LOG10("
+		.dc.b 5,'L','O','G','1','0','('
+		.ascii ""
 		.dc.b 0,49
-		.dc.b 5
-		.ascii "LPEEK("
+		.dc.b 5,'L','P','E','E','K','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,65
-		.dc.b 1
-		.ascii "L:"
+		.dc.b 1,'L',':'
+		.ascii ""
 		.dc.b 0,138
-		.dc.b 4
-		.ascii "LPOS("
+		.dc.b 4,'L','P','O','S','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,91
-		.dc.b 4
-		.ascii "LONG{"
+		.dc.b 4,'L','O','N','G','{'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,113
-		.dc.b 2
-		.ascii "L~A"
+		.dc.b 2,'L','~','A'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,212
-		.dc.b 4
-		.ascii "LPENX"
+		.dc.b 4,'L','P','E','N','X'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,231
-		.dc.b 4
-		.ascii "LPENY"
+		.dc.b 4,'L','P','E','N','Y'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,232
-		.IFNE GBE
-		.dc.b 6
-		.ascii "LCASE$("
+	.IFNE GBE
+		.dc.b 6,'L','C','A','S','E','$','('
+		.ascii ""
 		.dc.b 0,146
-		.dc.b 6
-		.ascii "LTRIM$("
+		.dc.b 6,'L','T','R','I','M','$','('
+		.ascii ""
 		.dc.b 0,144
-		.dc.b 6
-		.ascii "LOWER$("
+		.dc.b 6,'L','O','W','E','R','$','('
+		.ascii ""
 		.dc.b 0,148
-		.dc.b 8
-		.ascii "LOCKSND()"
+		.dc.b 8,'L','O','C','K','S','N','D','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,27
-		.dc.b 8
-		.ascii "LOGBASE()"
+		.dc.b 8,'L','O','G','B','A','S','E','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,119
-		.dc.b 6
-		.ascii "LRWABS("
+		.dc.b 6,'L','R','W','A','B','S','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,251
-		.dc.b 9
-		.ascii "LDG_INIT()"
+		.dc.b 9,'L','D','G','_','I','N','I','T','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,50
-		.dc.b 8
-		.ascii "LDG_OPEN("
+		.dc.b 8,'L','D','G','_','O','P','E','N','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,51
-		.dc.b 8
-		.ascii "LDG_FIND("
+		.dc.b 8,'L','D','G','_','F','I','N','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,52
-		.dc.b 9
-		.ascii "LDG_CLOSE("
+		.dc.b 9,'L','D','G','_','C','L','O','S','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,53
-		.dc.b 11
-		.ascii "LDG_LIBPATH("
+		.dc.b 11,'L','D','G','_','L','I','B','P','A','T','H','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,54
-		.dc.b 10
-		.ascii "LDG_ERROR()"
+		.dc.b 10,'L','D','G','_','E','R','R','O','R','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,55
-		.ENDC
+	.ENDC
 func_m_table: /* 130e9 */
-		.dc.b 3
-		.ascii "MAX("
+		.dc.b 3,'M','A','X','('
+		.ascii ""
 		.dc.b 0,119
-		.dc.b 4
-		.ascii "MID$("
+		.dc.b 4,'M','I','D','$','('
+		.ascii ""
 		.dc.b 0,62
-		.dc.b 3
-		.ascii "MIN("
+		.dc.b 3,'M','I','N','('
+		.ascii ""
 		.dc.b 0,117
-		.dc.b 4
-		.ascii "MKD$("
+		.dc.b 4,'M','K','D','$','('
+		.ascii ""
 		.dc.b 0,102
-		.dc.b 4
-		.ascii "MKF$("
+		.dc.b 4,'M','K','F','$','('
+		.ascii ""
 		.dc.b 0,101
-		.dc.b 4
-		.ascii "MKI$("
+		.dc.b 4,'M','K','I','$','('
+		.ascii ""
 		.dc.b 0,98
-		.dc.b 4
-		.ascii "MKL$("
+		.dc.b 4,'M','K','L','$','('
+		.ascii ""
 		.dc.b 0,99
-		.dc.b 4
-		.ascii "MKS$("
+		.dc.b 4,'M','K','S','$','('
+		.ascii ""
 		.dc.b 0,100
-		.dc.b 2
-		.ascii "MOD"
+		.dc.b 2,'M','O','D'
+		.ascii ""
 		.dc.b 0,10
-		.dc.b 3
-		.ascii "MOD("
+		.dc.b 3,'M','O','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,4
-		.dc.b 8
-		.ascii "MENU_BAR("
+		.dc.b 8,'M','E','N','U','_','B','A','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,143
-		.dc.b 11
-		.ascii "MENU_ICHECK("
+		.dc.b 11,'M','E','N','U','_','I','C','H','E','C','K','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,144
-		.dc.b 12
-		.ascii "MENU_IENABLE("
+		.dc.b 12,'M','E','N','U','_','I','E','N','A','B','L','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,145
-		.dc.b 12
-		.ascii "MENU_TNORMAL("
+		.dc.b 12,'M','E','N','U','_','T','N','O','R','M','A','L','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,146
-		.dc.b 9
-		.ascii "MENU_TEXT("
+		.dc.b 9,'M','E','N','U','_','T','E','X','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,147
-		.dc.b 13
-		.ascii "MENU_REGISTER("
+		.dc.b 13,'M','E','N','U','_','R','E','G','I','S','T','E','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,148
-		.IFNE GBE
-		.dc.b 9
-		.ascii "MENU.TEXT("
+	.IFNE GBE
+		.dc.b 9,'M','E','N','U','.','T','E','X','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,6
-		.dc.b 10
-		.ascii "MENU_POPUP("
+		.dc.b 10,'M','E','N','U','_','P','O','P','U','P','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,163
-		.dc.b 11
-		.ascii "MENU_ISTART("
+		.dc.b 11,'M','E','N','U','_','I','S','T','A','R','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,162
-		.dc.b 11
-		.ascii "MENU_ATTACH("
+		.dc.b 11,'M','E','N','U','_','A','T','T','A','C','H','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,161
-		.dc.b 13
-		.ascii "MENU_SETTINGS("
+		.dc.b 13,'M','E','N','U','_','S','E','T','T','I','N','G','S','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,164
-		.ENDC
-		.dc.b 5
-		.ascii "MOUSEK"
+	.ENDC
+		.dc.b 5,'M','O','U','S','E','K'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,60
-		.dc.b 5
-		.ascii "MOUSEX"
+		.dc.b 5,'M','O','U','S','E','X'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,58
-		.dc.b 5
-		.ascii "MOUSEY"
+		.dc.b 5,'M','O','U','S','E','Y'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,59
-		.dc.b 4
-		.ascii "MENU("
+		.dc.b 4,'M','E','N','U','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,92
-		.dc.b 3
-		.ascii "MENU"
+		.dc.b 3,'M','E','N','U'
+		.ascii ""
 		.dc.b 0,167
-		.dc.b 6
-		.ascii "MESSAGE"
+		.dc.b 6,'M','E','S','S','A','G','E'
+		.ascii ""
 		.dc.b 0,174
-		.dc.b 3
-		.ascii "MUL("
+		.dc.b 3,'M','U','L','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,0
-		.dc.b 6
-		.ascii "MALLOC("
+		.dc.b 6,'M','A','L','L','O','C','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,184
-		.dc.b 5
-		.ascii "MFREE("
+		.dc.b 5,'M','F','R','E','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,185
-		.dc.b 7
-		.ascii "MSHRINK("
+		.dc.b 7,'M','S','H','R','I','N','K','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,186
-		.IFNE GBE
-		.dc.b 7
-		.ascii "M_ALLOC("
+	.IFNE GBE
+		.dc.b 7,'M','_','A','L','L','O','C','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,66
-		.dc.b 7
-		.ascii "MXALLOC("
+		.dc.b 7,'M','X','A','L','L','O','C','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,9
-		.dc.b 7
-		.ascii "MEDIACH("
+		.dc.b 7,'M','E','D','I','A','C','H','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,157
-		.dc.b 6
-		.ascii "MIDIWS("
+		.dc.b 6,'M','I','D','I','W','S','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,211
-		.dc.b 7
-		.ascii "MIRROR|("
+		.dc.b 7,'M','I','R','R','O','R','|','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,11
-		.dc.b 7
-		.ascii "MIRROR&("
+		.dc.b 7,'M','I','R','R','O','R','&','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,12
-		.dc.b 6
-		.ascii "MIRROR("
+		.dc.b 6,'M','I','R','R','O','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,13
-		.dc.b 7
-		.ascii "MIRROR3("
+		.dc.b 7,'M','I','R','R','O','R','3','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,14
-		.dc.b 7
-		.ascii "MIRROR$("
+		.dc.b 7,'M','I','R','R','O','R','$','('
+		.ascii ""
 		.dc.b 0,160
-		.ENDC
+	.ENDC
 func_n_table: /* 1321a */
-		.dc.b 3
-		.ascii "NEXT"
+		.dc.b 3,'N','E','X','T'
+		.ascii ""
 		.dc.b 0,168
-		.dc.b 2
-		.ascii "NOT"
+		.dc.b 2,'N','O','T'
+		.ascii ""
 		.dc.b 0,31
-		.IFNE GBE
-		.dc.b 3
-		.ascii "NULL"
+	.IFNE GBE
+		.dc.b 3,'N','U','L','L'
+		.ascii ""
 		.dc.b 0,183
-		.dc.b 9
-		.ascii "NVMACCESS("
+		.dc.b 9,'N','V','M','A','C','C','E','S','S','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,208
-		.dc.b 10
-		.ascii "NYBLE2BYTE("
+		.dc.b 10,'N','Y','B','L','E','2','B','Y','T','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,118
-		.ENDC
+	.ENDC
 func_o_table: /* 1322b */
-		.dc.b 3
-		.ascii "OBOX"
+		.dc.b 3,'O','B','O','X'
+		.ascii ""
 		.dc.b 0,173
-		.dc.b 4
-		.ascii "OCT$("
+		.dc.b 4,'O','C','T','$','('
+		.ascii ""
 		.dc.b 0,195
-		.dc.b 3
-		.ascii "ODD("
+		.dc.b 3,'O','D','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,102
-		.IFNE GBE
-		.dc.b 8
-		.ascii "OFFGIBIT("
+	.IFNE GBE
+		.dc.b 8,'O','F','F','G','I','B','I','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,221
-		.ENDC
-		.dc.b 5
-		.ascii "OFFSET"
+	.ENDC
+		.dc.b 5,'O','F','F','S','E','T'
+		.ascii ""
 		.dc.b 0,109
-		.dc.b 2
-		.ascii "OFF"
+		.dc.b 2,'O','F','F'
+		.ascii ""
 		.dc.b 0,175
-		.dc.b 1
-		.ascii "OR"
+		.dc.b 1,'O','R'
+		.ascii ""
 		.dc.b 0,1
-		.dc.b 2
-		.ascii "OR("
+		.dc.b 2,'O','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,6
-		.dc.b 4
-		.ascii "OUT?("
+		.dc.b 4,'O','U','T','?','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,94
-		.dc.b 8
-		.ascii "OBJC_ADD("
+		.dc.b 8,'O','B','J','C','_','A','D','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,149
-		.dc.b 11
-		.ascii "OBJC_DELETE("
+		.dc.b 11,'O','B','J','C','_','D','E','L','E','T','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,150
-		.dc.b 9
-		.ascii "OBJC_DRAW("
+		.dc.b 9,'O','B','J','C','_','D','R','A','W','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,151
-		.dc.b 9
-		.ascii "OBJC_FIND("
+		.dc.b 9,'O','B','J','C','_','F','I','N','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,152
-		.dc.b 11
-		.ascii "OBJC_OFFSET("
+		.dc.b 11,'O','B','J','C','_','O','F','F','S','E','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,153
-		.dc.b 10
-		.ascii "OBJC_ORDER("
+		.dc.b 10,'O','B','J','C','_','O','R','D','E','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,154
-		.dc.b 9
-		.ascii "OBJC_EDIT("
+		.dc.b 9,'O','B','J','C','_','E','D','I','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,155
-		.dc.b 11
-		.ascii "OBJC_CHANGE("
+		.dc.b 11,'O','B','J','C','_','C','H','A','N','G','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,156
-		.IFNE GBE
-		.dc.b 10
-		.ascii "OBJC_XFIND("
+	.IFNE GBE
+		.dc.b 10,'O','B','J','C','_','X','F','I','N','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,165
-		.dc.b 11
-		.ascii "OBJC_SYSVAR("
+		.dc.b 11,'O','B','J','C','_','S','Y','S','V','A','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,24
-		.ENDC
-		.dc.b 6
-		.ascii "OB_ADR("
+	.ENDC
+		.dc.b 6,'O','B','_','A','D','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,191
-		.dc.b 7
-		.ascii "OB_NEXT("
+		.dc.b 7,'O','B','_','N','E','X','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,192
-		.dc.b 7
-		.ascii "OB_HEAD("
+		.dc.b 7,'O','B','_','H','E','A','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,193
-		.dc.b 7
-		.ascii "OB_TAIL("
+		.dc.b 7,'O','B','_','T','A','I','L','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,194
-		.dc.b 7
-		.ascii "OB_TYPE("
+		.dc.b 7,'O','B','_','T','Y','P','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,195
-		.dc.b 8
-		.ascii "OB_FLAGS("
+		.dc.b 8,'O','B','_','F','L','A','G','S','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,196
-		.dc.b 8
-		.ascii "OB_STATE("
+		.dc.b 8,'O','B','_','S','T','A','T','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,197
-		.dc.b 7
-		.ascii "OB_SPEC("
+		.dc.b 7,'O','B','_','S','P','E','C','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,198
-		.dc.b 4
-		.ascii "OB_X("
+		.dc.b 4,'O','B','_','X','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,199
-		.dc.b 4
-		.ascii "OB_Y("
+		.dc.b 4,'O','B','_','Y','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,200
-		.dc.b 4
-		.ascii "OB_W("
+		.dc.b 4,'O','B','_','W','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,201
-		.dc.b 4
-		.ascii "OB_H("
+		.dc.b 4,'O','B','_','H','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,202
-		.IFNE GBE
-		.dc.b 8
-		.ascii "OB.STATE("
+	.IFNE GBE
+		.dc.b 8,'O','B','.','S','T','A','T','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,19
-		.dc.b 8
-		.ascii "OB.FLAGS("
+		.dc.b 8,'O','B','.','F','L','A','G','S','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,20
-		.dc.b 11
-		.ascii "OB_SELECTED("
+		.dc.b 11,'O','B','_','S','E','L','E','C','T','E','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,21
-		.dc.b 10
-		.ascii "OB_CROSSED("
+		.dc.b 10,'O','B','_','C','R','O','S','S','E','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,22
-		.dc.b 10
-		.ascii "OB_CHECKED("
+		.dc.b 10,'O','B','_','C','H','E','C','K','E','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,23
-		.dc.b 11
-		.ascii "OB_DISABLED("
+		.dc.b 11,'O','B','_','D','I','S','A','B','L','E','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,24
-		.dc.b 13
-		.ascii "OB_SELECTABLE("
+		.dc.b 13,'O','B','_','S','E','L','E','C','T','A','B','L','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,25
-		.dc.b 10
-		.ascii "OB_DEFAULT("
+		.dc.b 10,'O','B','_','D','E','F','A','U','L','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,26
-		.dc.b 7
-		.ascii "OB_EXIT("
+		.dc.b 7,'O','B','_','E','X','I','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,27
-		.dc.b 11
-		.ascii "OB_EDITABLE("
+		.dc.b 11,'O','B','_','E','D','I','T','A','B','L','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,28
-		.dc.b 10
-		.ascii "OB_RBUTTON("
+		.dc.b 10,'O','B','_','R','B','U','T','T','O','N','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,29
-		.dc.b 9
-		.ascii "OB_LASTOB("
+		.dc.b 9,'O','B','_','L','A','S','T','O','B','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,30
-		.dc.b 12
-		.ascii "OB_TOUCHEXIT("
+		.dc.b 12,'O','B','_','T','O','U','C','H','E','X','I','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,31
-		.dc.b 11
-		.ascii "OB_HIDETREE("
+		.dc.b 11,'O','B','_','H','I','D','E','T','R','E','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,32
-		.dc.b 10
-		.ascii "OB.RBUTTON("
+		.dc.b 10,'O','B','.','R','B','U','T','T','O','N','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,33
-		.dc.b 8
-		.ascii "OB_TEXT$("
+		.dc.b 8,'O','B','_','T','E','X','T','$','('
+		.ascii ""
 		.dc.b 0,149
-		.dc.b 7
-		.ascii "ONGIBIT("
+		.dc.b 7,'O','N','G','I','B','I','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,220
-		.ENDC
+	.ENDC
 func_p_table: /* 13382 */
-		.dc.b 4
-		.ascii "PEEK("
+		.dc.b 4,'P','E','E','K','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,63
-		.dc.b 1
-		.ascii "PI"
+		.dc.b 1,'P','I'
+		.ascii ""
 		.dc.b 0,79
-		.dc.b 5
-		.ascii "POINT("
+		.dc.b 5,'P','O','I','N','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,72
-		.dc.b 3
-		.ascii "POS("
+		.dc.b 3,'P','O','S','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,90
-		.dc.b 5
-		.ascii "PTSIN("
+		.dc.b 5,'P','T','S','I','N','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,36
-		.dc.b 4
-		.ascii "PTSIN"
+		.dc.b 4,'P','T','S','I','N'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,37
-		.dc.b 6
-		.ascii "PTSOUT("
+		.dc.b 6,'P','T','S','O','U','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,38
-		.dc.b 5
-		.ascii "PTSOUT"
+		.dc.b 5,'P','T','S','O','U','T'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,39
-		.dc.b 4
-		.ascii "PTST("
+		.dc.b 4,'P','T','S','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,43
-		.dc.b 4
-		.ascii "PRED("
+		.dc.b 4,'P','R','E','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,97
-		.dc.b 4
-		.ascii "PADX("
+		.dc.b 4,'P','A','D','X','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,228
-		.dc.b 4
-		.ascii "PADY("
+		.dc.b 4,'P','A','D','Y','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,229
-		.dc.b 4
-		.ascii "PADT("
+		.dc.b 4,'P','A','D','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,230
-		.IFNE GBE
-		.dc.b 7
-		.ascii "PSYSCTL("
+	.IFNE GBE
+		.dc.b 7,'P','S','Y','S','C','T','L','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,180
-		.dc.b 7
-		.ascii "PDOMAIN("
+		.dc.b 7,'P','D','O','M','A','I','N','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,17
-		.dc.b 5
-		.ascii "PEXEC("
+		.dc.b 5,'P','E','X','E','C','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,16
-		.dc.b 9
-		.ascii "PHYSBASE()"
+		.dc.b 9,'P','H','Y','S','B','A','S','E','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,120
-		.dc.b 7
-		.ascii "PROTOBT("
+		.dc.b 7,'P','R','O','T','O','B','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,226
-		.dc.b 6
-		.ascii "PRTBLK("
+		.dc.b 6,'P','R','T','B','L','K','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,228
-		.dc.b 8
-		.ascii "PTERMRES("
+		.dc.b 8,'P','T','E','R','M','R','E','S','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,255
-		.dc.b 3
-		.ascii "PCR?"
+		.dc.b 3,'P','C','R','?'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,15
-		.dc.b 3
-		.ascii "PCR("
+		.dc.b 3,'P','C','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,17
-		.ENDC
+	.ENDC
 func_q_table: /* 13405 */
 func_r_table: /* 13405 */
-		.dc.b 6
-		.ascii "RANDOM("
+		.dc.b 6,'R','A','N','D','O','M','('
+		.ascii ""
 		.dc.b 0,86
-		.dc.b 4
-		.ascii "RAND("
+		.dc.b 4,'R','A','N','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,82
-		.dc.b 6
-		.ascii "RIGHT$("
+		.dc.b 6,'R','I','G','H','T','$','('
+		.ascii ""
 		.dc.b 0,60
-		.IFNE GBE
-		.dc.b 6
-		.ascii "RTRIM$("
+	.IFNE GBE
+		.dc.b 6,'R','T','R','I','M','$','('
+		.ascii ""
 		.dc.b 0,145
-		.ENDC
-		.dc.b 3
-		.ascii "RND("
+	.ENDC
+		.dc.b 3,'R','N','D','('
+		.ascii ""
 		.dc.b 0,84
-		.dc.b 2
-		.ascii "RND"
+		.dc.b 2,'R','N','D'
+		.ascii ""
 		.dc.b 0,85
-		.dc.b 3
-		.ascii "ROL("
+		.dc.b 3,'R','O','L','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,12
-		.dc.b 3
-		.ascii "ROR("
+		.dc.b 3,'R','O','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,13
-		.dc.b 4
-		.ascii "ROL&("
+		.dc.b 4,'R','O','L','&','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,50
-		.dc.b 4
-		.ascii "ROR&("
+		.dc.b 4,'R','O','R','&','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,51
-		.dc.b 4
-		.ascii "ROL|("
+		.dc.b 4,'R','O','L','|','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,54
-		.dc.b 4
-		.ascii "ROR|("
+		.dc.b 4,'R','O','R','|','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,55
-		.dc.b 9
-		.ascii "RSRC_LOAD("
+		.dc.b 9,'R','S','R','C','_','L','O','A','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,124
-		.dc.b 10
-		.ascii "RSRC_FREE()"
+		.dc.b 10,'R','S','R','C','_','F','R','E','E','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,125
-		.dc.b 10
-		.ascii "RSRC_GADDR("
+		.dc.b 10,'R','S','R','C','_','G','A','D','D','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,126
-		.dc.b 10
-		.ascii "RSRC_SADDR("
+		.dc.b 10,'R','S','R','C','_','S','A','D','D','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,127
-		.dc.b 10
-		.ascii "RSRC_OBFIX("
+		.dc.b 10,'R','S','R','C','_','O','B','F','I','X','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,128
-		.IFNE GBE
-		.dc.b 10
-		.ascii "RSRC_RCFIX("
+	.IFNE GBE
+		.dc.b 10,'R','S','R','C','_','R','C','F','I','X','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,166
-		.ENDC
-		.dc.b 3
-		.ascii "RAD("
+	.ENDC
+		.dc.b 3,'R','A','D','('
+		.ascii ""
 		.dc.b 0,104
-		.dc.b 5
-		.ascii "ROUND("
+		.dc.b 5,'R','O','U','N','D','('
+		.ascii ""
 		.dc.b 0,112
-		.dc.b 6
-		.ascii "RINSTR("
+		.dc.b 6,'R','I','N','S','T','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,209
-		.dc.b 12
-		.ascii "RC_INTERSECT("
+		.dc.b 12,'R','C','_','I','N','T','E','R','S','E','C','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,217
-		.IFNE GBE
-		.dc.b 6
-		.ascii "RSCONF("
+	.IFNE GBE
+		.dc.b 6,'R','S','C','O','N','F','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,204
-		.dc.b 8
-		.ascii "RANDOM%()"
+		.dc.b 8,'R','A','N','D','O','M','%','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,117
-		.dc.b 5
-		.ascii "RWABS("
+		.dc.b 5,'R','W','A','B','S','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,159
-		.ENDC
+	.ENDC
 func_s_table: /* 134f3 */
-		.dc.b 3
-		.ascii "SGN("
+		.dc.b 3,'S','G','N','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,100
-		.dc.b 3
-		.ascii "SIN("
+		.dc.b 3,'S','I','N','('
+		.ascii ""
 		.dc.b 0,41
-		.dc.b 4
-		.ascii "SINQ("
+		.dc.b 4,'S','I','N','Q','('
+		.ascii ""
 		.dc.b 0,123
-		.dc.b 6
-		.ascii "SPACE$("
+		.dc.b 6,'S','P','A','C','E','$','('
+		.ascii ""
 		.dc.b 0,128
-		.dc.b 3
-		.ascii "SPC("
+		.dc.b 3,'S','P','C','('
+		.ascii ""
 		.dc.b 0,162
-		.dc.b 3
-		.ascii "SQR("
+		.dc.b 3,'S','Q','R','('
+		.ascii ""
 		.dc.b 0,78
-		.dc.b 3
-		.ascii "STEP"
+		.dc.b 3,'S','T','E','P'
+		.ascii ""
 		.dc.b 0,72
-		.dc.b 4
-		.ascii "STR$("
+		.dc.b 4,'S','T','R','$','('
+		.ascii ""
 		.dc.b 0,190
-		.dc.b 7
-		.ascii "STRING$("
+		.dc.b 7,'S','T','R','I','N','G','$','('
+		.ascii ""
 		.dc.b 0,129
-		.dc.b 3
-		.ascii "SHL("
+		.dc.b 3,'S','H','L','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,10
-		.dc.b 3
-		.ascii "SHR("
+		.dc.b 3,'S','H','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,11
-		.dc.b 4
-		.ascii "SHL&("
+		.dc.b 4,'S','H','L','&','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,48
-		.dc.b 4
-		.ascii "SHR&("
+		.dc.b 4,'S','H','R','&','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,49
-		.dc.b 4
-		.ascii "SHL|("
+		.dc.b 4,'S','H','L','|','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,52
-		.dc.b 4
-		.ascii "SHR|("
+		.dc.b 4,'S','H','R','|','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,53
-		.dc.b 4
-		.ascii "SWAP("
+		.dc.b 4,'S','W','A','P','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,17
-		.dc.b 9
-		.ascii "SHEL_READ("
+		.dc.b 9,'S','H','E','L','_','R','E','A','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,129
-		.dc.b 10
-		.ascii "SHEL_WRITE("
+		.dc.b 10,'S','H','E','L','_','W','R','I','T','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,130
-		.dc.b 8
-		.ascii "SHEL_GET("
+		.dc.b 8,'S','H','E','L','_','G','E','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,131
-		.dc.b 8
-		.ascii "SHEL_PUT("
+		.dc.b 8,'S','H','E','L','_','P','U','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,132
-		.dc.b 9
-		.ascii "SHEL_FIND("
+		.dc.b 9,'S','H','E','L','_','F','I','N','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,133
-		.dc.b 10
-		.ascii "SHEL_ENVRN("
+		.dc.b 10,'S','H','E','L','_','E','N','V','R','N','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,134
-		.dc.b 9
-		.ascii "SCRP_READ("
+		.dc.b 9,'S','C','R','P','_','R','E','A','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,172
-		.dc.b 10
-		.ascii "SCRP_WRITE("
+		.dc.b 10,'S','C','R','P','_','W','R','I','T','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,173
-		.dc.b 4
-		.ascii "SUCC("
+		.dc.b 4,'S','U','C','C','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,96
-		.dc.b 3
-		.ascii "SUB("
+		.dc.b 3,'S','U','B','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,3
-		.dc.b 5
-		.ascii "STICK("
+		.dc.b 5,'S','T','I','C','K','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,206
-		.dc.b 5
-		.ascii "STRIG("
+		.dc.b 5,'S','T','R','I','G','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,207
-		.dc.b 3
-		.ascii "STOP"
+		.dc.b 3,'S','T','O','P'
+		.ascii ""
 		.dc.b 0,152
-		.dc.b 6
-		.ascii "SINGLE{"
+		.dc.b 6,'S','I','N','G','L','E','{'
+		.ascii ""
 		.dc.b 0,121
-		.dc.b 3
-		.ascii "STE?"
+		.dc.b 3,'S','T','E','?'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,233
-		.dc.b 5
-		.ascii "SCALE("
+		.dc.b 5,'S','C','A','L','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,235
-		.IFNE GBE
-		.dc.b 10
-		.ascii "SHEL.WRITE("
+	.IFNE GBE
+		.dc.b 10,'S','H','E','L','.','W','R','I','T','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,7
-		.dc.b 1
-		.ascii "S:"
+		.dc.b 1,'S',':'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,1
-		.dc.b 6
-		.ascii "SUBPTR("
+		.dc.b 6,'S','U','B','P','T','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,0
-		.dc.b 7
-		.ascii "SSYSTEM("
+		.dc.b 7,'S','S','Y','S','T','E','M','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,13
-		.dc.b 7
-		.ascii "SYSCONF("
+		.dc.b 7,'S','Y','S','C','O','N','F','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,12
-		.dc.b 9
-		.ascii "SETBUFFER("
+		.dc.b 9,'S','E','T','B','U','F','F','E','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,30
-		.dc.b 7
-		.ascii "SETMODE("
+		.dc.b 7,'S','E','T','M','O','D','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,31
-		.dc.b 12
-		.ascii "SETMONTRACKS("
+		.dc.b 12,'S','E','T','M','O','N','T','R','A','C','K','S','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,33
-		.dc.b 9
-		.ascii "SETTRACKS("
+		.dc.b 9,'S','E','T','T','R','A','C','K','S','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,32
-		.dc.b 9
-		.ascii "SNDSTATUS("
+		.dc.b 9,'S','N','D','S','T','A','T','U','S','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,39
-		.dc.b 8
-		.ascii "SOUNDCMD("
+		.dc.b 8,'S','O','U','N','D','C','M','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,29
-		.dc.b 12
-		.ascii "SETINTERRUPT("
+		.dc.b 12,'S','E','T','I','N','T','E','R','R','U','P','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,34
-		.dc.b 5
-		.ascii "SUPER("
+		.dc.b 5,'S','U','P','E','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,50
-		.dc.b 7
-		.ascii "SUPEXEC("
+		.dc.b 7,'S','U','P','E','X','E','C','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,202
-		.dc.b 6
-		.ascii "SETEXC("
+		.dc.b 6,'S','E','T','E','X','C','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,155
-		.dc.b 9
-		.ascii "SETSCREEN("
+		.dc.b 9,'S','E','T','S','C','R','E','E','N','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,200
-		.dc.b 10
-		.ascii "SETPALETTE("
+		.dc.b 10,'S','E','T','P','A','L','E','T','T','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,201
-		.dc.b 7
-		.ascii "SYIELD()"
+		.dc.b 7,'S','Y','I','E','L','D','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,174
-		.dc.b 8
-		.ascii "SHUTDOWN("
+		.dc.b 8,'S','H','U','T','D','O','W','N','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,179
-		.dc.b 7
-		.ascii "SETTIME("
+		.dc.b 7,'S','E','T','T','I','M','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,110
-		.dc.b 6
-		.ascii "SETPRT("
+		.dc.b 6,'S','E','T','P','R','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,223
-		.dc.b 8
-		.ascii "SETCOLOR("
+		.dc.b 8,'S','E','T','C','O','L','O','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,199
-		.dc.b 3
-		.ascii "SND?"
+		.dc.b 3,'S','N','D','?'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,58
-		.dc.b 6
-		.ascii "SALERT("
+		.dc.b 6,'S','A','L','E','R','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,253
-		.dc.b 6
-		.ascii "SYSTAB?"
+		.dc.b 6,'S','Y','S','T','A','B','?'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,8
-		.dc.b 6
-		.ascii "SYSTAB("
+		.dc.b 6,'S','Y','S','T','A','B','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,3
-		.dc.b 5
-		.ascii "SYSTAB"
+		.dc.b 5,'S','Y','S','T','A','B'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,4
-		.dc.b 9
-		.ascii "STIK_INIT("
+		.dc.b 9,'S','T','I','K','_','I','N','I','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,56
-		.dc.b 11
-		.ascii "STIK_KRFREE("
+		.dc.b 11,'S','T','I','K','_','K','R','F','R','E','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,58
-		.dc.b 14
-		.ascii "STIK_KRGETFREE("
+		.dc.b 14,'S','T','I','K','_','K','R','G','E','T','F','R','E','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,59
-		.dc.b 17
-		.ascii "STIK_GET_ERR_TEXT("
+		.dc.b 17,'S','T','I','K','_','G','E','T','_','E','R','R','_','T','E','X','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,61
-		.dc.b 12
-		.ascii "STIK_GETVSTR("
+		.dc.b 12,'S','T','I','K','_','G','E','T','V','S','T','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,62
-		.dc.b 13
-		.ascii "STIK_TCP_OPEN("
+		.dc.b 13,'S','T','I','K','_','T','C','P','_','O','P','E','N','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,64
-		.dc.b 14
-		.ascii "STIK_TCP_CLOSE("
+		.dc.b 14,'S','T','I','K','_','T','C','P','_','C','L','O','S','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,65
-		.dc.b 13
-		.ascii "STIK_TCP_SEND("
+		.dc.b 13,'S','T','I','K','_','T','C','P','_','S','E','N','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,66
-		.dc.b 19
-		.ascii "STIK_TCP_WAIT_STATE("
+		.dc.b 19,'S','T','I','K','_','T','C','P','_','W','A','I','T','_','S','T','A','T','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,67
-		.dc.b 11
-		.ascii "STIK_CNKICK("
+		.dc.b 11,'S','T','I','K','_','C','N','K','I','C','K','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,72
-		.dc.b 17
-		.ascii "STIK_CNBYTE_COUNT("
+		.dc.b 17,'S','T','I','K','_','C','N','B','Y','T','E','_','C','O','U','N','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,73
-		.dc.b 15
-		.ascii "STIK_CNGET_CHAR("
+		.dc.b 15,'S','T','I','K','_','C','N','G','E','T','_','C','H','A','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,74
-		.dc.b 16
-		.ascii "STIK_CNGET_BLOCK("
+		.dc.b 16,'S','T','I','K','_','C','N','G','E','T','_','B','L','O','C','K','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,76
-		.dc.b 12
-		.ascii "STIK_RESOLVE("
+		.dc.b 12,'S','T','I','K','_','R','E','S','O','L','V','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,78
-		.dc.b 14
-		.ascii "STIK_CNGETINFO("
+		.dc.b 14,'S','T','I','K','_','C','N','G','E','T','I','N','F','O','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,83
-		.ENDC
+	.ENDC
 func_t_table: /* 1365c */
-		.dc.b 3
-		.ascii "TAB("
+		.dc.b 3,'T','A','B','('
+		.ascii ""
 		.dc.b 0,161
-		.dc.b 3
-		.ascii "TAN("
+		.dc.b 3,'T','A','N','('
+		.ascii ""
 		.dc.b 0,43
-		.dc.b 3
-		.ascii "THEN"
+		.dc.b 3,'T','H','E','N'
+		.ascii ""
 		.dc.b 0,74
-		.IFNE GBE
-		.dc.b 5
-		.ascii "TIME$("
+	.IFNE GBE
+		.dc.b 5,'T','I','M','E','$','('
+		.ascii ""
 		.dc.b 0,165
-		.ENDC
-		.dc.b 4
-		.ascii "TIME$"
+	.ENDC
+		.dc.b 4,'T','I','M','E','$'
+		.ascii ""
 		.dc.b 0,56
-		.dc.b 4
-		.ascii "TIMER"
+		.dc.b 4,'T','I','M','E','R'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,62
-		.IFNE GBE
-		.dc.b 10
-		.ascii "TIMESTAMP$("
+	.IFNE GBE
+		.dc.b 10,'T','I','M','E','S','T','A','M','P','$','('
+		.ascii ""
 		.dc.b 0,166
-		.ENDC
-		.dc.b 1
-		.ascii "TO"
+	.ENDC
+		.dc.b 1,'T','O'
+		.ascii ""
 		.dc.b 0,71
-		.dc.b 3
-		.ascii "TRUE"
+		.dc.b 3,'T','R','U','E'
+		.ascii ""
 		.dc.b 0,188
-		.dc.b 5
-		.ascii "TRUNC("
+		.dc.b 5,'T','R','U','N','C','('
+		.ascii ""
 		.dc.b 0,38
-		.dc.b 4
-		.ascii "TYPE("
+		.dc.b 4,'T','Y','P','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,190
-		.dc.b 5
-		.ascii "TRACE$"
+		.dc.b 5,'T','R','A','C','E','$'
+		.ascii ""
 		.dc.b 0,111
-		.dc.b 5
-		.ascii "TRIM$("
+		.dc.b 5,'T','R','I','M','$','('
+		.ascii ""
 		.dc.b 0,135
-		.dc.b 2
-		.ascii "TT?"
+		.dc.b 2,'T','T','?'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,234
-		.IFNE GBE
-		.dc.b 9
-		.ascii "TGETDATE()"
+	.IFNE GBE
+		.dc.b 9,'T','G','E','T','D','A','T','E','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,19
-		.dc.b 9
-		.ascii "TGETTIME()"
+		.dc.b 9,'T','G','E','T','T','I','M','E','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,20
-		.dc.b 8
-		.ascii "TSETDATE("
+		.dc.b 8,'T','S','E','T','D','A','T','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,105
-		.dc.b 8
-		.ascii "TSETTIME("
+		.dc.b 8,'T','S','E','T','T','I','M','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,106
-		.dc.b 8
-		.ascii "TICKCAL()"
+		.dc.b 8,'T','I','C','K','C','A','L','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,156
-		.ENDC
+	.ENDC
 func_u_table: /* 136ce */
-		.dc.b 6
-		.ascii "UPPER$("
+		.dc.b 6,'U','P','P','E','R','$','('
+		.ascii ""
 		.dc.b 0,127
-		.dc.b 4
-		.ascii "USING"
+		.dc.b 4,'U','S','I','N','G'
+		.ascii ""
 		.dc.b 0,163
-		.IFNE GBE
-		.dc.b 6
-		.ascii "UCASE$("
+	.IFNE GBE
+		.dc.b 6,'U','C','A','S','E','$','('
+		.ascii ""
 		.dc.b 0,147
-		.dc.b 10
-		.ascii "UNLOCKSND()"
+		.dc.b 10,'U','N','L','O','C','K','S','N','D','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,28
-		.dc.b 6
-		.ascii "UNPACK("
+		.dc.b 6,'U','N','P','A','C','K','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,94
-		.ENDC
+	.ENDC
 func_v_table: /* 136e4 */
-		.dc.b 3
-		.ascii "VAL("
+		.dc.b 3,'V','A','L','('
+		.ascii ""
 		.dc.b 0,53
-		.dc.b 4
-		.ascii "VAL?("
+		.dc.b 4,'V','A','L','?','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,73
-		.dc.b 6
-		.ascii "VARPTR("
+		.dc.b 6,'V','A','R','P','T','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,187
-		.dc.b 6
-		.ascii "VARIAT("
+		.dc.b 6,'V','A','R','I','A','T','('
+		.ascii ""
 		.dc.b 0,143
-		.dc.b 2
-		.ascii "VAR"
+		.dc.b 2,'V','A','R'
+		.ascii ""
 		.dc.b 0,50
-		.dc.b 6
-		.ascii "VDIBASE"
+		.dc.b 6,'V','D','I','B','A','S','E'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,40
-		.dc.b 1
-		.ascii "V:"
+		.dc.b 1,'V',':'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,203
-		.dc.b 2
-		.ascii "V~H"
+		.dc.b 2,'V','~','H'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,213
-		.dc.b 7
-		.ascii "V_OPNWK("
+		.dc.b 7,'V','_','O','P','N','W','K','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,105
-		.dc.b 8
-		.ascii "V_CLSWK()"
+		.dc.b 8,'V','_','C','L','S','W','K','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,106
-		.dc.b 8
-		.ascii "V_OPNVWK("
+		.dc.b 8,'V','_','O','P','N','V','W','K','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,107
-		.dc.b 9
-		.ascii "V_CLSVWK()"
+		.dc.b 9,'V','_','C','L','S','V','W','K','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,108
-		.dc.b 8
-		.ascii "V_UPDWK()"
+		.dc.b 8,'V','_','U','P','D','W','K','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,109
-		.dc.b 14
-		.ascii "VST_LOAD_FONTS("
+		.dc.b 14,'V','S','T','_','L','O','A','D','_','F','O','N','T','S','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,110
-		.dc.b 16
-		.ascii "VST_UNLOAD_FONTS("
+		.dc.b 16,'V','S','T','_','U','N','L','O','A','D','_','F','O','N','T','S','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,111
-		.dc.b 8
-		.ascii "V_CLRWK()"
+		.dc.b 8,'V','_','C','L','R','W','K','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,214
-		.dc.b 8
-		.ascii "VQT_NAME("
+		.dc.b 8,'V','Q','T','_','N','A','M','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,215
-		.dc.b 10
-		.ascii "VQT_EXTENT("
+		.dc.b 10,'V','Q','T','_','E','X','T','E','N','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,216
-		.IFNE GBE
-		.dc.b 9
-		.ascii "VQ_VGDOS()"
+	.IFNE GBE
+		.dc.b 9,'V','Q','_','V','G','D','O','S','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,14
-		.dc.b 7
-		.ascii "V_OPNBM("
+		.dc.b 7,'V','_','O','P','N','B','M','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,6
-		.dc.b 8
-		.ascii "VQ_COLOR("
+		.dc.b 8,'V','Q','_','C','O','L','O','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,0
-		.dc.b 9
-		.ascii "VST_POINT("
+		.dc.b 9,'V','S','T','_','P','O','I','N','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,21
-		.dc.b 12
-		.ascii "VGETMONITOR()"
+		.dc.b 12,'V','G','E','T','M','O','N','I','T','O','R','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,229
-		.dc.b 8
-		.ascii "VGETSIZE("
+		.dc.b 8,'V','G','E','T','S','I','Z','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,230
-		.dc.b 8
-		.ascii "VSETMODE("
+		.dc.b 8,'V','S','E','T','M','O','D','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,231
-		.dc.b 10
-		.ascii "VCHECKMODE("
+		.dc.b 10,'V','C','H','E','C','K','M','O','D','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,232
-		.dc.b 10
-		.ascii "VSETSCREEN("
+		.dc.b 10,'V','S','E','T','S','C','R','E','E','N','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,233
-		.dc.b 11
-		.ascii "V_GET_PIXEL("
+		.dc.b 11,'V','_','G','E','T','_','P','I','X','E','L','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,73
-		.dc.b 10
-		.ascii "V_BEZ_QUAL("
+		.dc.b 10,'V','_','B','E','Z','_','Q','U','A','L','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,135
-		.dc.b 9
-		.ascii "V_HIDE_C()"
+		.dc.b 9,'V','_','H','I','D','E','_','C','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,88
-		.dc.b 9
-		.ascii "V_SHOW_C()"
+		.dc.b 9,'V','_','S','H','O','W','_','C','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,87
-		.dc.b 15
-		.ascii "VQF_ATTRIBUTES()"
+		.dc.b 15,'V','Q','F','_','A','T','T','R','I','B','U','T','E','S','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,127
-		.dc.b 15
-		.ascii "VQL_ATTRIBUTES()"
+		.dc.b 15,'V','Q','L','_','A','T','T','R','I','B','U','T','E','S','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,128
-		.dc.b 15
-		.ascii "VQM_ATTRIBUTES()"
+		.dc.b 15,'V','Q','M','_','A','T','T','R','I','B','U','T','E','S','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,129
-		.dc.b 15
-		.ascii "VQT_ATTRIBUTES()"
+		.dc.b 15,'V','Q','T','_','A','T','T','R','I','B','U','T','E','S','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,130
-		.dc.b 12
-		.ascii "VQT_FONTINFO("
+		.dc.b 12,'V','Q','T','_','F','O','N','T','I','N','F','O','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,42
-		.dc.b 9
-		.ascii "VQT_WIDTH("
+		.dc.b 9,'V','Q','T','_','W','I','D','T','H','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,41
-		.dc.b 9
-		.ascii "VRO_CPYFM("
+		.dc.b 9,'V','R','O','_','C','P','Y','F','M','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,4
-		.dc.b 9
-		.ascii "VRT_CPYFM("
+		.dc.b 9,'V','R','T','_','C','P','Y','F','M','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,5
-		.dc.b 8
-		.ascii "VR_TRNFM("
+		.dc.b 8,'V','R','_','T','R','N','F','M','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,131
-		.dc.b 8
-		.ascii "VQ_EXTND("
+		.dc.b 8,'V','Q','_','E','X','T','N','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,132
-		.dc.b 11
-		.ascii "VQ_SCRNINFO("
+		.dc.b 11,'V','Q','_','S','C','R','N','I','N','F','O','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,133
-		.dc.b 8
-		.ascii "V_CLSBM()"
+		.dc.b 8,'V','_','C','L','S','B','M','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,7
-		.dc.b 8
-		.ascii "VQ_MOUSE("
+		.dc.b 8,'V','Q','_','M','O','U','S','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,136
-		.dc.b 13
-		.ascii "VST_ALIGNMENT("
+		.dc.b 13,'V','S','T','_','A','L','I','G','N','M','E','N','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,15
-		.dc.b 8
-		.ascii "VS_COLOR("
+		.dc.b 8,'V','S','_','C','O','L','O','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,253
-		.dc.b 5
-		.ascii "V_BEZ("
+		.dc.b 5,'V','_','B','E','Z','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,134
-		.dc.b 7
-		.ascii "VGETRGB("
+		.dc.b 7,'V','G','E','T','R','G','B','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,234
-		.dc.b 7
-		.ascii "VSETRGB("
+		.dc.b 7,'V','S','E','T','R','G','B','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,235
-		.dc.b 8
-		.ascii "VSETMASK("
+		.dc.b 8,'V','S','E','T','M','A','S','K','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,236
-		.dc.b 8
-		.ascii "VSETSYNC("
+		.dc.b 8,'V','S','E','T','S','Y','N','C','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,237
-		.dc.b 9
-		.ascii "V_CURTEXT("
+		.dc.b 9,'V','_','C','U','R','T','E','X','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,121
-		.dc.b 9
-		.ascii "VST_COLOR("
+		.dc.b 9,'V','S','T','_','C','O','L','O','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,122
-		.dc.b 11
-		.ascii "VST_EFFECTS("
+		.dc.b 11,'V','S','T','_','E','F','F','E','C','T','S','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,123
-		.dc.b 12
-		.ascii "VST_ROTATION("
+		.dc.b 12,'V','S','T','_','R','O','T','A','T','I','O','N','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,124
-		.dc.b 10
-		.ascii "VST_HEIGHT("
+		.dc.b 10,'V','S','T','_','H','E','I','G','H','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,125
-		.dc.b 8
-		.ascii "VST_FONT("
+		.dc.b 8,'V','S','T','_','F','O','N','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,126
-		.dc.b 8
-		.ascii "VSL_TYPE("
+		.dc.b 8,'V','S','L','_','T','Y','P','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,137
-		.dc.b 9
-		.ascii "VSL_WIDTH("
+		.dc.b 9,'V','S','L','_','W','I','D','T','H','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,138
-		.dc.b 8
-		.ascii "VSL_ENDS("
+		.dc.b 8,'V','S','L','_','E','N','D','S','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,139
-		.dc.b 9
-		.ascii "VSL_UDSTY("
+		.dc.b 9,'V','S','L','_','U','D','S','T','Y','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,140
-		.dc.b 9
-		.ascii "VSL_COLOR("
+		.dc.b 9,'V','S','L','_','C','O','L','O','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,141
-		.dc.b 9
-		.ascii "VSM_COLOR("
+		.dc.b 9,'V','S','M','_','C','O','L','O','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,142
-		.dc.b 10
-		.ascii "VSM_HEIGHT("
+		.dc.b 10,'V','S','M','_','H','E','I','G','H','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,143
-		.dc.b 8
-		.ascii "VSM_TYPE("
+		.dc.b 8,'V','S','M','_','T','Y','P','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,144
-		.dc.b 9
-		.ascii "VSWR_MODE("
+		.dc.b 9,'V','S','W','R','_','M','O','D','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,145
-		.dc.b 9
-		.ascii "VSF_COLOR("
+		.dc.b 9,'V','S','F','_','C','O','L','O','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,146
-		.dc.b 12
-		.ascii "VSF_INTERIOR("
+		.dc.b 12,'V','S','F','_','I','N','T','E','R','I','O','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,147
-		.dc.b 13
-		.ascii "VSF_PERIMETER("
+		.dc.b 13,'V','S','F','_','P','E','R','I','M','E','T','E','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,148
-		.dc.b 9
-		.ascii "VSF_STYLE("
+		.dc.b 9,'V','S','F','_','S','T','Y','L','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,149
-		.dc.b 9
-		.ascii "VSF_UDPAT("
+		.dc.b 9,'V','S','F','_','U','D','P','A','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,150
-		.dc.b 7
-		.ascii "VS_CLIP("
+		.dc.b 7,'V','S','_','C','L','I','P','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,169
-		.dc.b 9
-		.ascii "VSC_FORM()"
+		.dc.b 9,'V','S','C','_','F','O','R','M','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,170
-		.dc.b 5
-		.ascii "V_BAR("
+		.dc.b 5,'V','_','B','A','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,181
-		.dc.b 6
-		.ascii "V_RBOX("
+		.dc.b 6,'V','_','R','B','O','X','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,182
-		.dc.b 7
-		.ascii "V_RFBOX("
+		.dc.b 7,'V','_','R','F','B','O','X','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,183
-		.dc.b 8
-		.ascii "VR_RECFL("
+		.dc.b 8,'V','R','_','R','E','C','F','L','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,184
-		.dc.b 5
-		.ascii "V_ARC("
+		.dc.b 5,'V','_','A','R','C','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,185
-		.dc.b 8
-		.ascii "V_CIRCLE("
+		.dc.b 8,'V','_','C','I','R','C','L','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,186
-		.dc.b 8
-		.ascii "V_ELLARC("
+		.dc.b 8,'V','_','E','L','L','A','R','C','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,187
-		.dc.b 8
-		.ascii "V_ELLPIE("
+		.dc.b 8,'V','_','E','L','L','P','I','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,188
-		.dc.b 9
-		.ascii "V_ELLIPSE("
+		.dc.b 9,'V','_','E','L','L','I','P','S','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,189
-		.dc.b 10
-		.ascii "V_PIESLICE("
+		.dc.b 10,'V','_','P','I','E','S','L','I','C','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,190
-		.dc.b 13
-		.ascii "V_CONTOURFILL("
+		.dc.b 13,'V','_','C','O','N','T','O','U','R','F','I','L','L','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,191
-		.dc.b 7
-		.ascii "V_GTEXT("
+		.dc.b 7,'V','_','G','T','E','X','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,192
-		.dc.b 7
-		.ascii "V_PLINE("
+		.dc.b 7,'V','_','P','L','I','N','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,193
-		.dc.b 9
-		.ascii "V_PMARKER("
+		.dc.b 9,'V','_','P','M','A','R','K','E','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,194
-		.dc.b 10
-		.ascii "V_FILLAREA("
+		.dc.b 10,'V','_','F','I','L','L','A','R','E','A','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,195
-		.dc.b 11
-		.ascii "V_JUSTIFIED("
+		.dc.b 11,'V','_','J','U','S','T','I','F','I','E','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,196
-		.dc.b 8
-		.ascii "VQ_KEY_S("
+		.dc.b 8,'V','Q','_','K','E','Y','_','S','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,197
-		.dc.b 10
-		.ascii "V_BEZ_FILL("
+		.dc.b 10,'V','_','B','E','Z','_','F','I','L','L','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,198
-		.dc.b 8
-		.ascii "VA_START("
+		.dc.b 8,'V','A','_','S','T','A','R','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,115
-		.ENDC
+	.ENDC
 func_w_table: /* 137ce */
-		.dc.b 1
-		.ascii "W:"
+		.dc.b 1,'W',':'
+		.ascii ""
 		.dc.b 0,139
-		.dc.b 7
-		.ascii "WINDTAB("
+		.dc.b 7,'W','I','N','D','T','A','B','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,41
-		.dc.b 6
-		.ascii "WINDTAB"
+		.dc.b 6,'W','I','N','D','T','A','B'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,42
-		.dc.b 4
-		.ascii "WORD("
+		.dc.b 4,'W','O','R','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,14
-		.dc.b 11
-		.ascii "WIND_CREATE("
+		.dc.b 11,'W','I','N','D','_','C','R','E','A','T','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,175
-		.dc.b 9
-		.ascii "WIND_OPEN("
+		.dc.b 9,'W','I','N','D','_','O','P','E','N','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,176
-		.dc.b 10
-		.ascii "WIND_CLOSE("
+		.dc.b 10,'W','I','N','D','_','C','L','O','S','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,177
-		.dc.b 11
-		.ascii "WIND_DELETE("
+		.dc.b 11,'W','I','N','D','_','D','E','L','E','T','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,178
-		.dc.b 8
-		.ascii "WIND_GET("
+		.dc.b 8,'W','I','N','D','_','G','E','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,179
-		.dc.b 8
-		.ascii "WIND_SET("
+		.dc.b 8,'W','I','N','D','_','S','E','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,180
-		.dc.b 9
-		.ascii "WIND_FIND("
+		.dc.b 9,'W','I','N','D','_','F','I','N','D','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,181
-		.dc.b 11
-		.ascii "WIND_UPDATE("
+		.dc.b 11,'W','I','N','D','_','U','P','D','A','T','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,182
-		.dc.b 9
-		.ascii "WIND_CALC("
+		.dc.b 9,'W','I','N','D','_','C','A','L','C','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,183
-		.dc.b 7
-		.ascii "W_HAND(#"
+		.dc.b 7,'W','_','H','A','N','D','(','#'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,98
-		.dc.b 8
-		.ascii "W_INDEX(#"
+		.dc.b 8,'W','_','I','N','D','E','X','(','#'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,99
-		.dc.b 8
-		.ascii "WORK_OUT("
+		.dc.b 8,'W','O','R','K','_','O','U','T','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,208
-		.dc.b 3
-		.ascii "WITH"
+		.dc.b 3,'W','I','T','H'
+		.ascii ""
 		.dc.b 0,114
-		.dc.b 4
-		.ascii "WORD{"
+		.dc.b 4,'W','O','R','D','{'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,222
-		.IFNE GBE
-		.dc.b 9
-		.ascii "WIND_NEW()"
+	.IFNE GBE
+		.dc.b 9,'W','I','N','D','_','N','E','W','(',')'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,85
-		.dc.b 8
-		.ascii "WAKETIME("
+		.dc.b 8,'W','A','K','E','T','I','M','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,227
-		.dc.b 7
-		.ascii "WF_NAME("
+		.dc.b 7,'W','F','_','N','A','M','E','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,248
-		.dc.b 7
-		.ascii "WF_INFO("
+		.dc.b 7,'W','F','_','I','N','F','O','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,249
-		.dc.b 7
-		.ascii "WEEKDAY("
+		.dc.b 7,'W','E','E','K','D','A','Y','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,91
-		.dc.b 9
-		.ascii "WORD2LONG("
+		.dc.b 9,'W','O','R','D','2','L','O','N','G','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_210,117
-		.ENDC
+	.ENDC
 func_x_table: /* 138c0 */
-		.dc.b 5
-		.ascii "XBIOS("
+		.dc.b 5,'X','B','I','O','S','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,86
-		.dc.b 2
-		.ascii "XOR"
+		.dc.b 2,'X','O','R'
+		.ascii ""
 		.dc.b 0,2
-		.dc.b 3
-		.ascii "XOR("
+		.dc.b 3,'X','O','R','('
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,7
 func_y_table:
 func_z_table:
-		.IFNE GBE
-		.dc.b 6
-		.ascii "ZTRIM$("
+	.IFNE GBE
+		.dc.b 6,'Z','T','R','I','M','$','('
+		.ascii ""
 		.dc.b 0,150
-		.ENDC
+	.ENDC
 
 func_other_table:
-		.dc.b 0
-		.dc.b 0x5c
+		.dc.b 0,0x5c
 		.dc.b 0,TOK_INTDIV
-		.dc.b 0
-		.ascii "["
+		.dc.b 0,'['
+		.ascii ""
 		.dc.b 0,TOK_LBRACKET
-		.dc.b 0
-		.ascii "]"
+		.dc.b 0,']'
+		.ascii ""
 		.dc.b 0,TOK_RBRACKET
-		.dc.b 4
-		.ascii "_DATA"
+		.dc.b 4,'_','D','A','T','A'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,227
-		.IFNE GBE
-		.dc.b 6
-		.ascii "_GEMDOS"
+	.IFNE GBE
+		.dc.b 6,'_','G','E','M','D','O','S'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,18
-		.dc.b 4
-		.ascii "_MINT"
+		.dc.b 4,'_','M','I','N','T'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,1
-		.dc.b 3
-		.ascii "_AES"
+		.dc.b 3,'_','A','E','S'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,242
-		.dc.b 3
-		.ascii "_CPU"
+		.dc.b 3,'_','C','P','U'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,57
-		.dc.b 3
-		.ascii "_TOS"
+		.dc.b 3,'_','T','O','S'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,243
-		.dc.b 2
-		.ascii "_SW"
+		.dc.b 2,'_','S','W'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,2
-		.dc.b 2
-		.ascii "_SH"
+		.dc.b 2,'_','S','H'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_209,3
-		.ENDC
-		.dc.b 1
-		.ascii "_X"
+	.ENDC
+		.dc.b 1,'_','X'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,236
-		.dc.b 1
-		.ascii "_Y"
+		.dc.b 1,'_','Y'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,237
-		.IFNE GBE
-		.dc.b 1
-		.ascii "_P"
+	.IFNE GBE
+		.dc.b 1,'_','P'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,255
-		.ENDC
-		.dc.b 1
-		.ascii "_C"
+	.ENDC
+		.dc.b 1,'_','C'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,238
-		.IFNE GBE
-		.dc.b 1
-		.ascii "_B"
+	.IFNE GBE
+		.dc.b 1,'_','B'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,241
-		.ENDC
-		.dc.b 0
-		.ascii "^"
+	.ENDC
+		.dc.b 0,'^'
+		.ascii ""
 		.dc.b 0,TOK_POWER
-		.dc.b 0
-		.ascii "{"
+		.dc.b 0,'{'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,112
-		.dc.b 0
-		.ascii "}"
+		.dc.b 0,'}'
+		.ascii ""
 		.dc.b 0,TOK_RBRACE
-		.dc.b 4
-		.ascii "EOF(#"
+		.dc.b 4,'E','O','F','(','#'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,78
-		.dc.b 4
-		.ascii "LOF(#"
+		.dc.b 4,'L','O','F','(','#'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,79
-		.dc.b 4
-		.ascii "LOC(#"
+		.dc.b 4,'L','O','C','(','#'
+		.ascii ""
 		.dc.b TOK_SUBFUNC_208,80
-		.dc.b 3
-		.ascii " AT("
+		.dc.b 3,' ','A','T','('
+		.ascii ""
 		.dc.b 0,122
-		.dc.b 4
-		.ascii "SUCC("
+		.dc.b 4,'S','U','C','C','('
+		.ascii ""
 		.dc.b 0,131
-		.dc.b 4
-		.ascii "PRED("
+		.dc.b 4,'P','R','E','D','('
+		.ascii ""
 		.dc.b 0,133
-		.dc.b 0
-		.ascii "/"
+		.dc.b 0,'/'
+		.ascii ""
 		.dc.b 0,TOK_DIVIDE
 		.dc.b -1
 		.even
 
 jmpbase:
-x13696:
 f13696:
 		moveq.l    #9,d0
 		bra.s      f136a0
@@ -6933,8 +6905,8 @@ f1369a:
 f1369e:
 		moveq.l    #2,d0
 f136a0:
-		bsr        x13abe
-		cmpi.w     #TOK_CMDLINE,d6
+		bsr        find_function
+		cmpi.w     #(x136d0_end-x136d0)*2,d6
 		bhi.s      f136a0_1
 		move.w     d6,d1
 		lsr.w      #1,d1
@@ -6957,96 +6929,131 @@ f136a0_3:
 		rts
 
 x136d0:
-		.dc.b 0x33,0x33
-		.dc.b 0x33,0x33
-		.dc.b 0x33,0x33
-		.dc.b 0x33,0x33
-		.dc.b 0x33,0x33
-		.dc.b 0x55,0x55
-		.dc.b 0x55,0x55
-		.dc.b 0x54,0x44
-		.dc.b 0x77,0x70
-		.dc.b 0x20,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x03,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x91,0x90
-		.dc.b 0x90,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x20
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x09
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x03
-		.dc.b 0xcc,0x00
-		.dc.b 0x00,0x22
-		.dc.b 0x22,0x21
-		.dc.b 0x11,0x11
-		.dc.b 0x00,0x09
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x90
-		.dc.b 0x20,0x00
-		.dc.b 0x20,0x10
+		.dc.b (3<<4)+3   /* TOK_AND,TOK_OR */
+		.dc.b (3<<4)+3   /* TOK_XOR,TOK_IMP */
+		.dc.b (3<<4)+3   /* TOK_EQV,TOK_SUB */
+		.dc.b (3<<4)+3   /* TOK_ADD,TOK_MUL */
+		.dc.b (3<<4)+3   /* TOK_DIVIDE,TOK_POWER */
+		.dc.b (3<<4)+3   /* TOK_MOD,TOK_DIV */
+		.dc.b (3<<4)+3   /* TOK_NE,TOK_LE */
+		.dc.b (3<<4)+3   /* TOK_LE2,TOK_GE */
+		.dc.b (3<<4)+3   /* TOK_GE2,TOK_LT */
+		.dc.b (3<<4)+3   /* TOK_GT,TOK_EQ */
+		.dc.b (5<<4)+5   /* TOK_NE_STR,TOK_LE_STR */
+		.dc.b (5<<4)+5   /* TOK_LE2_STR,TOK_GE_STR */
+		.dc.b (5<<4)+5   /* TOK_GE2_STR,TOK_LT_STR */
+		.dc.b (5<<4)+5   /* TOK_GT_STR,TOK_EQ_STR */
+		.dc.b (5<<4)+4   /* TOK_PLUS_STR,TOK_UPLUS */
+		.dc.b (4<<4)+4   /* TOK_UMINUS,TOK_UNOT */
+		.dc.b (7<<4)+7   /* TOK_RPAREN,TOK_COMMA */
+		.dc.b (7<<4)+0   /* TOK_SEMI,TOK_LPAREN */
+		.dc.b (2<<4)+0   /* TOK_ERRSTR,TOK_INT */
+		.dc.b (0<<4)+0   /* TOK_TRUNC,TOK_FRAC */
+		.dc.b (0<<4)+0   /* TOK_ABS,TOK_SIN */
+		.dc.b (0<<4)+0   /* TOK_COS,TOK_TAN */
+		.dc.b (0<<4)+3   /* TOK_ATAN,TOK_APPROX_EQ */
+		.dc.b (0<<4)+0   /* TOK_RES_46,TOK_EXP */
+		.dc.b (0<<4)+0   /* TOK_LOG,TOK_LOG10 */
+		.dc.b (0<<4)+0   /* TOK_VAR,TOK_RPAREN2 */
+		.dc.b (9<<4)+1   /* TOK_INPAUX,TOK_VAL */
+		.dc.b (9<<4)+0   /* TOK_INPMID,TOK_PRINTNUM */
+		.dc.b (9<<4)+0   /* TOK_TIME,TOK_ARRAY_ASS */
+		.dc.b (0<<4)+0   /* TOK_LEFT1,TOK_LEFT2 */
+		.dc.b (0<<4)+0   /* TOK_RIGHT1,TOK_RIGHT2 */
+		.dc.b (0<<4)+0   /* TOK_MID2,TOK_MID3 */
+		.dc.b (0<<4)+0   /* TOK_RES_64,TOK_ASIN */
+		.dc.b (2<<4)+0   /* TOK_CHR,TOK_REFEND */
+		.dc.b (0<<4)+0   /* TOK_RES_68,TOK_ASSIGN */
+		.dc.b (0<<4)+0   /* TOK_LINE_COMMENT,TOK_TO */
+		.dc.b (0<<4)+0   /* TOK_STEP,TOK_DOWNTO */
+		.dc.b (0<<4)+0   /* TOK_THEN,TOK_GOTO_FUNC */
+		.dc.b (0<<4)+0   /* TOK_GOSUB_FUNC,TOK_CHANNEL */
+		.dc.b (0<<4)+0   /* TOK_SQR,TOK_PI */
+		.dc.b (0<<4)+0   /* TOK_LBRACKET,TOK_RBRACKET */
+		.dc.b (0<<4)+9   /* TOK_ACOS,TOK_INKEY */
+		.dc.b (0<<4)+0   /* TOK_RND1,TOK_RND */
+		.dc.b (0<<4)+0   /* TOK_RANDOM,TOK_PRINTSPACE */
+		.dc.b (0<<4)+0   /* TOK_RBRACE,TOK_AT */
+		.dc.b (0<<4)+3   /* TOK_IF,TOK_INTDIV */
+		.dc.b (12<<4)+12 /* TOK_FLOAT_REF,TOK_DOUBLE_REF */
+		.dc.b (0<<4)+0   /* TOK_INPUT1,TOK_INPUT2 */
+		.dc.b (0<<4)+0   /* TOK_INPUT3,TOK_CHAR_REF */
+		.dc.b (2<<4)+2   /* TOK_MKI,TOK_MKL */
+		.dc.b (2<<4)+2   /* TOK_MKS,TOK_MKF */
+		.dc.b (2<<4)+1   /* TOK_MKD,TOK_DEG */
+		.dc.b (1<<4)+1   /* TOK_RAD,TOK_CVS */
+		.dc.b (1<<4)+1   /* TOK_CVF,TOK_CVD */
+		.dc.b (0<<4)+0   /* TOK_AS,TOK_OFFSET */
+		.dc.b (0<<4)+9   /* TOK_CFLOAT,TOK_TRACE */
+		.dc.b (0<<4)+0   /* TOK_ROUND1,TOK_ROUND2 */
+		.dc.b (0<<4)+0   /* TOK_WITH,TOK_BIN1 */
+		.dc.b (0<<4)+0   /* TOK_BIN2,TOK_MIN */
+		.dc.b (0<<4)+0   /* TOK_MIN_STR,TOK_MAX */
+		.dc.b (0<<4)+0   /* TOK_MAX_STR,TOK_SINGLE_REF */
+		.dc.b (0<<4)+0   /* TOK_AT2,TOK_SINQ */
+		.dc.b (0<<4)+0   /* TOK_LABEL,TOK_COSQ */
+		.dc.b (9<<4)+0   /* TOK_DATE,TOK_UPPER */
+		.dc.b (2<<4)+0   /* TOK_SPACE,TOK_STRING_CODE */
+		.dc.b (0<<4)+0   /* TOK_STRING,TOK_SUCC */
+		.dc.b (2<<4)+0   /* TOK_DIR,TOK_PRED */
+		.dc.b (1<<4)+0   /* TOK_DRAW,TOK_TRIM */
+x136d0_end:
 
 cmd_index_table:
-		.dc.w cmd_a_table-x13696
-		.dc.w cmd_b_table-x13696
-		.dc.w cmd_c_table-x13696
-		.dc.w cmd_d_table-x13696
-		.dc.w cmd_e_table-x13696
-		.dc.w cmd_f_table-x13696
-		.dc.w cmd_g_table-x13696
-		.dc.w cmd_h_table-x13696
-		.dc.w cmd_i_table-x13696
-		.dc.w cmd_k_table-x13696
-		.dc.w cmd_k_table-x13696
-		.dc.w cmd_l_table-x13696
-		.dc.w cmd_m_table-x13696
-		.dc.w cmd_n_table-x13696
-		.dc.w cmd_o_table-x13696
-		.dc.w cmd_p_table-x13696
-		.dc.w cmd_q_table-x13696
-		.dc.w cmd_r_table-x13696
-		.dc.w cmd_s_table-x13696
-		.dc.w cmd_t_table-x13696
-		.dc.w cmd_u_table-x13696
-		.dc.w cmd_v_table-x13696
-		.dc.w cmd_w_table-x13696
-		.dc.w cmd_other_table-x13696
-		.dc.w cmd_other_table-x13696
-		.dc.w cmd_other_table-x13696
+		.dc.w cmd_a_table-jmpbase
+		.dc.w cmd_b_table-jmpbase
+		.dc.w cmd_c_table-jmpbase
+		.dc.w cmd_d_table-jmpbase
+		.dc.w cmd_e_table-jmpbase
+		.dc.w cmd_f_table-jmpbase
+		.dc.w cmd_g_table-jmpbase
+		.dc.w cmd_h_table-jmpbase
+		.dc.w cmd_i_table-jmpbase
+		.dc.w cmd_k_table-jmpbase
+		.dc.w cmd_k_table-jmpbase
+		.dc.w cmd_l_table-jmpbase
+		.dc.w cmd_m_table-jmpbase
+		.dc.w cmd_n_table-jmpbase
+		.dc.w cmd_o_table-jmpbase
+		.dc.w cmd_p_table-jmpbase
+		.dc.w cmd_q_table-jmpbase
+		.dc.w cmd_r_table-jmpbase
+		.dc.w cmd_s_table-jmpbase
+		.dc.w cmd_t_table-jmpbase
+		.dc.w cmd_u_table-jmpbase
+		.dc.w cmd_v_table-jmpbase
+		.dc.w cmd_w_table-jmpbase
+		.dc.w cmd_other_table-jmpbase
+		.dc.w cmd_other_table-jmpbase
+		.dc.w cmd_other_table-jmpbase
 
 func_index_table:
-		.dc.w func_a_table-x13696
-		.dc.w func_b_table-x13696
-		.dc.w func_c_table-x13696
-		.dc.w func_d_table-x13696
-		.dc.w func_e_table-x13696
-		.dc.w func_f_table-x13696
-		.dc.w func_g_table-x13696
-		.dc.w func_h_table-x13696
-		.dc.w func_i_table-x13696
-		.dc.w func_j_table-x13696
-		.dc.w func_k_table-x13696
-		.dc.w func_l_table-x13696
-		.dc.w func_m_table-x13696
-		.dc.w func_n_table-x13696
-		.dc.w func_o_table-x13696
-		.dc.w func_p_table-x13696
-		.dc.w func_q_table-x13696
-		.dc.w func_r_table-x13696
-		.dc.w func_s_table-x13696
-		.dc.w func_t_table-x13696
-		.dc.w func_u_table-x13696
-		.dc.w func_v_table-x13696
-		.dc.w func_w_table-x13696
-		.dc.w func_x_table-x13696
-		.dc.w func_y_table-x13696
-		.dc.w func_z_table-x13696
+		.dc.w func_a_table-jmpbase
+		.dc.w func_b_table-jmpbase
+		.dc.w func_c_table-jmpbase
+		.dc.w func_d_table-jmpbase
+		.dc.w func_e_table-jmpbase
+		.dc.w func_f_table-jmpbase
+		.dc.w func_g_table-jmpbase
+		.dc.w func_h_table-jmpbase
+		.dc.w func_i_table-jmpbase
+		.dc.w func_j_table-jmpbase
+		.dc.w func_k_table-jmpbase
+		.dc.w func_l_table-jmpbase
+		.dc.w func_m_table-jmpbase
+		.dc.w func_n_table-jmpbase
+		.dc.w func_o_table-jmpbase
+		.dc.w func_p_table-jmpbase
+		.dc.w func_q_table-jmpbase
+		.dc.w func_r_table-jmpbase
+		.dc.w func_s_table-jmpbase
+		.dc.w func_t_table-jmpbase
+		.dc.w func_u_table-jmpbase
+		.dc.w func_v_table-jmpbase
+		.dc.w func_w_table-jmpbase
+		.dc.w func_x_table-jmpbase
+		.dc.w func_y_table-jmpbase
+		.dc.w func_z_table-jmpbase
 
 x1377c:
 		lea.l      850(a6),a4
@@ -7204,7 +7211,7 @@ x1389c_4:
 		bhi.s      x1389c_3
 		add.w      d3,d3
 		move.w     0(a2,d3.w),d3
-		lea.l      x13696(pc),a2
+		lea.l      jmpbase(pc),a2
 		adda.w     d3,a2
 x1389c_5:
 		movea.l    a0,a4
@@ -7236,7 +7243,7 @@ x1389c_9:
 		move.b     -2(a3),-(a7)
 		move.w     (a7)+,d0  /* d0 = -2(a3)<<8 */
 		move.b     -1(a3),d0
-		lea.l      x13696(pc),a2
+		lea.l      jmpbase(pc),a2
 		adda.w     d0,a2
 		rts
 x1389c_10:
@@ -7308,7 +7315,7 @@ x1395a_8:
 		pea.l      (a2)
 		pea.l      (a1)
 		pea.l      (a0)
-		lea.l      x13696(pc),a2
+		lea.l      jmpbase(pc),a2
 		adda.w     d0,a2
 		bra.s      x1395a_1
 
@@ -7320,7 +7327,7 @@ x1395a_9:
 		pea.l      (a2)
 		pea.l      (a1)
 		pea.l      (a0)
-		lea.l      x13696(pc),a2
+		lea.l      jmpbase(pc),a2
 		jsr        0(a2,d0.w)
 		tst.b      d7
 		beq.s      x1395a_3
@@ -7357,7 +7364,7 @@ x1395a_14:
  */
 /* gbe: 00054000 */
 handle_function:
-		bsr        x13abe
+		bsr        find_function
 handle_function_1:
 		cmp.w      d0,d6
 		sne        d7
@@ -7403,7 +7410,7 @@ handle_function_9:
 		cmpi.b     #238,d6
 		beq.s      handle_function_10
 		moveq.l    #64,d6
-		bra.s      x13abe_1
+		bra.s      find_function_1
 handle_function_10:
 		cmpi.b     #'/',1(a0)
 		beq.s      handle_function_11
@@ -7411,7 +7418,7 @@ handle_function_10:
 		beq.s      handle_function_11
 		moveq.l    #8,d6
 		addq.l     #1,a0
-		bra.w      x13abe_7
+		bra.w      find_function_7
 handle_function_11:
 		movea.l    a0,a5
 		moveq.l    #-1,d6
@@ -7419,15 +7426,15 @@ handle_function_11:
 handle_function_12:
 		lea.l      func_other_table(pc),a3
 		moveq.l    #127,d6
-		bra.s      x13abe_1
+		bra.s      find_function_1
 
 /*
  * find a function name in table
  * return code in d6 (bits 8-15: secondary table code)
  */
-x13abe:
+find_function:
 		cmpa.l     8438(a6),a0
-		beq.s      x13abe_5
+		beq.s      find_function_5
 		move.l     a0,8438(a6)
 		bsr        skip_spaces
 		moveq.l    #0,d6
@@ -7439,60 +7446,60 @@ x13abe:
 		lea.l      func_index_table(pc),a3
 		add.w      d6,d6
 		move.w     0(a3,d6.w),d6
-		lea.l      x13696(pc),a3
+		lea.l      jmpbase(pc),a3
 		adda.w     d6,a3
 		move.b     (a0),d6
-x13abe_1:
+find_function_1:
 		movea.l    a0,a4
-x13abe_2:
+find_function_2:
 		moveq.l    #0,d1
 		move.b     (a3)+,d1
-		bmi.s      x13abe_4
+		bmi.s      find_function_4
 		lea.l      3(a3,d1.w),a5
 		cmp.b      (a3),d6
-		bcs.s      x13abe_4
-x13abe_3:
+		bcs.s      find_function_4
+find_function_3:
 		cmpm.b     (a0)+,(a3)+
-		dbne       d1,x13abe_3
-		beq.s      x13abe_6
+		dbne       d1,find_function_3
+		beq.s      find_function_6
 		movea.l    a5,a3
 		movea.l    a4,a0
-		bra.s      x13abe_2
-x13abe_4:
+		bra.s      find_function_2
+find_function_4:
 		moveq.l    #-1,d6
 		movea.l    a0,a5
 		rts
-x13abe_5:
+find_function_5:
 		movea.l    a5,a0
 		rts
-x13abe_6:
+find_function_6:
 		move.b     -2(a5),-(a7)
 		move.w     (a7)+,d6
 		move.b     -1(a5),d6
-x13abe_7:
+find_function_7:
 		movea.l    a0,a5
 		cmpi.b     #'A',-1(a0)
-		bcs.s      x13abe_9
+		bcs.s      find_function_9
 		cmpi.b     #'Z',-1(a0)
-		bhi.s      x13abe_9
+		bhi.s      find_function_9
 		cmpi.b     #TOK_GE2_STR,d6 /* wtf? why .b? */
-		bls.s      x13abe_9
+		bls.s      find_function_9
 		move.b     (a0),d1
 		cmpi.b     #'_',d1
-		beq.s      x13abe_8
+		beq.s      find_function_8
 		cmpi.b     #'.',d1
-		beq.s      x13abe_8
+		beq.s      find_function_8
 		cmpi.b     #'0',d1
-		bcs.s      x13abe_9
+		bcs.s      find_function_9
 		cmpi.b     #'9',d1
-		bls.s      x13abe_8
+		bls.s      find_function_8
 		cmpi.b     #'A',d1
-		bcs.s      x13abe_9
+		bcs.s      find_function_9
 		cmpi.b     #'Z',d1
-		bhi.s      x13abe_9
-x13abe_8:
+		bhi.s      find_function_9
+find_function_8:
 		moveq.l    #-1,d6
-x13abe_9:
+find_function_9:
 		rts
 
 f13b62:
@@ -7815,67 +7822,67 @@ f13de4_2:
 x13e02:
 		.ascii "ADD"
 		.dc.b 0
-		.dc.b (x13ee2-x13696)/256,(x13ee2-x13696)&255
+		.dc.b (x13ee2-jmpbase)/256,(x13ee2-jmpbase)&255
 		.ascii "ABS"
 		.dc.b 0
-		.dc.b (x14008-x13696)/256,(x14008-x13696)&255
+		.dc.b (x14008-jmpbase)/256,(x14008-jmpbase)&255
 		.ascii "BASE"
 		.dc.b 0
-		.dc.b (x14025-x13696)/256,(x14025-x13696)&255
+		.dc.b (x14025-jmpbase)/256,(x14025-jmpbase)&255
 		.ascii "CPY"
 		.dc.b 0
-		.dc.b (x13f94-x13696)/256,(x13f94-x13696)&255
+		.dc.b (x13f94-jmpbase)/256,(x13f94-jmpbase)&255
 		.ascii "CLR"
 		.dc.b 0
-		.dc.b (x13ff6-x13696)/256,(x13ff6-x13696)&255
+		.dc.b (x13ff6-jmpbase)/256,(x13ff6-jmpbase)&255
 		.ascii "DET"
 		.dc.b 0
-		.dc.b (x13f69-x13696)/256,(x13f69-x13696)&255
+		.dc.b (x13f69-jmpbase)/256,(x13f69-jmpbase)&255
 		.ascii "QDET"
 		.dc.b 0
-		.dc.b (x13f82-x13696)/256,(x13f82-x13696)&255
+		.dc.b (x13f82-jmpbase)/256,(x13f82-jmpbase)&255
 		.ascii "INV"
 		.dc.b 0
-		.dc.b (x13feb-x13696)/256,(x13feb-x13696)&255
+		.dc.b (x13feb-jmpbase)/256,(x13feb-jmpbase)&255
 		.ascii "INPUT"
 		.dc.b 0
-		.dc.b (x13fc8-x13696)/256,(x13fc8-x13696)&255
+		.dc.b (x13fc8-jmpbase)/256,(x13fc8-jmpbase)&255
 		.ascii "MUL"
 		.dc.b 0
-		.dc.b (x13f26-x13696)/256,(x13f26-x13696)&255
+		.dc.b (x13f26-jmpbase)/256,(x13f26-jmpbase)&255
 		.ascii "NORM"
 		.dc.b 0
-		.dc.b (x1400e-x13696)/256,(x1400e-x13696)&255
+		.dc.b (x1400e-jmpbase)/256,(x1400e-jmpbase)&255
 		.ascii "NEG"
 		.dc.b 0
-		.dc.b (x14002-x13696)/256,(x14002-x13696)&255
+		.dc.b (x14002-jmpbase)/256,(x14002-jmpbase)&255
 		.ascii "ONE"
 		.dc.b 0
-		.dc.b (x13ffc-x13696)/256,(x13ffc-x13696)&255
+		.dc.b (x13ffc-jmpbase)/256,(x13ffc-jmpbase)&255
 		.ascii "PRINT"
 		.dc.b 0
-		.dc.b (x13fb0-x13696)/256,(x13fb0-x13696)&255
+		.dc.b (x13fb0-jmpbase)/256,(x13fb0-jmpbase)&255
 		.ascii "?"
 		.dc.b 0
-		.dc.b (x13fb0-x13696)/256,(x13fb0-x13696)&255
+		.dc.b (x13fb0-jmpbase)/256,(x13fb0-jmpbase)&255
 		.ascii "READ"
 		.dc.b 0
-		.dc.b (x13fd1-x13696)/256,(x13fd1-x13696)&255
+		.dc.b (x13fd1-jmpbase)/256,(x13fd1-jmpbase)&255
 		.ascii "RANG"
 		.dc.b 0
-		.dc.b (x13f88-x13696)/256,(x13f88-x13696)&255
+		.dc.b (x13f88-jmpbase)/256,(x13f88-jmpbase)&255
 		.ascii "SUB"
 		.dc.b 0
-		.dc.b (x13f04-x13696)/256,(x13f04-x13696)&255
+		.dc.b (x13f04-jmpbase)/256,(x13f04-jmpbase)&255
 		.ascii "SET"
 		.dc.b 0
-		.dc.b (x14019-x13696)/256,(x14019-x13696)&255
+		.dc.b (x14019-jmpbase)/256,(x14019-jmpbase)&255
 		.ascii "TRANS"
 		.dc.b 0
-		.dc.b (x13fd9-x13696)/256,(x13fd9-x13696)&255
+		.dc.b (x13fd9-jmpbase)/256,(x13fd9-jmpbase)&255
 		.ascii "XCPY"
 		.dc.b 0
-		.dc.b (x13f8e-x13696)/256,(x13f8e-x13696)&255
+		.dc.b (x13f8e-jmpbase)/256,(x13f8e-jmpbase)&255
 		.dc.b 0
 		.even
 
@@ -7909,7 +7916,7 @@ f13e8c_4:
 		move.b     (a1)+,d2
 		asl.w      #8,d2
 		move.b     (a1)+,d2
-		lea.l      x13696(pc),a2
+		lea.l      jmpbase(pc),a2
 		adda.w     d2,a2
 		move.l     a2,12(a7)
 		movea.l    d1,a1
@@ -7926,55 +7933,55 @@ f13e8c_4:
  */
 /* gbe: 544b0 */
 x13ed2:
-	.dc.b -2,(f13e8c-x13696)/256,(f13e8c-x13696)&255
+	.dc.b -2,(f13e8c-jmpbase)/256,(f13e8c-jmpbase)&255
 x13ed5:
 	.dc.b -3
 x13ed6:
-	.dc.b -1,(x13ee2-x13696)/256,(x13ee2-x13696)&255
+	.dc.b -1,(x13ee2-jmpbase)/256,(x13ee2-jmpbase)&255
 x13ed9:
 	.dc.b -3
 x13eda:
-	.dc.b -1,(x13f04-x13696)/256,(x13f04-x13696)&255
+	.dc.b -1,(x13f04-jmpbase)/256,(x13f04-jmpbase)&255
 x13edd:
 	.dc.b -3
 x13ede:
-	.dc.b -1,(x13f26-x13696)/256,(x13f26-x13696)&255
+	.dc.b -1,(x13f26-jmpbase)/256,(x13f26-jmpbase)&255
 x13ee1:
 	.dc.b -4
 x13ee2:
 	.dc.b -5,80
 x13ee4:
-	.dc.b -2,(f15474-x13696)/256,(f15474-x13696)&255
+	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 x13ee7:
 	.dc.b 32
 x13ee8:
-	.dc.b -1,(x13eec-x13696)/256,(x13eec-x13696)&255
+	.dc.b -1,(x13eec-jmpbase)/256,(x13eec-jmpbase)&255
 x13eeb:
 	.dc.b -4
 x13eec:
 	.dc.b 19
 x13eed:
-	.dc.b -2,(f15474-x13696)/256,(f15474-x13696)&255
+	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 x13ef0:
 	.dc.b 32
 x13ef1:
 	.dc.b 6
 x13ef2:
-	.dc.b -1,(x13fd3-x13696)/256,(x13fd3-x13696)&255
+	.dc.b -1,(x13fd3-jmpbase)/256,(x13fd3-jmpbase)&255
 x13ef5:
 	.dc.b -3
 x13ef6:
 	.dc.b 33
 x13ef7:
-	.dc.b -1,(x13fd3-x13696)/256,(x13fd3-x13696)&255
+	.dc.b -1,(x13fd3-jmpbase)/256,(x13fd3-jmpbase)&255
 x13efa:
 	.dc.b -3
 x13efb:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x13efe:
 	.dc.b 33
 x13eff:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x13f02:
 	.dc.b 70
 x13f03:
@@ -7982,111 +7989,111 @@ x13f03:
 x13f04:
 	.dc.b -5,84
 x13f06:
-	.dc.b -2,(f15474-x13696)/256,(f15474-x13696)&255
+	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 x13f09:
 	.dc.b 32
 x13f0a:
-	.dc.b -1,(x13f0e-x13696)/256,(x13f0e-x13696)&255
+	.dc.b -1,(x13f0e-jmpbase)/256,(x13f0e-jmpbase)&255
 x13f0d:
 	.dc.b -4
 x13f0e:
 	.dc.b 19
 x13f0f:
-	.dc.b -2,(f15474-x13696)/256,(f15474-x13696)&255
+	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 x13f12:
 	.dc.b 32
 x13f13:
 	.dc.b 5
 x13f14:
-	.dc.b -1,(x13fd3-x13696)/256,(x13fd3-x13696)&255
+	.dc.b -1,(x13fd3-jmpbase)/256,(x13fd3-jmpbase)&255
 x13f17:
 	.dc.b -3
 x13f18:
 	.dc.b 33
 x13f19:
-	.dc.b -1,(x13fd3-x13696)/256,(x13fd3-x13696)&255
+	.dc.b -1,(x13fd3-jmpbase)/256,(x13fd3-jmpbase)&255
 x13f1c:
 	.dc.b -3
 x13f1d:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x13f20:
 	.dc.b 33
 x13f21:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x13f24:
 	.dc.b 70
 x13f25:
 	.dc.b -4
 x13f26:
-	.dc.b -1,(x13f2a-x13696)/256,(x13f2a-x13696)&255
+	.dc.b -1,(x13f2a-jmpbase)/256,(x13f2a-jmpbase)&255
 x13f29:
 	.dc.b -4
 x13f2a:
 	.dc.b -5,120
 x13f2c:
-	.dc.b -2,(f15474-x13696)/256,(f15474-x13696)&255
+	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 x13f2f:
 	.dc.b 32
 x13f30:
 	.dc.b 19
 x13f31:
-	.dc.b -2,(f15474-x13696)/256,(f15474-x13696)&255
+	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 x13f34:
 	.dc.b 32
 x13f35:
 	.dc.b 7
 x13f36:
-	.dc.b -1,(x13fd3-x13696)/256,(x13fd3-x13696)&255
+	.dc.b -1,(x13fd3-jmpbase)/256,(x13fd3-jmpbase)&255
 x13f39:
 	.dc.b -3
 x13f3a:
 	.dc.b -5,122
 x13f3c:
-	.dc.b -2,(f15464-x13696)/256,(f15464-x13696)&255
+	.dc.b -2,(f15464-jmpbase)/256,(f15464-jmpbase)&255
 x13f3f:
 	.dc.b 19
 x13f40:
-	.dc.b -2,(f15474-x13696)/256,(f15474-x13696)&255
+	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 x13f43:
 	.dc.b 32
 x13f44:
 	.dc.b 7
 x13f45:
-	.dc.b -1,(x13fd3-x13696)/256,(x13fd3-x13696)&255
+	.dc.b -1,(x13fd3-jmpbase)/256,(x13fd3-jmpbase)&255
 x13f48:
 	.dc.b -3
 x13f49:
 	.dc.b -5,124
 x13f4b:
-	.dc.b -2,(f15464-x13696)/256,(f15464-x13696)&255
+	.dc.b -2,(f15464-jmpbase)/256,(f15464-jmpbase)&255
 x13f4e:
 	.dc.b 19
 x13f4f:
-	.dc.b -2,(f15474-x13696)/256,(f15474-x13696)&255
+	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 x13f52:
 	.dc.b 32
 x13f53:
 	.dc.b 7
 x13f54:
-	.dc.b -2,(f15474-x13696)/256,(f15474-x13696)&255
+	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 x13f57:
 	.dc.b 32
 x13f58:
 	.dc.b 7
 x13f59:
-	.dc.b -1,(x13fd3-x13696)/256,(x13fd3-x13696)&255
+	.dc.b -1,(x13fd3-jmpbase)/256,(x13fd3-jmpbase)&255
 x13f5c:
 	.dc.b -3
 x13f5d:
 	.dc.b -5,126
 x13f5f:
-	.dc.b -2,(f15474-x13696)/256,(f15474-x13696)&255
+	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 x13f62:
 	.dc.b 32
 x13f63:
 	.dc.b 33
 x13f64:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x13f67:
 	.dc.b 70
 x13f68:
@@ -8094,25 +8101,25 @@ x13f68:
 x13f69:
 	.dc.b -5,92
 x13f6b:
-	.dc.b -2,(f15464-x13696)/256,(f15464-x13696)&255
+	.dc.b -2,(f15464-jmpbase)/256,(f15464-jmpbase)&255
 x13f6e:
 	.dc.b 19
 x13f6f:
-	.dc.b -2,(f15474-x13696)/256,(f15474-x13696)&255
+	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 x13f72:
-	.dc.b -1,(x13f77-x13696)/256,(x13f77-x13696)&255
+	.dc.b -1,(x13f77-jmpbase)/256,(x13f77-jmpbase)&255
 x13f75:
 	.dc.b 70
 x13f76:
 	.dc.b -4
 x13f77:
-	.dc.b -1,(x1503f-x13696)/256,(x1503f-x13696)&255
+	.dc.b -1,(x1503f-jmpbase)/256,(x1503f-jmpbase)&255
 x13f7a:
 	.dc.b 32
 x13f7b:
 	.dc.b 33
 x13f7c:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x13f7f:
 	.dc.b -3
 x13f80:
@@ -8122,39 +8129,39 @@ x13f81:
 x13f82:
 	.dc.b -5,114
 x13f84:
-	.dc.b -1,(x13f6b-x13696)/256,(x13f6b-x13696)&255
+	.dc.b -1,(x13f6b-jmpbase)/256,(x13f6b-jmpbase)&255
 x13f87:
 	.dc.b -4
 x13f88:
 	.dc.b -5,118
 x13f8a:
-	.dc.b -1,(x13f6b-x13696)/256,(x13f6b-x13696)&255
+	.dc.b -1,(x13f6b-jmpbase)/256,(x13f6b-jmpbase)&255
 x13f8d:
 	.dc.b -4
 x13f8e:
 	.dc.b -5,90
 x13f90:
-	.dc.b -1,(x13f96-x13696)/256,(x13f96-x13696)&255
+	.dc.b -1,(x13f96-jmpbase)/256,(x13f96-jmpbase)&255
 x13f93:
 	.dc.b -4
 x13f94:
 	.dc.b -5,88
 x13f96:
-	.dc.b -2,(f15474-x13696)/256,(f15474-x13696)&255
+	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 x13f99:
-	.dc.b -1,(x13fab-x13696)/256,(x13fab-x13696)&255
+	.dc.b -1,(x13fab-jmpbase)/256,(x13fab-jmpbase)&255
 x13f9c:
 	.dc.b 32
 x13f9d:
 	.dc.b 19
 x13f9e:
-	.dc.b -2,(f15474-x13696)/256,(f15474-x13696)&255
+	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 x13fa1:
-	.dc.b -1,(x13fab-x13696)/256,(x13fab-x13696)&255
+	.dc.b -1,(x13fab-jmpbase)/256,(x13fab-jmpbase)&255
 x13fa4:
 	.dc.b 32
 x13fa5:
-	.dc.b -1,(x13faa-x13696)/256,(x13faa-x13696)&255
+	.dc.b -1,(x13faa-jmpbase)/256,(x13faa-jmpbase)&255
 x13fa8:
 	.dc.b 70
 x13fa9:
@@ -8162,7 +8169,7 @@ x13fa9:
 x13faa:
 	.dc.b 33
 x13fab:
-	.dc.b -1,(x1503f-x13696)/256,(x1503f-x13696)&255
+	.dc.b -1,(x1503f-jmpbase)/256,(x1503f-jmpbase)&255
 x13fae:
 	.dc.b -3
 x13faf:
@@ -8170,13 +8177,13 @@ x13faf:
 x13fb0:
 	.dc.b -5,102
 x13fb2:
-	.dc.b -1,(x15252-x13696)/256,(x15252-x13696)&255
+	.dc.b -1,(x15252-jmpbase)/256,(x15252-jmpbase)&255
 x13fb5:
-	.dc.b -2,(f15474-x13696)/256,(f15474-x13696)&255
+	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 x13fb8:
 	.dc.b 32
 x13fb9:
-	.dc.b -1,(x13fbe-x13696)/256,(x13fbe-x13696)&255
+	.dc.b -1,(x13fbe-jmpbase)/256,(x13fbe-jmpbase)&255
 x13fbc:
 	.dc.b 70
 x13fbd:
@@ -8184,11 +8191,11 @@ x13fbd:
 x13fbe:
 	.dc.b 33
 x13fbf:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x13fc2:
 	.dc.b 33
 x13fc3:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x13fc6:
 	.dc.b -3
 x13fc7:
@@ -8196,15 +8203,15 @@ x13fc7:
 x13fc8:
 	.dc.b -5,116
 x13fca:
-	.dc.b -1,(x15252-x13696)/256,(x15252-x13696)&255
+	.dc.b -1,(x15252-jmpbase)/256,(x15252-jmpbase)&255
 x13fcd:
-	.dc.b -1,(x13fd3-x13696)/256,(x13fd3-x13696)&255
+	.dc.b -1,(x13fd3-jmpbase)/256,(x13fd3-jmpbase)&255
 x13fd0:
 	.dc.b -4
 x13fd1:
 	.dc.b -5,100
 x13fd3:
-	.dc.b -2,(f15474-x13696)/256,(f15474-x13696)&255
+	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 x13fd6:
 	.dc.b 32
 x13fd7:
@@ -8214,11 +8221,11 @@ x13fd8:
 x13fd9:
 	.dc.b -5,104
 x13fdb:
-	.dc.b -2,(f15474-x13696)/256,(f15474-x13696)&255
+	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 x13fde:
 	.dc.b 32
 x13fdf:
-	.dc.b -1,(x13fe4-x13696)/256,(x13fe4-x13696)&255
+	.dc.b -1,(x13fe4-jmpbase)/256,(x13fe4-jmpbase)&255
 x13fe2:
 	.dc.b 70
 x13fe3:
@@ -8226,7 +8233,7 @@ x13fe3:
 x13fe4:
 	.dc.b 19
 x13fe5:
-	.dc.b -2,(f15474-x13696)/256,(f15474-x13696)&255
+	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 x13fe8:
 	.dc.b 32
 x13fe9:
@@ -8236,61 +8243,61 @@ x13fea:
 x13feb:
 	.dc.b -5,128
 x13fed:
-	.dc.b -2,(f15474-x13696)/256,(f15474-x13696)&255
+	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 x13ff0:
 	.dc.b 32
 x13ff1:
 	.dc.b 19
 x13ff2:
-	.dc.b -1,(x13fd3-x13696)/256,(x13fd3-x13696)&255
+	.dc.b -1,(x13fd3-jmpbase)/256,(x13fd3-jmpbase)&255
 x13ff5:
 	.dc.b -4
 x13ff6:
 	.dc.b -5,106
 x13ff8:
-	.dc.b -1,(x13fd3-x13696)/256,(x13fd3-x13696)&255
+	.dc.b -1,(x13fd3-jmpbase)/256,(x13fd3-jmpbase)&255
 x13ffb:
 	.dc.b -4
 x13ffc:
 	.dc.b -5,110
 x13ffe:
-	.dc.b -1,(x13fd3-x13696)/256,(x13fd3-x13696)&255
+	.dc.b -1,(x13fd3-jmpbase)/256,(x13fd3-jmpbase)&255
 x14001:
 	.dc.b -4
 x14002:
 	.dc.b -5,94
 x14004:
-	.dc.b -1,(x13fd3-x13696)/256,(x13fd3-x13696)&255
+	.dc.b -1,(x13fd3-jmpbase)/256,(x13fd3-jmpbase)&255
 x14007:
 	.dc.b -4
 x14008:
 	.dc.b -5,96
 x1400a:
-	.dc.b -1,(x13fd3-x13696)/256,(x13fd3-x13696)&255
+	.dc.b -1,(x13fd3-jmpbase)/256,(x13fd3-jmpbase)&255
 x1400d:
 	.dc.b -4
 x1400e:
 	.dc.b -5,98
 x14010:
-	.dc.b -2,(f15474-x13696)/256,(f15474-x13696)&255
+	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 x14013:
 	.dc.b 32
 x14014:
 	.dc.b 33
 x14015:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x14018:
 	.dc.b -4
 x14019:
 	.dc.b -5,108
 x1401b:
-	.dc.b -2,(f15474-x13696)/256,(f15474-x13696)&255
+	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 x1401e:
 	.dc.b 32
 x1401f:
 	.dc.b 19
 x14020:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x14023:
 	.dc.b 70
 x14024:
@@ -8298,7 +8305,7 @@ x14024:
 x14025:
 	.dc.b -5,112
 x14027:
-	.dc.b -1,(x1402b-x13696)/256,(x1402b-x13696)&255
+	.dc.b -1,(x1402b-jmpbase)/256,(x1402b-jmpbase)&255
 x1402a:
 	.dc.b -4
 x1402b:
@@ -8314,33 +8321,33 @@ x1402f:
 x14030:
 	.dc.b -4
 x14031:
-	.dc.b -1,(x14039-x13696)/256,(x14039-x13696)&255
+	.dc.b -1,(x14039-jmpbase)/256,(x14039-jmpbase)&255
 x14034:
-	.dc.b -1,(x14066-x13696)/256,(x14066-x13696)&255
+	.dc.b -1,(x14066-jmpbase)/256,(x14066-jmpbase)&255
 x14037:
 	.dc.b 70
 x14038:
 	.dc.b -4
 x14039:
-	.dc.b -2,(f15478-x13696)/256,(f15478-x13696)&255
+	.dc.b -2,(f15478-jmpbase)/256,(f15478-jmpbase)&255
 x1403c:
-	.dc.b -1,(x14076-x13696)/256,(x14076-x13696)&255
+	.dc.b -1,(x14076-jmpbase)/256,(x14076-jmpbase)&255
 x1403f:
-	.dc.b -1,(x14054-x13696)/256,(x14054-x13696)&255
+	.dc.b -1,(x14054-jmpbase)/256,(x14054-jmpbase)&255
 x14042:
-	.dc.b -1,(x1404d-x13696)/256,(x1404d-x13696)&255
+	.dc.b -1,(x1404d-jmpbase)/256,(x1404d-jmpbase)&255
 x14045:
 	.dc.b -3
 x14046:
-	.dc.b -1,(x1436a-x13696)/256,(x1436a-x13696)&255
+	.dc.b -1,(x1436a-jmpbase)/256,(x1436a-jmpbase)&255
 x14049:
-	.dc.b -1,(x14076-x13696)/256,(x14076-x13696)&255
+	.dc.b -1,(x14076-jmpbase)/256,(x14076-jmpbase)&255
 x1404c:
 	.dc.b -4
 x1404d:
 	.dc.b 114
 x1404e:
-	.dc.b -1,(x1405a-x13696)/256,(x1405a-x13696)&255
+	.dc.b -1,(x1405a-jmpbase)/256,(x1405a-jmpbase)&255
 x14051:
 	.dc.b 32
 x14052:
@@ -8350,29 +8357,29 @@ x14053:
 x14054:
 	.dc.b 109
 x14055:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x14058:
 	.dc.b -3
 x14059:
 	.dc.b -4
 x1405a:
-	.dc.b -2,(f1547c-x13696)/256,(f1547c-x13696)&255
+	.dc.b -2,(f1547c-jmpbase)/256,(f1547c-jmpbase)&255
 x1405d:
 	.dc.b -3
 x1405e:
-	.dc.b -2,(f1548c-x13696)/256,(f1548c-x13696)&255
+	.dc.b -2,(f1548c-jmpbase)/256,(f1548c-jmpbase)&255
 x14061:
 	.dc.b -3
 x14062:
-	.dc.b -2,(f15490-x13696)/256,(f15490-x13696)&255
+	.dc.b -2,(f15490-jmpbase)/256,(f15490-jmpbase)&255
 x14065:
 	.dc.b -4
 x14066:
 	.dc.b 33
 x14067:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x1406a:
-	.dc.b -1,(x1406f-x13696)/256,(x1406f-x13696)&255
+	.dc.b -1,(x1406f-jmpbase)/256,(x1406f-jmpbase)&255
 x1406d:
 	.dc.b -3
 x1406e:
@@ -8380,7 +8387,7 @@ x1406e:
 x1406f:
 	.dc.b 33
 x14070:
-	.dc.b -2,(f1547c-x13696)/256,(f1547c-x13696)&255
+	.dc.b -2,(f1547c-jmpbase)/256,(f1547c-jmpbase)&255
 x14073:
 	.dc.b 32
 x14074:
@@ -8404,93 +8411,93 @@ x1407c:
 x1407d:
 	.dc.b -4
 x1407e:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x14081:
 	.dc.b 70
 x14082:
 	.dc.b -4
 x14083:
-	.dc.b -1,(x14392-x13696)/256,(x14392-x13696)&255
+	.dc.b -1,(x14392-jmpbase)/256,(x14392-jmpbase)&255
 x14086:
 	.dc.b 19
 x14087:
 	.dc.b -5,69
 x14089:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x1408c:
 	.dc.b -3
 x1408d:
-	.dc.b -1,(x1435e-x13696)/256,(x1435e-x13696)&255
+	.dc.b -1,(x1435e-jmpbase)/256,(x1435e-jmpbase)&255
 x14090:
 	.dc.b 19
 x14091:
 	.dc.b -5,69
 x14093:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x14096:
 	.dc.b 70
 x14097:
 	.dc.b -3
 x14098:
-	.dc.b -1,(x1438e-x13696)/256,(x1438e-x13696)&255
+	.dc.b -1,(x1438e-jmpbase)/256,(x1438e-jmpbase)&255
 x1409b:
 	.dc.b 5
 x1409c:
 	.dc.b 19
 x1409d:
-	.dc.b -2,(f140e2-x13696)/256,(f140e2-x13696)&255
+	.dc.b -2,(f140e2-jmpbase)/256,(f140e2-jmpbase)&255
 x140a0:
 	.dc.b -3
 x140a1:
-	.dc.b -1,(x1438e-x13696)/256,(x1438e-x13696)&255
+	.dc.b -1,(x1438e-jmpbase)/256,(x1438e-jmpbase)&255
 x140a4:
 	.dc.b 6
 x140a5:
 	.dc.b 19
 x140a6:
-	.dc.b -2,(f140d6-x13696)/256,(f140d6-x13696)&255
+	.dc.b -2,(f140d6-jmpbase)/256,(f140d6-jmpbase)&255
 x140a9:
 	.dc.b -3
 x140aa:
-	.dc.b -1,(x1438e-x13696)/256,(x1438e-x13696)&255
+	.dc.b -1,(x1438e-jmpbase)/256,(x1438e-jmpbase)&255
 x140ad:
 	.dc.b 7
 x140ae:
 	.dc.b 19
 x140af:
-	.dc.b -2,(f140ee-x13696)/256,(f140ee-x13696)&255
+	.dc.b -2,(f140ee-jmpbase)/256,(f140ee-jmpbase)&255
 x140b2:
 	.dc.b -3
 x140b3:
-	.dc.b -1,(x1438e-x13696)/256,(x1438e-x13696)&255
+	.dc.b -1,(x1438e-jmpbase)/256,(x1438e-jmpbase)&255
 x140b6:
 	.dc.b 8
 x140b7:
 	.dc.b 19
 x140b8:
-	.dc.b -2,(f140fa-x13696)/256,(f140fa-x13696)&255
+	.dc.b -2,(f140fa-jmpbase)/256,(f140fa-jmpbase)&255
 x140bb:
 	.dc.b -3
 x140bc:
-	.dc.b -1,(x14372-x13696)/256,(x14372-x13696)&255
+	.dc.b -1,(x14372-jmpbase)/256,(x14372-jmpbase)&255
 x140bf:
-	.dc.b -1,(x14147-x13696)/256,(x14147-x13696)&255
+	.dc.b -1,(x14147-jmpbase)/256,(x14147-jmpbase)&255
 x140c2:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x140c5:
 	.dc.b -3
 x140c6:
-	.dc.b -1,(x1437e-x13696)/256,(x1437e-x13696)&255
+	.dc.b -1,(x1437e-jmpbase)/256,(x1437e-jmpbase)&255
 x140c9:
-	.dc.b -1,(x14147-x13696)/256,(x14147-x13696)&255
+	.dc.b -1,(x14147-jmpbase)/256,(x14147-jmpbase)&255
 x140cc:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x140cf:
 	.dc.b 70
 x140d0:
 	.dc.b -3
 x140d1:
-	.dc.b -1,(x14181-x13696)/256,(x14181-x13696)&255
+	.dc.b -1,(x14181-jmpbase)/256,(x14181-jmpbase)&255
 x140d4:
 	.dc.b -4
 	.even
@@ -8520,43 +8527,43 @@ f140fa_1:
 		rts
 
 x14116:
-	.dc.b -1,(x1436a-x13696)/256,(x1436a-x13696)&255
+	.dc.b -1,(x1436a-jmpbase)/256,(x1436a-jmpbase)&255
 x14119:
-	.dc.b -1,(x14c92-x13696)/256,(x14c92-x13696)&255
+	.dc.b -1,(x14c92-jmpbase)/256,(x14c92-jmpbase)&255
 x1411c:
 	.dc.b 70
 x1411d:
 	.dc.b -4
 x1411e:
-	.dc.b -1,(x14372-x13696)/256,(x14372-x13696)&255
+	.dc.b -1,(x14372-jmpbase)/256,(x14372-jmpbase)&255
 x14121:
-	.dc.b -1,(x1413e-x13696)/256,(x1413e-x13696)&255
+	.dc.b -1,(x1413e-jmpbase)/256,(x1413e-jmpbase)&255
 x14124:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x14127:
 	.dc.b -3
 x14128:
-	.dc.b -2,(f15474-x13696)/256,(f15474-x13696)&255
+	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 x1412b:
-	.dc.b -1,(x1413e-x13696)/256,(x1413e-x13696)&255
+	.dc.b -1,(x1413e-jmpbase)/256,(x1413e-jmpbase)&255
 x1412e:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x14131:
 	.dc.b 70
 x14132:
 	.dc.b -3
 x14133:
-	.dc.b -2,(f15478-x13696)/256,(f15478-x13696)&255
+	.dc.b -2,(f15478-jmpbase)/256,(f15478-jmpbase)&255
 x14136:
-	.dc.b -1,(x1413e-x13696)/256,(x1413e-x13696)&255
+	.dc.b -1,(x1413e-jmpbase)/256,(x1413e-jmpbase)&255
 x14139:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x1413c:
 	.dc.b 70
 x1413d:
 	.dc.b -4
 x1413e:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x14141:
 	.dc.b 32
 x14142:
@@ -8568,7 +8575,7 @@ x14144:
 x14146:
 	.dc.b -4
 x14147:
-	.dc.b -1,(x1519e-x13696)/256,(x1519e-x13696)&255
+	.dc.b -1,(x1519e-jmpbase)/256,(x1519e-jmpbase)&255
 x1414a:
 	.dc.b -6
 x1414b:
@@ -8578,9 +8585,9 @@ x1414c:
 x1414e:
 	.dc.b -4
 x1414f:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14152:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x14155:
 	.dc.b 32
 x14156:
@@ -8590,21 +8597,21 @@ x14157:
 x14158:
 	.dc.b -5,57
 x1415a:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x1415d:
 	.dc.b -4
 x1415e:
-	.dc.b -1,(x1446a-x13696)/256,(x1446a-x13696)&255
+	.dc.b -1,(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
 x14161:
 	.dc.b -3
 x14162:
-	.dc.b -2,(f13da6-x13696)/256,(f13da6-x13696)&255
+	.dc.b -2,(f13da6-jmpbase)/256,(f13da6-jmpbase)&255
 x14165:
-	.dc.b -1,(x14152-x13696)/256,(x14152-x13696)&255
+	.dc.b -1,(x14152-jmpbase)/256,(x14152-jmpbase)&255
 x14168:
 	.dc.b -4
 x14169:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x1416c:
 	.dc.b 88
 x1416d:
@@ -8614,11 +8621,11 @@ x1416e:
 x1416f:
 	.dc.b -5,67
 x14171:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x14174:
 	.dc.b -4
 x14175:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x14178:
 	.dc.b 88
 x14179:
@@ -8628,19 +8635,19 @@ x1417a:
 x1417b:
 	.dc.b -5,67
 x1417d:
-	.dc.b -1,(x14139-x13696)/256,(x14139-x13696)&255
+	.dc.b -1,(x14139-jmpbase)/256,(x14139-jmpbase)&255
 x14180:
 	.dc.b -4
 x14181:
-	.dc.b -2,(f15468-x13696)/256,(f15468-x13696)&255
+	.dc.b -2,(f15468-jmpbase)/256,(f15468-jmpbase)&255
 x14184:
-	.dc.b -1,(x14196-x13696)/256,(x14196-x13696)&255
+	.dc.b -1,(x14196-jmpbase)/256,(x14196-jmpbase)&255
 x14187:
 	.dc.b -3
 x14188:
-	.dc.b -2,(f15478-x13696)/256,(f15478-x13696)&255
+	.dc.b -2,(f15478-jmpbase)/256,(f15478-jmpbase)&255
 x1418b:
-	.dc.b -1,(x1519e-x13696)/256,(x1519e-x13696)&255
+	.dc.b -1,(x1519e-jmpbase)/256,(x1519e-jmpbase)&255
 x1418e:
 	.dc.b -6
 x1418f:
@@ -8648,7 +8655,7 @@ x1418f:
 x14190:
 	.dc.b -5,57
 x14192:
-	.dc.b -1,(x14139-x13696)/256,(x14139-x13696)&255
+	.dc.b -1,(x14139-jmpbase)/256,(x14139-jmpbase)&255
 x14195:
 	.dc.b -4
 x14196:
@@ -8656,23 +8663,23 @@ x14196:
 x14197:
 	.dc.b -5,69
 x14199:
-	.dc.b -1,(x14139-x13696)/256,(x14139-x13696)&255
+	.dc.b -1,(x14139-jmpbase)/256,(x14139-jmpbase)&255
 x1419c:
 	.dc.b -4
 x1419d:
-	.dc.b -2,(f13b62-x13696)/256,(f13b62-x13696)&255
+	.dc.b -2,(f13b62-jmpbase)/256,(f13b62-jmpbase)&255
 x141a0:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x141a3:
-	.dc.b -1,(x141b0-x13696)/256,(x141b0-x13696)&255
+	.dc.b -1,(x141b0-jmpbase)/256,(x141b0-jmpbase)&255
 x141a6:
 	.dc.b 70
 x141a7:
 	.dc.b -4
 x141a8:
-	.dc.b -2,(f13b62-x13696)/256,(f13b62-x13696)&255
+	.dc.b -2,(f13b62-jmpbase)/256,(f13b62-jmpbase)&255
 x141ab:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x141ae:
 	.dc.b 70
 x141af:
@@ -8692,7 +8699,7 @@ x141b5:
 x141b6:
 	.dc.b -4
 x141b7:
-	.dc.b -2,(f13b62-x13696)/256,(f13b62-x13696)&255
+	.dc.b -2,(f13b62-jmpbase)/256,(f13b62-jmpbase)&255
 x141ba:
 	.dc.b 70
 x141bb:
@@ -8702,35 +8709,35 @@ x141bc:
 x141bd:
 	.dc.b -3
 x141be:
-	.dc.b -2,(f13d82-x13696)/256,(f13d82-x13696)&255
+	.dc.b -2,(f13d82-jmpbase)/256,(f13d82-jmpbase)&255
 x141c1:
-	.dc.b -1,(x14169-x13696)/256,(x14169-x13696)&255
+	.dc.b -1,(x14169-jmpbase)/256,(x14169-jmpbase)&255
 x141c4:
 	.dc.b -3
 x141c5:
-	.dc.b -2,(f13b68-x13696)/256,(f13b68-x13696)&255
+	.dc.b -2,(f13b68-jmpbase)/256,(f13b68-jmpbase)&255
 x141c8:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x141cb:
 	.dc.b 70
 x141cc:
 	.dc.b -4
 x141cd:
-	.dc.b -2,(f13b62-x13696)/256,(f13b62-x13696)&255
+	.dc.b -2,(f13b62-jmpbase)/256,(f13b62-jmpbase)&255
 x141d0:
 	.dc.b 70
 x141d1:
 	.dc.b -3
 x141d2:
-	.dc.b -2,(f13b6c-x13696)/256,(f13b6c-x13696)&255
+	.dc.b -2,(f13b6c-jmpbase)/256,(f13b6c-jmpbase)&255
 x141d5:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x141d8:
 	.dc.b 70
 x141d9:
 	.dc.b -4
 x141da:
-	.dc.b -2,(f13b62-x13696)/256,(f13b62-x13696)&255
+	.dc.b -2,(f13b62-jmpbase)/256,(f13b62-jmpbase)&255
 x141dd:
 	.dc.b 70
 x141de:
@@ -8738,11 +8745,11 @@ x141de:
 x141df:
 	.dc.b -5,32
 x141e1:
-	.dc.b -2,(f13b62-x13696)/256,(f13b62-x13696)&255
+	.dc.b -2,(f13b62-jmpbase)/256,(f13b62-jmpbase)&255
 x141e4:
-	.dc.b -1,(x141b3-x13696)/256,(x141b3-x13696)&255
+	.dc.b -1,(x141b3-jmpbase)/256,(x141b3-jmpbase)&255
 x141e7:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x141ea:
 	.dc.b 70
 x141eb:
@@ -8754,7 +8761,7 @@ x141ed:
 x141ee:
 	.dc.b -5,34
 x141f0:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x141f3:
 	.dc.b 70
 x141f4:
@@ -8762,25 +8769,25 @@ x141f4:
 x141f5:
 	.dc.b -5,36
 x141f7:
-	.dc.b -1,(x14139-x13696)/256,(x14139-x13696)&255
+	.dc.b -1,(x14139-jmpbase)/256,(x14139-jmpbase)&255
 x141fa:
 	.dc.b -4
 x141fb:
-	.dc.b -1,(x1438e-x13696)/256,(x1438e-x13696)&255
+	.dc.b -1,(x1438e-jmpbase)/256,(x1438e-jmpbase)&255
 x141fe:
-	.dc.b -1,(x14228-x13696)/256,(x14228-x13696)&255
+	.dc.b -1,(x14228-jmpbase)/256,(x14228-jmpbase)&255
 x14201:
 	.dc.b -3
 x14202:
-	.dc.b -2,(f13dd2-x13696)/256,(f13dd2-x13696)&255
+	.dc.b -2,(f13dd2-jmpbase)/256,(f13dd2-jmpbase)&255
 x14205:
-	.dc.b -1,(x14213-x13696)/256,(x14213-x13696)&255
+	.dc.b -1,(x14213-jmpbase)/256,(x14213-jmpbase)&255
 x14208:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x1420b:
-	.dc.b -1,(x14217-x13696)/256,(x14217-x13696)&255
+	.dc.b -1,(x14217-jmpbase)/256,(x14217-jmpbase)&255
 x1420e:
-	.dc.b -1,(x143ec-x13696)/256,(x143ec-x13696)&255
+	.dc.b -1,(x143ec-jmpbase)/256,(x143ec-jmpbase)&255
 x14211:
 	.dc.b 70
 x14212:
@@ -8808,7 +8815,7 @@ x1421c:
 x1421e:
 	.dc.b -4
 x1421f:
-	.dc.b -1,(x14217-x13696)/256,(x14217-x13696)&255
+	.dc.b -1,(x14217-jmpbase)/256,(x14217-jmpbase)&255
 x14222:
 	.dc.b -5,108
 x14224:
@@ -8822,13 +8829,13 @@ x14228:
 x14229:
 	.dc.b -5,69
 x1422b:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x1422e:
 	.dc.b 71
 x1422f:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x14232:
-	.dc.b -1,(x14245-x13696)/256,(x14245-x13696)&255
+	.dc.b -1,(x14245-jmpbase)/256,(x14245-jmpbase)&255
 x14235:
 	.dc.b 70
 x14236:
@@ -8838,41 +8845,41 @@ x14237:
 x14238:
 	.dc.b -5,69
 x1423a:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x1423d:
 	.dc.b 73
 x1423e:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x14241:
-	.dc.b -2,(f15972-x13696)/256,(f15972-x13696)&255
+	.dc.b -2,(f15972-jmpbase)/256,(f15972-jmpbase)&255
 x14244:
 	.dc.b -4
 x14245:
 	.dc.b 72
 x14246:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x14249:
-	.dc.b -2,(f15976-x13696)/256,(f15976-x13696)&255
+	.dc.b -2,(f15976-jmpbase)/256,(f15976-jmpbase)&255
 x1424c:
 	.dc.b -3
 x1424d:
-	.dc.b -2,(f1596e-x13696)/256,(f1596e-x13696)&255
+	.dc.b -2,(f1596e-jmpbase)/256,(f1596e-jmpbase)&255
 x14250:
 	.dc.b -4
 x14251:
-	.dc.b -2,(f13b62-x13696)/256,(f13b62-x13696)&255
+	.dc.b -2,(f13b62-jmpbase)/256,(f13b62-jmpbase)&255
 x14254:
-	.dc.b -1,(x1438e-x13696)/256,(x1438e-x13696)&255
+	.dc.b -1,(x1438e-jmpbase)/256,(x1438e-jmpbase)&255
 x14257:
 	.dc.b 70
 x14258:
 	.dc.b -4
 x14259:
-	.dc.b -2,(f13b62-x13696)/256,(f13b62-x13696)&255
+	.dc.b -2,(f13b62-jmpbase)/256,(f13b62-jmpbase)&255
 x1425c:
-	.dc.b -1,(x14264-x13696)/256,(x14264-x13696)&255
+	.dc.b -1,(x14264-jmpbase)/256,(x14264-jmpbase)&255
 x1425f:
-	.dc.b -1,(x14286-x13696)/256,(x14286-x13696)&255
+	.dc.b -1,(x14286-jmpbase)/256,(x14286-jmpbase)&255
 x14262:
 	.dc.b 70
 x14263:
@@ -8880,65 +8887,65 @@ x14263:
 x14264:
 	.dc.b 71
 x14265:
-	.dc.b -1,(x14276-x13696)/256,(x14276-x13696)&255
+	.dc.b -1,(x14276-jmpbase)/256,(x14276-jmpbase)&255
 x14268:
 	.dc.b -3
 x14269:
-	.dc.b -1,(x14276-x13696)/256,(x14276-x13696)&255
+	.dc.b -1,(x14276-jmpbase)/256,(x14276-jmpbase)&255
 x1426c:
 	.dc.b 71
 x1426d:
-	.dc.b -1,(x14276-x13696)/256,(x14276-x13696)&255
+	.dc.b -1,(x14276-jmpbase)/256,(x14276-jmpbase)&255
 x14270:
 	.dc.b -3
 x14271:
-	.dc.b -1,(x14276-x13696)/256,(x14276-x13696)&255
+	.dc.b -1,(x14276-jmpbase)/256,(x14276-jmpbase)&255
 x14274:
 	.dc.b 71
 x14275:
 	.dc.b -3
 x14276:
-	.dc.b -2,(f1595a-x13696)/256,(f1595a-x13696)&255
+	.dc.b -2,(f1595a-jmpbase)/256,(f1595a-jmpbase)&255
 x14279:
 	.dc.b -3
 x1427a:
-	.dc.b -2,(f1546c-x13696)/256,(f1546c-x13696)&255
+	.dc.b -2,(f1546c-jmpbase)/256,(f1546c-jmpbase)&255
 x1427d:
 	.dc.b -3
 x1427e:
-	.dc.b -2,(f15484-x13696)/256,(f15484-x13696)&255
+	.dc.b -2,(f15484-jmpbase)/256,(f15484-jmpbase)&255
 x14281:
 	.dc.b -3
 x14282:
-	.dc.b -2,(f15488-x13696)/256,(f15488-x13696)&255
+	.dc.b -2,(f15488-jmpbase)/256,(f15488-jmpbase)&255
 x14285:
 	.dc.b -4
 x14286:
 	.dc.b 33
 x14287:
-	.dc.b -1,(x14264-x13696)/256,(x14264-x13696)&255
+	.dc.b -1,(x14264-jmpbase)/256,(x14264-jmpbase)&255
 x1428a:
-	.dc.b -1,(x14286-x13696)/256,(x14286-x13696)&255
+	.dc.b -1,(x14286-jmpbase)/256,(x14286-jmpbase)&255
 x1428d:
 	.dc.b -3
 x1428e:
 	.dc.b -4
 x1428f:
-	.dc.b -2,(f13b62-x13696)/256,(f13b62-x13696)&255
+	.dc.b -2,(f13b62-jmpbase)/256,(f13b62-jmpbase)&255
 x14292:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x14295:
 	.dc.b -3
 x14296:
 	.dc.b -5,88
 x14298:
-	.dc.b -2,(f13b62-x13696)/256,(f13b62-x13696)&255
+	.dc.b -2,(f13b62-jmpbase)/256,(f13b62-jmpbase)&255
 x1429b:
-	.dc.b -1,(x14139-x13696)/256,(x14139-x13696)&255
+	.dc.b -1,(x14139-jmpbase)/256,(x14139-jmpbase)&255
 x1429e:
 	.dc.b -4
 x1429f:
-	.dc.b -2,(f13b62-x13696)/256,(f13b62-x13696)&255
+	.dc.b -2,(f13b62-jmpbase)/256,(f13b62-jmpbase)&255
 x142a2:
 	.dc.b 70
 x142a3:
@@ -8948,21 +8955,21 @@ x142a4:
 x142a5:
 	.dc.b -4
 x142a6:
-	.dc.b -1,(x143cb-x13696)/256,(x143cb-x13696)&255
+	.dc.b -1,(x143cb-jmpbase)/256,(x143cb-jmpbase)&255
 x142a9:
-	.dc.b -1,(x14311-x13696)/256,(x14311-x13696)&255
+	.dc.b -1,(x14311-jmpbase)/256,(x14311-jmpbase)&255
 x142ac:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x142af:
 	.dc.b 70
 x142b0:
 	.dc.b -3
 x142b1:
-	.dc.b -1,(x1433e-x13696)/256,(x1433e-x13696)&255
+	.dc.b -1,(x1433e-jmpbase)/256,(x1433e-jmpbase)&255
 x142b4:
-	.dc.b -1,(x14311-x13696)/256,(x14311-x13696)&255
+	.dc.b -1,(x14311-jmpbase)/256,(x14311-jmpbase)&255
 x142b7:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x142ba:
 	.dc.b -3
 x142bb:
@@ -8972,73 +8979,73 @@ x142bc:
 x142be:
 	.dc.b 249,12
 x142c0:
-	.dc.b -1,(x148e4-x13696)/256,(x148e4-x13696)&255
+	.dc.b -1,(x148e4-jmpbase)/256,(x148e4-jmpbase)&255
 x142c3:
 	.dc.b -4
 x142c4:
-	.dc.b -1,(x143cb-x13696)/256,(x143cb-x13696)&255
+	.dc.b -1,(x143cb-jmpbase)/256,(x143cb-jmpbase)&255
 x142c7:
-	.dc.b -1,(x14319-x13696)/256,(x14319-x13696)&255
+	.dc.b -1,(x14319-jmpbase)/256,(x14319-jmpbase)&255
 x142ca:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x142cd:
 	.dc.b 70
 x142ce:
 	.dc.b -3
 x142cf:
-	.dc.b -1,(x1433e-x13696)/256,(x1433e-x13696)&255
+	.dc.b -1,(x1433e-jmpbase)/256,(x1433e-jmpbase)&255
 x142d2:
-	.dc.b -1,(x14319-x13696)/256,(x14319-x13696)&255
+	.dc.b -1,(x14319-jmpbase)/256,(x14319-jmpbase)&255
 x142d5:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x142d8:
 	.dc.b -3
 x142d9:
-	.dc.b -2,(f13d8e-x13696)/256,(f13d8e-x13696)&255
+	.dc.b -2,(f13d8e-jmpbase)/256,(f13d8e-jmpbase)&255
 x142dc:
-	.dc.b -1,(x14152-x13696)/256,(x14152-x13696)&255
+	.dc.b -1,(x14152-jmpbase)/256,(x14152-jmpbase)&255
 x142df:
 	.dc.b -3
 x142e0:
-	.dc.b -2,(f13d9a-x13696)/256,(f13d9a-x13696)&255
+	.dc.b -2,(f13d9a-jmpbase)/256,(f13d9a-jmpbase)&255
 x142e3:
-	.dc.b -1,(x14152-x13696)/256,(x14152-x13696)&255
+	.dc.b -1,(x14152-jmpbase)/256,(x14152-jmpbase)&255
 x142e6:
 	.dc.b -4
 x142e7:
-	.dc.b -1,(x143cb-x13696)/256,(x143cb-x13696)&255
+	.dc.b -1,(x143cb-jmpbase)/256,(x143cb-jmpbase)&255
 x142ea:
-	.dc.b -1,(x14321-x13696)/256,(x14321-x13696)&255
+	.dc.b -1,(x14321-jmpbase)/256,(x14321-jmpbase)&255
 x142ed:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x142f0:
 	.dc.b 70
 x142f1:
 	.dc.b -3
 x142f2:
-	.dc.b -1,(x1433e-x13696)/256,(x1433e-x13696)&255
+	.dc.b -1,(x1433e-jmpbase)/256,(x1433e-jmpbase)&255
 x142f5:
-	.dc.b -1,(x14321-x13696)/256,(x14321-x13696)&255
+	.dc.b -1,(x14321-jmpbase)/256,(x14321-jmpbase)&255
 x142f8:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x142fb:
 	.dc.b -4
 x142fc:
-	.dc.b -1,(x143cb-x13696)/256,(x143cb-x13696)&255
+	.dc.b -1,(x143cb-jmpbase)/256,(x143cb-jmpbase)&255
 x142ff:
-	.dc.b -1,(x14329-x13696)/256,(x14329-x13696)&255
+	.dc.b -1,(x14329-jmpbase)/256,(x14329-jmpbase)&255
 x14302:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x14305:
 	.dc.b 70
 x14306:
 	.dc.b -3
 x14307:
-	.dc.b -1,(x1433e-x13696)/256,(x1433e-x13696)&255
+	.dc.b -1,(x1433e-jmpbase)/256,(x1433e-jmpbase)&255
 x1430a:
-	.dc.b -1,(x14329-x13696)/256,(x14329-x13696)&255
+	.dc.b -1,(x14329-jmpbase)/256,(x14329-jmpbase)&255
 x1430d:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x14310:
 	.dc.b -4
 x14311:
@@ -9098,245 +9105,245 @@ x1432e:
 x14330:
 	.dc.b -4
 x14331:
-	.dc.b -1,(x1433e-x13696)/256,(x1433e-x13696)&255
+	.dc.b -1,(x1433e-jmpbase)/256,(x1433e-jmpbase)&255
 x14334:
 	.dc.b 70
 x14335:
 	.dc.b -4
 x14336:
-	.dc.b -1,(x143ec-x13696)/256,(x143ec-x13696)&255
+	.dc.b -1,(x143ec-jmpbase)/256,(x143ec-jmpbase)&255
 x14339:
 	.dc.b -3
 x1433a:
-	.dc.b -1,(x143e1-x13696)/256,(x143e1-x13696)&255
+	.dc.b -1,(x143e1-jmpbase)/256,(x143e1-jmpbase)&255
 x1433d:
 	.dc.b -3
 x1433e:
-	.dc.b -1,(x14402-x13696)/256,(x14402-x13696)&255
+	.dc.b -1,(x14402-jmpbase)/256,(x14402-jmpbase)&255
 x14341:
 	.dc.b -3
 x14342:
-	.dc.b -1,(x143f7-x13696)/256,(x143f7-x13696)&255
+	.dc.b -1,(x143f7-jmpbase)/256,(x143f7-jmpbase)&255
 x14345:
 	.dc.b -3
 x14346:
-	.dc.b -1,(x143d6-x13696)/256,(x143d6-x13696)&255
+	.dc.b -1,(x143d6-jmpbase)/256,(x143d6-jmpbase)&255
 x14349:
 	.dc.b -3
 x1434a:
-	.dc.b -1,(x143cb-x13696)/256,(x143cb-x13696)&255
+	.dc.b -1,(x143cb-jmpbase)/256,(x143cb-jmpbase)&255
 x1434d:
 	.dc.b -4
 x1434e:
-	.dc.b -2,(f15488-x13696)/256,(f15488-x13696)&255
+	.dc.b -2,(f15488-jmpbase)/256,(f15488-jmpbase)&255
 x14351:
 	.dc.b -3
 x14352:
-	.dc.b -2,(f15468-x13696)/256,(f15468-x13696)&255
+	.dc.b -2,(f15468-jmpbase)/256,(f15468-jmpbase)&255
 x14355:
 	.dc.b -3
 x14356:
-	.dc.b -2,(f1546c-x13696)/256,(f1546c-x13696)&255
+	.dc.b -2,(f1546c-jmpbase)/256,(f1546c-jmpbase)&255
 x14359:
 	.dc.b -3
 x1435a:
-	.dc.b -2,(f15484-x13696)/256,(f15484-x13696)&255
+	.dc.b -2,(f15484-jmpbase)/256,(f15484-jmpbase)&255
 x1435d:
 	.dc.b -3
 x1435e:
-	.dc.b -2,(f15464-x13696)/256,(f15464-x13696)&255
+	.dc.b -2,(f15464-jmpbase)/256,(f15464-jmpbase)&255
 x14361:
 	.dc.b -3
 x14362:
-	.dc.b -2,(f15470-x13696)/256,(f15470-x13696)&255
+	.dc.b -2,(f15470-jmpbase)/256,(f15470-jmpbase)&255
 x14365:
 	.dc.b -4
 x14366:
-	.dc.b -2,(f15480-x13696)/256,(f15480-x13696)&255
+	.dc.b -2,(f15480-jmpbase)/256,(f15480-jmpbase)&255
 x14369:
 	.dc.b -3
 x1436a:
-	.dc.b -2,(f15474-x13696)/256,(f15474-x13696)&255
+	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 x1436d:
 	.dc.b -3
 x1436e:
-	.dc.b -2,(f15478-x13696)/256,(f15478-x13696)&255
+	.dc.b -2,(f15478-jmpbase)/256,(f15478-jmpbase)&255
 x14371:
 	.dc.b -3
 x14372:
-	.dc.b -2,(f1547c-x13696)/256,(f1547c-x13696)&255
+	.dc.b -2,(f1547c-jmpbase)/256,(f1547c-jmpbase)&255
 x14375:
 	.dc.b -3
 x14376:
-	.dc.b -2,(f1548c-x13696)/256,(f1548c-x13696)&255
+	.dc.b -2,(f1548c-jmpbase)/256,(f1548c-jmpbase)&255
 x14379:
 	.dc.b -3
 x1437a:
-	.dc.b -2,(f15490-x13696)/256,(f15490-x13696)&255
+	.dc.b -2,(f15490-jmpbase)/256,(f15490-jmpbase)&255
 x1437d:
 	.dc.b -4
 x1437e:
-	.dc.b -2,(f15480-x13696)/256,(f15480-x13696)&255
+	.dc.b -2,(f15480-jmpbase)/256,(f15480-jmpbase)&255
 x14381:
 	.dc.b -3
 x14382:
-	.dc.b -2,(f15474-x13696)/256,(f15474-x13696)&255
+	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 x14385:
 	.dc.b -4
 x14386:
-	.dc.b -2,(f15464-x13696)/256,(f15464-x13696)&255
+	.dc.b -2,(f15464-jmpbase)/256,(f15464-jmpbase)&255
 x14389:
 	.dc.b -3
 x1438a:
-	.dc.b -2,(f1546c-x13696)/256,(f1546c-x13696)&255
+	.dc.b -2,(f1546c-jmpbase)/256,(f1546c-jmpbase)&255
 x1438d:
 	.dc.b -4
 x1438e:
-	.dc.b -2,(f15464-x13696)/256,(f15464-x13696)&255
+	.dc.b -2,(f15464-jmpbase)/256,(f15464-jmpbase)&255
 x14391:
 	.dc.b -3
 x14392:
-	.dc.b -2,(f1546c-x13696)/256,(f1546c-x13696)&255
+	.dc.b -2,(f1546c-jmpbase)/256,(f1546c-jmpbase)&255
 x14395:
 	.dc.b -3
 x14396:
-	.dc.b -2,(f15484-x13696)/256,(f15484-x13696)&255
+	.dc.b -2,(f15484-jmpbase)/256,(f15484-jmpbase)&255
 x14399:
 	.dc.b -3
 x1439a:
-	.dc.b -2,(f15488-x13696)/256,(f15488-x13696)&255
+	.dc.b -2,(f15488-jmpbase)/256,(f15488-jmpbase)&255
 x1439d:
 	.dc.b -4
 x1439e:
-	.dc.b -1,(x143ec-x13696)/256,(x143ec-x13696)&255
+	.dc.b -1,(x143ec-jmpbase)/256,(x143ec-jmpbase)&255
 x143a1:
 	.dc.b 33
 x143a2:
-	.dc.b -1,(x143ec-x13696)/256,(x143ec-x13696)&255
+	.dc.b -1,(x143ec-jmpbase)/256,(x143ec-jmpbase)&255
 x143a5:
 	.dc.b -4
 x143a6:
-	.dc.b -1,(x14366-x13696)/256,(x14366-x13696)&255
+	.dc.b -1,(x14366-jmpbase)/256,(x14366-jmpbase)&255
 x143a9:
-	.dc.b -1,(x1519e-x13696)/256,(x1519e-x13696)&255
+	.dc.b -1,(x1519e-jmpbase)/256,(x1519e-jmpbase)&255
 x143ac:
 	.dc.b -4
 x143ad:
-	.dc.b -2,(f15478-x13696)/256,(f15478-x13696)&255
+	.dc.b -2,(f15478-jmpbase)/256,(f15478-jmpbase)&255
 x143b0:
 	.dc.b 32
 x143b1:
 	.dc.b -3
 x143b2:
-	.dc.b -2,(f15480-x13696)/256,(f15480-x13696)&255
+	.dc.b -2,(f15480-jmpbase)/256,(f15480-jmpbase)&255
 x143b5:
 	.dc.b 32
 x143b6:
 	.dc.b -3
 x143b7:
-	.dc.b -2,(f15490-x13696)/256,(f15490-x13696)&255
+	.dc.b -2,(f15490-jmpbase)/256,(f15490-jmpbase)&255
 x143ba:
 	.dc.b 32
 x143bb:
 	.dc.b -3
 x143bc:
-	.dc.b -2,(f1548c-x13696)/256,(f1548c-x13696)&255
+	.dc.b -2,(f1548c-jmpbase)/256,(f1548c-jmpbase)&255
 x143bf:
 	.dc.b 32
 x143c0:
 	.dc.b -3
 x143c1:
-	.dc.b -2,(f15474-x13696)/256,(f15474-x13696)&255
+	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 x143c4:
 	.dc.b 32
 x143c5:
 	.dc.b -3
 x143c6:
-	.dc.b -2,(f1547c-x13696)/256,(f1547c-x13696)&255
+	.dc.b -2,(f1547c-jmpbase)/256,(f1547c-jmpbase)&255
 x143c9:
 	.dc.b 32
 x143ca:
 	.dc.b -4
 x143cb:
-	.dc.b -2,(f15464-x13696)/256,(f15464-x13696)&255
+	.dc.b -2,(f15464-jmpbase)/256,(f15464-jmpbase)&255
 x143ce:
 	.dc.b -3
 x143cf:
-	.dc.b -2,(f15474-x13696)/256,(f15474-x13696)&255
+	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 x143d2:
-	.dc.b -1,(x1519e-x13696)/256,(x1519e-x13696)&255
+	.dc.b -1,(x1519e-jmpbase)/256,(x1519e-jmpbase)&255
 x143d5:
 	.dc.b -4
 x143d6:
-	.dc.b -2,(f1546c-x13696)/256,(f1546c-x13696)&255
+	.dc.b -2,(f1546c-jmpbase)/256,(f1546c-jmpbase)&255
 x143d9:
 	.dc.b -3
 x143da:
-	.dc.b -2,(f1547c-x13696)/256,(f1547c-x13696)&255
+	.dc.b -2,(f1547c-jmpbase)/256,(f1547c-jmpbase)&255
 x143dd:
-	.dc.b -1,(x1519e-x13696)/256,(x1519e-x13696)&255
+	.dc.b -1,(x1519e-jmpbase)/256,(x1519e-jmpbase)&255
 x143e0:
 	.dc.b -4
 x143e1:
-	.dc.b -2,(f15470-x13696)/256,(f15470-x13696)&255
+	.dc.b -2,(f15470-jmpbase)/256,(f15470-jmpbase)&255
 x143e4:
 	.dc.b -3
 x143e5:
-	.dc.b -2,(f15480-x13696)/256,(f15480-x13696)&255
+	.dc.b -2,(f15480-jmpbase)/256,(f15480-jmpbase)&255
 x143e8:
-	.dc.b -1,(x1519e-x13696)/256,(x1519e-x13696)&255
+	.dc.b -1,(x1519e-jmpbase)/256,(x1519e-jmpbase)&255
 x143eb:
 	.dc.b -4
 x143ec:
-	.dc.b -2,(f15468-x13696)/256,(f15468-x13696)&255
+	.dc.b -2,(f15468-jmpbase)/256,(f15468-jmpbase)&255
 x143ef:
 	.dc.b -3
 x143f0:
-	.dc.b -2,(f15478-x13696)/256,(f15478-x13696)&255
+	.dc.b -2,(f15478-jmpbase)/256,(f15478-jmpbase)&255
 x143f3:
-	.dc.b -1,(x1519e-x13696)/256,(x1519e-x13696)&255
+	.dc.b -1,(x1519e-jmpbase)/256,(x1519e-jmpbase)&255
 x143f6:
 	.dc.b -4
 x143f7:
-	.dc.b -2,(f15484-x13696)/256,(f15484-x13696)&255
+	.dc.b -2,(f15484-jmpbase)/256,(f15484-jmpbase)&255
 x143fa:
 	.dc.b -3
 x143fb:
-	.dc.b -2,(f1548c-x13696)/256,(f1548c-x13696)&255
+	.dc.b -2,(f1548c-jmpbase)/256,(f1548c-jmpbase)&255
 x143fe:
-	.dc.b -1,(x1519e-x13696)/256,(x1519e-x13696)&255
+	.dc.b -1,(x1519e-jmpbase)/256,(x1519e-jmpbase)&255
 x14401:
 	.dc.b -4
 x14402:
-	.dc.b -2,(f15488-x13696)/256,(f15488-x13696)&255
+	.dc.b -2,(f15488-jmpbase)/256,(f15488-jmpbase)&255
 x14405:
 	.dc.b -3
 x14406:
-	.dc.b -2,(f15490-x13696)/256,(f15490-x13696)&255
+	.dc.b -2,(f15490-jmpbase)/256,(f15490-jmpbase)&255
 x14409:
-	.dc.b -1,(x1519e-x13696)/256,(x1519e-x13696)&255
+	.dc.b -1,(x1519e-jmpbase)/256,(x1519e-jmpbase)&255
 x1440c:
 	.dc.b -4
 x1440d:
-	.dc.b -1,(x14342-x13696)/256,(x14342-x13696)&255
+	.dc.b -1,(x14342-jmpbase)/256,(x14342-jmpbase)&255
 x14410:
 	.dc.b 33
 x14411:
-	.dc.b -1,(x14342-x13696)/256,(x14342-x13696)&255
+	.dc.b -1,(x14342-jmpbase)/256,(x14342-jmpbase)&255
 x14414:
 	.dc.b 33
 x14415:
-	.dc.b -1,(x14342-x13696)/256,(x14342-x13696)&255
+	.dc.b -1,(x14342-jmpbase)/256,(x14342-jmpbase)&255
 x14418:
 	.dc.b 33
 x14419:
-	.dc.b -1,(x14342-x13696)/256,(x14342-x13696)&255
+	.dc.b -1,(x14342-jmpbase)/256,(x14342-jmpbase)&255
 x1441c:
 	.dc.b -4
 x1441d:
-	.dc.b -1,(x143ad-x13696)/256,(x143ad-x13696)&255
+	.dc.b -1,(x143ad-jmpbase)/256,(x143ad-jmpbase)&255
 x14420:
-	.dc.b -1,(x14425-x13696)/256,(x14425-x13696)&255
+	.dc.b -1,(x14425-jmpbase)/256,(x14425-jmpbase)&255
 x14423:
 	.dc.b 70
 x14424:
@@ -9344,19 +9351,19 @@ x14424:
 x14425:
 	.dc.b 33
 x14426:
-	.dc.b -1,(x143ad-x13696)/256,(x143ad-x13696)&255
+	.dc.b -1,(x143ad-jmpbase)/256,(x143ad-jmpbase)&255
 x14429:
-	.dc.b -1,(x14425-x13696)/256,(x14425-x13696)&255
+	.dc.b -1,(x14425-jmpbase)/256,(x14425-jmpbase)&255
 x1442c:
 	.dc.b -3
 x1442d:
 	.dc.b -4
 x1442e:
-	.dc.b -1,(x144eb-x13696)/256,(x144eb-x13696)&255
+	.dc.b -1,(x144eb-jmpbase)/256,(x144eb-jmpbase)&255
 x14431:
-	.dc.b -1,(x143ec-x13696)/256,(x143ec-x13696)&255
+	.dc.b -1,(x143ec-jmpbase)/256,(x143ec-jmpbase)&255
 x14434:
-	.dc.b -1,(x1442e-x13696)/256,(x1442e-x13696)&255
+	.dc.b -1,(x1442e-jmpbase)/256,(x1442e-jmpbase)&255
 x14437:
 	.dc.b -3
 x14438:
@@ -9366,27 +9373,27 @@ x14439:
 x1443a:
 	.dc.b 249,52
 x1443c:
-	.dc.b -1,(x14213-x13696)/256,(x14213-x13696)&255
+	.dc.b -1,(x14213-jmpbase)/256,(x14213-jmpbase)&255
 x1443f:
-	.dc.b -1,(x15252-x13696)/256,(x15252-x13696)&255
+	.dc.b -1,(x15252-jmpbase)/256,(x15252-jmpbase)&255
 x14442:
-	.dc.b -1,(x143ec-x13696)/256,(x143ec-x13696)&255
+	.dc.b -1,(x143ec-jmpbase)/256,(x143ec-jmpbase)&255
 x14445:
-	.dc.b -1,(x1442e-x13696)/256,(x1442e-x13696)&255
+	.dc.b -1,(x1442e-jmpbase)/256,(x1442e-jmpbase)&255
 x14448:
 	.dc.b 70
 x14449:
 	.dc.b -3
 x1444a:
-	.dc.b -1,(x14213-x13696)/256,(x14213-x13696)&255
+	.dc.b -1,(x14213-jmpbase)/256,(x14213-jmpbase)&255
 x1444d:
-	.dc.b -2,(f13d22-x13696)/256,(f13d22-x13696)&255
+	.dc.b -2,(f13d22-jmpbase)/256,(f13d22-jmpbase)&255
 x14450:
-	.dc.b -1,(x144eb-x13696)/256,(x144eb-x13696)&255
+	.dc.b -1,(x144eb-jmpbase)/256,(x144eb-jmpbase)&255
 x14453:
-	.dc.b -1,(x143ec-x13696)/256,(x143ec-x13696)&255
+	.dc.b -1,(x143ec-jmpbase)/256,(x143ec-jmpbase)&255
 x14456:
-	.dc.b -1,(x1442e-x13696)/256,(x1442e-x13696)&255
+	.dc.b -1,(x1442e-jmpbase)/256,(x1442e-jmpbase)&255
 x14459:
 	.dc.b 70
 x1445a:
@@ -9396,87 +9403,87 @@ x1445b:
 x1445c:
 	.dc.b 249,54
 x1445e:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14461:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14464:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14467:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x1446a:
 	.dc.b 70
 x1446b:
 	.dc.b -4
 x1446c:
-	.dc.b -2,(f1546c-x13696)/256,(f1546c-x13696)&255
+	.dc.b -2,(f1546c-jmpbase)/256,(f1546c-jmpbase)&255
 x1446f:
 	.dc.b 33
 x14470:
-	.dc.b -2,(f158f8-x13696)/256,(f158f8-x13696)&255
+	.dc.b -2,(f158f8-jmpbase)/256,(f158f8-jmpbase)&255
 x14473:
 	.dc.b 70
 x14474:
 	.dc.b -4
 x14475:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x14478:
 	.dc.b 33
 x14479:
 	.dc.b -4
 x1447a:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x1447d:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14480:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14483:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14486:
-	.dc.b -1,(x1445e-x13696)/256,(x1445e-x13696)&255
+	.dc.b -1,(x1445e-jmpbase)/256,(x1445e-jmpbase)&255
 x14489:
 	.dc.b -4
 x1448a:
-	.dc.b -1,(x1503c-x13696)/256,(x1503c-x13696)&255
+	.dc.b -1,(x1503c-jmpbase)/256,(x1503c-jmpbase)&255
 x1448d:
-	.dc.b -1,(x144ba-x13696)/256,(x144ba-x13696)&255
+	.dc.b -1,(x144ba-jmpbase)/256,(x144ba-jmpbase)&255
 x14490:
-	.dc.b -1,(x14483-x13696)/256,(x14483-x13696)&255
+	.dc.b -1,(x14483-jmpbase)/256,(x14483-jmpbase)&255
 x14493:
 	.dc.b -4
 x14494:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x14497:
 	.dc.b -3
 x14498:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x1449b:
-	.dc.b -1,(x1454c-x13696)/256,(x1454c-x13696)&255
+	.dc.b -1,(x1454c-jmpbase)/256,(x1454c-jmpbase)&255
 x1449e:
 	.dc.b -4
 x1449f:
-	.dc.b -1,(x14464-x13696)/256,(x14464-x13696)&255
+	.dc.b -1,(x14464-jmpbase)/256,(x14464-jmpbase)&255
 x144a2:
 	.dc.b -3
 x144a3:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x144a6:
-	.dc.b -1,(x14461-x13696)/256,(x14461-x13696)&255
+	.dc.b -1,(x14461-jmpbase)/256,(x14461-jmpbase)&255
 x144a9:
 	.dc.b -4
 x144aa:
-	.dc.b -1,(x14461-x13696)/256,(x14461-x13696)&255
+	.dc.b -1,(x14461-jmpbase)/256,(x14461-jmpbase)&255
 x144ad:
 	.dc.b -3
 x144ae:
-	.dc.b -1,(x14464-x13696)/256,(x14464-x13696)&255
+	.dc.b -1,(x14464-jmpbase)/256,(x14464-jmpbase)&255
 x144b1:
 	.dc.b -4
 x144b2:
-	.dc.b -1,(x1445e-x13696)/256,(x1445e-x13696)&255
+	.dc.b -1,(x1445e-jmpbase)/256,(x1445e-jmpbase)&255
 x144b5:
 	.dc.b -3
 x144b6:
-	.dc.b -1,(x14464-x13696)/256,(x14464-x13696)&255
+	.dc.b -1,(x14464-jmpbase)/256,(x14464-jmpbase)&255
 x144b9:
 	.dc.b -4
 x144ba:
@@ -9490,45 +9497,45 @@ x144bd:
 x144bf:
 	.dc.b -4
 x144c0:
-	.dc.b -1,(x14386-x13696)/256,(x14386-x13696)&255
+	.dc.b -1,(x14386-jmpbase)/256,(x14386-jmpbase)&255
 x144c3:
 	.dc.b 19
 x144c4:
 	.dc.b -5,69
 x144c6:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x144c9:
 	.dc.b 70
 x144ca:
 	.dc.b -3
 x144cb:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x144ce:
-	.dc.b -1,(x14386-x13696)/256,(x14386-x13696)&255
+	.dc.b -1,(x14386-jmpbase)/256,(x14386-jmpbase)&255
 x144d1:
 	.dc.b 19
 x144d2:
 	.dc.b -5,69
 x144d4:
-	.dc.b -1,(x14139-x13696)/256,(x14139-x13696)&255
+	.dc.b -1,(x14139-jmpbase)/256,(x14139-jmpbase)&255
 x144d7:
 	.dc.b -4
 x144d8:
-	.dc.b -1,(x144dd-x13696)/256,(x144dd-x13696)&255
+	.dc.b -1,(x144dd-jmpbase)/256,(x144dd-jmpbase)&255
 x144db:
 	.dc.b 70
 x144dc:
 	.dc.b -4
 x144dd:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x144e0:
-	.dc.b -1,(x144e6-x13696)/256,(x144e6-x13696)&255
+	.dc.b -1,(x144e6-jmpbase)/256,(x144e6-jmpbase)&255
 x144e3:
-	.dc.b -1,(x144e6-x13696)/256,(x144e6-x13696)&255
+	.dc.b -1,(x144e6-jmpbase)/256,(x144e6-jmpbase)&255
 x144e6:
 	.dc.b 33
 x144e7:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x144ea:
 	.dc.b -4
 x144eb:
@@ -9540,7 +9547,7 @@ x144ed:
 x144ee:
 	.dc.b -4
 x144ef:
-	.dc.b -1,(x144eb-x13696)/256,(x144eb-x13696)&255
+	.dc.b -1,(x144eb-jmpbase)/256,(x144eb-jmpbase)&255
 x144f2:
 	.dc.b -3
 x144f3:
@@ -9548,11 +9555,11 @@ x144f3:
 x144f5:
 	.dc.b -4
 x144f6:
-	.dc.b -1,(x144ff-x13696)/256,(x144ff-x13696)&255
+	.dc.b -1,(x144ff-jmpbase)/256,(x144ff-jmpbase)&255
 x144f9:
 	.dc.b 249,77
 x144fb:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x144fe:
 	.dc.b -4
 x144ff:
@@ -9566,7 +9573,7 @@ x14502:
 x14503:
 	.dc.b 77
 x14504:
-	.dc.b -1,(x14570-x13696)/256,(x14570-x13696)&255
+	.dc.b -1,(x14570-jmpbase)/256,(x14570-jmpbase)&255
 x14507:
 	.dc.b 33
 x14508:
@@ -9574,41 +9581,41 @@ x14508:
 x14509:
 	.dc.b -4
 x1450a:
-	.dc.b -2,(f13d6a-x13696)/256,(f13d6a-x13696)&255
+	.dc.b -2,(f13d6a-jmpbase)/256,(f13d6a-jmpbase)&255
 x1450d:
-	.dc.b -1,(x14503-x13696)/256,(x14503-x13696)&255
+	.dc.b -1,(x14503-jmpbase)/256,(x14503-jmpbase)&255
 x14510:
-	.dc.b -1,(x14570-x13696)/256,(x14570-x13696)&255
+	.dc.b -1,(x14570-jmpbase)/256,(x14570-jmpbase)&255
 x14513:
 	.dc.b 33
 x14514:
-	.dc.b -1,(x14570-x13696)/256,(x14570-x13696)&255
+	.dc.b -1,(x14570-jmpbase)/256,(x14570-jmpbase)&255
 x14517:
 	.dc.b 33
 x14518:
-	.dc.b -1,(x143ec-x13696)/256,(x143ec-x13696)&255
+	.dc.b -1,(x143ec-jmpbase)/256,(x143ec-jmpbase)&255
 x1451b:
 	.dc.b 70
 x1451c:
 	.dc.b -3
 x1451d:
-	.dc.b -2,(f13d76-x13696)/256,(f13d76-x13696)&255
+	.dc.b -2,(f13d76-jmpbase)/256,(f13d76-jmpbase)&255
 x14520:
 	.dc.b 70
 x14521:
 	.dc.b -3
 x14522:
-	.dc.b -1,(x14570-x13696)/256,(x14570-x13696)&255
+	.dc.b -1,(x14570-jmpbase)/256,(x14570-jmpbase)&255
 x14525:
 	.dc.b 70
 x14526:
 	.dc.b -3
 x14527:
-	.dc.b -1,(x14570-x13696)/256,(x14570-x13696)&255
+	.dc.b -1,(x14570-jmpbase)/256,(x14570-jmpbase)&255
 x1452a:
-	.dc.b -1,(x14532-x13696)/256,(x14532-x13696)&255
+	.dc.b -1,(x14532-jmpbase)/256,(x14532-jmpbase)&255
 x1452d:
-	.dc.b -1,(x14570-x13696)/256,(x14570-x13696)&255
+	.dc.b -1,(x14570-jmpbase)/256,(x14570-jmpbase)&255
 x14530:
 	.dc.b 70
 x14531:
@@ -9654,49 +9661,49 @@ x14547:
 x14548:
 	.dc.b -3
 x14549:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x1454c:
-	.dc.b -1,(x14139-x13696)/256,(x14139-x13696)&255
+	.dc.b -1,(x14139-jmpbase)/256,(x14139-jmpbase)&255
 x1454f:
 	.dc.b -3
 x14550:
-	.dc.b -2,(f13d1c-x13696)/256,(f13d1c-x13696)&255
+	.dc.b -2,(f13d1c-jmpbase)/256,(f13d1c-jmpbase)&255
 x14553:
 	.dc.b 70
 x14554:
 	.dc.b -4
 x14555:
-	.dc.b -1,(x1455c-x13696)/256,(x1455c-x13696)&255
+	.dc.b -1,(x1455c-jmpbase)/256,(x1455c-jmpbase)&255
 x14558:
-	.dc.b -2,(execute_defint-x13696)/256,(execute_defint-x13696)&255
+	.dc.b -2,(execute_defint-jmpbase)/256,(execute_defint-jmpbase)&255
 x1455b:
 	.dc.b -4
 x1455c:
-	.dc.b -2,(f13d22-x13696)/256,(f13d22-x13696)&255
+	.dc.b -2,(f13d22-jmpbase)/256,(f13d22-jmpbase)&255
 x1455f:
 	.dc.b 70
 x14560:
 	.dc.b -3
 x14561:
-	.dc.b -2,(f13d1c-x13696)/256,(f13d1c-x13696)&255
+	.dc.b -2,(f13d1c-jmpbase)/256,(f13d1c-jmpbase)&255
 x14564:
 	.dc.b 70
 x14565:
 	.dc.b -4
 x14566:
-	.dc.b -1,(x14570-x13696)/256,(x14570-x13696)&255
+	.dc.b -1,(x14570-jmpbase)/256,(x14570-jmpbase)&255
 x14569:
-	.dc.b -1,(x1421f-x13696)/256,(x1421f-x13696)&255
+	.dc.b -1,(x1421f-jmpbase)/256,(x1421f-jmpbase)&255
 x1456c:
-	.dc.b -1,(x1454c-x13696)/256,(x1454c-x13696)&255
+	.dc.b -1,(x1454c-jmpbase)/256,(x1454c-jmpbase)&255
 x1456f:
 	.dc.b -4
 x14570:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x14573:
 	.dc.b -3
 x14574:
-	.dc.b -2,(f14578-x13696)/256,(f14578-x13696)&255
+	.dc.b -2,(f14578-jmpbase)/256,(f14578-jmpbase)&255
 x14577:
 	.dc.b -4
 
@@ -9741,39 +9748,39 @@ f14578_6:
 
 
 x145c6:
-	.dc.b -1,(x145ce-x13696)/256,(x145ce-x13696)&255
+	.dc.b -1,(x145ce-jmpbase)/256,(x145ce-jmpbase)&255
 x145c9:
 	.dc.b 33
 x145ca:
-	.dc.b -1,(x1454c-x13696)/256,(x1454c-x13696)&255
+	.dc.b -1,(x1454c-jmpbase)/256,(x1454c-jmpbase)&255
 x145cd:
 	.dc.b -4
 x145ce:
-	.dc.b -1,(x14570-x13696)/256,(x14570-x13696)&255
+	.dc.b -1,(x14570-jmpbase)/256,(x14570-jmpbase)&255
 x145d1:
 	.dc.b -3
 x145d2:
 	.dc.b -4
 x145d3:
-	.dc.b -2,(f13d5a-x13696)/256,(f13d5a-x13696)&255
+	.dc.b -2,(f13d5a-jmpbase)/256,(f13d5a-jmpbase)&255
 x145d6:
-	.dc.b -1,(x145f0-x13696)/256,(x145f0-x13696)&255
+	.dc.b -1,(x145f0-jmpbase)/256,(x145f0-jmpbase)&255
 x145d9:
 	.dc.b -3
 x145da:
 	.dc.b -5,18
 x145dc:
-	.dc.b -1,(x14570-x13696)/256,(x14570-x13696)&255
+	.dc.b -1,(x14570-jmpbase)/256,(x14570-jmpbase)&255
 x145df:
-	.dc.b -1,(x144ef-x13696)/256,(x144ef-x13696)&255
+	.dc.b -1,(x144ef-jmpbase)/256,(x144ef-jmpbase)&255
 x145e2:
-	.dc.b -1,(x144f6-x13696)/256,(x144f6-x13696)&255
+	.dc.b -1,(x144f6-jmpbase)/256,(x144f6-jmpbase)&255
 x145e5:
-	.dc.b -1,(x144ef-x13696)/256,(x144ef-x13696)&255
+	.dc.b -1,(x144ef-jmpbase)/256,(x144ef-jmpbase)&255
 x145e8:
-	.dc.b -1,(x14570-x13696)/256,(x14570-x13696)&255
+	.dc.b -1,(x14570-jmpbase)/256,(x14570-jmpbase)&255
 x145eb:
-	.dc.b -1,(x14b90-x13696)/256,(x14b90-x13696)&255
+	.dc.b -1,(x14b90-jmpbase)/256,(x14b90-jmpbase)&255
 x145ee:
 	.dc.b 70
 x145ef:
@@ -9781,33 +9788,33 @@ x145ef:
 x145f0:
 	.dc.b -5,20
 x145f2:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x145f5:
 	.dc.b -3
 x145f6:
-	.dc.b -1,(x14461-x13696)/256,(x14461-x13696)&255
+	.dc.b -1,(x14461-jmpbase)/256,(x14461-jmpbase)&255
 x145f9:
 	.dc.b -3
 x145fa:
 	.dc.b -5,22
 x145fc:
-	.dc.b -1,(x144ff-x13696)/256,(x144ff-x13696)&255
+	.dc.b -1,(x144ff-jmpbase)/256,(x144ff-jmpbase)&255
 x145ff:
-	.dc.b -1,(x14480-x13696)/256,(x14480-x13696)&255
+	.dc.b -1,(x14480-jmpbase)/256,(x14480-jmpbase)&255
 x14602:
 	.dc.b -4
 x14603:
-	.dc.b -2,(f13d5a-x13696)/256,(f13d5a-x13696)&255
+	.dc.b -2,(f13d5a-jmpbase)/256,(f13d5a-jmpbase)&255
 x14606:
-	.dc.b -1,(x14628-x13696)/256,(x14628-x13696)&255
+	.dc.b -1,(x14628-jmpbase)/256,(x14628-jmpbase)&255
 x14609:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x1460c:
 	.dc.b -3
 x1460d:
 	.dc.b -5,24
 x1460f:
-	.dc.b -1,(x144f6-x13696)/256,(x144f6-x13696)&255
+	.dc.b -1,(x144f6-jmpbase)/256,(x144f6-jmpbase)&255
 x14612:
 	.dc.b 70
 x14613:
@@ -9821,17 +9828,17 @@ x14616:
 x14617:
 	.dc.b -3
 x14618:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x1461b:
 	.dc.b 77
 x1461c:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x1461f:
 	.dc.b -3
 x14620:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x14623:
-	.dc.b -2,(f15444-x13696)/256,(f15444-x13696)&255
+	.dc.b -2,(f15444-jmpbase)/256,(f15444-jmpbase)&255
 x14626:
 	.dc.b 70
 x14627:
@@ -9853,11 +9860,11 @@ x14630:
 x14631:
 	.dc.b -3
 x14632:
-	.dc.b -2,(f13d5a-x13696)/256,(f13d5a-x13696)&255
+	.dc.b -2,(f13d5a-jmpbase)/256,(f13d5a-jmpbase)&255
 x14635:
-	.dc.b -1,(x1463c-x13696)/256,(x1463c-x13696)&255
+	.dc.b -1,(x1463c-jmpbase)/256,(x1463c-jmpbase)&255
 x14638:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x1463b:
 	.dc.b -4
 x1463c:
@@ -9873,99 +9880,99 @@ x14641:
 x14643:
 	.dc.b -4
 x14644:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x14647:
 	.dc.b -3
 x14648:
 	.dc.b 77
 x14649:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x1464c:
 	.dc.b -4
 x1464d:
-	.dc.b -1,(x144ff-x13696)/256,(x144ff-x13696)&255
+	.dc.b -1,(x144ff-jmpbase)/256,(x144ff-jmpbase)&255
 x14650:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x14653:
 	.dc.b -4
 x14654:
-	.dc.b -1,(x144ff-x13696)/256,(x144ff-x13696)&255
+	.dc.b -1,(x144ff-jmpbase)/256,(x144ff-jmpbase)&255
 x14657:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x1465a:
-	.dc.b -1,(x1454c-x13696)/256,(x1454c-x13696)&255
+	.dc.b -1,(x1454c-jmpbase)/256,(x1454c-jmpbase)&255
 x1465d:
 	.dc.b -4
 x1465e:
-	.dc.b -2,(f13bca-x13696)/256,(f13bca-x13696)&255
+	.dc.b -2,(f13bca-jmpbase)/256,(f13bca-jmpbase)&255
 x14661:
 	.dc.b -4
 x14662:
-	.dc.b -1,(x143ec-x13696)/256,(x143ec-x13696)&255
+	.dc.b -1,(x143ec-jmpbase)/256,(x143ec-jmpbase)&255
 x14665:
-	.dc.b -1,(x14695-x13696)/256,(x14695-x13696)&255
+	.dc.b -1,(x14695-jmpbase)/256,(x14695-jmpbase)&255
 x14668:
-	.dc.b -1,(x14b90-x13696)/256,(x14b90-x13696)&255
+	.dc.b -1,(x14b90-jmpbase)/256,(x14b90-jmpbase)&255
 x1466b:
 	.dc.b 32
 x1466c:
-	.dc.b -1,(x14196-x13696)/256,(x14196-x13696)&255
+	.dc.b -1,(x14196-jmpbase)/256,(x14196-jmpbase)&255
 x1466f:
 	.dc.b -4
 x14670:
-	.dc.b -1,(x1445e-x13696)/256,(x1445e-x13696)&255
+	.dc.b -1,(x1445e-jmpbase)/256,(x1445e-jmpbase)&255
 x14673:
 	.dc.b -3
 x14674:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x14677:
-	.dc.b -1,(x14480-x13696)/256,(x14480-x13696)&255
+	.dc.b -1,(x14480-jmpbase)/256,(x14480-jmpbase)&255
 x1467a:
 	.dc.b -4
 x1467b:
-	.dc.b -1,(x14461-x13696)/256,(x14461-x13696)&255
+	.dc.b -1,(x14461-jmpbase)/256,(x14461-jmpbase)&255
 x1467e:
 	.dc.b -3
 x1467f:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x14682:
-	.dc.b -1,(x14483-x13696)/256,(x14483-x13696)&255
+	.dc.b -1,(x14483-jmpbase)/256,(x14483-jmpbase)&255
 x14685:
 	.dc.b -4
 x14686:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x14689:
-	.dc.b -1,(x144eb-x13696)/256,(x144eb-x13696)&255
+	.dc.b -1,(x144eb-jmpbase)/256,(x144eb-jmpbase)&255
 x1468c:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x1468f:
-	.dc.b -1,(x144eb-x13696)/256,(x144eb-x13696)&255
+	.dc.b -1,(x144eb-jmpbase)/256,(x144eb-jmpbase)&255
 x14692:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x14695:
-	.dc.b -1,(x144eb-x13696)/256,(x144eb-x13696)&255
+	.dc.b -1,(x144eb-jmpbase)/256,(x144eb-jmpbase)&255
 x14698:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x1469b:
 	.dc.b -4
 x1469c:
-	.dc.b -1,(x146d3-x13696)/256,(x146d3-x13696)&255
+	.dc.b -1,(x146d3-jmpbase)/256,(x146d3-jmpbase)&255
 x1469f:
-	.dc.b -1,(x14692-x13696)/256,(x14692-x13696)&255
+	.dc.b -1,(x14692-jmpbase)/256,(x14692-jmpbase)&255
 x146a2:
-	.dc.b -1,(x146c9-x13696)/256,(x146c9-x13696)&255
+	.dc.b -1,(x146c9-jmpbase)/256,(x146c9-jmpbase)&255
 x146a5:
 	.dc.b -3
 x146a6:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x146a9:
-	.dc.b -1,(x146ad-x13696)/256,(x146ad-x13696)&255
+	.dc.b -1,(x146ad-jmpbase)/256,(x146ad-jmpbase)&255
 x146ac:
 	.dc.b -4
 x146ad:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x146b0:
-	.dc.b -1,(x146b4-x13696)/256,(x146b4-x13696)&255
+	.dc.b -1,(x146b4-jmpbase)/256,(x146b4-jmpbase)&255
 x146b3:
 	.dc.b -4
 x146b4:
@@ -9973,11 +9980,11 @@ x146b4:
 x146b5:
 	.dc.b -3
 x146b6:
-	.dc.b -1,(x146c0-x13696)/256,(x146c0-x13696)&255
+	.dc.b -1,(x146c0-jmpbase)/256,(x146c0-jmpbase)&255
 x146b9:
-	.dc.b -1,(x1529b-x13696)/256,(x1529b-x13696)&255
+	.dc.b -1,(x1529b-jmpbase)/256,(x1529b-jmpbase)&255
 x146bc:
-	.dc.b -1,(x146b4-x13696)/256,(x146b4-x13696)&255
+	.dc.b -1,(x146b4-jmpbase)/256,(x146b4-jmpbase)&255
 x146bf:
 	.dc.b -4
 x146c0:
@@ -9999,9 +10006,9 @@ x146c8:
 x146c9:
 	.dc.b 71
 x146ca:
-	.dc.b -1,(x14692-x13696)/256,(x14692-x13696)&255
+	.dc.b -1,(x14692-jmpbase)/256,(x14692-jmpbase)&255
 x146cd:
-	.dc.b -1,(x146c9-x13696)/256,(x146c9-x13696)&255
+	.dc.b -1,(x146c9-jmpbase)/256,(x146c9-jmpbase)&255
 x146d0:
 	.dc.b -3
 x146d1:
@@ -10015,69 +10022,69 @@ x146d4:
 x146d5:
 	.dc.b -4
 x146d6:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x146d9:
-	.dc.b -1,(x14695-x13696)/256,(x14695-x13696)&255
+	.dc.b -1,(x14695-jmpbase)/256,(x14695-jmpbase)&255
 x146dc:
-	.dc.b -1,(x14695-x13696)/256,(x14695-x13696)&255
+	.dc.b -1,(x14695-jmpbase)/256,(x14695-jmpbase)&255
 x146df:
 	.dc.b 70
 x146e0:
 	.dc.b -4
 x146e1:
-	.dc.b -1,(x14139-x13696)/256,(x14139-x13696)&255
+	.dc.b -1,(x14139-jmpbase)/256,(x14139-jmpbase)&255
 x146e4:
 	.dc.b -3
 x146e5:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x146e8:
-	.dc.b -1,(x14b90-x13696)/256,(x14b90-x13696)&255
+	.dc.b -1,(x14b90-jmpbase)/256,(x14b90-jmpbase)&255
 x146eb:
 	.dc.b 70
 x146ec:
 	.dc.b -4
 x146ed:
-	.dc.b -1,(x144f6-x13696)/256,(x144f6-x13696)&255
+	.dc.b -1,(x144f6-jmpbase)/256,(x144f6-jmpbase)&255
 x146f0:
-	.dc.b -1,(x146f8-x13696)/256,(x146f8-x13696)&255
+	.dc.b -1,(x146f8-jmpbase)/256,(x146f8-jmpbase)&255
 x146f3:
-	.dc.b -1,(x1470c-x13696)/256,(x1470c-x13696)&255
+	.dc.b -1,(x1470c-jmpbase)/256,(x1470c-jmpbase)&255
 x146f6:
 	.dc.b 70
 x146f7:
 	.dc.b -4
 x146f8:
-	.dc.b -1,(x14695-x13696)/256,(x14695-x13696)&255
+	.dc.b -1,(x14695-jmpbase)/256,(x14695-jmpbase)&255
 x146fb:
-	.dc.b -1,(x1421f-x13696)/256,(x1421f-x13696)&255
+	.dc.b -1,(x1421f-jmpbase)/256,(x1421f-jmpbase)&255
 x146fe:
-	.dc.b -2,(f15468-x13696)/256,(f15468-x13696)&255
+	.dc.b -2,(f15468-jmpbase)/256,(f15468-jmpbase)&255
 x14701:
 	.dc.b -3
 x14702:
-	.dc.b -1,(x14695-x13696)/256,(x14695-x13696)&255
+	.dc.b -1,(x14695-jmpbase)/256,(x14695-jmpbase)&255
 x14705:
 	.dc.b 89
 x14706:
 	.dc.b -5,122
 x14708:
-	.dc.b -1,(x14c92-x13696)/256,(x14c92-x13696)&255
+	.dc.b -1,(x14c92-jmpbase)/256,(x14c92-jmpbase)&255
 x1470b:
 	.dc.b -4
 x1470c:
-	.dc.b -1,(x146f8-x13696)/256,(x146f8-x13696)&255
+	.dc.b -1,(x146f8-jmpbase)/256,(x146f8-jmpbase)&255
 x1470f:
-	.dc.b -1,(x1470c-x13696)/256,(x1470c-x13696)&255
+	.dc.b -1,(x1470c-jmpbase)/256,(x1470c-jmpbase)&255
 x14712:
 	.dc.b -3
 x14713:
 	.dc.b -4
 x14714:
-	.dc.b -1,(x15039-x13696)/256,(x15039-x13696)&255
+	.dc.b -1,(x15039-jmpbase)/256,(x15039-jmpbase)&255
 x14717:
 	.dc.b 33
 x14718:
-	.dc.b -1,(x143ec-x13696)/256,(x143ec-x13696)&255
+	.dc.b -1,(x143ec-jmpbase)/256,(x143ec-jmpbase)&255
 x1471b:
 	.dc.b 70
 x1471c:
@@ -10085,7 +10092,7 @@ x1471c:
 x1471d:
 	.dc.b -5,4
 x1471f:
-	.dc.b -1,(x144f6-x13696)/256,(x144f6-x13696)&255
+	.dc.b -1,(x144f6-jmpbase)/256,(x144f6-jmpbase)&255
 x14722:
 	.dc.b 70
 x14723:
@@ -10093,19 +10100,19 @@ x14723:
 x14724:
 	.dc.b -5,6
 x14726:
-	.dc.b -1,(x144f6-x13696)/256,(x144f6-x13696)&255
+	.dc.b -1,(x144f6-jmpbase)/256,(x144f6-jmpbase)&255
 x14729:
 	.dc.b 33
 x1472a:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x1472d:
 	.dc.b -4
 x1472e:
-	.dc.b -1,(x1503f-x13696)/256,(x1503f-x13696)&255
+	.dc.b -1,(x1503f-jmpbase)/256,(x1503f-jmpbase)&255
 x14731:
 	.dc.b 33
 x14732:
-	.dc.b -1,(x143ec-x13696)/256,(x143ec-x13696)&255
+	.dc.b -1,(x143ec-jmpbase)/256,(x143ec-jmpbase)&255
 x14735:
 	.dc.b 70
 x14736:
@@ -10113,21 +10120,21 @@ x14736:
 x14737:
 	.dc.b -5,10
 x14739:
-	.dc.b -1,(x1503f-x13696)/256,(x1503f-x13696)&255
+	.dc.b -1,(x1503f-jmpbase)/256,(x1503f-jmpbase)&255
 x1473c:
 	.dc.b 33
 x1473d:
-	.dc.b -1,(x143ec-x13696)/256,(x143ec-x13696)&255
+	.dc.b -1,(x143ec-jmpbase)/256,(x143ec-jmpbase)&255
 x14740:
 	.dc.b 33
 x14741:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x14744:
 	.dc.b -3
 x14745:
 	.dc.b -5,12
 x14747:
-	.dc.b -1,(x144f6-x13696)/256,(x144f6-x13696)&255
+	.dc.b -1,(x144f6-jmpbase)/256,(x144f6-jmpbase)&255
 x1474a:
 	.dc.b 70
 x1474b:
@@ -10135,25 +10142,25 @@ x1474b:
 x1474c:
 	.dc.b -5,14
 x1474e:
-	.dc.b -1,(x144f6-x13696)/256,(x144f6-x13696)&255
+	.dc.b -1,(x144f6-jmpbase)/256,(x144f6-jmpbase)&255
 x14751:
 	.dc.b 33
 x14752:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x14755:
 	.dc.b -4
 x14756:
-	.dc.b -1,(x14afe-x13696)/256,(x14afe-x13696)&255
+	.dc.b -1,(x14afe-jmpbase)/256,(x14afe-jmpbase)&255
 x14759:
 	.dc.b -3
 x1475a:
 	.dc.b -5,60
 x1475c:
-	.dc.b -1,(x14b91-x13696)/256,(x14b91-x13696)&255
+	.dc.b -1,(x14b91-jmpbase)/256,(x14b91-jmpbase)&255
 x1475f:
 	.dc.b 33
 x14760:
-	.dc.b -1,(x1454c-x13696)/256,(x1454c-x13696)&255
+	.dc.b -1,(x1454c-jmpbase)/256,(x1454c-jmpbase)&255
 x14763:
 	.dc.b -4
 x14764:
@@ -10163,151 +10170,151 @@ x14765:
 x14766:
 	.dc.b -3
 x14767:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x1476a:
 	.dc.b 77
 x1476b:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x1476e:
-	.dc.b -1,(x14aa3-x13696)/256,(x14aa3-x13696)&255
+	.dc.b -1,(x14aa3-jmpbase)/256,(x14aa3-jmpbase)&255
 x14771:
 	.dc.b 70
 x14772:
 	.dc.b -3
 x14773:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x14776:
-	.dc.b -1,(x15039-x13696)/256,(x15039-x13696)&255
+	.dc.b -1,(x15039-jmpbase)/256,(x15039-jmpbase)&255
 x14779:
-	.dc.b -1,(x14aa3-x13696)/256,(x14aa3-x13696)&255
+	.dc.b -1,(x14aa3-jmpbase)/256,(x14aa3-jmpbase)&255
 x1477c:
 	.dc.b 70
 x1477d:
 	.dc.b -3
 x1477e:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x14781:
-	.dc.b -1,(x1503f-x13696)/256,(x1503f-x13696)&255
+	.dc.b -1,(x1503f-jmpbase)/256,(x1503f-jmpbase)&255
 x14784:
 	.dc.b 71
 x14785:
-	.dc.b -1,(x1503f-x13696)/256,(x1503f-x13696)&255
+	.dc.b -1,(x1503f-jmpbase)/256,(x1503f-jmpbase)&255
 x14788:
-	.dc.b -1,(x14aa3-x13696)/256,(x14aa3-x13696)&255
+	.dc.b -1,(x14aa3-jmpbase)/256,(x14aa3-jmpbase)&255
 x1478b:
 	.dc.b 70
 x1478c:
 	.dc.b -3
 x1478d:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x14790:
 	.dc.b 109
 x14791:
-	.dc.b -1,(x1503f-x13696)/256,(x1503f-x13696)&255
+	.dc.b -1,(x1503f-jmpbase)/256,(x1503f-jmpbase)&255
 x14794:
 	.dc.b 70
 x14795:
 	.dc.b -4
 x14796:
-	.dc.b -1,(x1445e-x13696)/256,(x1445e-x13696)&255
+	.dc.b -1,(x1445e-jmpbase)/256,(x1445e-jmpbase)&255
 x14799:
 	.dc.b -3
 x1479a:
-	.dc.b -1,(x14461-x13696)/256,(x14461-x13696)&255
+	.dc.b -1,(x14461-jmpbase)/256,(x14461-jmpbase)&255
 x1479d:
 	.dc.b -4
 x1479e:
-	.dc.b -1,(x1503f-x13696)/256,(x1503f-x13696)&255
+	.dc.b -1,(x1503f-jmpbase)/256,(x1503f-jmpbase)&255
 x147a1:
-	.dc.b -1,(x144eb-x13696)/256,(x144eb-x13696)&255
+	.dc.b -1,(x144eb-jmpbase)/256,(x144eb-jmpbase)&255
 x147a4:
 	.dc.b 77
 x147a5:
-	.dc.b -1,(x147b9-x13696)/256,(x147b9-x13696)&255
+	.dc.b -1,(x147b9-jmpbase)/256,(x147b9-jmpbase)&255
 x147a8:
 	.dc.b -3
 x147a9:
-	.dc.b -1,(x14483-x13696)/256,(x14483-x13696)&255
+	.dc.b -1,(x14483-jmpbase)/256,(x14483-jmpbase)&255
 x147ac:
 	.dc.b -3
 x147ad:
-	.dc.b -1,(x1445e-x13696)/256,(x1445e-x13696)&255
+	.dc.b -1,(x1445e-jmpbase)/256,(x1445e-jmpbase)&255
 x147b0:
 	.dc.b -3
 x147b1:
-	.dc.b -1,(x14461-x13696)/256,(x14461-x13696)&255
+	.dc.b -1,(x14461-jmpbase)/256,(x14461-jmpbase)&255
 x147b4:
 	.dc.b -3
 x147b5:
-	.dc.b -1,(x1446a-x13696)/256,(x1446a-x13696)&255
+	.dc.b -1,(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
 x147b8:
 	.dc.b -3
 x147b9:
-	.dc.b -1,(x14464-x13696)/256,(x14464-x13696)&255
+	.dc.b -1,(x14464-jmpbase)/256,(x14464-jmpbase)&255
 x147bc:
 	.dc.b -3
 x147bd:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x147c0:
 	.dc.b -4
 x147c1:
-	.dc.b -1,(x147d8-x13696)/256,(x147d8-x13696)&255
+	.dc.b -1,(x147d8-jmpbase)/256,(x147d8-jmpbase)&255
 x147c4:
 	.dc.b -3
 x147c5:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x147c8:
 	.dc.b 77
 x147c9:
-	.dc.b -1,(x147d8-x13696)/256,(x147d8-x13696)&255
+	.dc.b -1,(x147d8-jmpbase)/256,(x147d8-jmpbase)&255
 x147cc:
 	.dc.b -3
 x147cd:
-	.dc.b -2,(f13de4-x13696)/256,(f13de4-x13696)&255
+	.dc.b -2,(f13de4-jmpbase)/256,(f13de4-jmpbase)&255
 x147d0:
 	.dc.b 77
 x147d1:
-	.dc.b -1,(x147d8-x13696)/256,(x147d8-x13696)&255
+	.dc.b -1,(x147d8-jmpbase)/256,(x147d8-jmpbase)&255
 x147d4:
 	.dc.b -3
 x147d5:
-	.dc.b -2,(f13de4-x13696)/256,(f13de4-x13696)&255
+	.dc.b -2,(f13de4-jmpbase)/256,(f13de4-jmpbase)&255
 x147d8:
-	.dc.b -1,(x1503f-x13696)/256,(x1503f-x13696)&255
+	.dc.b -1,(x1503f-jmpbase)/256,(x1503f-jmpbase)&255
 x147db:
-	.dc.b -1,(x147e0-x13696)/256,(x147e0-x13696)&255
+	.dc.b -1,(x147e0-jmpbase)/256,(x147e0-jmpbase)&255
 x147de:
 	.dc.b 70
 x147df:
 	.dc.b -4
 x147e0:
-	.dc.b -1,(x144eb-x13696)/256,(x144eb-x13696)&255
+	.dc.b -1,(x144eb-jmpbase)/256,(x144eb-jmpbase)&255
 x147e3:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x147e6:
-	.dc.b -1,(x147e0-x13696)/256,(x147e0-x13696)&255
+	.dc.b -1,(x147e0-jmpbase)/256,(x147e0-jmpbase)&255
 x147e9:
 	.dc.b -3
 x147ea:
 	.dc.b -4
 x147eb:
-	.dc.b -1,(x144ff-x13696)/256,(x144ff-x13696)&255
+	.dc.b -1,(x144ff-jmpbase)/256,(x144ff-jmpbase)&255
 x147ee:
-	.dc.b -1,(x14464-x13696)/256,(x14464-x13696)&255
+	.dc.b -1,(x14464-jmpbase)/256,(x14464-jmpbase)&255
 x147f1:
 	.dc.b -4
 x147f2:
-	.dc.b -1,(x144f6-x13696)/256,(x144f6-x13696)&255
+	.dc.b -1,(x144f6-jmpbase)/256,(x144f6-jmpbase)&255
 x147f5:
-	.dc.b -1,(x144eb-x13696)/256,(x144eb-x13696)&255
+	.dc.b -1,(x144eb-jmpbase)/256,(x144eb-jmpbase)&255
 x147f8:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x147fb:
 	.dc.b -4
 x147fc:
-	.dc.b -1,(x143a6-x13696)/256,(x143a6-x13696)&255
+	.dc.b -1,(x143a6-jmpbase)/256,(x143a6-jmpbase)&255
 x147ff:
-	.dc.b -1,(x14804-x13696)/256,(x14804-x13696)&255
+	.dc.b -1,(x14804-jmpbase)/256,(x14804-jmpbase)&255
 x14802:
 	.dc.b 70
 x14803:
@@ -10315,9 +10322,9 @@ x14803:
 x14804:
 	.dc.b 33
 x14805:
-	.dc.b -1,(x143a6-x13696)/256,(x143a6-x13696)&255
+	.dc.b -1,(x143a6-jmpbase)/256,(x143a6-jmpbase)&255
 x14808:
-	.dc.b -1,(x14804-x13696)/256,(x14804-x13696)&255
+	.dc.b -1,(x14804-jmpbase)/256,(x14804-jmpbase)&255
 x1480b:
 	.dc.b -3
 x1480c:
@@ -10337,11 +10344,11 @@ x14813:
 x14815:
 	.dc.b -4
 x14816:
-	.dc.b -1,(x1480d-x13696)/256,(x1480d-x13696)&255
+	.dc.b -1,(x1480d-jmpbase)/256,(x1480d-jmpbase)&255
 x14819:
 	.dc.b -6
 x1481a:
-	.dc.b -2,(f15444-x13696)/256,(f15444-x13696)&255
+	.dc.b -2,(f15444-jmpbase)/256,(f15444-jmpbase)&255
 x1481d:
 	.dc.b 70
 x1481e:
@@ -10357,9 +10364,9 @@ x14822:
 x14824:
 	.dc.b -4
 x14825:
-	.dc.b -1,(x1480d-x13696)/256,(x1480d-x13696)&255
+	.dc.b -1,(x1480d-jmpbase)/256,(x1480d-jmpbase)&255
 x14828:
-	.dc.b -2,(f15444-x13696)/256,(f15444-x13696)&255
+	.dc.b -2,(f15444-jmpbase)/256,(f15444-jmpbase)&255
 x1482b:
 	.dc.b 70
 x1482c:
@@ -10409,7 +10416,7 @@ x14846:
 x14847:
 	.dc.b -6
 x14848:
-	.dc.b -1,(x14816-x13696)/256,(x14816-x13696)&255
+	.dc.b -1,(x14816-jmpbase)/256,(x14816-jmpbase)&255
 x1484b:
 	.dc.b -3
 x1484c:
@@ -10419,7 +10426,7 @@ x1484e:
 x1484f:
 	.dc.b -6
 x14850:
-	.dc.b -1,(x14816-x13696)/256,(x14816-x13696)&255
+	.dc.b -1,(x14816-jmpbase)/256,(x14816-jmpbase)&255
 x14853:
 	.dc.b -3
 x14854:
@@ -10429,9 +10436,9 @@ x14856:
 x14857:
 	.dc.b -6
 x14858:
-	.dc.b -1,(x1481f-x13696)/256,(x1481f-x13696)&255
+	.dc.b -1,(x1481f-jmpbase)/256,(x1481f-jmpbase)&255
 x1485b:
-	.dc.b -1,(x14819-x13696)/256,(x14819-x13696)&255
+	.dc.b -1,(x14819-jmpbase)/256,(x14819-jmpbase)&255
 x1485e:
 	.dc.b -3
 x1485f:
@@ -10445,7 +10452,7 @@ x14863:
 x14864:
 	.dc.b -6
 x14865:
-	.dc.b -1,(x14816-x13696)/256,(x14816-x13696)&255
+	.dc.b -1,(x14816-jmpbase)/256,(x14816-jmpbase)&255
 x14868:
 	.dc.b -3
 x14869:
@@ -10459,7 +10466,7 @@ x1486d:
 x1486e:
 	.dc.b -6
 x1486f:
-	.dc.b -1,(x14816-x13696)/256,(x14816-x13696)&255
+	.dc.b -1,(x14816-jmpbase)/256,(x14816-jmpbase)&255
 x14872:
 	.dc.b -3
 x14873:
@@ -10473,9 +10480,9 @@ x14877:
 x14878:
 	.dc.b -6
 x14879:
-	.dc.b -1,(x1503c-x13696)/256,(x1503c-x13696)&255
+	.dc.b -1,(x1503c-jmpbase)/256,(x1503c-jmpbase)&255
 x1487c:
-	.dc.b -1,(x14825-x13696)/256,(x14825-x13696)&255
+	.dc.b -1,(x14825-jmpbase)/256,(x14825-jmpbase)&255
 x1487f:
 	.dc.b -3
 x14880:
@@ -10489,9 +10496,9 @@ x14884:
 x14885:
 	.dc.b -6
 x14886:
-	.dc.b -1,(x15036-x13696)/256,(x15036-x13696)&255
+	.dc.b -1,(x15036-jmpbase)/256,(x15036-jmpbase)&255
 x14889:
-	.dc.b -1,(x14825-x13696)/256,(x14825-x13696)&255
+	.dc.b -1,(x14825-jmpbase)/256,(x14825-jmpbase)&255
 x1488c:
 	.dc.b -3
 x1488d:
@@ -10505,9 +10512,9 @@ x14891:
 x14892:
 	.dc.b -6
 x14893:
-	.dc.b -1,(x15036-x13696)/256,(x15036-x13696)&255
+	.dc.b -1,(x15036-jmpbase)/256,(x15036-jmpbase)&255
 x14896:
-	.dc.b -1,(x14825-x13696)/256,(x14825-x13696)&255
+	.dc.b -1,(x14825-jmpbase)/256,(x14825-jmpbase)&255
 x14899:
 	.dc.b -3
 x1489a:
@@ -10517,7 +10524,7 @@ x1489c:
 x1489d:
 	.dc.b -6
 x1489e:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x148a1:
 	.dc.b -3
 x148a2:
@@ -10537,21 +10544,21 @@ x148a9:
 x148ab:
 	.dc.b 249,252
 x148ad:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x148b0:
-	.dc.b -1,(x1480d-x13696)/256,(x1480d-x13696)&255
+	.dc.b -1,(x1480d-jmpbase)/256,(x1480d-jmpbase)&255
 x148b3:
-	.dc.b -1,(x148ca-x13696)/256,(x148ca-x13696)&255
+	.dc.b -1,(x148ca-jmpbase)/256,(x148ca-jmpbase)&255
 x148b6:
 	.dc.b -4
 x148b7:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x148ba:
-	.dc.b -1,(x14825-x13696)/256,(x14825-x13696)&255
+	.dc.b -1,(x14825-jmpbase)/256,(x14825-jmpbase)&255
 x148bd:
 	.dc.b -3
 x148be:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x148c1:
 	.dc.b 152
 x148c2:
@@ -10559,7 +10566,7 @@ x148c2:
 x148c3:
 	.dc.b -3
 x148c4:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x148c7:
 	.dc.b 154
 x148c8:
@@ -10567,17 +10574,17 @@ x148c8:
 x148c9:
 	.dc.b -4
 x148ca:
-	.dc.b -2,(f15444-x13696)/256,(f15444-x13696)&255
+	.dc.b -2,(f15444-jmpbase)/256,(f15444-jmpbase)&255
 x148cd:
 	.dc.b 70
 x148ce:
 	.dc.b -3
 x148cf:
-	.dc.b -2,(f15444-x13696)/256,(f15444-x13696)&255
+	.dc.b -2,(f15444-jmpbase)/256,(f15444-jmpbase)&255
 x148d2:
 	.dc.b 33
 x148d3:
-	.dc.b -1,(x148ca-x13696)/256,(x148ca-x13696)&255
+	.dc.b -1,(x148ca-jmpbase)/256,(x148ca-jmpbase)&255
 x148d6:
 	.dc.b -4
 x148d7:
@@ -10591,67 +10598,67 @@ x148da:
 x148db:
 	.dc.b -3
 x148dc:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x148df:
-	.dc.b -2,(f15448-x13696)/256,(f15448-x13696)&255
+	.dc.b -2,(f15448-jmpbase)/256,(f15448-jmpbase)&255
 x148e2:
 	.dc.b 70
 x148e3:
 	.dc.b -4
 x148e4:
-	.dc.b -2,(f15444-x13696)/256,(f15444-x13696)&255
+	.dc.b -2,(f15444-jmpbase)/256,(f15444-jmpbase)&255
 x148e7:
-	.dc.b -1,(x1491e-x13696)/256,(x1491e-x13696)&255
+	.dc.b -1,(x1491e-jmpbase)/256,(x1491e-jmpbase)&255
 x148ea:
 	.dc.b 70
 x148eb:
 	.dc.b -4
 x148ec:
-	.dc.b -2,(f154c4-x13696)/256,(f154c4-x13696)&255
+	.dc.b -2,(f154c4-jmpbase)/256,(f154c4-jmpbase)&255
 x148ef:
-	.dc.b -1,(x14917-x13696)/256,(x14917-x13696)&255
+	.dc.b -1,(x14917-jmpbase)/256,(x14917-jmpbase)&255
 x148f2:
 	.dc.b 70
 x148f3:
 	.dc.b -3
 x148f4:
-	.dc.b -2,(f154da-x13696)/256,(f154da-x13696)&255
+	.dc.b -2,(f154da-jmpbase)/256,(f154da-jmpbase)&255
 x148f7:
-	.dc.b -1,(x14917-x13696)/256,(x14917-x13696)&255
+	.dc.b -1,(x14917-jmpbase)/256,(x14917-jmpbase)&255
 x148fa:
 	.dc.b 70
 x148fb:
 	.dc.b -4
 x148fc:
-	.dc.b -2,(f154c4-x13696)/256,(f154c4-x13696)&255
+	.dc.b -2,(f154c4-jmpbase)/256,(f154c4-jmpbase)&255
 x148ff:
-	.dc.b -1,(x14917-x13696)/256,(x14917-x13696)&255
+	.dc.b -1,(x14917-jmpbase)/256,(x14917-jmpbase)&255
 x14902:
 	.dc.b 19
 x14903:
 	.dc.b -5,69
 x14905:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x14908:
 	.dc.b 70
 x14909:
 	.dc.b -3
 x1490a:
-	.dc.b -2,(f154da-x13696)/256,(f154da-x13696)&255
+	.dc.b -2,(f154da-jmpbase)/256,(f154da-jmpbase)&255
 x1490d:
-	.dc.b -1,(x14917-x13696)/256,(x14917-x13696)&255
+	.dc.b -1,(x14917-jmpbase)/256,(x14917-jmpbase)&255
 x14910:
 	.dc.b 19
 x14911:
 	.dc.b -5,69
 x14913:
-	.dc.b -1,(x14139-x13696)/256,(x14139-x13696)&255
+	.dc.b -1,(x14139-jmpbase)/256,(x14139-jmpbase)&255
 x14916:
 	.dc.b -4
 x14917:
 	.dc.b 35
 x14918:
-	.dc.b -1,(x14926-x13696)/256,(x14926-x13696)&255
+	.dc.b -1,(x14926-jmpbase)/256,(x14926-jmpbase)&255
 x1491b:
 	.dc.b 32
 x1491c:
@@ -10663,7 +10670,7 @@ x1491e:
 x1491f:
 	.dc.b -6
 x14920:
-	.dc.b -1,(x14926-x13696)/256,(x14926-x13696)&255
+	.dc.b -1,(x14926-jmpbase)/256,(x14926-jmpbase)&255
 x14923:
 	.dc.b 32
 x14924:
@@ -10673,15 +10680,15 @@ x14925:
 x14926:
 	.dc.b 50
 x14927:
-	.dc.b -1,(x14947-x13696)/256,(x14947-x13696)&255
+	.dc.b -1,(x14947-jmpbase)/256,(x14947-jmpbase)&255
 x1492a:
-	.dc.b -1,(x14951-x13696)/256,(x14951-x13696)&255
+	.dc.b -1,(x14951-jmpbase)/256,(x14951-jmpbase)&255
 x1492d:
 	.dc.b -3
 x1492e:
-	.dc.b -1,(x1434e-x13696)/256,(x1434e-x13696)&255
+	.dc.b -1,(x1434e-jmpbase)/256,(x1434e-jmpbase)&255
 x14931:
-	.dc.b -1,(x14935-x13696)/256,(x14935-x13696)&255
+	.dc.b -1,(x14935-jmpbase)/256,(x14935-jmpbase)&255
 x14934:
 	.dc.b -4
 x14935:
@@ -10689,27 +10696,27 @@ x14935:
 x14936:
 	.dc.b 50
 x14937:
-	.dc.b -1,(x14947-x13696)/256,(x14947-x13696)&255
+	.dc.b -1,(x14947-jmpbase)/256,(x14947-jmpbase)&255
 x1493a:
-	.dc.b -1,(x14951-x13696)/256,(x14951-x13696)&255
+	.dc.b -1,(x14951-jmpbase)/256,(x14951-jmpbase)&255
 x1493d:
 	.dc.b -3
 x1493e:
 	.dc.b 33
 x1493f:
-	.dc.b -1,(x1434e-x13696)/256,(x1434e-x13696)&255
+	.dc.b -1,(x1434e-jmpbase)/256,(x1434e-jmpbase)&255
 x14942:
-	.dc.b -1,(x14935-x13696)/256,(x14935-x13696)&255
+	.dc.b -1,(x14935-jmpbase)/256,(x14935-jmpbase)&255
 x14945:
 	.dc.b -3
 x14946:
 	.dc.b -4
 x14947:
-	.dc.b -1,(x1434e-x13696)/256,(x1434e-x13696)&255
+	.dc.b -1,(x1434e-jmpbase)/256,(x1434e-jmpbase)&255
 x1494a:
 	.dc.b -3
 x1494b:
-	.dc.b -1,(x143ad-x13696)/256,(x143ad-x13696)&255
+	.dc.b -1,(x143ad-jmpbase)/256,(x143ad-jmpbase)&255
 x1494e:
 	.dc.b -5,51
 x14950:
@@ -10717,17 +10724,17 @@ x14950:
 x14951:
 	.dc.b 33
 x14952:
-	.dc.b -1,(x14947-x13696)/256,(x14947-x13696)&255
+	.dc.b -1,(x14947-jmpbase)/256,(x14947-jmpbase)&255
 x14955:
-	.dc.b -1,(x14951-x13696)/256,(x14951-x13696)&255
+	.dc.b -1,(x14951-jmpbase)/256,(x14951-jmpbase)&255
 x14958:
 	.dc.b -3
 x14959:
 	.dc.b -4
 x1495a:
-	.dc.b -2,(f15444-x13696)/256,(f15444-x13696)&255
+	.dc.b -2,(f15444-jmpbase)/256,(f15444-jmpbase)&255
 x1495d:
-	.dc.b -1,(x14962-x13696)/256,(x14962-x13696)&255
+	.dc.b -1,(x14962-jmpbase)/256,(x14962-jmpbase)&255
 x14960:
 	.dc.b 70
 x14961:
@@ -10735,9 +10742,9 @@ x14961:
 x14962:
 	.dc.b 35
 x14963:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x14966:
-	.dc.b -1,(x14982-x13696)/256,(x14982-x13696)&255
+	.dc.b -1,(x14982-jmpbase)/256,(x14982-jmpbase)&255
 x14969:
 	.dc.b 32
 x1496a:
@@ -10747,9 +10754,9 @@ x1496b:
 x1496c:
 	.dc.b -5,157
 x1496e:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x14971:
-	.dc.b -1,(x14982-x13696)/256,(x14982-x13696)&255
+	.dc.b -1,(x14982-jmpbase)/256,(x14982-jmpbase)&255
 x14974:
 	.dc.b 32
 x14975:
@@ -10757,11 +10764,11 @@ x14975:
 x14976:
 	.dc.b 35
 x14977:
-	.dc.b -1,(x143ad-x13696)/256,(x143ad-x13696)&255
+	.dc.b -1,(x143ad-jmpbase)/256,(x143ad-jmpbase)&255
 x1497a:
 	.dc.b -5,51
 x1497c:
-	.dc.b -1,(x14982-x13696)/256,(x14982-x13696)&255
+	.dc.b -1,(x14982-jmpbase)/256,(x14982-jmpbase)&255
 x1497f:
 	.dc.b 32
 x14980:
@@ -10771,9 +10778,9 @@ x14981:
 x14982:
 	.dc.b 33
 x14983:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x14986:
-	.dc.b -1,(x14982-x13696)/256,(x14982-x13696)&255
+	.dc.b -1,(x14982-jmpbase)/256,(x14982-jmpbase)&255
 x14989:
 	.dc.b -3
 x1498a:
@@ -10781,25 +10788,25 @@ x1498a:
 x1498b:
 	.dc.b -5,156
 x1498d:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x14990:
-	.dc.b -1,(x14982-x13696)/256,(x14982-x13696)&255
+	.dc.b -1,(x14982-jmpbase)/256,(x14982-jmpbase)&255
 x14993:
 	.dc.b -3
 x14994:
 	.dc.b 33
 x14995:
-	.dc.b -1,(x143ad-x13696)/256,(x143ad-x13696)&255
+	.dc.b -1,(x143ad-jmpbase)/256,(x143ad-jmpbase)&255
 x14998:
 	.dc.b -5,51
 x1499a:
-	.dc.b -1,(x14982-x13696)/256,(x14982-x13696)&255
+	.dc.b -1,(x14982-jmpbase)/256,(x14982-jmpbase)&255
 x1499d:
 	.dc.b -3
 x1499e:
 	.dc.b -4
 x1499f:
-	.dc.b -2,(f15448-x13696)/256,(f15448-x13696)&255
+	.dc.b -2,(f15448-jmpbase)/256,(f15448-jmpbase)&255
 x149a2:
 	.dc.b 124
 x149a3:
@@ -10811,81 +10818,81 @@ x149a5:
 x149a6:
 	.dc.b -3
 x149a7:
-	.dc.b -2,(f15448-x13696)/256,(f15448-x13696)&255
+	.dc.b -2,(f15448-jmpbase)/256,(f15448-jmpbase)&255
 x149aa:
 	.dc.b 70
 x149ab:
 	.dc.b -4
 x149ac:
-	.dc.b -1,(x143cb-x13696)/256,(x143cb-x13696)&255
+	.dc.b -1,(x143cb-jmpbase)/256,(x143cb-jmpbase)&255
 x149af:
-	.dc.b -1,(x144eb-x13696)/256,(x144eb-x13696)&255
+	.dc.b -1,(x144eb-jmpbase)/256,(x144eb-jmpbase)&255
 x149b2:
-	.dc.b -1,(x143cb-x13696)/256,(x143cb-x13696)&255
+	.dc.b -1,(x143cb-jmpbase)/256,(x143cb-jmpbase)&255
 x149b5:
 	.dc.b 70
 x149b6:
 	.dc.b -3
 x149b7:
-	.dc.b -1,(x143d6-x13696)/256,(x143d6-x13696)&255
+	.dc.b -1,(x143d6-jmpbase)/256,(x143d6-jmpbase)&255
 x149ba:
-	.dc.b -1,(x144eb-x13696)/256,(x144eb-x13696)&255
+	.dc.b -1,(x144eb-jmpbase)/256,(x144eb-jmpbase)&255
 x149bd:
-	.dc.b -1,(x143d6-x13696)/256,(x143d6-x13696)&255
+	.dc.b -1,(x143d6-jmpbase)/256,(x143d6-jmpbase)&255
 x149c0:
 	.dc.b 70
 x149c1:
 	.dc.b -3
 x149c2:
-	.dc.b -1,(x143e1-x13696)/256,(x143e1-x13696)&255
+	.dc.b -1,(x143e1-jmpbase)/256,(x143e1-jmpbase)&255
 x149c5:
-	.dc.b -1,(x144eb-x13696)/256,(x144eb-x13696)&255
+	.dc.b -1,(x144eb-jmpbase)/256,(x144eb-jmpbase)&255
 x149c8:
-	.dc.b -1,(x143e1-x13696)/256,(x143e1-x13696)&255
+	.dc.b -1,(x143e1-jmpbase)/256,(x143e1-jmpbase)&255
 x149cb:
 	.dc.b 70
 x149cc:
 	.dc.b -3
 x149cd:
-	.dc.b -1,(x143ec-x13696)/256,(x143ec-x13696)&255
+	.dc.b -1,(x143ec-jmpbase)/256,(x143ec-jmpbase)&255
 x149d0:
-	.dc.b -1,(x144eb-x13696)/256,(x144eb-x13696)&255
+	.dc.b -1,(x144eb-jmpbase)/256,(x144eb-jmpbase)&255
 x149d3:
-	.dc.b -1,(x143ec-x13696)/256,(x143ec-x13696)&255
+	.dc.b -1,(x143ec-jmpbase)/256,(x143ec-jmpbase)&255
 x149d6:
 	.dc.b 70
 x149d7:
 	.dc.b -3
 x149d8:
-	.dc.b -1,(x143f7-x13696)/256,(x143f7-x13696)&255
+	.dc.b -1,(x143f7-jmpbase)/256,(x143f7-jmpbase)&255
 x149db:
-	.dc.b -1,(x144eb-x13696)/256,(x144eb-x13696)&255
+	.dc.b -1,(x144eb-jmpbase)/256,(x144eb-jmpbase)&255
 x149de:
-	.dc.b -1,(x143f7-x13696)/256,(x143f7-x13696)&255
+	.dc.b -1,(x143f7-jmpbase)/256,(x143f7-jmpbase)&255
 x149e1:
 	.dc.b 70
 x149e2:
 	.dc.b -3
 x149e3:
-	.dc.b -1,(x14402-x13696)/256,(x14402-x13696)&255
+	.dc.b -1,(x14402-jmpbase)/256,(x14402-jmpbase)&255
 x149e6:
-	.dc.b -1,(x144eb-x13696)/256,(x144eb-x13696)&255
+	.dc.b -1,(x144eb-jmpbase)/256,(x144eb-jmpbase)&255
 x149e9:
-	.dc.b -1,(x14402-x13696)/256,(x14402-x13696)&255
+	.dc.b -1,(x14402-jmpbase)/256,(x14402-jmpbase)&255
 x149ec:
 	.dc.b 70
 x149ed:
 	.dc.b -3
 x149ee:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x149f1:
-	.dc.b -2,(f15474-x13696)/256,(f15474-x13696)&255
+	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 x149f4:
 	.dc.b 32
 x149f5:
 	.dc.b 33
 x149f6:
-	.dc.b -2,(f15474-x13696)/256,(f15474-x13696)&255
+	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 x149f9:
 	.dc.b 32
 x149fa:
@@ -10893,13 +10900,13 @@ x149fa:
 x149fb:
 	.dc.b -3
 x149fc:
-	.dc.b -2,(f1547c-x13696)/256,(f1547c-x13696)&255
+	.dc.b -2,(f1547c-jmpbase)/256,(f1547c-jmpbase)&255
 x149ff:
 	.dc.b 32
 x14a00:
 	.dc.b 33
 x14a01:
-	.dc.b -2,(f1547c-x13696)/256,(f1547c-x13696)&255
+	.dc.b -2,(f1547c-jmpbase)/256,(f1547c-jmpbase)&255
 x14a04:
 	.dc.b 32
 x14a05:
@@ -10907,13 +10914,13 @@ x14a05:
 x14a06:
 	.dc.b -3
 x14a07:
-	.dc.b -2,(f15480-x13696)/256,(f15480-x13696)&255
+	.dc.b -2,(f15480-jmpbase)/256,(f15480-jmpbase)&255
 x14a0a:
 	.dc.b 32
 x14a0b:
 	.dc.b 33
 x14a0c:
-	.dc.b -2,(f15480-x13696)/256,(f15480-x13696)&255
+	.dc.b -2,(f15480-jmpbase)/256,(f15480-jmpbase)&255
 x14a0f:
 	.dc.b 32
 x14a10:
@@ -10921,13 +10928,13 @@ x14a10:
 x14a11:
 	.dc.b -3
 x14a12:
-	.dc.b -2,(f15478-x13696)/256,(f15478-x13696)&255
+	.dc.b -2,(f15478-jmpbase)/256,(f15478-jmpbase)&255
 x14a15:
 	.dc.b 32
 x14a16:
 	.dc.b 33
 x14a17:
-	.dc.b -2,(f15478-x13696)/256,(f15478-x13696)&255
+	.dc.b -2,(f15478-jmpbase)/256,(f15478-jmpbase)&255
 x14a1a:
 	.dc.b 32
 x14a1b:
@@ -10935,13 +10942,13 @@ x14a1b:
 x14a1c:
 	.dc.b -3
 x14a1d:
-	.dc.b -2,(f1548c-x13696)/256,(f1548c-x13696)&255
+	.dc.b -2,(f1548c-jmpbase)/256,(f1548c-jmpbase)&255
 x14a20:
 	.dc.b 32
 x14a21:
 	.dc.b 33
 x14a22:
-	.dc.b -2,(f1548c-x13696)/256,(f1548c-x13696)&255
+	.dc.b -2,(f1548c-jmpbase)/256,(f1548c-jmpbase)&255
 x14a25:
 	.dc.b 32
 x14a26:
@@ -10949,13 +10956,13 @@ x14a26:
 x14a27:
 	.dc.b -3
 x14a28:
-	.dc.b -2,(f15490-x13696)/256,(f15490-x13696)&255
+	.dc.b -2,(f15490-jmpbase)/256,(f15490-jmpbase)&255
 x14a2b:
 	.dc.b 32
 x14a2c:
 	.dc.b 33
 x14a2d:
-	.dc.b -2,(f15490-x13696)/256,(f15490-x13696)&255
+	.dc.b -2,(f15490-jmpbase)/256,(f15490-jmpbase)&255
 x14a30:
 	.dc.b 32
 x14a31:
@@ -10963,21 +10970,21 @@ x14a31:
 x14a32:
 	.dc.b -3
 x14a33:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x14a36:
 	.dc.b 7
 x14a37:
-	.dc.b -1,(x14386-x13696)/256,(x14386-x13696)&255
+	.dc.b -1,(x14386-jmpbase)/256,(x14386-jmpbase)&255
 x14a3a:
 	.dc.b 33
 x14a3b:
-	.dc.b -1,(x143ad-x13696)/256,(x143ad-x13696)&255
+	.dc.b -1,(x143ad-jmpbase)/256,(x143ad-jmpbase)&255
 x14a3e:
 	.dc.b 70
 x14a3f:
 	.dc.b -4
 x14a40:
-	.dc.b -2,(f15478-x13696)/256,(f15478-x13696)&255
+	.dc.b -2,(f15478-jmpbase)/256,(f15478-jmpbase)&255
 x14a43:
 	.dc.b 32
 x14a44:
@@ -10985,7 +10992,7 @@ x14a44:
 x14a45:
 	.dc.b -3
 x14a46:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x14a49:
 	.dc.b 175
 x14a4a:
@@ -10995,7 +11002,7 @@ x14a4b:
 x14a4c:
 	.dc.b -3
 x14a4d:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x14a50:
 	.dc.b 176
 x14a51:
@@ -11005,37 +11012,37 @@ x14a52:
 x14a53:
 	.dc.b -3
 x14a54:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x14a57:
-	.dc.b -1,(x14464-x13696)/256,(x14464-x13696)&255
+	.dc.b -1,(x14464-jmpbase)/256,(x14464-jmpbase)&255
 x14a5a:
 	.dc.b -3
 x14a5b:
 	.dc.b 249,55
 x14a5d:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x14a60:
 	.dc.b 33
 x14a61:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x14a64:
 	.dc.b 70
 x14a65:
 	.dc.b -4
 x14a66:
-	.dc.b -1,(x143b2-x13696)/256,(x143b2-x13696)&255
+	.dc.b -1,(x143b2-jmpbase)/256,(x143b2-jmpbase)&255
 x14a69:
 	.dc.b 33
 x14a6a:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x14a6d:
 	.dc.b 70
 x14a6e:
 	.dc.b -4
 x14a6f:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14a72:
-	.dc.b -2,(f1547c-x13696)/256,(f1547c-x13696)&255
+	.dc.b -2,(f1547c-jmpbase)/256,(f1547c-jmpbase)&255
 x14a75:
 	.dc.b 32
 x14a76:
@@ -11043,43 +11050,43 @@ x14a76:
 x14a77:
 	.dc.b -4
 x14a78:
-	.dc.b -1,(x143c6-x13696)/256,(x143c6-x13696)&255
+	.dc.b -1,(x143c6-jmpbase)/256,(x143c6-jmpbase)&255
 x14a7b:
 	.dc.b 33
 x14a7c:
-	.dc.b -1,(x143c6-x13696)/256,(x143c6-x13696)&255
+	.dc.b -1,(x143c6-jmpbase)/256,(x143c6-jmpbase)&255
 x14a7f:
 	.dc.b 33
 x14a80:
-	.dc.b -1,(x143c6-x13696)/256,(x143c6-x13696)&255
+	.dc.b -1,(x143c6-jmpbase)/256,(x143c6-jmpbase)&255
 x14a83:
 	.dc.b 70
 x14a84:
 	.dc.b -3
 x14a85:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x14a88:
-	.dc.b -1,(x143c6-x13696)/256,(x143c6-x13696)&255
+	.dc.b -1,(x143c6-jmpbase)/256,(x143c6-jmpbase)&255
 x14a8b:
 	.dc.b 70
 x14a8c:
 	.dc.b -3
 x14a8d:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x14a90:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x14a93:
 	.dc.b -4
 x14a94:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14a97:
-	.dc.b -1,(x143bc-x13696)/256,(x143bc-x13696)&255
+	.dc.b -1,(x143bc-jmpbase)/256,(x143bc-jmpbase)&255
 x14a9a:
 	.dc.b 33
 x14a9b:
-	.dc.b -1,(x143bc-x13696)/256,(x143bc-x13696)&255
+	.dc.b -1,(x143bc-jmpbase)/256,(x143bc-jmpbase)&255
 x14a9e:
-	.dc.b -1,(x14aa3-x13696)/256,(x14aa3-x13696)&255
+	.dc.b -1,(x14aa3-jmpbase)/256,(x14aa3-jmpbase)&255
 x14aa1:
 	.dc.b 70
 x14aa2:
@@ -11087,15 +11094,15 @@ x14aa2:
 x14aa3:
 	.dc.b 109
 x14aa4:
-	.dc.b -1,(x1503f-x13696)/256,(x1503f-x13696)&255
+	.dc.b -1,(x1503f-jmpbase)/256,(x1503f-jmpbase)&255
 x14aa7:
 	.dc.b -3
 x14aa8:
 	.dc.b -4
 x14aa9:
-	.dc.b -1,(x1434e-x13696)/256,(x1434e-x13696)&255
+	.dc.b -1,(x1434e-jmpbase)/256,(x1434e-jmpbase)&255
 x14aac:
-	.dc.b -1,(x14ab1-x13696)/256,(x14ab1-x13696)&255
+	.dc.b -1,(x14ab1-jmpbase)/256,(x14ab1-jmpbase)&255
 x14aaf:
 	.dc.b 70
 x14ab0:
@@ -11103,107 +11110,107 @@ x14ab0:
 x14ab1:
 	.dc.b 33
 x14ab2:
-	.dc.b -1,(x1434e-x13696)/256,(x1434e-x13696)&255
+	.dc.b -1,(x1434e-jmpbase)/256,(x1434e-jmpbase)&255
 x14ab5:
-	.dc.b -1,(x14ab1-x13696)/256,(x14ab1-x13696)&255
+	.dc.b -1,(x14ab1-jmpbase)/256,(x14ab1-jmpbase)&255
 x14ab8:
 	.dc.b -3
 x14ab9:
 	.dc.b -4
 x14aba:
-	.dc.b -1,(x1433a-x13696)/256,(x1433a-x13696)&255
+	.dc.b -1,(x1433a-jmpbase)/256,(x1433a-jmpbase)&255
 x14abd:
 	.dc.b 33
 x14abe:
-	.dc.b -1,(x1433a-x13696)/256,(x1433a-x13696)&255
+	.dc.b -1,(x1433a-jmpbase)/256,(x1433a-jmpbase)&255
 x14ac1:
 	.dc.b 33
 x14ac2:
-	.dc.b -1,(x1433a-x13696)/256,(x1433a-x13696)&255
+	.dc.b -1,(x1433a-jmpbase)/256,(x1433a-jmpbase)&255
 x14ac5:
 	.dc.b 70
 x14ac6:
 	.dc.b -4
 x14ac7:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14aca:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x14acd:
 	.dc.b 33
 x14ace:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14ad1:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x14ad4:
 	.dc.b 33
 x14ad5:
-	.dc.b -1,(x1433a-x13696)/256,(x1433a-x13696)&255
+	.dc.b -1,(x1433a-jmpbase)/256,(x1433a-jmpbase)&255
 x14ad8:
 	.dc.b 70
 x14ad9:
 	.dc.b -4
 x14ada:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14add:
-	.dc.b -1,(x14139-x13696)/256,(x14139-x13696)&255
+	.dc.b -1,(x14139-jmpbase)/256,(x14139-jmpbase)&255
 x14ae0:
 	.dc.b -4
 x14ae1:
-	.dc.b -1,(x14afe-x13696)/256,(x14afe-x13696)&255
+	.dc.b -1,(x14afe-jmpbase)/256,(x14afe-jmpbase)&255
 x14ae4:
 	.dc.b -3
 x14ae5:
-	.dc.b -1,(x14aed-x13696)/256,(x14aed-x13696)&255
+	.dc.b -1,(x14aed-jmpbase)/256,(x14aed-jmpbase)&255
 x14ae8:
 	.dc.b -3
 x14ae9:
-	.dc.b -1,(x14b91-x13696)/256,(x14b91-x13696)&255
+	.dc.b -1,(x14b91-jmpbase)/256,(x14b91-jmpbase)&255
 x14aec:
 	.dc.b 33
 x14aed:
-	.dc.b -1,(x14b91-x13696)/256,(x14b91-x13696)&255
+	.dc.b -1,(x14b91-jmpbase)/256,(x14b91-jmpbase)&255
 x14af0:
 	.dc.b 33
 x14af1:
-	.dc.b -1,(x14b91-x13696)/256,(x14b91-x13696)&255
+	.dc.b -1,(x14b91-jmpbase)/256,(x14b91-jmpbase)&255
 x14af4:
 	.dc.b 33
 x14af5:
-	.dc.b -1,(x14b91-x13696)/256,(x14b91-x13696)&255
+	.dc.b -1,(x14b91-jmpbase)/256,(x14b91-jmpbase)&255
 x14af8:
 	.dc.b 33
 x14af9:
-	.dc.b -1,(x14b91-x13696)/256,(x14b91-x13696)&255
+	.dc.b -1,(x14b91-jmpbase)/256,(x14b91-jmpbase)&255
 x14afc:
 	.dc.b 70
 x14afd:
 	.dc.b -3
 x14afe:
-	.dc.b -1,(x14b91-x13696)/256,(x14b91-x13696)&255
+	.dc.b -1,(x14b91-jmpbase)/256,(x14b91-jmpbase)&255
 x14b01:
 	.dc.b 33
 x14b02:
-	.dc.b -1,(x14b91-x13696)/256,(x14b91-x13696)&255
+	.dc.b -1,(x14b91-jmpbase)/256,(x14b91-jmpbase)&255
 x14b05:
 	.dc.b 33
 x14b06:
-	.dc.b -1,(x14b91-x13696)/256,(x14b91-x13696)&255
+	.dc.b -1,(x14b91-jmpbase)/256,(x14b91-jmpbase)&255
 x14b09:
 	.dc.b 70
 x14b0a:
 	.dc.b -3
 x14b0b:
-	.dc.b -1,(x14b91-x13696)/256,(x14b91-x13696)&255
+	.dc.b -1,(x14b91-jmpbase)/256,(x14b91-jmpbase)&255
 x14b0e:
 	.dc.b 33
 x14b0f:
-	.dc.b -1,(x14b91-x13696)/256,(x14b91-x13696)&255
+	.dc.b -1,(x14b91-jmpbase)/256,(x14b91-jmpbase)&255
 x14b12:
 	.dc.b 70
 x14b13:
 	.dc.b -3
 x14b14:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x14b17:
 	.dc.b -3
 x14b18:
@@ -11217,47 +11224,47 @@ x14b1b:
 x14b1c:
 	.dc.b -5,208
 x14b1e:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x14b21:
 	.dc.b -4
 x14b22:
-	.dc.b -1,(x144f6-x13696)/256,(x144f6-x13696)&255
+	.dc.b -1,(x144f6-jmpbase)/256,(x144f6-jmpbase)&255
 x14b25:
 	.dc.b 33
 x14b26:
-	.dc.b -1,(x14464-x13696)/256,(x14464-x13696)&255
+	.dc.b -1,(x14464-jmpbase)/256,(x14464-jmpbase)&255
 x14b29:
 	.dc.b -4
 x14b2a:
-	.dc.b -1,(x144f6-x13696)/256,(x144f6-x13696)&255
+	.dc.b -1,(x144f6-jmpbase)/256,(x144f6-jmpbase)&255
 x14b2d:
 	.dc.b 33
 x14b2e:
-	.dc.b -2,(f15478-x13696)/256,(f15478-x13696)&255
+	.dc.b -2,(f15478-jmpbase)/256,(f15478-jmpbase)&255
 x14b31:
 	.dc.b 32
 x14b32:
-	.dc.b -1,(x14b49-x13696)/256,(x14b49-x13696)&255
+	.dc.b -1,(x14b49-jmpbase)/256,(x14b49-jmpbase)&255
 x14b35:
 	.dc.b 70
 x14b36:
 	.dc.b -4
 x14b37:
-	.dc.b -1,(x144f6-x13696)/256,(x144f6-x13696)&255
+	.dc.b -1,(x144f6-jmpbase)/256,(x144f6-jmpbase)&255
 x14b3a:
 	.dc.b 33
 x14b3b:
-	.dc.b -2,(f15478-x13696)/256,(f15478-x13696)&255
+	.dc.b -2,(f15478-jmpbase)/256,(f15478-jmpbase)&255
 x14b3e:
 	.dc.b 32
 x14b3f:
 	.dc.b 33
 x14b40:
-	.dc.b -1,(x14b4f-x13696)/256,(x14b4f-x13696)&255
+	.dc.b -1,(x14b4f-jmpbase)/256,(x14b4f-jmpbase)&255
 x14b43:
 	.dc.b 33
 x14b44:
-	.dc.b -1,(x14346-x13696)/256,(x14346-x13696)&255
+	.dc.b -1,(x14346-jmpbase)/256,(x14346-jmpbase)&255
 x14b47:
 	.dc.b 70
 x14b48:
@@ -11265,45 +11272,45 @@ x14b48:
 x14b49:
 	.dc.b 33
 x14b4a:
-	.dc.b -1,(x14b4f-x13696)/256,(x14b4f-x13696)&255
+	.dc.b -1,(x14b4f-jmpbase)/256,(x14b4f-jmpbase)&255
 x14b4d:
 	.dc.b -3
 x14b4e:
 	.dc.b -4
 x14b4f:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x14b52:
-	.dc.b -1,(x14b56-x13696)/256,(x14b56-x13696)&255
+	.dc.b -1,(x14b56-jmpbase)/256,(x14b56-jmpbase)&255
 x14b55:
 	.dc.b -4
 x14b56:
 	.dc.b 71
 x14b57:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x14b5a:
 	.dc.b -3
 x14b5b:
 	.dc.b -4
 x14b5c:
-	.dc.b -1,(x15036-x13696)/256,(x15036-x13696)&255
+	.dc.b -1,(x15036-jmpbase)/256,(x15036-jmpbase)&255
 x14b5f:
-	.dc.b -1,(x14532-x13696)/256,(x14532-x13696)&255
+	.dc.b -1,(x14532-jmpbase)/256,(x14532-jmpbase)&255
 x14b62:
-	.dc.b -1,(x1503c-x13696)/256,(x1503c-x13696)&255
+	.dc.b -1,(x1503c-jmpbase)/256,(x1503c-jmpbase)&255
 x14b65:
-	.dc.b -1,(x14b90-x13696)/256,(x14b90-x13696)&255
+	.dc.b -1,(x14b90-jmpbase)/256,(x14b90-jmpbase)&255
 x14b68:
 	.dc.b 70
 x14b69:
 	.dc.b -4
 x14b6a:
-	.dc.b -1,(x14464-x13696)/256,(x14464-x13696)&255
+	.dc.b -1,(x14464-jmpbase)/256,(x14464-jmpbase)&255
 x14b6d:
 	.dc.b -3
 x14b6e:
 	.dc.b -5,168
 x14b70:
-	.dc.b -1,(x1445e-x13696)/256,(x1445e-x13696)&255
+	.dc.b -1,(x1445e-jmpbase)/256,(x1445e-jmpbase)&255
 x14b73:
 	.dc.b -4
 x14b74:
@@ -11313,19 +11320,19 @@ x14b75:
 x14b76:
 	.dc.b -5,174
 x14b78:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x14b7b:
 	.dc.b -3
 x14b7c:
 	.dc.b -5,176
 x14b7e:
-	.dc.b -1,(x14461-x13696)/256,(x14461-x13696)&255
+	.dc.b -1,(x14461-jmpbase)/256,(x14461-jmpbase)&255
 x14b81:
 	.dc.b -3
 x14b82:
 	.dc.b -5,178
 x14b84:
-	.dc.b -1,(x1445e-x13696)/256,(x1445e-x13696)&255
+	.dc.b -1,(x1445e-jmpbase)/256,(x1445e-jmpbase)&255
 x14b87:
 	.dc.b -4
 x14b88:
@@ -11335,31 +11342,31 @@ x14b89:
 x14b8a:
 	.dc.b -5,182
 x14b8c:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x14b8f:
 	.dc.b -4
 x14b90:
 	.dc.b 33
 x14b91:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x14b94:
 	.dc.b -3
 x14b95:
 	.dc.b -4
 x14b96:
-	.dc.b -2,(f158f8-x13696)/256,(f158f8-x13696)&255
+	.dc.b -2,(f158f8-jmpbase)/256,(f158f8-jmpbase)&255
 x14b99:
 	.dc.b -3
 x14b9a:
-	.dc.b -1,(x14ba8-x13696)/256,(x14ba8-x13696)&255
+	.dc.b -1,(x14ba8-jmpbase)/256,(x14ba8-jmpbase)&255
 x14b9d:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x14ba0:
 	.dc.b -3
 x14ba1:
-	.dc.b -1,(x14bb2-x13696)/256,(x14bb2-x13696)&255
+	.dc.b -1,(x14bb2-jmpbase)/256,(x14bb2-jmpbase)&255
 x14ba4:
-	.dc.b -1,(x14bc8-x13696)/256,(x14bc8-x13696)&255
+	.dc.b -1,(x14bc8-jmpbase)/256,(x14bc8-jmpbase)&255
 x14ba7:
 	.dc.b -4
 x14ba8:
@@ -11379,48 +11386,48 @@ x14bb0:
 x14bb1:
 	.dc.b -4
 x14bb2:
-	.dc.b -2,(f13c9a-x13696)/256,(f13c9a-x13696)&255
+	.dc.b -2,(f13c9a-jmpbase)/256,(f13c9a-jmpbase)&255
 x14bb5:
 	.dc.b -3
 x14bb6:
-	.dc.b -1,(x14bd0-x13696)/256,(x14bd0-x13696)&255
+	.dc.b -1,(x14bd0-jmpbase)/256,(x14bd0-jmpbase)&255
 x14bb9:
 	.dc.b -3
 x14bba:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x14bbd:
-	.dc.b -1,(x1517e-x13696)/256,(x1517e-x13696)&255
+	.dc.b -1,(x1517e-jmpbase)/256,(x1517e-jmpbase)&255
 x14bc0:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x14bc3:
 	.dc.b -3
 x14bc4:
-	.dc.b -1,(x1433a-x13696)/256,(x1433a-x13696)&255
+	.dc.b -1,(x1433a-jmpbase)/256,(x1433a-jmpbase)&255
 x14bc7:
 	.dc.b -4
 x14bc8:
-	.dc.b -2,(f1369a-x13696)/256,(f1369a-x13696)&255
+	.dc.b -2,(f1369a-jmpbase)/256,(f1369a-jmpbase)&255
 x14bcb:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x14bce:
 	.dc.b -3
 x14bcf:
 	.dc.b -4
 x14bd0:
-	.dc.b -2,(f14bde-x13696)/256,(f14bde-x13696)&255
+	.dc.b -2,(f14bde-jmpbase)/256,(f14bde-jmpbase)&255
 x14bd3:
 	.dc.b -3
 x14bd4:
-	.dc.b -1,(x15160-x13696)/256,(x15160-x13696)&255
+	.dc.b -1,(x15160-jmpbase)/256,(x15160-jmpbase)&255
 x14bd7:
-	.dc.b -2,(f154c4-x13696)/256,(f154c4-x13696)&255
+	.dc.b -2,(f154c4-jmpbase)/256,(f154c4-jmpbase)&255
 x14bda:
-	.dc.b -1,(x14962-x13696)/256,(x14962-x13696)&255
+	.dc.b -1,(x14962-jmpbase)/256,(x14962-jmpbase)&255
 x14bdd:
 	.dc.b -4
 
 f14bde:
-		bsr        x13abe
+		bsr        find_function
 		lea.l      x14d34(pc),a2
 
 x14be6:
@@ -11435,89 +11442,89 @@ x14be6_1:
 		move.b     d0,(a1)+
 		move.b     0(a2,d0.w),d0
 		beq        f13c9a_6
-		lea.l      x13696(pc),a2
+		lea.l      jmpbase(pc),a2
 		adda.w     x14c16(pc,d0.w),a2
 		addq.l     #4,a7
 		bra        x1395a_1
 
 /* gbe: 55256 */
 x14c16:
-		.dc.w x13696-x13696
-		.dc.w x14d00-x13696
-		.dc.w x14cfd-x13696
-		.dc.w x14cfa-x13696
-		.dc.w x14cf7-x13696
-		.dc.w x14cf4-x13696
-		.dc.w x14d04-x13696
-		.dc.w x14d09-x13696
-		.dc.w x14d03-x13696
-		.dc.w x14d0e-x13696
-		.dc.w x14ee8-x13696
-		.dc.w x14f3c-x13696
-		.dc.w x14f41-x13696
-		.dc.w x14f4a-x13696
-		.dc.w x14f55-x13696
-		.dc.w x14f4d-x13696
-		.dc.w x14f5d-x13696
-		.dc.w x14f52-x13696
-		.dc.w x14cee-x13696
-		.dc.w x14f6e-x13696
-		.dc.w x14f76-x13696
-		.dc.w x14ce8-x13696
-		.dc.w x14f8a-x13696
-		.dc.w x14f6a-x13696
-		.dc.w x14f7a-x13696
-		.dc.w x14f66-x13696
-		.dc.w x14cf1-x13696
-		.dc.w x14ceb-x13696
-		.dc.w x14f23-x13696
-		.dc.w x14f87-x13696
-		.dc.w x14f83-x13696
-		.dc.w x14f92-x13696
-		.dc.w x14fae-x13696
-		.dc.w x14d23-x13696
-		.dc.w x14fdc-x13696
-		.dc.w x14fe1-x13696
-		.dc.w x14fe5-x13696
-		.dc.w x14ff3-x13696
-		.dc.w x14fee-x13696
-		.dc.w x14ffb-x13696
-		.dc.w x15000-x13696
-		.dc.w x15005-x13696
-		.dc.w x15010-x13696
-		.dc.w x14ca9-x13696
-		.dc.w x14cb2-x13696
-		.dc.w x14cbb-x13696
-		.dc.w x14cc4-x13696
-		.dc.w x14ccd-x13696
-		.dc.w x14cd6-x13696
-		.dc.w x14cdf-x13696
-		.dc.w x14d13-x13696
-		.dc.w x14f05-x13696
-		.dc.w x14f0d-x13696
-		.dc.w x14fc5-x13696
-		.dc.w x14f34-x13696
-		.dc.w x14c97-x13696
-		.dc.w x14efd-x13696
-		.dc.w x14ef4-x13696
-		.dc.w x14c8e-x13696
-		.dc.w x13696-x13696
+		.dc.w f13696-jmpbase
+		.dc.w x14d00-jmpbase
+		.dc.w x14cfd-jmpbase
+		.dc.w x14cfa-jmpbase
+		.dc.w x14cf7-jmpbase
+		.dc.w x14cf4-jmpbase
+		.dc.w x14d04-jmpbase
+		.dc.w x14d09-jmpbase
+		.dc.w x14d03-jmpbase
+		.dc.w x14d0e-jmpbase
+		.dc.w x14ee8-jmpbase
+		.dc.w x14f3c-jmpbase
+		.dc.w x14f41-jmpbase
+		.dc.w x14f4a-jmpbase
+		.dc.w x14f55-jmpbase
+		.dc.w x14f4d-jmpbase
+		.dc.w x14f5d-jmpbase
+		.dc.w x14f52-jmpbase
+		.dc.w x14cee-jmpbase
+		.dc.w x14f6e-jmpbase
+		.dc.w x14f76-jmpbase
+		.dc.w x14ce8-jmpbase
+		.dc.w x14f8a-jmpbase
+		.dc.w x14f6a-jmpbase
+		.dc.w x14f7a-jmpbase
+		.dc.w x14f66-jmpbase
+		.dc.w x14cf1-jmpbase
+		.dc.w x14ceb-jmpbase
+		.dc.w x14f23-jmpbase
+		.dc.w x14f87-jmpbase
+		.dc.w x14f83-jmpbase
+		.dc.w x14f92-jmpbase
+		.dc.w x14fae-jmpbase
+		.dc.w x14d23-jmpbase
+		.dc.w x14fdc-jmpbase
+		.dc.w x14fe1-jmpbase
+		.dc.w x14fe5-jmpbase
+		.dc.w x14ff3-jmpbase
+		.dc.w x14fee-jmpbase
+		.dc.w x14ffb-jmpbase
+		.dc.w x15000-jmpbase
+		.dc.w x15005-jmpbase
+		.dc.w x15010-jmpbase
+		.dc.w x14ca9-jmpbase
+		.dc.w x14cb2-jmpbase
+		.dc.w x14cbb-jmpbase
+		.dc.w x14cc4-jmpbase
+		.dc.w x14ccd-jmpbase
+		.dc.w x14cd6-jmpbase
+		.dc.w x14cdf-jmpbase
+		.dc.w x14d13-jmpbase
+		.dc.w x14f05-jmpbase
+		.dc.w x14f0d-jmpbase
+		.dc.w x14fc5-jmpbase
+		.dc.w x14f34-jmpbase
+		.dc.w x14c97-jmpbase
+		.dc.w x14efd-jmpbase
+		.dc.w x14ef4-jmpbase
+		.dc.w x14c8e-jmpbase
+		.dc.w f13696-jmpbase
 
 
 x14c8e:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x14c91:
 	.dc.b 33
 x14c92:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x14c95:
 	.dc.b 32
 x14c96:
 	.dc.b -4
 x14c97:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x14c9a:
-	.dc.b -1,(x14c9f-x13696)/256,(x14c9f-x13696)&255
+	.dc.b -1,(x14c9f-jmpbase)/256,(x14c9f-jmpbase)&255
 x14c9d:
 	.dc.b 32
 x14c9e:
@@ -11525,11 +11532,11 @@ x14c9e:
 x14c9f:
 	.dc.b 33
 x14ca0:
-	.dc.b -1,(x15036-x13696)/256,(x15036-x13696)&255
+	.dc.b -1,(x15036-jmpbase)/256,(x15036-jmpbase)&255
 x14ca3:
 	.dc.b 33
 x14ca4:
-	.dc.b -1,(x15036-x13696)/256,(x15036-x13696)&255
+	.dc.b -1,(x15036-jmpbase)/256,(x15036-jmpbase)&255
 x14ca7:
 	.dc.b -3
 x14ca8:
@@ -11541,7 +11548,7 @@ x14cab:
 x14cac:
 	.dc.b -5,1
 x14cae:
-	.dc.b -1,(x14cfd-x13696)/256,(x14cfd-x13696)&255
+	.dc.b -1,(x14cfd-jmpbase)/256,(x14cfd-jmpbase)&255
 x14cb1:
 	.dc.b -4
 x14cb2:
@@ -11551,7 +11558,7 @@ x14cb4:
 x14cb5:
 	.dc.b -5,4
 x14cb7:
-	.dc.b -1,(x14cfd-x13696)/256,(x14cfd-x13696)&255
+	.dc.b -1,(x14cfd-jmpbase)/256,(x14cfd-jmpbase)&255
 x14cba:
 	.dc.b -4
 x14cbb:
@@ -11561,7 +11568,7 @@ x14cbd:
 x14cbe:
 	.dc.b -5,5
 x14cc0:
-	.dc.b -1,(x14cfd-x13696)/256,(x14cfd-x13696)&255
+	.dc.b -1,(x14cfd-jmpbase)/256,(x14cfd-jmpbase)&255
 x14cc3:
 	.dc.b -4
 x14cc4:
@@ -11571,7 +11578,7 @@ x14cc6:
 x14cc7:
 	.dc.b -5,6
 x14cc9:
-	.dc.b -1,(x14cfd-x13696)/256,(x14cfd-x13696)&255
+	.dc.b -1,(x14cfd-jmpbase)/256,(x14cfd-jmpbase)&255
 x14ccc:
 	.dc.b -4
 x14ccd:
@@ -11581,7 +11588,7 @@ x14ccf:
 x14cd0:
 	.dc.b -5,7
 x14cd2:
-	.dc.b -1,(x14cfd-x13696)/256,(x14cfd-x13696)&255
+	.dc.b -1,(x14cfd-jmpbase)/256,(x14cfd-jmpbase)&255
 x14cd5:
 	.dc.b -4
 x14cd6:
@@ -11591,7 +11598,7 @@ x14cd8:
 x14cd9:
 	.dc.b -5,8
 x14cdb:
-	.dc.b -1,(x14cfd-x13696)/256,(x14cfd-x13696)&255
+	.dc.b -1,(x14cfd-jmpbase)/256,(x14cfd-jmpbase)&255
 x14cde:
 	.dc.b -4
 x14cdf:
@@ -11601,49 +11608,49 @@ x14ce1:
 x14ce2:
 	.dc.b -5,9
 x14ce4:
-	.dc.b -1,(x14cfd-x13696)/256,(x14cfd-x13696)&255
+	.dc.b -1,(x14cfd-jmpbase)/256,(x14cfd-jmpbase)&255
 x14ce7:
 	.dc.b -4
 x14ce8:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14ceb:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14cee:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14cf1:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14cf4:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14cf7:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14cfa:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14cfd:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14d00:
-	.dc.b -1,(x14c92-x13696)/256,(x14c92-x13696)&255
+	.dc.b -1,(x14c92-jmpbase)/256,(x14c92-jmpbase)&255
 x14d03:
 	.dc.b -4
 x14d04:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x14d07:
 	.dc.b 32
 x14d08:
 	.dc.b -4
 x14d09:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x14d0c:
 	.dc.b 32
 x14d0d:
 	.dc.b -4
 x14d0e:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x14d11:
 	.dc.b 88
 x14d12:
 	.dc.b -4
 x14d13:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 
 x14d16:
 	.dc.b 32
@@ -11654,17 +11661,17 @@ x14d18:
 x14d19:
 	.dc.b -5,113
 x14d1b:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x14d1e:
 	.dc.b 33
 x14d1f:
-	.dc.b -1,(x14c92-x13696)/256,(x14c92-x13696)&255
+	.dc.b -1,(x14c92-jmpbase)/256,(x14c92-jmpbase)&255
 x14d22:
 	.dc.b -4
 x14d23:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x14d26:
-	.dc.b -1,(x14d2b-x13696)/256,(x14d2b-x13696)&255
+	.dc.b -1,(x14d2b-jmpbase)/256,(x14d2b-jmpbase)&255
 x14d29:
 	.dc.b 32
 x14d2a:
@@ -11672,9 +11679,9 @@ x14d2a:
 x14d2b:
 	.dc.b 33
 x14d2c:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x14d2f:
-	.dc.b -1,(x14d2b-x13696)/256,(x14d2b-x13696)&255
+	.dc.b -1,(x14d2b-jmpbase)/256,(x14d2b-jmpbase)&255
 x14d32:
 	.dc.b -3
 x14d33:
@@ -11906,47 +11913,47 @@ x14df8:
 
 x14ee8:
 
-	.dc.b -1,(x1502d-x13696)/256,(x1502d-x13696)&255
+	.dc.b -1,(x1502d-jmpbase)/256,(x1502d-jmpbase)&255
 x14eeb:
 	.dc.b 33
 x14eec:
-	.dc.b -1,(x1502d-x13696)/256,(x1502d-x13696)&255
+	.dc.b -1,(x1502d-jmpbase)/256,(x1502d-jmpbase)&255
 x14eef:
-	.dc.b -1,(x14f19-x13696)/256,(x14f19-x13696)&255
+	.dc.b -1,(x14f19-jmpbase)/256,(x14f19-jmpbase)&255
 x14ef2:
 	.dc.b 32
 x14ef3:
 	.dc.b -4
 x14ef4:
-	.dc.b -1,(x15039-x13696)/256,(x15039-x13696)&255
+	.dc.b -1,(x15039-jmpbase)/256,(x15039-jmpbase)&255
 x14ef7:
 	.dc.b 33
 x14ef8:
-	.dc.b -1,(x1440d-x13696)/256,(x1440d-x13696)&255
+	.dc.b -1,(x1440d-jmpbase)/256,(x1440d-jmpbase)&255
 x14efb:
 	.dc.b 32
 x14efc:
 	.dc.b -4
 x14efd:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x14f00:
-	.dc.b -1,(x14f15-x13696)/256,(x14f15-x13696)&255
+	.dc.b -1,(x14f15-jmpbase)/256,(x14f15-jmpbase)&255
 x14f03:
 	.dc.b 32
 x14f04:
 	.dc.b -4
 x14f05:
-	.dc.b -1,(x1503c-x13696)/256,(x1503c-x13696)&255
+	.dc.b -1,(x1503c-jmpbase)/256,(x1503c-jmpbase)&255
 x14f08:
-	.dc.b -1,(x14f1d-x13696)/256,(x14f1d-x13696)&255
+	.dc.b -1,(x14f1d-jmpbase)/256,(x14f1d-jmpbase)&255
 x14f0b:
 	.dc.b 32
 x14f0c:
 	.dc.b -4
 x14f0d:
-	.dc.b -1,(x15036-x13696)/256,(x15036-x13696)&255
+	.dc.b -1,(x15036-jmpbase)/256,(x15036-jmpbase)&255
 x14f10:
-	.dc.b -1,(x14f1d-x13696)/256,(x14f1d-x13696)&255
+	.dc.b -1,(x14f1d-jmpbase)/256,(x14f1d-jmpbase)&255
 x14f13:
 	.dc.b 32
 x14f14:
@@ -11954,21 +11961,21 @@ x14f14:
 x14f15:
 	.dc.b 33
 x14f16:
-	.dc.b -1,(x14415-x13696)/256,(x14415-x13696)&255
+	.dc.b -1,(x14415-jmpbase)/256,(x14415-jmpbase)&255
 x14f19:
 	.dc.b 33
 x14f1a:
-	.dc.b -1,(x14415-x13696)/256,(x14415-x13696)&255
+	.dc.b -1,(x14415-jmpbase)/256,(x14415-jmpbase)&255
 x14f1d:
 	.dc.b 33
 x14f1e:
-	.dc.b -1,(x1440d-x13696)/256,(x1440d-x13696)&255
+	.dc.b -1,(x1440d-jmpbase)/256,(x1440d-jmpbase)&255
 x14f21:
 	.dc.b -3
 x14f22:
 	.dc.b -4
 x14f23:
-	.dc.b -1,(x14f1e-x13696)/256,(x14f1e-x13696)&255
+	.dc.b -1,(x14f1e-jmpbase)/256,(x14f1e-jmpbase)&255
 x14f26:
 	.dc.b 32
 x14f27:
@@ -11976,7 +11983,7 @@ x14f27:
 x14f28:
 	.dc.b 33
 x14f29:
-	.dc.b -1,(x14415-x13696)/256,(x14415-x13696)&255
+	.dc.b -1,(x14415-jmpbase)/256,(x14415-jmpbase)&255
 x14f2c:
 	.dc.b -3
 x14f2d:
@@ -11984,137 +11991,137 @@ x14f2d:
 x14f2e:
 	.dc.b 33
 x14f2f:
-	.dc.b -1,(x14342-x13696)/256,(x14342-x13696)&255
+	.dc.b -1,(x14342-jmpbase)/256,(x14342-jmpbase)&255
 x14f32:
 	.dc.b -3
 x14f33:
 	.dc.b -4
 x14f34:
-	.dc.b -1,(x1439e-x13696)/256,(x1439e-x13696)&255
+	.dc.b -1,(x1439e-jmpbase)/256,(x1439e-jmpbase)&255
 x14f37:
-	.dc.b -1,(x14f2e-x13696)/256,(x14f2e-x13696)&255
+	.dc.b -1,(x14f2e-jmpbase)/256,(x14f2e-jmpbase)&255
 x14f3a:
 	.dc.b 32
 x14f3b:
 	.dc.b -4
 x14f3c:
-	.dc.b -1,(x1439e-x13696)/256,(x1439e-x13696)&255
+	.dc.b -1,(x1439e-jmpbase)/256,(x1439e-jmpbase)&255
 x14f3f:
 	.dc.b 32
 x14f40:
 	.dc.b -4
 x14f41:
-	.dc.b -1,(x1503c-x13696)/256,(x1503c-x13696)&255
+	.dc.b -1,(x1503c-jmpbase)/256,(x1503c-jmpbase)&255
 x14f44:
 	.dc.b 33
 x14f45:
-	.dc.b -1,(x14fa6-x13696)/256,(x14fa6-x13696)&255
+	.dc.b -1,(x14fa6-jmpbase)/256,(x14fa6-jmpbase)&255
 x14f48:
 	.dc.b 32
 x14f49:
 	.dc.b -4
 x14f4a:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14f4d:
-	.dc.b -1,(x143ec-x13696)/256,(x143ec-x13696)&255
+	.dc.b -1,(x143ec-jmpbase)/256,(x143ec-jmpbase)&255
 x14f50:
 	.dc.b 32
 x14f51:
 	.dc.b -4
 x14f52:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14f55:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14f58:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x14f5b:
 	.dc.b 32
 x14f5c:
 	.dc.b -4
 x14f5d:
-	.dc.b -1,(x14346-x13696)/256,(x14346-x13696)&255
+	.dc.b -1,(x14346-jmpbase)/256,(x14346-jmpbase)&255
 x14f60:
 	.dc.b 33
 x14f61:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x14f64:
 	.dc.b 32
 x14f65:
 	.dc.b -4
 x14f66:
-	.dc.b -1,(x15039-x13696)/256,(x15039-x13696)&255
+	.dc.b -1,(x15039-jmpbase)/256,(x15039-jmpbase)&255
 x14f69:
 	.dc.b 33
 x14f6a:
-	.dc.b -1,(x1503f-x13696)/256,(x1503f-x13696)&255
+	.dc.b -1,(x1503f-jmpbase)/256,(x1503f-jmpbase)&255
 x14f6d:
 	.dc.b 33
 x14f6e:
-	.dc.b -1,(x1503f-x13696)/256,(x1503f-x13696)&255
+	.dc.b -1,(x1503f-jmpbase)/256,(x1503f-jmpbase)&255
 x14f71:
-	.dc.b -1,(x14f28-x13696)/256,(x14f28-x13696)&255
+	.dc.b -1,(x14f28-jmpbase)/256,(x14f28-jmpbase)&255
 x14f74:
 	.dc.b 32
 x14f75:
 	.dc.b -4
 x14f76:
-	.dc.b -1,(x1503f-x13696)/256,(x1503f-x13696)&255
+	.dc.b -1,(x1503f-jmpbase)/256,(x1503f-jmpbase)&255
 x14f79:
 	.dc.b 33
 x14f7a:
-	.dc.b -1,(x1503c-x13696)/256,(x1503c-x13696)&255
+	.dc.b -1,(x1503c-jmpbase)/256,(x1503c-jmpbase)&255
 x14f7d:
 	.dc.b 33
 x14f7e:
-	.dc.b -1,(x14342-x13696)/256,(x14342-x13696)&255
+	.dc.b -1,(x14342-jmpbase)/256,(x14342-jmpbase)&255
 x14f81:
 	.dc.b 32
 x14f82:
 	.dc.b -4
 x14f83:
-	.dc.b -1,(x15039-x13696)/256,(x15039-x13696)&255
+	.dc.b -1,(x15039-jmpbase)/256,(x15039-jmpbase)&255
 x14f86:
 	.dc.b 33
 x14f87:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14f8a:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x14f8d:
-	.dc.b -1,(x14f1d-x13696)/256,(x14f1d-x13696)&255
+	.dc.b -1,(x14f1d-jmpbase)/256,(x14f1d-jmpbase)&255
 x14f90:
 	.dc.b 32
 x14f91:
 	.dc.b -4
 x14f92:
-	.dc.b -1,(x1503f-x13696)/256,(x1503f-x13696)&255
+	.dc.b -1,(x1503f-jmpbase)/256,(x1503f-jmpbase)&255
 x14f95:
 	.dc.b 33
 x14f96:
-	.dc.b -1,(x14346-x13696)/256,(x14346-x13696)&255
+	.dc.b -1,(x14346-jmpbase)/256,(x14346-jmpbase)&255
 x14f99:
 	.dc.b 32
 x14f9a:
 	.dc.b -4
 x14f9b:
-	.dc.b -1,(x14fa6-x13696)/256,(x14fa6-x13696)&255
+	.dc.b -1,(x14fa6-jmpbase)/256,(x14fa6-jmpbase)&255
 x14f9e:
 	.dc.b 33
 x14f9f:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x14fa2:
 	.dc.b -4
 x14fa3:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14fa6:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x14fa9:
 	.dc.b 33
 x14faa:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x14fad:
 	.dc.b -4
 x14fae:
-	.dc.b -1,(x14fa6-x13696)/256,(x14fa6-x13696)&255
+	.dc.b -1,(x14fa6-jmpbase)/256,(x14fa6-jmpbase)&255
 x14fb1:
 	.dc.b 32
 x14fb2:
@@ -12126,7 +12133,7 @@ x14fb4:
 x14fb5:
 	.dc.b -5,69
 x14fb7:
-	.dc.b -1,(x14fa3-x13696)/256,(x14fa3-x13696)&255
+	.dc.b -1,(x14fa3-jmpbase)/256,(x14fa3-jmpbase)&255
 x14fba:
 	.dc.b 32
 x14fbb:
@@ -12138,13 +12145,13 @@ x14fbd:
 x14fbe:
 	.dc.b -5,70
 x14fc0:
-	.dc.b -1,(x14f9b-x13696)/256,(x14f9b-x13696)&255
+	.dc.b -1,(x14f9b-jmpbase)/256,(x14f9b-jmpbase)&255
 x14fc3:
 	.dc.b 32
 x14fc4:
 	.dc.b -4
 x14fc5:
-	.dc.b -1,(x14fa6-x13696)/256,(x14fa6-x13696)&255
+	.dc.b -1,(x14fa6-jmpbase)/256,(x14fa6-jmpbase)&255
 x14fc8:
 	.dc.b 32
 x14fc9:
@@ -12156,7 +12163,7 @@ x14fcb:
 x14fcc:
 	.dc.b -5,210
 x14fce:
-	.dc.b -1,(x14fa3-x13696)/256,(x14fa3-x13696)&255
+	.dc.b -1,(x14fa3-jmpbase)/256,(x14fa3-jmpbase)&255
 x14fd1:
 	.dc.b 32
 x14fd2:
@@ -12168,33 +12175,33 @@ x14fd4:
 x14fd5:
 	.dc.b -5,211
 x14fd7:
-	.dc.b -1,(x14f9b-x13696)/256,(x14f9b-x13696)&255
+	.dc.b -1,(x14f9b-jmpbase)/256,(x14f9b-jmpbase)&255
 x14fda:
 	.dc.b 32
 x14fdb:
 	.dc.b -4
 x14fdc:
-	.dc.b -1,(x14fe1-x13696)/256,(x14fe1-x13696)&255
+	.dc.b -1,(x14fe1-jmpbase)/256,(x14fe1-jmpbase)&255
 x14fdf:
 	.dc.b 32
 x14fe0:
 	.dc.b -4
 x14fe1:
-	.dc.b -1,(x14336-x13696)/256,(x14336-x13696)&255
+	.dc.b -1,(x14336-jmpbase)/256,(x14336-jmpbase)&255
 x14fe4:
 	.dc.b -4
 x14fe5:
-	.dc.b -1,(x14fe9-x13696)/256,(x14fe9-x13696)&255
+	.dc.b -1,(x14fe9-jmpbase)/256,(x14fe9-jmpbase)&255
 x14fe8:
 	.dc.b -4
 x14fe9:
-	.dc.b -1,(x1434e-x13696)/256,(x1434e-x13696)&255
+	.dc.b -1,(x1434e-jmpbase)/256,(x1434e-jmpbase)&255
 x14fec:
 	.dc.b 32
 x14fed:
 	.dc.b -3
 x14fee:
-	.dc.b -1,(x143ad-x13696)/256,(x143ad-x13696)&255
+	.dc.b -1,(x143ad-jmpbase)/256,(x143ad-jmpbase)&255
 x14ff1:
 	.dc.b 32
 x14ff2:
@@ -12204,53 +12211,53 @@ x14ff3:
 x14ff5:
 	.dc.b 249,189
 x14ff7:
-	.dc.b -1,(x1501f-x13696)/256,(x1501f-x13696)&255
+	.dc.b -1,(x1501f-jmpbase)/256,(x1501f-jmpbase)&255
 x14ffa:
 	.dc.b -4
 x14ffb:
-	.dc.b -1,(x15046-x13696)/256,(x15046-x13696)&255
+	.dc.b -1,(x15046-jmpbase)/256,(x15046-jmpbase)&255
 x14ffe:
 	.dc.b 32
 x14fff:
 	.dc.b -4
 x15000:
-	.dc.b -1,(x144dd-x13696)/256,(x144dd-x13696)&255
+	.dc.b -1,(x144dd-jmpbase)/256,(x144dd-jmpbase)&255
 x15003:
 	.dc.b 32
 x15004:
 	.dc.b -4
 x15005:
-	.dc.b -2,(f154aa-x13696)/256,(f154aa-x13696)&255
+	.dc.b -2,(f154aa-jmpbase)/256,(f154aa-jmpbase)&255
 x15008:
 	.dc.b 35
 x15009:
 	.dc.b -5,157
 x1500b:
-	.dc.b -1,(x15050-x13696)/256,(x15050-x13696)&255
+	.dc.b -1,(x15050-jmpbase)/256,(x15050-jmpbase)&255
 x1500e:
 	.dc.b 32
 x1500f:
 	.dc.b -4
 x15010:
-	.dc.b -1,(x14b91-x13696)/256,(x14b91-x13696)&255
+	.dc.b -1,(x14b91-jmpbase)/256,(x14b91-jmpbase)&255
 x15013:
 	.dc.b 32
 x15014:
 	.dc.b -4
 x15015:
-	.dc.b -1,(x1434e-x13696)/256,(x1434e-x13696)&255
+	.dc.b -1,(x1434e-jmpbase)/256,(x1434e-jmpbase)&255
 x15018:
-	.dc.b -1,(x15027-x13696)/256,(x15027-x13696)&255
+	.dc.b -1,(x15027-jmpbase)/256,(x15027-jmpbase)&255
 x1501b:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x1501e:
 	.dc.b -4
 x1501f:
-	.dc.b -1,(x143ad-x13696)/256,(x143ad-x13696)&255
+	.dc.b -1,(x143ad-jmpbase)/256,(x143ad-jmpbase)&255
 x15022:
 	.dc.b -3
 x15023:
-	.dc.b -1,(x1434e-x13696)/256,(x1434e-x13696)&255
+	.dc.b -1,(x1434e-jmpbase)/256,(x1434e-jmpbase)&255
 x15026:
 	.dc.b -4
 x15027:
@@ -12264,37 +12271,37 @@ x1502a:
 x1502c:
 	.dc.b -4
 x1502d:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x15030:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x15033:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x15036:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x15039:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x1503c:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x1503f:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x15042:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x15045:
 	.dc.b -4
 x15046:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x15049:
-	.dc.b -1,(x1504d-x13696)/256,(x1504d-x13696)&255
+	.dc.b -1,(x1504d-jmpbase)/256,(x1504d-jmpbase)&255
 x1504c:
 	.dc.b -4
 x1504d:
-	.dc.b -1,(x144eb-x13696)/256,(x144eb-x13696)&255
+	.dc.b -1,(x144eb-jmpbase)/256,(x144eb-jmpbase)&255
 x15050:
-	.dc.b -1,(x1505b-x13696)/256,(x1505b-x13696)&255
+	.dc.b -1,(x1505b-jmpbase)/256,(x1505b-jmpbase)&255
 x15053:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x15056:
-	.dc.b -1,(x1504d-x13696)/256,(x1504d-x13696)&255
+	.dc.b -1,(x1504d-jmpbase)/256,(x1504d-jmpbase)&255
 x15059:
 	.dc.b -3
 x1505a:
@@ -12322,23 +12329,23 @@ x15065:
 x15067:
 	.dc.b -4
 x15068:
-	.dc.b -1,(x1506f-x13696)/256,(x1506f-x13696)&255
+	.dc.b -1,(x1506f-jmpbase)/256,(x1506f-jmpbase)&255
 x1506b:
-	.dc.b -1,(x15176-x13696)/256,(x15176-x13696)&255
+	.dc.b -1,(x15176-jmpbase)/256,(x15176-jmpbase)&255
 x1506e:
 	.dc.b -4
 x1506f:
-	.dc.b -2,(f13d22-x13696)/256,(f13d22-x13696)&255
+	.dc.b -2,(f13d22-jmpbase)/256,(f13d22-jmpbase)&255
 x15072:
 	.dc.b -3
 x15073:
-	.dc.b -2,(f13696-x13696)/256,(f13696-x13696)&255
+	.dc.b -2,(f13696-jmpbase)/256,(f13696-jmpbase)&255
 x15076:
 	.dc.b -3
 x15077:
 	.dc.b 135
 x15078:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x1507b:
 	.dc.b 32
 x1507c:
@@ -12346,7 +12353,7 @@ x1507c:
 x1507d:
 	.dc.b 58
 x1507e:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x15081:
 	.dc.b 32
 x15082:
@@ -12356,17 +12363,17 @@ x15083:
 x15084:
 	.dc.b -5,59
 x15086:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x15089:
 	.dc.b 33
 x1508a:
-	.dc.b -1,(x14c92-x13696)/256,(x14c92-x13696)&255
+	.dc.b -1,(x14c92-jmpbase)/256,(x14c92-jmpbase)&255
 x1508d:
 	.dc.b -3
 x1508e:
 	.dc.b 60
 x1508f:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x15092:
 	.dc.b 32
 x15093:
@@ -12376,21 +12383,21 @@ x15094:
 x15095:
 	.dc.b -5,61
 x15097:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x1509a:
 	.dc.b 33
 x1509b:
-	.dc.b -1,(x14c92-x13696)/256,(x14c92-x13696)&255
+	.dc.b -1,(x14c92-jmpbase)/256,(x14c92-jmpbase)&255
 x1509e:
 	.dc.b -3
 x1509f:
 	.dc.b 62
 x150a0:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x150a3:
 	.dc.b 33
 x150a4:
-	.dc.b -1,(x14c92-x13696)/256,(x14c92-x13696)&255
+	.dc.b -1,(x14c92-jmpbase)/256,(x14c92-jmpbase)&255
 x150a7:
 	.dc.b -3
 x150a8:
@@ -12398,25 +12405,25 @@ x150a8:
 x150a9:
 	.dc.b -5,63
 x150ab:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x150ae:
 	.dc.b 33
 x150af:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x150b2:
-	.dc.b -1,(x14c92-x13696)/256,(x14c92-x13696)&255
+	.dc.b -1,(x14c92-jmpbase)/256,(x14c92-jmpbase)&255
 x150b5:
 	.dc.b -3
 x150b6:
-	.dc.b -2,(f1369e-x13696)/256,(f1369e-x13696)&255
+	.dc.b -2,(f1369e-jmpbase)/256,(f1369e-jmpbase)&255
 x150b9:
-	.dc.b -1,(x14c92-x13696)/256,(x14c92-x13696)&255
+	.dc.b -1,(x14c92-jmpbase)/256,(x14c92-jmpbase)&255
 x150bc:
 	.dc.b -3
 x150bd:
 	.dc.b 94
 x150be:
-	.dc.b -1,(x14c92-x13696)/256,(x14c92-x13696)&255
+	.dc.b -1,(x14c92-jmpbase)/256,(x14c92-jmpbase)&255
 x150c1:
 	.dc.b -3
 x150c2:
@@ -12424,19 +12431,19 @@ x150c2:
 x150c3:
 	.dc.b -5,95
 x150c5:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x150c8:
-	.dc.b -1,(x144eb-x13696)/256,(x144eb-x13696)&255
+	.dc.b -1,(x144eb-jmpbase)/256,(x144eb-jmpbase)&255
 x150cb:
-	.dc.b -1,(x144f6-x13696)/256,(x144f6-x13696)&255
+	.dc.b -1,(x144f6-jmpbase)/256,(x144f6-jmpbase)&255
 x150ce:
 	.dc.b 32
 x150cf:
 	.dc.b -3
 x150d0:
-	.dc.b -1,(x15060-x13696)/256,(x15060-x13696)&255
+	.dc.b -1,(x15060-jmpbase)/256,(x15060-jmpbase)&255
 x150d3:
-	.dc.b -1,(x15164-x13696)/256,(x15164-x13696)&255
+	.dc.b -1,(x15164-jmpbase)/256,(x15164-jmpbase)&255
 x150d6:
 	.dc.b 32
 x150d7:
@@ -12444,7 +12451,7 @@ x150d7:
 x150d8:
 	.dc.b 127
 x150d9:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x150dc:
 	.dc.b 32
 x150dd:
@@ -12452,9 +12459,9 @@ x150dd:
 x150de:
 	.dc.b 129
 x150df:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x150e2:
-	.dc.b -1,(x14c92-x13696)/256,(x14c92-x13696)&255
+	.dc.b -1,(x14c92-jmpbase)/256,(x14c92-jmpbase)&255
 x150e5:
 	.dc.b -3
 x150e6:
@@ -12462,19 +12469,19 @@ x150e6:
 x150e7:
 	.dc.b -5,130
 x150e9:
-	.dc.b -1,(x14475-x13696)/256,(x14475-x13696)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x150ec:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x150ef:
 	.dc.b 32
 x150f0:
 	.dc.b -3
 x150f1:
-	.dc.b -1,(x15160-x13696)/256,(x15160-x13696)&255
+	.dc.b -1,(x15160-jmpbase)/256,(x15160-jmpbase)&255
 x150f4:
-	.dc.b -2,(f154da-x13696)/256,(f154da-x13696)&255
+	.dc.b -2,(f154da-jmpbase)/256,(f154da-jmpbase)&255
 x150f7:
-	.dc.b -1,(x14962-x13696)/256,(x14962-x13696)&255
+	.dc.b -1,(x14962-jmpbase)/256,(x14962-jmpbase)&255
 x150fa:
 	.dc.b -3
 x150fb:
@@ -12486,7 +12493,7 @@ x150fd:
 x150fe:
 	.dc.b -5,131
 x15100:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x15103:
 	.dc.b 32
 x15104:
@@ -12500,7 +12507,7 @@ x15107:
 x15108:
 	.dc.b -5,133
 x1510a:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x1510d:
 	.dc.b 32
 x1510e:
@@ -12508,47 +12515,47 @@ x1510e:
 x1510f:
 	.dc.b 190
 x15110:
-	.dc.b -1,(x1512d-x13696)/256,(x1512d-x13696)&255
+	.dc.b -1,(x1512d-jmpbase)/256,(x1512d-jmpbase)&255
 x15113:
 	.dc.b -3
 x15114:
 	.dc.b 193
 x15115:
-	.dc.b -1,(x1513f-x13696)/256,(x1513f-x13696)&255
+	.dc.b -1,(x1513f-jmpbase)/256,(x1513f-jmpbase)&255
 x15118:
 	.dc.b -3
 x15119:
 	.dc.b 195
 x1511a:
-	.dc.b -1,(x1514a-x13696)/256,(x1514a-x13696)&255
+	.dc.b -1,(x1514a-jmpbase)/256,(x1514a-jmpbase)&255
 x1511d:
 	.dc.b -3
 x1511e:
 	.dc.b 115
 x1511f:
-	.dc.b -1,(x15155-x13696)/256,(x15155-x13696)&255
+	.dc.b -1,(x15155-jmpbase)/256,(x15155-jmpbase)&255
 x15122:
 	.dc.b -3
 x15123:
-	.dc.b -1,(x143ec-x13696)/256,(x143ec-x13696)&255
+	.dc.b -1,(x143ec-jmpbase)/256,(x143ec-jmpbase)&255
 x15126:
 	.dc.b -3
 x15127:
 	.dc.b 97
 x15128:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x1512b:
 	.dc.b 88
 x1512c:
 	.dc.b -4
 x1512d:
-	.dc.b -1,(x14c92-x13696)/256,(x14c92-x13696)&255
+	.dc.b -1,(x14c92-jmpbase)/256,(x14c92-jmpbase)&255
 x15130:
 	.dc.b -3
 x15131:
 	.dc.b -5,191
 x15133:
-	.dc.b -1,(x1503f-x13696)/256,(x1503f-x13696)&255
+	.dc.b -1,(x1503f-jmpbase)/256,(x1503f-jmpbase)&255
 x15136:
 	.dc.b 32
 x15137:
@@ -12556,43 +12563,43 @@ x15137:
 x15138:
 	.dc.b -5,192
 x1513a:
-	.dc.b -1,(x1503c-x13696)/256,(x1503c-x13696)&255
+	.dc.b -1,(x1503c-jmpbase)/256,(x1503c-jmpbase)&255
 x1513d:
 	.dc.b 32
 x1513e:
 	.dc.b -4
 x1513f:
-	.dc.b -1,(x14c92-x13696)/256,(x14c92-x13696)&255
+	.dc.b -1,(x14c92-jmpbase)/256,(x14c92-jmpbase)&255
 x15142:
 	.dc.b -3
 x15143:
 	.dc.b -5,194
 x15145:
-	.dc.b -1,(x1503f-x13696)/256,(x1503f-x13696)&255
+	.dc.b -1,(x1503f-jmpbase)/256,(x1503f-jmpbase)&255
 x15148:
 	.dc.b 32
 x15149:
 	.dc.b -4
 x1514a:
-	.dc.b -1,(x14c92-x13696)/256,(x14c92-x13696)&255
+	.dc.b -1,(x14c92-jmpbase)/256,(x14c92-jmpbase)&255
 x1514d:
 	.dc.b -3
 x1514e:
 	.dc.b -5,196
 x15150:
-	.dc.b -1,(x1503f-x13696)/256,(x1503f-x13696)&255
+	.dc.b -1,(x1503f-jmpbase)/256,(x1503f-jmpbase)&255
 x15153:
 	.dc.b 32
 x15154:
 	.dc.b -4
 x15155:
-	.dc.b -1,(x14c92-x13696)/256,(x14c92-x13696)&255
+	.dc.b -1,(x14c92-jmpbase)/256,(x14c92-jmpbase)&255
 x15158:
 	.dc.b -3
 x15159:
 	.dc.b -5,116
 x1515b:
-	.dc.b -1,(x1503f-x13696)/256,(x1503f-x13696)&255
+	.dc.b -1,(x1503f-jmpbase)/256,(x1503f-jmpbase)&255
 x1515e:
 	.dc.b 32
 x1515f:
@@ -12606,17 +12613,17 @@ x15162:
 x15163:
 	.dc.b -4
 x15164:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x15167:
-	.dc.b -1,(x1516b-x13696)/256,(x1516b-x13696)&255
+	.dc.b -1,(x1516b-jmpbase)/256,(x1516b-jmpbase)&255
 x1516a:
 	.dc.b -4
 x1516b:
-	.dc.b -1,(x144eb-x13696)/256,(x144eb-x13696)&255
+	.dc.b -1,(x144eb-jmpbase)/256,(x144eb-jmpbase)&255
 x1516e:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x15171:
-	.dc.b -1,(x1516b-x13696)/256,(x1516b-x13696)&255
+	.dc.b -1,(x1516b-jmpbase)/256,(x1516b-jmpbase)&255
 x15174:
 	.dc.b -3
 x15175:
@@ -12626,7 +12633,7 @@ x15176:
 x15177:
 	.dc.b -5,28
 x15179:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x1517c:
 	.dc.b -3
 x1517d:
@@ -12680,9 +12687,9 @@ x1519b:
 x1519d:
 	.dc.b -4
 x1519e:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x151a1:
-	.dc.b -1,(x151a6-x13696)/256,(x151a6-x13696)&255
+	.dc.b -1,(x151a6-jmpbase)/256,(x151a6-jmpbase)&255
 x151a4:
 	.dc.b 32
 x151a5:
@@ -12690,91 +12697,91 @@ x151a5:
 x151a6:
 	.dc.b 33
 x151a7:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x151aa:
-	.dc.b -1,(x151a6-x13696)/256,(x151a6-x13696)&255
+	.dc.b -1,(x151a6-jmpbase)/256,(x151a6-jmpbase)&255
 x151ad:
 	.dc.b -3
 x151ae:
 	.dc.b -4
 x151af:
-	.dc.b -1,(x1503f-x13696)/256,(x1503f-x13696)&255
+	.dc.b -1,(x1503f-jmpbase)/256,(x1503f-jmpbase)&255
 x151b2:
 	.dc.b 33
 x151b3:
-	.dc.b -1,(x1529b-x13696)/256,(x1529b-x13696)&255
+	.dc.b -1,(x1529b-jmpbase)/256,(x1529b-jmpbase)&255
 x151b6:
 	.dc.b 70
 x151b7:
 	.dc.b -3
 x151b8:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x151bb:
-	.dc.b -1,(x1503c-x13696)/256,(x1503c-x13696)&255
+	.dc.b -1,(x1503c-jmpbase)/256,(x1503c-jmpbase)&255
 x151be:
 	.dc.b 33
 x151bf:
-	.dc.b -1,(x1529b-x13696)/256,(x1529b-x13696)&255
+	.dc.b -1,(x1529b-jmpbase)/256,(x1529b-jmpbase)&255
 x151c2:
 	.dc.b 70
 x151c3:
 	.dc.b -4
 x151c4:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x151c7:
-	.dc.b -1,(x151cf-x13696)/256,(x151cf-x13696)&255
+	.dc.b -1,(x151cf-jmpbase)/256,(x151cf-jmpbase)&255
 x151ca:
 	.dc.b -3
 x151cb:
-	.dc.b -1,(x14b9a-x13696)/256,(x14b9a-x13696)&255
+	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 x151ce:
 	.dc.b -4
 x151cf:
-	.dc.b -1,(x1517e-x13696)/256,(x1517e-x13696)&255
+	.dc.b -1,(x1517e-jmpbase)/256,(x1517e-jmpbase)&255
 x151d2:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x151d5:
-	.dc.b -1,(x14bc8-x13696)/256,(x14bc8-x13696)&255
+	.dc.b -1,(x14bc8-jmpbase)/256,(x14bc8-jmpbase)&255
 x151d8:
 	.dc.b -3
 x151d9:
 	.dc.b -4
 x151da:
-	.dc.b -2,(f13d22-x13696)/256,(f13d22-x13696)&255
+	.dc.b -2,(f13d22-jmpbase)/256,(f13d22-jmpbase)&255
 x151dd:
-	.dc.b -1,(x151eb-x13696)/256,(x151eb-x13696)&255
+	.dc.b -1,(x151eb-jmpbase)/256,(x151eb-jmpbase)&255
 x151e0:
 	.dc.b -3
 x151e1:
-	.dc.b -1,(x151ee-x13696)/256,(x151ee-x13696)&255
+	.dc.b -1,(x151ee-jmpbase)/256,(x151ee-jmpbase)&255
 x151e4:
 	.dc.b -3
 x151e5:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x151e8:
-	.dc.b -1,(x144f6-x13696)/256,(x144f6-x13696)&255
+	.dc.b -1,(x144f6-jmpbase)/256,(x144f6-jmpbase)&255
 x151eb:
-	.dc.b -1,(x144eb-x13696)/256,(x144eb-x13696)&255
+	.dc.b -1,(x144eb-jmpbase)/256,(x144eb-jmpbase)&255
 x151ee:
-	.dc.b -1,(x14336-x13696)/256,(x14336-x13696)&255
+	.dc.b -1,(x14336-jmpbase)/256,(x14336-jmpbase)&255
 x151f1:
-	.dc.b -1,(x151f6-x13696)/256,(x151f6-x13696)&255
+	.dc.b -1,(x151f6-jmpbase)/256,(x151f6-jmpbase)&255
 x151f4:
 	.dc.b 70
 x151f5:
 	.dc.b -4
 x151f6:
-	.dc.b -1,(x144eb-x13696)/256,(x144eb-x13696)&255
+	.dc.b -1,(x144eb-jmpbase)/256,(x144eb-jmpbase)&255
 x151f9:
-	.dc.b -1,(x14336-x13696)/256,(x14336-x13696)&255
+	.dc.b -1,(x14336-jmpbase)/256,(x14336-jmpbase)&255
 x151fc:
-	.dc.b -1,(x151f6-x13696)/256,(x151f6-x13696)&255
+	.dc.b -1,(x151f6-jmpbase)/256,(x151f6-jmpbase)&255
 x151ff:
 	.dc.b -3
 x15200:
 	.dc.b -4
 x15201:
-	.dc.b -1,(x151ee-x13696)/256,(x151ee-x13696)&255
+	.dc.b -1,(x151ee-jmpbase)/256,(x151ee-jmpbase)&255
 x15204:
 	.dc.b -4
 x15205:
@@ -12782,31 +12789,31 @@ x15205:
 x15206:
 	.dc.b -3
 x15207:
-	.dc.b -1,(x1524c-x13696)/256,(x1524c-x13696)&255
+	.dc.b -1,(x1524c-jmpbase)/256,(x1524c-jmpbase)&255
 x1520a:
 	.dc.b 70
 x1520b:
 	.dc.b -3
 x1520c:
-	.dc.b -1,(x15252-x13696)/256,(x15252-x13696)&255
+	.dc.b -1,(x15252-jmpbase)/256,(x15252-jmpbase)&255
 x1520f:
-	.dc.b -1,(x15214-x13696)/256,(x15214-x13696)&255
+	.dc.b -1,(x15214-jmpbase)/256,(x15214-jmpbase)&255
 x15212:
 	.dc.b 70
 x15213:
 	.dc.b -4
 x15214:
-	.dc.b -1,(x1529b-x13696)/256,(x1529b-x13696)&255
+	.dc.b -1,(x1529b-jmpbase)/256,(x1529b-jmpbase)&255
 x15217:
-	.dc.b -1,(x1521b-x13696)/256,(x1521b-x13696)&255
+	.dc.b -1,(x1521b-jmpbase)/256,(x1521b-jmpbase)&255
 x1521a:
 	.dc.b -4
 x1521b:
-	.dc.b -1,(x15228-x13696)/256,(x15228-x13696)&255
+	.dc.b -1,(x15228-jmpbase)/256,(x15228-jmpbase)&255
 x1521e:
-	.dc.b -1,(x1529b-x13696)/256,(x1529b-x13696)&255
+	.dc.b -1,(x1529b-jmpbase)/256,(x1529b-jmpbase)&255
 x15221:
-	.dc.b -1,(x1521b-x13696)/256,(x1521b-x13696)&255
+	.dc.b -1,(x1521b-jmpbase)/256,(x1521b-jmpbase)&255
 x15224:
 	.dc.b -3
 x15225:
@@ -12826,33 +12833,33 @@ x1522b:
 x1522d:
 	.dc.b -4
 x1522e:
-	.dc.b -1,(x1525b-x13696)/256,(x1525b-x13696)&255
+	.dc.b -1,(x1525b-jmpbase)/256,(x1525b-jmpbase)&255
 x15231:
 	.dc.b 70
 x15232:
 	.dc.b -3
 x15233:
-	.dc.b -2,(f13d64-x13696)/256,(f13d64-x13696)&255
+	.dc.b -2,(f13d64-jmpbase)/256,(f13d64-jmpbase)&255
 x15236:
 	.dc.b 77
 x15237:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x1523a:
-	.dc.b -1,(x1523f-x13696)/256,(x1523f-x13696)&255
+	.dc.b -1,(x1523f-jmpbase)/256,(x1523f-jmpbase)&255
 x1523d:
 	.dc.b 70
 x1523e:
 	.dc.b -4
 x1523f:
-	.dc.b -1,(x144eb-x13696)/256,(x144eb-x13696)&255
+	.dc.b -1,(x144eb-jmpbase)/256,(x144eb-jmpbase)&255
 x15242:
-	.dc.b -1,(x1525b-x13696)/256,(x1525b-x13696)&255
+	.dc.b -1,(x1525b-jmpbase)/256,(x1525b-jmpbase)&255
 x15245:
 	.dc.b -3
 x15246:
 	.dc.b -4
 x15247:
-	.dc.b -1,(x1525b-x13696)/256,(x1525b-x13696)&255
+	.dc.b -1,(x1525b-jmpbase)/256,(x1525b-jmpbase)&255
 x1524a:
 	.dc.b 70
 x1524b:
@@ -12860,7 +12867,7 @@ x1524b:
 x1524c:
 	.dc.b 77
 x1524d:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x15250:
 	.dc.b -3
 x15251:
@@ -12868,65 +12875,65 @@ x15251:
 x15252:
 	.dc.b 77
 x15253:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x15256:
-	.dc.b -1,(x144eb-x13696)/256,(x144eb-x13696)&255
+	.dc.b -1,(x144eb-jmpbase)/256,(x144eb-jmpbase)&255
 x15259:
 	.dc.b -3
 x1525a:
 	.dc.b -4
 x1525b:
-	.dc.b -1,(x144eb-x13696)/256,(x144eb-x13696)&255
+	.dc.b -1,(x144eb-jmpbase)/256,(x144eb-jmpbase)&255
 x1525e:
-	.dc.b -1,(x1525b-x13696)/256,(x1525b-x13696)&255
+	.dc.b -1,(x1525b-jmpbase)/256,(x1525b-jmpbase)&255
 x15261:
 	.dc.b -3
 x15262:
 	.dc.b 87
 x15263:
-	.dc.b -1,(x1525b-x13696)/256,(x1525b-x13696)&255
+	.dc.b -1,(x1525b-jmpbase)/256,(x1525b-jmpbase)&255
 x15266:
 	.dc.b -3
 x15267:
 	.dc.b 89
 x15268:
-	.dc.b -1,(x1503f-x13696)/256,(x1503f-x13696)&255
+	.dc.b -1,(x1503f-jmpbase)/256,(x1503f-jmpbase)&255
 x1526b:
 	.dc.b 32
 x1526c:
-	.dc.b -2,(f15306-x13696)/256,(f15306-x13696)&255
+	.dc.b -2,(f15306-jmpbase)/256,(f15306-jmpbase)&255
 x1526f:
-	.dc.b -2,(f15310-x13696)/256,(f15310-x13696)&255
+	.dc.b -2,(f15310-jmpbase)/256,(f15310-jmpbase)&255
 x15272:
-	.dc.b -1,(x1525b-x13696)/256,(x1525b-x13696)&255
+	.dc.b -1,(x1525b-jmpbase)/256,(x1525b-jmpbase)&255
 x15275:
 	.dc.b -3
 x15276:
-	.dc.b -1,(x15297-x13696)/256,(x15297-x13696)&255
+	.dc.b -1,(x15297-jmpbase)/256,(x15297-jmpbase)&255
 x15279:
-	.dc.b -1,(x14c92-x13696)/256,(x14c92-x13696)&255
+	.dc.b -1,(x14c92-jmpbase)/256,(x14c92-jmpbase)&255
 x1527c:
-	.dc.b -2,(f15310-x13696)/256,(f15310-x13696)&255
+	.dc.b -2,(f15310-jmpbase)/256,(f15310-jmpbase)&255
 x1527f:
-	.dc.b -1,(x1525b-x13696)/256,(x1525b-x13696)&255
+	.dc.b -1,(x1525b-jmpbase)/256,(x1525b-jmpbase)&255
 x15282:
 	.dc.b -3
 x15283:
 	.dc.b 163
 x15284:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x15287:
 	.dc.b 33
 x15288:
-	.dc.b -1,(x15214-x13696)/256,(x15214-x13696)&255
+	.dc.b -1,(x15214-jmpbase)/256,(x15214-jmpbase)&255
 x1528b:
 	.dc.b -3
 x1528c:
-	.dc.b -1,(x1529b-x13696)/256,(x1529b-x13696)&255
+	.dc.b -1,(x1529b-jmpbase)/256,(x1529b-jmpbase)&255
 x1528f:
-	.dc.b -2,(f15310-x13696)/256,(f15310-x13696)&255
+	.dc.b -2,(f15310-jmpbase)/256,(f15310-jmpbase)&255
 x15292:
-	.dc.b -1,(x1525b-x13696)/256,(x1525b-x13696)&255
+	.dc.b -1,(x1525b-jmpbase)/256,(x1525b-jmpbase)&255
 x15295:
 	.dc.b -3
 x15296:
@@ -12940,45 +12947,45 @@ x15299:
 x1529a:
 	.dc.b -4
 x1529b:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x1529e:
-	.dc.b -2,(f152e6-x13696)/256,(f152e6-x13696)&255
+	.dc.b -2,(f152e6-jmpbase)/256,(f152e6-jmpbase)&255
 x152a1:
 	.dc.b -3
 x152a2:
 	.dc.b 249,55
 x152a4:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x152a7:
 	.dc.b -4
 x152a8:
-	.dc.b -1,(x14467-x13696)/256,(x14467-x13696)&255
+	.dc.b -1,(x14467-jmpbase)/256,(x14467-jmpbase)&255
 x152ab:
 	.dc.b -3
 x152ac:
 	.dc.b -5,48
 x152ae:
-	.dc.b -1,(x1454c-x13696)/256,(x1454c-x13696)&255
+	.dc.b -1,(x1454c-jmpbase)/256,(x1454c-jmpbase)&255
 x152b1:
 	.dc.b -4
 x152b2:
-	.dc.b -1,(x143ec-x13696)/256,(x143ec-x13696)&255
+	.dc.b -1,(x143ec-jmpbase)/256,(x143ec-jmpbase)&255
 x152b5:
 	.dc.b 33
 x152b6:
-	.dc.b -1,(x14464-x13696)/256,(x14464-x13696)&255
+	.dc.b -1,(x14464-jmpbase)/256,(x14464-jmpbase)&255
 x152b9:
 	.dc.b -3
 x152ba:
-	.dc.b -1,(x143ec-x13696)/256,(x143ec-x13696)&255
+	.dc.b -1,(x143ec-jmpbase)/256,(x143ec-jmpbase)&255
 x152bd:
 	.dc.b 70
 x152be:
 	.dc.b -4
 x152bf:
-	.dc.b -2,(f154aa-x13696)/256,(f154aa-x13696)&255
+	.dc.b -2,(f154aa-jmpbase)/256,(f154aa-jmpbase)&255
 x152c2:
-	.dc.b -1,(x152c7-x13696)/256,(x152c7-x13696)&255
+	.dc.b -1,(x152c7-jmpbase)/256,(x152c7-jmpbase)&255
 x152c5:
 	.dc.b 70
 x152c6:
@@ -12988,9 +12995,9 @@ x152c7:
 x152c8:
 	.dc.b -5,157
 x152ca:
-	.dc.b -1,(x152dc-x13696)/256,(x152dc-x13696)&255
+	.dc.b -1,(x152dc-jmpbase)/256,(x152dc-jmpbase)&255
 x152cd:
-	.dc.b -1,(x152d3-x13696)/256,(x152d3-x13696)&255
+	.dc.b -1,(x152d3-jmpbase)/256,(x152d3-jmpbase)&255
 x152d0:
 	.dc.b 32
 x152d1:
@@ -13000,21 +13007,21 @@ x152d2:
 x152d3:
 	.dc.b 33
 x152d4:
-	.dc.b -1,(x152dc-x13696)/256,(x152dc-x13696)&255
+	.dc.b -1,(x152dc-jmpbase)/256,(x152dc-jmpbase)&255
 x152d7:
-	.dc.b -1,(x152d3-x13696)/256,(x152d3-x13696)&255
+	.dc.b -1,(x152d3-jmpbase)/256,(x152d3-jmpbase)&255
 x152da:
 	.dc.b -3
 x152db:
 	.dc.b -4
 x152dc:
-	.dc.b -1,(x14b96-x13696)/256,(x14b96-x13696)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x152df:
 	.dc.b -3
 x152e0:
 	.dc.b 249,55
 x152e2:
-	.dc.b -1,(x15068-x13696)/256,(x15068-x13696)&255
+	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x152e4:
 	.dc.b -4
 	.even
@@ -13376,7 +13383,7 @@ x154f0_16:
 		andi.w     #15,d0
 		add.w      d0,d0
 		add.w      d0,d0
-		lea.l      16(a6),a3
+		lea.l      ptr_table(a6),a3
 		movea.l    0(a3,d0.w),a4
 		movea.l    4(a3,d0.w),a5
 		moveq.l    #-1,d7
@@ -13483,7 +13490,7 @@ x156dc: .ascii "][Ok|Error]"
 x154f0_31:
 		moveq.l    #1,d0
 		lea.l      5360(a6),a0
-		jsr        x1018e.l
+		jsr        ERROR.l
 		subq.w     #1,d0
 		bne        x13886
 		movem.l    (a7),d0-d2/d7/a0-a2
@@ -14084,7 +14091,7 @@ x15c52:
 		lea.l      4300(a6),a3
 		move.w     0(a3,d0.w),d1
 		beq        x15c52_8
-		lea.l      x13696(pc),a3
+		lea.l      jmpbase(pc),a3
 		adda.w     d1,a3
 		moveq.l    #0,d1
 		move.b     (a3)+,d1
@@ -14226,7 +14233,7 @@ x15c52_15:
 		lea.l      3372(a6),a3
 		move.w     0(a3,d0.w),d1
 		beq.s      x15c52_19
-		lea.l      x13696(pc),a3
+		lea.l      jmpbase(pc),a3
 		adda.w     d1,a3
 		moveq.l    #0,d1
 		move.b     (a3)+,d1
@@ -14349,7 +14356,7 @@ x15c52_35:
 		andi.w     #15,d0
 		add.w      d0,d0
 		add.w      d0,d0
-		lea.l      16(a6),a2
+		lea.l      ptr_table(a6),a2
 		movea.l    0(a2,d0.w),a2
 		moveq.l    #0,d2
 		lsr.w      #1,d1
@@ -14511,7 +14518,7 @@ x1607a_2:
 x1607a_3:
 		add.w      d1,d1
 		move.l     a1,d2
-		subi.l     #x13696,d2
+		subi.l     #jmpbase,d2
 		move.w     d2,0(a0,d1.w)
 		lea.l      4(a1,d0.w),a1
 		bra.s      x1607a_2
@@ -14527,7 +14534,7 @@ x1607a_5:
 		asl.w      #8,d1
 		move.b     3(a1,d0.w),d1
 		move.l     a1,d2
-		subi.l     #x13696,d2
+		subi.l     #jmpbase,d2
 		move.w     d2,0(a0,d1.w)
 		lea.l      6(a1,d0.w),a1
 		bra.s      x1607a_5
@@ -14750,7 +14757,7 @@ x162ac:
 		lea.l      3372(a6),a3
 		move.w     0(a3,d0.w),d1
 		beq        x15c52_19
-		lea.l      x13696(pc),a3
+		lea.l      jmpbase(pc),a3
 		adda.w     d1,a3
 		moveq.l    #0,d1
 		move.b     (a3)+,d1
@@ -15085,6 +15092,9 @@ x16786:   .ds.b 4096
 bss_end: /* 1779c */
 
 /* a6:
+0: error_jmp
+8: file_buffer
+12: file_buffer_size
 16: variable table
 490: tmpbuf for Fstr
 512: outbuf for FTstr
