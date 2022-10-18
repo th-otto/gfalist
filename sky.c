@@ -562,6 +562,20 @@ static void indent(struct gfainf *gi, int depth)
 }
 
 
+static void subfunc_table(struct gfainf *gi, struct gfalin *gl, unsigned short pft, const unsigned char *src, const char *const *table)
+{
+	unsigned short sft = *src;
+	const unsigned char *mrk = (const unsigned char *)table[sft];
+	if (mrk == NULL)
+	{
+		gf4tp_output("Error at line %lu:%lu: %u/%u is an unknown sft code to me\n", gl->lineno, (unsigned long)(src - gl->line), pft, sft);
+	} else
+	{
+		printname(gi, mrk, TRUE);
+	}
+}
+
+
 int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 {
 	/* Current source, marker, top and bottom pointers */
@@ -575,7 +589,6 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	unsigned short lcp;
 	unsigned int lct;
 	unsigned short pft;
-	unsigned short sft;
 	unsigned short v;
 	uint32_t ul;
 	char inline_filename[256];
@@ -1077,39 +1090,23 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 			break;
 
 		case TOK_SUBFUNC_208:
-			sft = *src++;
-			mrk = (const unsigned char *)gfasft_208[sft];
-			if (mrk == NULL)
-			{
-				gf4tp_output("Error at line %lu:%lu: %u/%u is an unknown sft code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft, sft);
-			} else
-			{
-				printname(gi, mrk, TRUE);
-			}
+			subfunc_table(gi, gl, pft, src, gfasft_208);
+			src++;
 			break;
 
 		case TOK_SUBFUNC_209:
-			sft = *src++;
-			mrk = (const unsigned char *)gfasft_209[sft];
-			if (mrk == NULL)
-			{
-				gf4tp_output("Error at line %lu:%lu: %u/%u is an unknown sft code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft, sft);
-			} else
-			{
-				printname(gi, mrk, TRUE);
-			}
+			subfunc_table(gi, gl, pft, src, gfasft_209);
+			src++;
 			break;
 
 		case TOK_SUBFUNC_210:
-			sft = *src++;
-			mrk = (const unsigned char *)gfasft_210[sft];
-			if (mrk == NULL)
-			{
-				gf4tp_output("Error at line %lu:%lu: %u/%u is an unknown sft code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft, sft);
-			} else
-			{
-				printname(gi, mrk, TRUE);
-			}
+			subfunc_table(gi, gl, pft, src, gfasft_210);
+			src++;
+			break;
+
+		case TOK_SUBFUNC_211:
+			subfunc_table(gi, gl, pft, src, gfasft_211);
+			src++;
 			break;
 
 		case TOK_OCT_DBL_CONST_PAD:
@@ -1228,13 +1225,14 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 		case 55:                                      /* NUMBER: */
 			break;
 
-		case 46:
-		case 64:
-		case 68:
-		case 211:
-		case 212:
-		case 213:
-		case 214:
+		case 212: /* currently unused; maybe later assigned to new function tables */
+		case 213: /* currently unused; maybe later assigned to new function tables */
+		case 214: /* currently unused; maybe later assigned to new function tables */
+		case 46: /* unknown */
+		case 64: /* unknown */
+		case 68: /* unknown */
+		case 181: /* unknown */
+		case 197: /* unknown */
 			gf4tp_output("Error at line %lu:%lu: %u is an unknown token code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), pft);
 			break;
 
