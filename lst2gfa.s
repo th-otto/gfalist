@@ -208,12 +208,12 @@ TOK_PRED                   = 133
 TOK_DRAW                   = 134
 TOK_TRIM                   = 135
 TOK_CMDLINE                = 136
-TOK_CMDLINE2               = 137
+TOK_CURDIR                 = 137
 TOK_LONGARG                = 138
 TOK_WORDARG                = 139
 TOK_FACT                   = 140
 TOK_COMBIN                 = 141
-TOK_COMBIN2                = 142
+TOK_ENVIRON                = 142
 TOK_VARIAT                 = 143
 TOK_LTRIM                  = 144
 TOK_RTRIM                  = 145
@@ -248,11 +248,11 @@ TOK_OBOX                   = 173
 TOK_MESSAGE                = 174
 TOK_OFF                    = 175
 TOK_KILL                   = 176
-TOK_KILL2                  = 177
-TOK_KILL3                  = 178
-TOK_KILL4                  = 179
-TOK_KILL5                  = 180
-TOK_KILL6                  = 181
+TOK_DIGITAL                = 177
+TOK_REPLACE                = 178
+TOK_CRYPT                  = 179
+TOK_XLATE                  = 180
+TOK_RES_181                = 181
 TOK_BASE                   = 182
 TOK_NULL                   = 183
 TOK_CONST_ZERO             = 184
@@ -268,7 +268,7 @@ TOK_HEX1                   = 193
 TOK_HEX2                   = 194
 TOK_OCT1                   = 195
 TOK_OCT2                   = 196
-TOK_OCT3                   = 197
+TOK_RES_197                = 197
 TOK_CHAR_CONST             = 198
 TOK_CHAR_CONST_PAD         = 199
 TOK_DEC_CONST              = 200
@@ -362,6 +362,10 @@ ptr_table:          ds.l 38 /*   16 */
                     ds.l 1  /*  180 */
                     ds.l 1  /*  184 */
                     ds.l 1  /*  188 */
+                    ds.l 1  /*  192 */
+                    ds.l 1  /*  196 */
+                    ds.l 1  /*  200 */
+baspag:             ds.l 1  /*  204 */
 
 		.text
 
@@ -371,7 +375,7 @@ _entry:
 x10004:
 		movea.l    a6,a0
 		move.l     #x1007a,error_jmp+4(a6)
-		movea.l    204(a6),a0
+		movea.l    baspag(a6),a0
 		lea.l      128(a0),a0
 x10004_1:
 		tst.b      (a0)+
@@ -402,7 +406,7 @@ x10004_3:
 		move.w     d1,(a0)
 		lea.l      reading_msg(pc),a0
 		bsr        printstr
-		movea.l    204(a6),a0
+		movea.l    baspag(a6),a0
 		lea.l      129(a0),a0
 		bsr        printstr
 		bsr        printnl
@@ -414,7 +418,7 @@ x1007a:
 		bsr        x11ae8
 		move.l     #ERROR,error_jmp+4(a6)
 		lea.l      1106(a6),a0
-		movea.l    204(a6),a1
+		movea.l    baspag(a6),a1
 		lea.l      128(a1),a1
 		tst.b      (a1)+
 		beq        x10194
@@ -844,7 +848,7 @@ x1030a_13:
 lowercase_filenames: .dc.w 0
 
 _main_entry:
-		bra.s main
+		bra.s startup
 
 x1047e:
 		.dc.w       0x0000
@@ -865,76 +869,76 @@ x1047e:
 		.dc.w       0x0070
 		.dc.w       0x0000
 
-main:
+startup:
 		pea.l      find_mtask(pc)
 		move.w     #38,-(a7) /* Supexec */
 		trap       #14
 		addq.l     #6,a7
 		move.w     mtask(pc),d0
-		beq.s      main_5
+		beq.s      startup_5
 		lea.l      _entry-212(pc),a0 /* get environment ptr from basepage */
 		move.l     (a0),d0
-		beq.s      main_5
+		beq.s      startup_5
 		movea.l    d0,a0
 		tst.b      (a0)
-		beq.s      main_5
-main_1:
+		beq.s      startup_5
+startup_1:
 		cmpi.b     #'C',(a0)
-		bne.s      main_3
+		bne.s      startup_3
 		cmpi.b     #'O',1(a0)
-		bne.s      main_3
+		bne.s      startup_3
 		cmpi.b     #'L',2(a0)
-		bne.s      main_3
+		bne.s      startup_3
 		cmpi.b     #'U',3(a0)
-		bne.s      main_3
+		bne.s      startup_3
 		cmpi.b     #'M',4(a0)
-		bne.s      main_3
+		bne.s      startup_3
 		cmpi.b     #'N',5(a0)
-		bne.s      main_3
+		bne.s      startup_3
 		cmpi.b     #'S',6(a0)
-		bne.s      main_3
+		bne.s      startup_3
 		cmpi.b     #'=',7(a0)
-		bne.s      main_3
+		bne.s      startup_3
 		addq.l     #8,a0
 		moveq.l    #0,d0
 		moveq.l    #0,d1
-main_2:
+startup_2:
 		move.b     (a0)+,d0
-		beq.s      main_4
+		beq.s      startup_4
 		subi.w     #'0',d0
-		bmi.s      main_2
+		bmi.s      startup_2
 		cmpi.b     #9,d0
-		bgt.s      main_2
+		bgt.s      startup_2
 		lsl.l      #1,d1
 		move.l     d1,-(a7)
 		lsl.l      #2,d1
 		add.l      (a7)+,d1
 		add.l      d0,d1
-		bra.s      main_2
-main_3:
+		bra.s      startup_2
+startup_3:
 		tst.b      (a0)+
-		bne.s      main_3
+		bne.s      startup_3
 		tst.b      (a0)
-		beq.s      main_5
-		bra.s      main_1
-main_4:
+		beq.s      startup_5
+		bra.s      startup_1
+startup_4:
 		move.l     d1,d0
-		bne.s      main_6
-main_5:
+		bne.s      startup_6
+startup_5:
 		.dc.w 0xa000 /* ALINE      #0 */
 		movea.l    d0,a0
 		move.w     -44(a0),d0
 		addq.w     #1,d0
-main_6:
+startup_6:
 		cmpi.w     #256,d0
-		bgt.s      main_7
+		bgt.s      startup_7
 		cmpi.w     #40,d0
-		bge.s      main_8
+		bge.s      startup_8
 		moveq.l    #40,d0
-		bra.s      main_8
-main_7:
+		bra.s      startup_8
+startup_7:
 		moveq.l    #80,d0
-main_8:
+startup_8:
 		lea.l      columns(pc),a0
 		move.w     d0,(a0)
 		lea.l      x16768(pc),a0
@@ -953,7 +957,7 @@ main_8:
 		bsr        printstr
 		lea.l      version_msg(pc),a0
 		bsr        printstr
-		jmp        x10d1a.l
+		jmp        main.l
 
 x10590: .dc.w 0
 
@@ -1911,7 +1915,7 @@ x10cb2:
 		.dc.l dummy_rts
 		.dc.l dummy_rts
 
-x10d1a:
+main:
 		movea.l    4(a7),a5
 		lea.l      bss_end,a6
 		move.l     a6,d0
@@ -1921,22 +1925,22 @@ x10d1a:
 		movea.l    a6,a0
 		moveq.l    #0,d0
 		move.w     #0x0900-1,d1
-x10d1a_1:
+main_1:
 		move.l     d0,(a0)+
 		move.l     d0,(a0)+
 		move.l     d0,(a0)+
 		move.l     d0,(a0)+
-		dbf        d1,x10d1a_1
+		dbf        d1,main_1
 		movea.l    a6,a0
 		adda.l     #36820,a0
 		move.l     a6,mem_end
 		lea.l      x10cb2(pc),a1
 		lea.l      214(a6),a2
 		moveq.l    #25,d0
-x10d1a_2:
+main_2:
 		move.w     #0x4EF9,(a2)+ /* jmp.l opcode */
 		move.l     (a1)+,(a2)+
-		dbf        d0,x10d1a_2
+		dbf        d0,main_2
 		move.w     #13,542(a6)
 		move.b     612(a6),d0
 		ori.b      #'.',d0
@@ -1946,7 +1950,7 @@ x10d1a_2:
 		bsr        x10ee0
 		lea.l      25856(a6),a7
 		move.l     #0x4E714EF9,(a6) /* nop; jmp */
-		move.l     a5,204(a6)
+		move.l     a5,baspag(a6)
 		suba.l     a5,a0
 		pea.l      (a0)
 		pea.l      (a5)
@@ -1974,89 +1978,89 @@ x10d1a_2:
 		move.w     x10ede.l,x1185a
 		jsr        x1185c.l
 		jsr        x1607a.l
-		movea.l    204(a6),a0
+		movea.l    baspag(a6),a0
 		cmpi.b     #127,128(a0)
-		bne        x10d1a_10
+		bne        main_10
 		move.l     44(a0),d0
-		beq.w      x10d1a_10
+		beq.w      main_10
 		movea.l    d0,a1
 		move.b     (a1),d0
-		beq.w      x10d1a_10
-		bra.s      x10d1a_4
-x10d1a_3:
+		beq.w      main_10
+		bra.s      main_4
+main_3:
 		tst.b      (a1)+
-		bne.s      x10d1a_3
+		bne.s      main_3
 		tst.b      (a1)
-		beq.s      x10d1a_10
-x10d1a_4:
+		beq.s      main_10
+main_4:
 		cmpi.b     #'A',(a1)
-		bne.w      x10d1a_3
+		bne.w      main_3
 		cmpi.b     #'R',1(a1)
-		bne.w      x10d1a_3
+		bne.w      main_3
 		cmpi.b     #'G',2(a1)
-		bne.w      x10d1a_3
+		bne.w      main_3
 		cmpi.b     #'V',3(a1)
-		bne.w      x10d1a_3
+		bne.w      main_3
 		cmpi.b     #'=',4(a1)
-		bne.w      x10d1a_3
+		bne.w      main_3
 		addq.l     #5,a1
-x10d1a_5:
+main_5:
 		movea.l    a1,a0
-x10d1a_6:
+main_6:
 		move.b     (a1)+,d1
-		bne.s      x10d1a_6
+		bne.s      main_6
 		move.b     (a1),d1
-		bne.s      x10d1a_5
+		bne.s      main_5
 		movea.l    a0,a1
 		move.b     (a0),d0
 		cmpi.b     #'"',d0
-		beq.s      x10d1a_7
+		beq.s      main_7
 		cmpi.b     #0x27,d0
-		bne.s      x10d1a_8
-x10d1a_7:
+		bne.s      main_8
+main_7:
 		tst.b      (a0)+
-		bne.s      x10d1a_7
+		bne.s      main_7
 		subq.l     #1,a0
 		cmp.b      -(a0),d0
-		bne.s      x10d1a_8
+		bne.s      main_8
 		clr.b      (a0)
 		clr.b      (a1)+
-x10d1a_8:
-		movea.l    204(a6),a0
+main_8:
+		movea.l    baspag(a6),a0
 		lea.l      128(a0),a0
 		move.b     #0x7F,(a0)+
-x10d1a_9:
+main_9:
 		move.b     (a1)+,(a0)+
-		bne.s      x10d1a_9
-x10d1a_10:
-		movea.l    204(a6),a0
+		bne.s      main_9
+main_10:
+		movea.l    baspag(a6),a0
 		adda.w     #128,a0
 		moveq.l    #0,d7
 		move.b     (a0),d7
 		ble        x10194
 		clr.b      1(a0,d7.w)
 		cmpi.b     #13,0(a0,d7.w)
-		bne.s      x10d1a_11
+		bne.s      main_11
 		clr.b      0(a0,d7.w)
-x10d1a_11:
+main_11:
 		tst.b      (a0)+
 		beq        x10194
 		moveq.l    #0,d7
 		lea.l      1106(a6),a1
-x10d1a_12:
+main_12:
 		cmpi.b     #' ',(a0)+
-		beq.s      x10d1a_12
+		beq.s      main_12
 		cmpi.b     #'-',-(a0)
 		seq        d7
-		bne.s      x10d1a_14
+		bne.s      main_14
 		addq.l     #1,a0
-x10d1a_13:
+main_13:
 		cmpi.b     #' ',(a0)+
-		beq.s      x10d1a_13
+		beq.s      main_13
 		subq.l     #1,a0
-x10d1a_14:
+main_14:
 		move.b     (a0)+,(a1)+
-		bne.s      x10d1a_14
+		bne.s      main_14
 		move.b     d7,-(a7)
 		jsr        x11838.l
 		bra        x10004
@@ -3400,7 +3404,7 @@ x11ae8:
 x11af6: .dc.l 0
 
 /* gfa: 0002111e */
-/* gbe: 50c42 */
+/* gbe: 5292c */
 cmd_table: /* 11afa */
 		.dc.b 0
 		.ascii "!"
@@ -4574,7 +4578,7 @@ cmd_other_table:
 		.dc.b ((448*2)/256),((448*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
 		.dc.b -1
 /* gfa: 21edb */
-/* gbe: 00051c8a */
+/* gbe: 54030 */
 
 func_misc_table:
 		.dc.b 0,'#',0,TOK_CHANNEL
@@ -4624,18 +4628,18 @@ func_misc_table:
 		.dc.b 1,']','=',0,TOK_RES_68
 		.dc.b 0,')',0,TOK_RPAREN2
 
-/* gbe: 51d51 */
+/* gbe: 540f7 */
 func_table:
 func_a_table: /* 1297e */
 		.dc.b 2,'A','N','D',0,TOK_AND
 		.dc.b 3,'A','N','D','(',TOK_SUBFUNC_208,5
 		.dc.b 3,'A','B','S','(',0,TOK_ABS
-		.dc.b 3,'A','T','N','(',0,44
+		.dc.b 3,'A','T','N','(',0,TOK_ATAN
 		.dc.b 3,'A','S','C','(',TOK_SUBFUNC_208,67
-		.dc.b 2,'A','T','(',0,89
-		.dc.b 4,'A','S','I','N','(',0,65
-		.dc.b 4,'A','C','O','S','(',0,82
-		.dc.b 1,'A','S',0,108
+		.dc.b 2,'A','T','(',0,TOK_AT
+		.dc.b 4,'A','S','I','N','(',0,TOK_ASIN
+		.dc.b 4,'A','C','O','S','(',0,TOK_ACOS
+		.dc.b 1,'A','S',0,TOK_AS
 		.dc.b 6,'A','R','R','P','T','R','(',TOK_SUBFUNC_208,188
 		.dc.b 3,'A','D','D','(',TOK_SUBFUNC_208,2
 		.dc.b 6,'A','D','D','R','I','N','(',TOK_SUBFUNC_208,18
@@ -4650,2246 +4654,1145 @@ func_a_table: /* 1297e */
 		.dc.b 12,'A','P','P','L','_','T','R','E','C','O','R','D','(',TOK_SUBFUNC_208,140
 		.dc.b 10,'A','P','P','L','_','E','X','I','T','(',')',TOK_SUBFUNC_208,141
 	.IFNE GBE
-		.dc.b 9,'A','P','P','L','.','F','I','N','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,120
-		.dc.b 12,'A','P','P','L','_','C','O','N','T','R','O','L','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,23
-		.dc.b 11,'A','P','P','L','_','S','E','A','R','C','H','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,167
-		.dc.b 12,'A','P','P','L','_','G','E','T','I','N','F','O','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,22
-		.dc.b 11,'A','P','P','L','_','Y','I','E','L','D','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,86
-		.dc.b 5,'A','L','I','G','N','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,9
-		.dc.b 2,'A','~','I'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,244
-		.dc.b 5,'A','L','E','R','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,250
-		.dc.b 7,'A','P','_','S','E','N','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,252
-		.dc.b 8,'A','V','_','I','N','I','T','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,93
-		.dc.b 12,'A','V','_','P','R','O','T','O','K','O','L','L','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,94
-		.dc.b 10,'A','V','_','S','E','N','D','K','E','Y','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,97
-		.dc.b 12,'A','V','_','S','T','A','R','T','P','R','O','G','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,101
-		.dc.b 14,'A','V','_','A','C','C','W','I','N','D','O','P','E','N','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,102
-		.dc.b 16,'A','V','_','A','C','C','W','I','N','D','C','L','O','S','E','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,103
-		.dc.b 14,'A','V','_','P','A','T','H','_','U','P','D','A','T','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,105
-		.dc.b 12,'A','V','_','W','H','A','T','_','I','Z','I','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,106
-		.dc.b 8,'A','V','_','E','X','I','T','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,108
-		.dc.b 10,'A','V','_','S','T','A','R','T','E','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,109
-		.dc.b 8,'A','V','_','X','W','I','N','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,110
+		.dc.b 9,'A','R','R','A','Y','S','I','Z','E','(',210,32 /* BUG: that is OB_HIDETREE( */
+		.dc.b 5,'A','L','L','O','C','(',TOK_SUBFUNC_209,66
+		.dc.b 9,'A','P','P','L','.','F','I','N','D','(',TOK_SUBFUNC_210,120
+		.dc.b 12,'A','P','P','L','_','C','O','N','T','R','O','L','(',TOK_SUBFUNC_209,23
+		.dc.b 11,'A','P','P','L','_','S','E','A','R','C','H','(',TOK_SUBFUNC_209,167
+		.dc.b 12,'A','P','P','L','_','G','E','T','I','N','F','O','(',TOK_SUBFUNC_209,22
+		.dc.b 11,'A','P','P','L','_','Y','I','E','L','D','(',')',TOK_SUBFUNC_209,86
+		.dc.b 3,'A','C','C','?',TOK_SUBFUNC_210,249
+		.dc.b 4,'A','U','T','O','?',TOK_SUBFUNC_210,250
+		.dc.b 5,'A','L','I','G','N','(',TOK_SUBFUNC_210,9
+		.dc.b 2,'A','~','I',TOK_SUBFUNC_208,244
+		.dc.b 5,'A','L','E','R','T','(',TOK_SUBFUNC_209,250
+		.dc.b 7,'A','P','_','S','E','N','D','(',TOK_SUBFUNC_209,252
+		.dc.b 8,'A','V','_','I','N','I','T','(',')',TOK_SUBFUNC_210,93
+		.dc.b 12,'A','V','_','P','R','O','T','O','K','O','L','L','(',TOK_SUBFUNC_210,94
+		.dc.b 10,'A','V','_','S','E','N','D','K','E','Y','(',TOK_SUBFUNC_210,97
+		.dc.b 12,'A','V','_','S','T','A','R','T','P','R','O','G','(',TOK_SUBFUNC_210,101
+		.dc.b 14,'A','V','_','A','C','C','W','I','N','D','O','P','E','N','(',TOK_SUBFUNC_210,102
+		.dc.b 16,'A','V','_','A','C','C','W','I','N','D','C','L','O','S','E','D','(',TOK_SUBFUNC_210,103
+		.dc.b 14,'A','V','_','P','A','T','H','_','U','P','D','A','T','E','(',TOK_SUBFUNC_210,105
+		.dc.b 12,'A','V','_','W','H','A','T','_','I','Z','I','T','(',TOK_SUBFUNC_210,106
+		.dc.b 8,'A','V','_','E','X','I','T','(',')',TOK_SUBFUNC_210,108
+		.dc.b 10,'A','V','_','S','T','A','R','T','E','D','(',TOK_SUBFUNC_210,109
+		.dc.b 8,'A','V','_','X','W','I','N','D','(',TOK_SUBFUNC_210,110
 	.ENDC
 func_b_table: /* 12a82 */
-		.dc.b 4,'B','I','N','$','('
-		.ascii ""
-		.dc.b 0,115
-		.dc.b 7,'B','A','S','E','P','A','G','E'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,31
-		.dc.b 4,'B','I','O','S','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,85
-		.dc.b 4,'B','R','E','A','K'
-		.ascii ""
-		.dc.b 0,153
-		.dc.b 5,'B','U','T','T','O','N'
-		.ascii ""
-		.dc.b 0,171
-		.dc.b 3,'B','A','S','E'
-		.ascii ""
-		.dc.b 0,182
-		.dc.b 4,'B','Y','T','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,16
-		.dc.b 4,'B','T','S','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,44
-		.dc.b 4,'B','S','E','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,45
-		.dc.b 4,'B','C','L','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,46
-		.dc.b 4,'B','C','H','G','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,47
-		.dc.b 4,'B','Y','T','E','{'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,116
+		.dc.b 4,'B','I','N','$','(',0,TOK_BIN1
+		.dc.b 7,'B','A','S','E','P','A','G','E',TOK_SUBFUNC_208,31
+		.dc.b 4,'B','I','O','S','(',TOK_SUBFUNC_208,85
+		.dc.b 4,'B','R','E','A','K',0,TOK_BREAK
+		.dc.b 5,'B','U','T','T','O','N',0,TOK_BUTTON
+		.dc.b 3,'B','A','S','E',0,TOK_BASE
+		.dc.b 4,'B','Y','T','E','(',TOK_SUBFUNC_208,16
+		.dc.b 4,'B','T','S','T','(',TOK_SUBFUNC_208,44
+		.dc.b 4,'B','S','E','T','(',TOK_SUBFUNC_208,45
+		.dc.b 4,'B','C','L','R','(',TOK_SUBFUNC_208,46
+		.dc.b 4,'B','C','H','G','(',TOK_SUBFUNC_208,47
+		.dc.b 4,'B','Y','T','E','{',TOK_SUBFUNC_208,116
 	.IFNE GBE
-		.dc.b 5,'B','F','I','N','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,96
-		.dc.b 6,'B','I','N','S','T','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,95
-		.dc.b 7,'B','C','O','N','O','U','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,152
-		.dc.b 8,'B','C','O','N','S','T','A','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,154
-		.dc.b 7,'B','C','O','S','T','A','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,153
-		.dc.b 6,'B','C','O','N','I','N','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,151
-		.dc.b 8,'B','U','F','F','O','P','E','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,35
-		.dc.b 7,'B','U','F','F','P','T','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,40
-		.dc.b 6,'B','S','W','A','P','&','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,99
-		.dc.b 5,'B','S','W','A','P','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,100
-		.dc.b 6,'B','S','W','A','P','3','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,10
-		.dc.b 8,'B','L','I','T','M','O','D','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,76
-		.dc.b 7,'B','C','O','N','M','A','P','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,206
-		.dc.b 6,'B','C','O','U','N','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,97
-		.dc.b 8,'B','R','E','P','L','A','C','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,98
-		.dc.b 9,'B','I','O','S','K','E','Y','S','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,222
-		.dc.b 9,'B','Y','T','E','2','W','O','R','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,116
+		.dc.b 7,'B','M','P','S','I','Z','E','(',TOK_SUBFUNC_210,244
+		.dc.b 5,'B','F','I','N','D','(',TOK_SUBFUNC_209,96
+		.dc.b 6,'B','F','I','N','D','&','(',TOK_SUBFUNC_210,174
+		.dc.b 6,'B','F','I','N','D','%','(',TOK_SUBFUNC_210,175
+		.dc.b 6,'B','I','N','S','T','R','(',TOK_SUBFUNC_209,95
+		.dc.b 7,'B','C','O','N','O','U','T','(',TOK_SUBFUNC_209,152
+		.dc.b 8,'B','C','O','N','S','T','A','T','(',TOK_SUBFUNC_209,154
+		.dc.b 7,'B','C','O','S','T','A','T','(',TOK_SUBFUNC_209,153
+		.dc.b 6,'B','C','O','N','I','N','(',TOK_SUBFUNC_209,151
+		.dc.b 8,'B','U','F','F','O','P','E','R','(',TOK_SUBFUNC_209,35
+		.dc.b 7,'B','U','F','F','P','T','R','(',TOK_SUBFUNC_209,40
+		.dc.b 6,'B','S','W','A','P','&','(',TOK_SUBFUNC_209,99
+		.dc.b 5,'B','S','W','A','P','(',TOK_SUBFUNC_209,100
+		.dc.b 6,'B','S','W','A','P','3','(',TOK_SUBFUNC_210,10
+		.dc.b 8,'B','L','I','T','M','O','D','E','(',TOK_SUBFUNC_209,76
+		.dc.b 7,'B','C','O','N','M','A','P','(',TOK_SUBFUNC_209,206
+		.dc.b 6,'B','C','O','U','N','T','(',TOK_SUBFUNC_209,97
+		.dc.b 7,'B','C','O','U','N','T','&','(',TOK_SUBFUNC_210,23
+		.dc.b 7,'B','C','O','U','N','T','%','(',TOK_SUBFUNC_210,24
+		.dc.b 9,'B','I','O','S','K','E','Y','S','(',')',TOK_SUBFUNC_209,222
+		.dc.b 5,'B','O','U','N','D','(',TOK_SUBFUNC_210,131
+		.dc.b 8,'B','C','O','M','P','A','R','E','(',TOK_SUBFUNC_210,132
+		.dc.b 9,'B','C','O','M','P','A','R','E','&','(',TOK_SUBFUNC_210,180
+		.dc.b 9,'B','C','O','M','P','A','R','E','%','(',TOK_SUBFUNC_210,181
+		.dc.b 9,'B','F','_','O','B','S','P','E','C','(',TOK_SUBFUNC_211,110
+		.dc.b 12,'B','F','_','C','H','A','R','A','C','T','E','R','(',TOK_SUBFUNC_211,111
+		.dc.b 12,'B','F','_','F','R','A','M','E','S','I','Z','E','(',TOK_SUBFUNC_211,112
+		.dc.b 11,'B','F','_','F','R','A','M','E','C','O','L','(',TOK_SUBFUNC_211,113
+		.dc.b 10,'B','F','_','T','E','X','T','C','O','L','(',TOK_SUBFUNC_211,114
+		.dc.b 11,'B','F','_','T','E','X','T','M','O','D','E','(',TOK_SUBFUNC_211,115
+		.dc.b 14,'B','F','_','F','I','L','L','P','A','T','T','E','R','N','(',TOK_SUBFUNC_211,116
+		.dc.b 14,'B','F','_','I','N','T','E','R','I','O','R','C','O','L','(',TOK_SUBFUNC_211,117
+		.dc.b 8,'B','I','_','P','D','A','T','A','(',TOK_SUBFUNC_211,118
+		.dc.b 5,'B','I','_','W','B','(',TOK_SUBFUNC_211,119
+		.dc.b 5,'B','I','_','H','L','(',TOK_SUBFUNC_211,120
+		.dc.b 4,'B','I','_','X','(',TOK_SUBFUNC_211,121
+		.dc.b 4,'B','I','_','Y','(',TOK_SUBFUNC_211,122
+		.dc.b 8,'B','I','_','C','O','L','O','R','(',TOK_SUBFUNC_211,123
 	.ENDC
 func_c_table: /* 12afd */
-		.dc.b 3,'C','O','S','('
-		.ascii ""
-		.dc.b 0,42
-		.dc.b 4,'C','O','S','Q','('
-		.ascii ""
-		.dc.b 0,125
-		.dc.b 4,'C','H','R','$','('
-		.ascii ""
-		.dc.b 0,66
-		.dc.b 3,'C','V','I','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,75
-		.dc.b 3,'C','V','L','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,76
-		.dc.b 3,'C','V','S','('
-		.ascii ""
-		.dc.b 0,105
-		.dc.b 3,'C','V','F','('
-		.ascii ""
-		.dc.b 0,106
-		.dc.b 3,'C','V','D','('
-		.ascii ""
-		.dc.b 0,107
+		.dc.b 3,'C','O','S','(',0,TOK_COS
+		.dc.b 4,'C','O','S','Q','(',0,TOK_COSQ
+		.dc.b 4,'C','H','R','$','(',0,TOK_CHR
+		.dc.b 3,'C','V','I','(',TOK_SUBFUNC_208,75
+		.dc.b 3,'C','V','L','(',TOK_SUBFUNC_208,76
+		.dc.b 3,'C','V','S','(',0,TOK_CVS
+		.dc.b 3,'C','V','F','(',0,TOK_CVF
+		.dc.b 3,'C','V','D','(',0,TOK_CVD
 	.IFNE GBE
-		.dc.b 7,'C','O','N','T','E','R','M','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,16
+		.dc.b 7,'C','O','N','T','E','R','M','(',TOK_SUBFUNC_210,16
 	.ENDC
-		.dc.b 6,'C','O','N','T','R','L','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,22
-		.dc.b 5,'C','O','N','T','R','L'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,23
-		.dc.b 3,'C','O','N','T'
-		.ascii ""
-		.dc.b 0,154
-		.dc.b 1,'C',':'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,117
-		.dc.b 5,'C','R','S','L','I','N'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,56
-		.dc.b 5,'C','R','S','C','O','L'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,57
-		.dc.b 4,'C','A','R','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,15
-		.dc.b 4,'C','A','R','D','{'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,115
-		.dc.b 4,'C','H','A','R','{'
-		.ascii ""
-		.dc.b 0,97
+		.dc.b 6,'C','O','N','T','R','L','(',TOK_SUBFUNC_208,22
+		.dc.b 5,'C','O','N','T','R','L',TOK_SUBFUNC_208,23
+		.dc.b 3,'C','O','N','T',0,TOK_CONT
+		.dc.b 1,'C',':',TOK_SUBFUNC_208,117
+		.dc.b 5,'C','R','S','L','I','N',TOK_SUBFUNC_208,56
+		.dc.b 5,'C','R','S','C','O','L',TOK_SUBFUNC_208,57
+		.dc.b 4,'C','A','R','D','(',TOK_SUBFUNC_208,15
+		.dc.b 4,'C','A','R','D','{',TOK_SUBFUNC_208,115
+		.dc.b 4,'C','H','A','R','{',0,TOK_CHAR_REF
 	.IFNE GBE
-		.dc.b 5,'C','H','A','R','$','('
-		.ascii ""
-		.dc.b 0,169
+		.dc.b 5,'C','H','A','R','$','(',0,TOK_CHAR
 	.ENDC
-		.dc.b 4,'C','I','N','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,103
-		.dc.b 6,'C','F','L','O','A','T','('
-		.ascii ""
-		.dc.b 0,110
-		.dc.b 6,'C','O','M','B','I','N','('
-		.ascii ""
-		.dc.b 0,141
+		.dc.b 4,'C','I','N','T','(',TOK_SUBFUNC_208,103
+		.dc.b 6,'C','F','L','O','A','T','(',0,TOK_CFLOAT
+		.dc.b 6,'C','O','M','B','I','N','(',0,TOK_COMBIN
 	.IFNE GBE
-		.dc.b 7,'C','M','D','L','I','N','E','$'
-		.ascii ""
-		.dc.b 0,136
-		.dc.b 8,'C','H','E','C','K','S','U','M','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,34
-		.dc.b 6,'C','F','R','E','E','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,5
-		.dc.b 7,'C','P','U','0','2','0','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,245
-		.dc.b 6,'C','C','O','N','W','S','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,101
-		.dc.b 5,'C','R','C','1','6','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,246
-		.dc.b 5,'C','R','C','3','2','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,247
-		.dc.b 8,'C','U','R','S','C','O','N','F','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,205
-		.dc.b 9,'C','A','C','H','E','C','T','R','L','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,77
-		.dc.b 10,'C','T','6','0','_','C','A','C','H','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,78
-		.dc.b 17,'C','T','6','0','_','F','L','U','S','H','_','C','A','C','H','E','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,79
-		.dc.b 26,'C','T','6','0','_','R','E','A','D','_','C','O','R','E','_','T','E','M','P','E','R','A','T','U','R','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,80
-		.dc.b 17,'C','T','6','0','_','R','W','_','P','A','R','A','M','E','T','E','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,81
-		.dc.b 12,'C','T','6','0','_','V','M','A','L','L','O','C','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,82
+		.dc.b 9,'C','O','N','S','T','R','A','I','N','(',TOK_SUBFUNC_210,138
+		.dc.b 6,'C','_','V','D','I','(','#',TOK_SUBFUNC_210,25
+		.dc.b 8,'C','_','X','B','I','O','S','(','#',TOK_SUBFUNC_210,26
+		.dc.b 6,'C','A','L','L','O','C','(',TOK_SUBFUNC_210,31
+		.dc.b 6,'C','R','Y','P','T','$','(',0,TOK_CRYPT
+		.dc.b 6,'C','U','R','D','I','R','$',0,TOK_CURDIR
+		.dc.b 7,'C','M','D','L','I','N','E','$',0,TOK_CMDLINE
+		.dc.b 8,'C','H','E','C','K','S','U','M','(',TOK_SUBFUNC_210,34
+		.dc.b 7,'C','P','U','0','2','0','(',')',TOK_SUBFUNC_208,245
+		.dc.b 6,'C','C','O','N','W','S','(',TOK_SUBFUNC_209,101
+		.dc.b 5,'C','R','C','1','6','(',TOK_SUBFUNC_209,246
+		.dc.b 5,'C','R','C','3','2','(',TOK_SUBFUNC_209,247
+		.dc.b 8,'C','U','R','S','C','O','N','F','(',TOK_SUBFUNC_209,205
+		.dc.b 9,'C','A','C','H','E','C','T','R','L','(',TOK_SUBFUNC_209,77
+		.dc.b 10,'C','T','6','0','_','C','A','C','H','E','(',TOK_SUBFUNC_209,78
+		.dc.b 17,'C','T','6','0','_','F','L','U','S','H','_','C','A','C','H','E','(',')',TOK_SUBFUNC_209,79
+		.dc.b 26,'C','T','6','0','_','R','E','A','D','_','C','O','R','E','_','T','E','M','P','E','R','A','T','U','R','E','(',TOK_SUBFUNC_209,80
+		.dc.b 17,'C','T','6','0','_','R','W','_','P','A','R','A','M','E','T','E','R','(',TOK_SUBFUNC_209,81
+		.dc.b 12,'C','T','6','0','_','V','M','A','L','L','O','C','(',TOK_SUBFUNC_209,82
+		.dc.b 8,'C','O','M','P','I','L','E','D','?',TOK_SUBFUNC_210,225
+		.dc.b 6,'C','P','U','0','2','0','?',TOK_SUBFUNC_210,252
+		.dc.b 11,'C','I','_','M','A','I','N','L','I','S','T','(',TOK_SUBFUNC_211,159
+		.dc.b 13,'C','I','_','N','U','M','_','P','L','A','N','E','S','(',TOK_SUBFUNC_211,160
+		.dc.b 11,'C','I','_','C','O','L','_','D','A','T','A','(',TOK_SUBFUNC_211,161
+		.dc.b 11,'C','I','_','C','O','L','_','M','A','S','K','(',TOK_SUBFUNC_211,162
+		.dc.b 11,'C','I','_','S','E','L','_','D','A','T','A','(',TOK_SUBFUNC_211,163
+		.dc.b 11,'C','I','_','S','E','L','_','M','A','S','K','(',TOK_SUBFUNC_211,164
+		.dc.b 11,'C','I','_','N','E','X','T','_','R','E','S','(',TOK_SUBFUNC_211,165
 	.ENDC
 func_d_table: /* 12bc4 */
-		.dc.b 2,'D','I','V'
-		.ascii ""
-		.dc.b 0,11
-		.dc.b 3,'D','I','V','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,1
-		.dc.b 5,'D','O','W','N','T','O'
-		.ascii ""
-		.dc.b 0,73
-		.dc.b 5,'D','P','E','E','K','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,64
-		.dc.b 4,'D','I','M','?','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,81
+		.dc.b 2,'D','I','V',0,TOK_DIV
+		.dc.b 3,'D','I','V','(',TOK_SUBFUNC_208,1
+		.dc.b 5,'D','O','W','N','T','O',0,TOK_DOWNTO
+		.dc.b 5,'D','P','E','E','K','(',TOK_SUBFUNC_208,64
+		.dc.b 4,'D','I','M','?','(',TOK_SUBFUNC_208,81
 	.IFNE GBE
-		.dc.b 5,'D','A','T','E','$','('
-		.ascii ""
-		.dc.b 0,164
+		.dc.b 5,'D','A','T','E','$','(',0,TOK_DATE1
 	.ENDC
-		.dc.b 4,'D','A','T','E','$'
-		.ascii ""
-		.dc.b 0,126
-		.dc.b 4,'D','I','R','$','('
-		.ascii ""
-		.dc.b 0,132
-		.dc.b 5,'D','F','R','E','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,83
-		.dc.b 6,'D','O','U','B','L','E','{'
-		.ascii ""
-		.dc.b 0,93
-		.dc.b 3,'D','E','G','('
-		.ascii ""
-		.dc.b 0,103
-		.dc.b 4,'D','R','A','W','('
-		.ascii ""
-		.dc.b 0,134
+		.dc.b 4,'D','A','T','E','$',0,TOK_DATE
+		.dc.b 4,'D','I','R','$','(',0,TOK_DIR
+		.dc.b 5,'D','F','R','E','E','(',TOK_SUBFUNC_208,83
+		.dc.b 6,'D','O','U','B','L','E','{',0,TOK_DOUBLE_REF
+		.dc.b 3,'D','E','G','(',0,TOK_DEG
+		.dc.b 4,'D','R','A','W','(',0,TOK_DRAW
 	.IFNE GBE
-		.dc.b 7,'D','C','R','E','A','T','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,103
-		.dc.b 7,'D','D','E','L','E','T','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,104
-		.dc.b 8,'D','S','E','T','P','A','T','H','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,108
-		.dc.b 7,'D','O','S','O','U','N','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,8
-		.dc.b 10,'D','E','V','C','O','N','N','E','C','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,38
-		.dc.b 11,'D','S','P','T','R','I','S','T','A','T','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,36
-		.dc.b 8,'D','G','E','T','D','R','V','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,11
-		.dc.b 7,'D','S','E','T','D','R','V','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,102
-		.dc.b 9,'D','P','A','T','H','C','O','N','F','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,114
-		.dc.b 7,'D','R','V','M','A','P','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,112
-		.dc.b 7,'D','M','A','R','E','A','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,218
-		.dc.b 8,'D','M','A','W','R','I','T','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,219
-		.dc.b 6,'D','_','F','R','E','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,116
-		.dc.b 8,'D','G','E','T','P','A','T','H','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,107
-		.dc.b 2,'D','T','A'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,56
+		.dc.b 5,'D','A','Y','N','O','(',TOK_SUBFUNC_210,254
+		.dc.b 4,'D','A','T','E','(',TOK_SUBFUNC_210,214
+		.dc.b 3,'D','A','Y','(',TOK_SUBFUNC_210,217
+		.dc.b 9,'D','E','L','C','O','O','K','I','E','(',TOK_SUBFUNC_210,204
+		.dc.b 10,'D','H','S','T','_','I','N','I','T','(',')',TOK_SUBFUNC_210,187
+		.dc.b 8,'D','H','S','T','_','A','D','D','(',TOK_SUBFUNC_210,188
+		.dc.b 5,'D','L','O','C','K','(',TOK_SUBFUNC_210,148
+		.dc.b 8,'D','I','G','I','T','A','L','$','(',0,TOK_DIGITAL
+		.dc.b 7,'D','C','R','E','A','T','E','(',TOK_SUBFUNC_209,103
+		.dc.b 7,'D','D','E','L','E','T','E','(',TOK_SUBFUNC_209,104
+		.dc.b 8,'D','S','E','T','P','A','T','H','(',TOK_SUBFUNC_209,108
+		.dc.b 7,'D','O','S','O','U','N','D','(',TOK_SUBFUNC_209,8
+		.dc.b 10,'D','E','V','C','O','N','N','E','C','T','(',TOK_SUBFUNC_209,38
+		.dc.b 11,'D','S','P','T','R','I','S','T','A','T','E','(',TOK_SUBFUNC_209,36
+		.dc.b 8,'D','G','E','T','D','R','V','(',')',TOK_SUBFUNC_209,11
+		.dc.b 7,'D','S','E','T','D','R','V','(',TOK_SUBFUNC_209,102
+		.dc.b 9,'D','P','A','T','H','C','O','N','F','(',TOK_SUBFUNC_209,114
+		.dc.b 7,'D','R','V','M','A','P','(',')',TOK_SUBFUNC_209,112
+		.dc.b 7,'D','M','A','R','E','A','D','(',TOK_SUBFUNC_209,218
+		.dc.b 8,'D','M','A','W','R','I','T','E','(',TOK_SUBFUNC_209,219
+		.dc.b 6,'D','F','R','E','E','%','(',TOK_SUBFUNC_209,116
+		.dc.b 8,'D','G','E','T','P','A','T','H','(',TOK_SUBFUNC_209,107
+		.dc.b 2,'D','T','A',TOK_SUBFUNC_209,56
+		.dc.b 11,'D','W','R','I','T','E','L','A','B','E','L','(',TOK_SUBFUNC_210,163
+		.dc.b 10,'D','R','E','A','D','L','A','B','E','L','(',TOK_SUBFUNC_210,164
+		.dc.b 7,'D','G','E','T','C','W','D','(',TOK_SUBFUNC_210,165
+		.dc.b 9,'D','C','L','O','S','E','D','I','R','(',TOK_SUBFUNC_210,166
+		.dc.b 10,'D','R','E','W','I','N','D','D','I','R','(',TOK_SUBFUNC_210,167
+		.dc.b 8,'D','O','P','E','N','D','I','R','(',TOK_SUBFUNC_210,168
+		.dc.b 8,'D','R','E','A','D','D','I','R','(',TOK_SUBFUNC_210,169
+		.dc.b 9,'D','X','R','E','A','D','D','I','R','(',TOK_SUBFUNC_210,170
+		.dc.b 6,'D','M','A','S','N','D','?',TOK_SUBFUNC_210,253
+		.dc.b 11,'D','S','P','_','D','O','B','L','O','C','K','(',TOK_SUBFUNC_211,12
+		.dc.b 16,'D','S','P','_','B','L','K','H','A','N','D','S','H','A','K','E','(',TOK_SUBFUNC_211,13
+		.dc.b 15,'D','S','P','_','B','L','K','U','N','P','A','C','K','E','D','(',TOK_SUBFUNC_211,14
+		.dc.b 12,'D','S','P','_','I','N','S','T','R','E','A','M','(',TOK_SUBFUNC_211,15
+		.dc.b 13,'D','S','P','_','O','U','T','S','T','R','E','A','M','(',TOK_SUBFUNC_211,16
+		.dc.b 12,'D','S','P','_','I','O','S','T','R','E','A','M','(',TOK_SUBFUNC_211,17
+		.dc.b 20,'D','S','P','_','R','E','M','O','V','E','I','N','T','E','R','R','U','P','T','S','(',TOK_SUBFUNC_211,18
+		.dc.b 16,'D','S','P','_','G','E','T','W','O','R','D','S','I','Z','E','(',')',TOK_SUBFUNC_211,19
+		.dc.b 9,'D','S','P','_','L','O','C','K','(',')',TOK_SUBFUNC_211,20
+		.dc.b 11,'D','S','P','_','U','N','L','O','C','K','(',')',TOK_SUBFUNC_211,21
+		.dc.b 13,'D','S','P','_','A','V','A','I','L','A','B','L','E','(',TOK_SUBFUNC_211,22
+		.dc.b 11,'D','S','P','_','R','E','S','E','R','V','E','(',TOK_SUBFUNC_211,23
+		.dc.b 12,'D','S','P','_','L','O','A','D','P','R','O','G','(',TOK_SUBFUNC_211,24
+		.dc.b 12,'D','S','P','_','E','X','E','C','P','R','O','G','(',TOK_SUBFUNC_211,25
+		.dc.b 12,'D','S','P','_','E','X','E','C','B','O','O','T','(',TOK_SUBFUNC_211,26
+		.dc.b 15,'D','S','P','_','L','O','D','T','O','B','I','N','A','R','Y','(',TOK_SUBFUNC_211,27
+		.dc.b 13,'D','S','P','_','T','R','I','G','G','E','R','H','C','(',TOK_SUBFUNC_211,28
+		.dc.b 25,'D','S','P','_','R','E','Q','U','E','S','T','U','N','I','Q','U','E','A','B','I','L','I','T','Y','(',')',TOK_SUBFUNC_211,29
+		.dc.b 19,'D','S','P','_','G','E','T','P','R','O','G','A','B','I','L','I','T','Y','(',')',TOK_SUBFUNC_211,30
+		.dc.b 21,'D','S','P','_','F','L','U','S','H','S','U','B','R','O','U','T','I','N','E','S','(',')',TOK_SUBFUNC_211,31
+		.dc.b 18,'D','S','P','_','L','O','A','D','S','U','B','R','O','U','T','I','N','E','(',TOK_SUBFUNC_211,32
+		.dc.b 18,'D','S','P','_','I','N','Q','S','U','B','R','A','B','I','L','I','T','Y','(',TOK_SUBFUNC_211,33
+		.dc.b 17,'D','S','P','_','R','U','N','S','U','B','R','O','U','T','I','N','E','(',TOK_SUBFUNC_211,34
+		.dc.b 7,'D','S','P','_','H','F','0','(',TOK_SUBFUNC_211,35
+		.dc.b 7,'D','S','P','_','H','F','1','(',TOK_SUBFUNC_211,36
+		.dc.b 8,'D','S','P','_','H','F','2','(',')',TOK_SUBFUNC_211,37
+		.dc.b 8,'D','S','P','_','H','F','3','(',')',TOK_SUBFUNC_211,38
+		.dc.b 12,'D','S','P','_','B','L','K','W','O','R','D','S','(',TOK_SUBFUNC_211,39
+		.dc.b 12,'D','S','P','_','B','L','K','B','Y','T','E','S','(',TOK_SUBFUNC_211,40
+		.dc.b 10,'D','S','P','_','H','S','T','A','T','(',')',TOK_SUBFUNC_211,41
+		.dc.b 14,'D','S','P','_','S','E','T','V','E','C','T','O','R','S','(',TOK_SUBFUNC_211,42
+		.dc.b 14,'D','S','P','_','M','U','L','T','B','L','O','C','K','S','(',TOK_SUBFUNC_211,43
 	.ENDC
 func_e_table: /* 12c33 */
-		.dc.b 4,'E','O','F','(','#'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,78
-		.dc.b 3,'E','O','F','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,78
-		.dc.b 2,'E','Q','V'
-		.ascii ""
-		.dc.b 0,4
-		.dc.b 3,'E','Q','V','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,8
-		.dc.b 4,'E','R','R','O','R'
-		.ascii ""
-		.dc.b 0,151
-		.dc.b 4,'E','R','R','$','('
-		.ascii ""
-		.dc.b 0,36
-		.dc.b 2,'E','R','R'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,88
-		.dc.b 4,'E','V','E','N','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,101
-		.dc.b 4,'E','X','E','C','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,95
-		.dc.b 5,'E','X','I','S','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,84
-		.dc.b 3,'E','X','P','('
-		.ascii ""
-		.dc.b 0,47
-		.dc.b 11,'E','V','N','T','_','K','E','Y','B','D','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,118
-		.dc.b 11,'E','V','N','T','_','B','U','T','T','O','N','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,119
-		.dc.b 10,'E','V','N','T','_','M','O','U','S','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,120
-		.dc.b 10,'E','V','N','T','_','M','E','S','A','G','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,121
-		.dc.b 10,'E','V','N','T','_','T','I','M','E','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,122
-		.dc.b 10,'E','V','N','T','_','M','U','L','T','I','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,123
-		.dc.b 11,'E','V','N','T','_','D','C','L','I','C','K','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,142
+		.dc.b 4,'E','O','F','(','#',TOK_SUBFUNC_208,78
+		.dc.b 3,'E','O','F','(',TOK_SUBFUNC_208,78
+		.dc.b 2,'E','Q','V',0,TOK_EQV
+		.dc.b 3,'E','Q','V','(',TOK_SUBFUNC_208,8
+		.dc.b 4,'E','R','R','O','R',0,TOK_ERROR
+		.dc.b 4,'E','R','R','$','(',0,TOK_ERRSTR
+		.dc.b 2,'E','R','R',TOK_SUBFUNC_208,88
+		.dc.b 4,'E','V','E','N','(',TOK_SUBFUNC_208,101
+		.dc.b 4,'E','X','E','C','(',TOK_SUBFUNC_208,95
+		.dc.b 5,'E','X','I','S','T','(',TOK_SUBFUNC_208,84
+		.dc.b 3,'E','X','P','(',0,TOK_EXP
+		.dc.b 11,'E','V','N','T','_','K','E','Y','B','D','(',')',TOK_SUBFUNC_208,118
+		.dc.b 11,'E','V','N','T','_','B','U','T','T','O','N','(',TOK_SUBFUNC_208,119
+		.dc.b 10,'E','V','N','T','_','M','O','U','S','E','(',TOK_SUBFUNC_208,120
+		.dc.b 10,'E','V','N','T','_','M','E','S','A','G','(',TOK_SUBFUNC_208,121
+		.dc.b 10,'E','V','N','T','_','T','I','M','E','R','(',TOK_SUBFUNC_208,122
+		.dc.b 10,'E','V','N','T','_','M','U','L','T','I','(',TOK_SUBFUNC_208,123
+		.dc.b 11,'E','V','N','T','_','D','C','L','I','C','K','(',TOK_SUBFUNC_208,142
 	.IFNE GBE
-		.dc.b 2,'E','R','L'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,2
-		.dc.b 6,'E','N','V','I','R','O','N'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,121
-		.dc.b 10,'E','G','E','T','S','H','I','F','T','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,238
-		.dc.b 9,'E','S','E','T','S','H','I','F','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,239
-		.dc.b 8,'E','S','E','T','B','A','N','K','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,240
-		.dc.b 9,'E','S','E','T','C','O','L','O','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,241
-		.dc.b 8,'E','S','E','T','G','R','A','Y','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,242
-		.dc.b 9,'E','S','E','T','S','M','E','A','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,243
-		.dc.b 11,'E','G','E','T','P','A','L','E','T','T','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,244
-		.dc.b 11,'E','S','E','T','P','A','L','E','T','T','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,245
+		.dc.b 2,'E','R','L',TOK_SUBFUNC_210,2
+		.dc.b 8,'E','N','V','I','R','O','N','$','(',0,TOK_ENVIRON
+		.dc.b 6,'E','N','V','I','R','O','N',TOK_SUBFUNC_210,121
+		.dc.b 10,'E','G','E','T','S','H','I','F','T','(',')',TOK_SUBFUNC_209,238
+		.dc.b 9,'E','S','E','T','S','H','I','F','T','(',TOK_SUBFUNC_209,239
+		.dc.b 8,'E','S','E','T','B','A','N','K','(',TOK_SUBFUNC_209,240
+		.dc.b 9,'E','S','E','T','C','O','L','O','R','(',TOK_SUBFUNC_209,241
+		.dc.b 8,'E','S','E','T','G','R','A','Y','(',TOK_SUBFUNC_209,242
+		.dc.b 9,'E','S','E','T','S','M','E','A','R','(',TOK_SUBFUNC_209,243
+		.dc.b 11,'E','G','E','T','P','A','L','E','T','T','E','(',TOK_SUBFUNC_209,244
+		.dc.b 11,'E','S','E','T','P','A','L','E','T','T','E','(',TOK_SUBFUNC_209,245
+		.dc.b 3,'E','J','P','?',TOK_SUBFUNC_208,254
 	.ENDC
 func_f_table: /* 12d0e */
-		.dc.b 4,'F','R','A','C','('
-		.ascii ""
-		.dc.b 0,39
-		.dc.b 3,'F','R','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,71
-		.dc.b 4,'F','A','L','S','E'
-		.ascii ""
-		.dc.b 0,189
-		.dc.b 4,'F','A','T','A','L'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,89
-		.dc.b 3,'F','I','X','('
-		.ascii ""
-		.dc.b 0,155
-		.dc.b 1,'F','N'
-		.ascii ""
-		.dc.b 0,158
-		.dc.b 5,'F','L','O','A','T','{'
-		.ascii ""
-		.dc.b 0,92
-		.dc.b 7,'F','O','R','M','_','D','O','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,157
-		.dc.b 9,'F','O','R','M','_','D','I','A','L','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,158
-		.dc.b 10,'F','O','R','M','_','A','L','E','R','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,159
-		.dc.b 10,'F','O','R','M','_','E','R','R','O','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,160
-		.dc.b 11,'F','O','R','M','_','C','E','N','T','E','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,161
-		.dc.b 10,'F','O','R','M','_','K','E','Y','B','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,204
-		.dc.b 11,'F','O','R','M','_','B','U','T','T','O','N','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,205
-		.dc.b 10,'F','S','E','L','_','I','N','P','U','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,174
-		.dc.b 7,'F','S','F','I','R','S','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,218
-		.dc.b 7,'F','S','N','E','X','T','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,219
-		.dc.b 7,'F','S','E','T','D','T','A','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,220
-		.dc.b 8,'F','G','E','T','D','T','A','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,221
-		.dc.b 4,'F','A','C','T','('
-		.ascii ""
-		.dc.b 0,140
+		.dc.b 4,'F','R','A','C','(',0,TOK_FRAC
+		.dc.b 3,'F','R','E','(',TOK_SUBFUNC_208,71
+		.dc.b 4,'F','A','L','S','E',0,TOK_FALSE
+		.dc.b 4,'F','A','T','A','L',TOK_SUBFUNC_208,89
+		.dc.b 3,'F','I','X','(',0,TOK_FIX
+		.dc.b 1,'F','N',0,TOK_FNCALL
+		.dc.b 5,'F','L','O','A','T','{',0,TOK_FLOAT_REF
+		.dc.b 7,'F','O','R','M','_','D','O','(',TOK_SUBFUNC_208,157
+		.dc.b 9,'F','O','R','M','_','D','I','A','L','(',TOK_SUBFUNC_208,158
+		.dc.b 10,'F','O','R','M','_','A','L','E','R','T','(',TOK_SUBFUNC_208,159
+		.dc.b 10,'F','O','R','M','_','E','R','R','O','R','(',TOK_SUBFUNC_208,160
+		.dc.b 11,'F','O','R','M','_','C','E','N','T','E','R','(',TOK_SUBFUNC_208,161
+		.dc.b 10,'F','O','R','M','_','K','E','Y','B','D','(',TOK_SUBFUNC_208,204
+		.dc.b 11,'F','O','R','M','_','B','U','T','T','O','N','(',TOK_SUBFUNC_208,205
+		.dc.b 10,'F','S','E','L','_','I','N','P','U','T','(',TOK_SUBFUNC_208,174
+		.dc.b 7,'F','S','F','I','R','S','T','(',TOK_SUBFUNC_208,218
+		.dc.b 7,'F','S','N','E','X','T','(',')',TOK_SUBFUNC_208,219
+		.dc.b 7,'F','S','E','T','D','T','A','(',TOK_SUBFUNC_208,220
+		.dc.b 8,'F','G','E','T','D','T','A','(',')',TOK_SUBFUNC_208,221
+		.dc.b 4,'F','A','C','T','(',0,TOK_FACT
 	.IFNE GBE
-		.dc.b 7,'F','P','U','8','8','2','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,246
-		.dc.b 7,'F','R','E','N','A','M','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,111
-		.dc.b 7,'F','D','E','L','E','T','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,49
-		.dc.b 7,'F','C','R','E','A','T','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,47
-		.dc.b 6,'F','C','L','O','S','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,44
-		.dc.b 6,'F','W','R','I','T','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,46
-		.dc.b 5,'F','O','P','E','N','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,43
-		.dc.b 5,'F','R','E','A','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,45
-		.dc.b 5,'F','S','E','E','K','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,48
-		.dc.b 10,'F','O','R','M','_','P','O','P','U','P','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,160
-		.dc.b 12,'F','S','E','L','_','E','X','I','N','P','U','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,25
-		.dc.b 7,'F','I','N','S','T','A','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,175
-		.dc.b 5,'F','C','N','T','L','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,177
-		.dc.b 7,'F','S','E','L','E','C','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,178
-		.dc.b 8,'F','G','E','T','C','H','A','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,83
-		.dc.b 8,'F','P','U','T','C','H','A','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,84
-		.dc.b 7,'F','D','A','T','I','M','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,113
-		.dc.b 8,'F','O','U','T','S','T','A','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,176
-		.dc.b 7,'F','A','T','T','R','I','B','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,115
-		.dc.b 4,'F','D','U','P','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,171
-		.dc.b 6,'F','F','O','R','C','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,172
-		.dc.b 6,'F','C','H','M','O','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,254
-		.dc.b 6,'F','L','O','P','R','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,213
-		.dc.b 6,'F','L','O','P','W','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,214
-		.dc.b 7,'F','L','O','P','F','M','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,215
-		.dc.b 7,'F','L','O','P','V','E','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,216
-		.dc.b 8,'F','L','O','P','R','A','T','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,217
-		.dc.b 5,'F','L','O','C','K','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,173
-		.dc.b 5,'F','_','I','N','P','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,63
-		.dc.b 6,'F','_','I','N','P','&','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,64
-		.dc.b 6,'F','_','I','N','P','%','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,65
-		.dc.b 5,'F','_','O','U','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,60
-		.dc.b 6,'F','_','O','U','T','&','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,61
-		.dc.b 6,'F','_','O','U','T','%','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,62
-		.dc.b 6,'F','_','B','G','E','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,51
-		.dc.b 6,'F','_','B','P','U','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,52
-		.dc.b 6,'F','_','O','P','E','N','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,59
-		.dc.b 12,'F','_','L','I','N','E','_','I','N','P','U','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,68
-		.dc.b 13,'F','_','L','I','N','E','_','O','U','T','P','U','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,67
-		.dc.b 7,'F','_','I','N','P','U','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,90
-		.dc.b 8,'F','_','O','U','T','P','U','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,89
-		.dc.b 7,'F','_','P','R','E','A','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,92
-		.dc.b 8,'F','_','P','W','R','I','T','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,91
-		.dc.b 5,'F','_','L','O','F','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,55
-		.dc.b 5,'F','_','L','O','C','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,54
-		.dc.b 5,'F','_','E','O','F','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,53
-		.dc.b 7,'F','_','B','L','O','A','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,69
-		.dc.b 7,'F','_','B','S','A','V','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,70
-		.dc.b 6,'F','_','S','E','E','K','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,71
-		.dc.b 9,'F','_','R','E','L','S','E','E','K','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,72
-		.dc.b 6,'F','_','L','O','A','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,18
-		.dc.b 7,'F','_','C','L','O','S','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,119
-		.dc.b 7,'F','S','O','C','K','E','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,35
-		.dc.b 11,'F','S','O','C','K','E','T','P','A','I','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,36
-		.dc.b 7,'F','A','C','C','E','P','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,37
-		.dc.b 8,'F','C','O','N','N','E','C','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,38
-		.dc.b 5,'F','B','I','N','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,39
-		.dc.b 7,'F','L','I','S','T','E','N','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,40
-		.dc.b 8,'F','R','E','C','V','M','S','G','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,41
-		.dc.b 8,'F','S','E','N','D','M','S','G','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,42
-		.dc.b 9,'F','R','E','C','V','F','R','O','M','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,43
-		.dc.b 7,'F','S','E','N','D','T','O','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,44
-		.dc.b 11,'F','S','E','T','S','O','C','K','O','P','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,45
-		.dc.b 11,'F','G','E','T','S','O','C','K','O','P','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,46
-		.dc.b 12,'F','G','E','T','P','E','E','R','N','A','M','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,47
-		.dc.b 12,'F','G','E','T','S','O','C','K','N','A','M','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,48
-		.dc.b 9,'F','S','H','U','T','D','O','W','N','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,49
-		.dc.b 10,'F','O','N','T','_','I','N','I','T','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,89
-		.dc.b 11,'F','O','N','T','_','S','E','L','E','C','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,90
+		.dc.b 6,'F','E','X','I','S','T','(',TOK_SUBFUNC_210,176
+		.dc.b 5,'F','I','L','E','S','(',TOK_SUBFUNC_210,192
+		.dc.b 8,'F','I','L','E','C','O','P','Y','(',TOK_SUBFUNC_210,152
+		.dc.b 7,'F','P','U','8','8','2','(',')',TOK_SUBFUNC_208,246
+		.dc.b 6,'F','X','A','T','T','R','(',TOK_SUBFUNC_210,171
+		.dc.b 5,'F','P','I','P','E','(',TOK_SUBFUNC_210,134
+		.dc.b 5,'F','P','O','L','L','(',TOK_SUBFUNC_210,126
+		.dc.b 7,'F','R','E','N','A','M','E','(',TOK_SUBFUNC_209,111
+		.dc.b 7,'F','D','E','L','E','T','E','(',TOK_SUBFUNC_209,49
+		.dc.b 7,'F','C','R','E','A','T','E','(',TOK_SUBFUNC_209,47
+		.dc.b 6,'F','C','L','O','S','E','(',TOK_SUBFUNC_209,44
+		.dc.b 6,'F','W','R','I','T','E','(',TOK_SUBFUNC_209,46
+		.dc.b 5,'F','O','P','E','N','(',TOK_SUBFUNC_209,43
+		.dc.b 5,'F','R','E','A','D','(',TOK_SUBFUNC_209,45
+		.dc.b 5,'F','S','E','E','K','(',TOK_SUBFUNC_209,48
+		.dc.b 10,'F','O','R','M','.','K','E','Y','B','D','(',TOK_SUBFUNC_210,205
+		.dc.b 10,'F','O','R','M','_','P','O','P','U','P','(',TOK_SUBFUNC_209,160
+		.dc.b 12,'F','S','E','L','_','E','X','I','N','P','U','T','(',TOK_SUBFUNC_209,25
+		.dc.b 7,'F','I','N','S','T','A','T','(',TOK_SUBFUNC_209,175
+		.dc.b 5,'F','C','N','T','L','(',TOK_SUBFUNC_209,177
+		.dc.b 7,'F','S','E','L','E','C','T','(',TOK_SUBFUNC_209,178
+		.dc.b 8,'F','G','E','T','C','H','A','R','(',TOK_SUBFUNC_209,83
+		.dc.b 8,'F','P','U','T','C','H','A','R','(',TOK_SUBFUNC_209,84
+		.dc.b 7,'F','D','A','T','I','M','E','(',TOK_SUBFUNC_209,113
+		.dc.b 8,'F','O','U','T','S','T','A','T','(',TOK_SUBFUNC_209,176
+		.dc.b 7,'F','A','T','T','R','I','B','(',TOK_SUBFUNC_209,115
+		.dc.b 4,'F','D','U','P','(',TOK_SUBFUNC_209,171
+		.dc.b 6,'F','F','O','R','C','E','(',TOK_SUBFUNC_209,172
+		.dc.b 6,'F','C','H','M','O','D','(',TOK_SUBFUNC_209,254
+		.dc.b 6,'F','C','H','O','W','N','(',TOK_SUBFUNC_210,144
+		.dc.b 6,'F','L','O','P','R','D','(',TOK_SUBFUNC_209,213
+		.dc.b 6,'F','L','O','P','W','R','(',TOK_SUBFUNC_209,214
+		.dc.b 7,'F','L','O','P','F','M','T','(',TOK_SUBFUNC_209,215
+		.dc.b 7,'F','L','O','P','V','E','R','(',TOK_SUBFUNC_209,216
+		.dc.b 8,'F','L','O','P','R','A','T','E','(',TOK_SUBFUNC_209,217
+		.dc.b 5,'F','L','O','C','K','(',TOK_SUBFUNC_209,173
+		.dc.b 5,'F','_','I','N','P','(',TOK_SUBFUNC_209,63
+		.dc.b 6,'F','_','I','N','P','&','(',TOK_SUBFUNC_209,64
+		.dc.b 6,'F','_','I','N','P','%','(',TOK_SUBFUNC_209,65
+		.dc.b 5,'F','_','O','U','T','(',TOK_SUBFUNC_209,60
+		.dc.b 6,'F','_','O','U','T','&','(',TOK_SUBFUNC_209,61
+		.dc.b 6,'F','_','O','U','T','%','(',TOK_SUBFUNC_209,62
+		.dc.b 6,'F','_','B','G','E','T','(',TOK_SUBFUNC_209,51
+		.dc.b 6,'F','_','B','P','U','T','(',TOK_SUBFUNC_209,52
+		.dc.b 6,'F','_','O','P','E','N','(',TOK_SUBFUNC_209,59
+		.dc.b 12,'F','_','L','I','N','E','_','I','N','P','U','T','(',TOK_SUBFUNC_209,68
+		.dc.b 13,'F','_','L','I','N','E','_','O','U','T','P','U','T','(',TOK_SUBFUNC_209,67
+		.dc.b 7,'F','_','I','N','P','U','T','(',TOK_SUBFUNC_209,90
+		.dc.b 8,'F','_','O','U','T','P','U','T','(',TOK_SUBFUNC_209,89
+		.dc.b 5,'F','_','L','O','F','(',TOK_SUBFUNC_209,55
+		.dc.b 5,'F','_','L','O','C','(',TOK_SUBFUNC_209,54
+		.dc.b 5,'F','_','E','O','F','(',TOK_SUBFUNC_209,53
+		.dc.b 7,'F','_','B','L','O','A','D','(',TOK_SUBFUNC_209,69
+		.dc.b 7,'F','_','B','S','A','V','E','(',TOK_SUBFUNC_209,70
+		.dc.b 6,'F','_','S','E','E','K','(',TOK_SUBFUNC_209,71
+		.dc.b 9,'F','_','R','E','L','S','E','E','K','(',TOK_SUBFUNC_209,72
+		.dc.b 7,'F','_','C','L','O','S','E','(',TOK_SUBFUNC_210,119
+		.dc.b 9,'F','_','E','N','D','S','E','E','K','(',TOK_SUBFUNC_210,124
+		.dc.b 7,'F','I','L','E','L','E','N','(',TOK_SUBFUNC_210,127
+		.dc.b 7,'F','S','O','C','K','E','T','(',TOK_SUBFUNC_210,35
+		.dc.b 11,'F','S','O','C','K','E','T','P','A','I','R','(',TOK_SUBFUNC_210,36
+		.dc.b 7,'F','A','C','C','E','P','T','(',TOK_SUBFUNC_210,37
+		.dc.b 8,'F','C','O','N','N','E','C','T','(',TOK_SUBFUNC_210,38
+		.dc.b 5,'F','B','I','N','D','(',TOK_SUBFUNC_210,39
+		.dc.b 7,'F','L','I','S','T','E','N','(',TOK_SUBFUNC_210,40
+		.dc.b 8,'F','R','E','C','V','M','S','G','(',TOK_SUBFUNC_210,41
+		.dc.b 8,'F','S','E','N','D','M','S','G','(',TOK_SUBFUNC_210,42
+		.dc.b 9,'F','R','E','C','V','F','R','O','M','(',TOK_SUBFUNC_210,43
+		.dc.b 7,'F','S','E','N','D','T','O','(',TOK_SUBFUNC_210,44
+		.dc.b 11,'F','S','E','T','S','O','C','K','O','P','T','(',TOK_SUBFUNC_210,45
+		.dc.b 11,'F','G','E','T','S','O','C','K','O','P','T','(',TOK_SUBFUNC_210,46
+		.dc.b 12,'F','G','E','T','P','E','E','R','N','A','M','E','(',TOK_SUBFUNC_210,47
+		.dc.b 12,'F','G','E','T','S','O','C','K','N','A','M','E','(',TOK_SUBFUNC_210,48
+		.dc.b 9,'F','S','H','U','T','D','O','W','N','(',TOK_SUBFUNC_210,49
+		.dc.b 10,'F','O','N','T','_','I','N','I','T','(',')',TOK_SUBFUNC_210,89
+		.dc.b 11,'F','O','N','T','_','S','E','L','E','C','T','(',TOK_SUBFUNC_210,90
+		.dc.b 9,'F','R','E','E','F','I','L','E','(',')',TOK_SUBFUNC_210,5
+		.dc.b 9,'F','M','I','D','I','P','I','P','E','(',TOK_SUBFUNC_210,137
+		.dc.b 9,'F','R','E','A','D','L','I','N','K','(',TOK_SUBFUNC_211,183
+		.dc.b 3,'F','P','U','?',TOK_SUBFUNC_210,251
 	.ENDC
 func_g_table: /* 12e0d */
-		.dc.b 4,'G','O','S','U','B'
-		.ascii ""
-		.dc.b 0,76
-		.dc.b 3,'G','O','T','O'
-		.ascii ""
-		.dc.b 0,75
-		.dc.b 1,'G','B'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,61
-		.dc.b 7,'G','C','O','N','T','R','L','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,24
-		.dc.b 6,'G','C','O','N','T','R','L'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,25
-		.dc.b 6,'G','E','M','D','O','S','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,87
-		.dc.b 6,'G','I','N','T','I','N','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,26
-		.dc.b 5,'G','I','N','T','I','N'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,27
-		.dc.b 7,'G','I','N','T','O','U','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,28
-		.dc.b 6,'G','I','N','T','O','U','T'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,29
+		.dc.b 4,'G','O','S','U','B',0,TOK_GOSUB_FUNC
+		.dc.b 3,'G','O','T','O',0,TOK_GOTO_FUNC
+		.dc.b 1,'G','B',TOK_SUBFUNC_208,61
+		.dc.b 7,'G','C','O','N','T','R','L','(',TOK_SUBFUNC_208,24
+		.dc.b 6,'G','C','O','N','T','R','L',TOK_SUBFUNC_208,25
+		.dc.b 6,'G','E','M','D','O','S','(',TOK_SUBFUNC_208,87
+		.dc.b 6,'G','I','N','T','I','N','(',TOK_SUBFUNC_208,26
+		.dc.b 5,'G','I','N','T','I','N',TOK_SUBFUNC_208,27
+		.dc.b 7,'G','I','N','T','O','U','T','(',TOK_SUBFUNC_208,28
+		.dc.b 6,'G','I','N','T','O','U','T',TOK_SUBFUNC_208,29
 	.IFNE GBE
-		.dc.b 6,'G','L','O','B','A','L','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,250
-		.dc.b 5,'G','L','O','B','A','L'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,251
+		.dc.b 6,'G','L','O','B','A','L','(',TOK_SUBFUNC_208,250
+		.dc.b 5,'G','L','O','B','A','L',TOK_SUBFUNC_208,251
 	.ENDC
-		.dc.b 14,'G','R','A','F','_','R','U','B','B','E','R','B','O','X','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,162
-		.dc.b 12,'G','R','A','F','_','D','R','A','G','B','O','X','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,163
-		.dc.b 12,'G','R','A','F','_','M','O','V','E','B','O','X','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,164
-		.dc.b 12,'G','R','A','F','_','G','R','O','W','B','O','X','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,165
-		.dc.b 14,'G','R','A','F','_','S','H','R','I','N','K','B','O','X','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,166
-		.dc.b 13,'G','R','A','F','_','W','A','T','C','H','B','O','X','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,167
-		.dc.b 13,'G','R','A','F','_','S','L','I','D','E','B','O','X','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,168
-		.dc.b 11,'G','R','A','F','_','H','A','N','D','L','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,169
-		.dc.b 10,'G','R','A','F','_','M','O','U','S','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,170
-		.dc.b 12,'G','R','A','F','_','M','K','S','T','A','T','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,171
-		.dc.b 4,'G','D','O','S','?'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,104
-		.dc.b 7,'G','E','T','S','I','Z','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,239
+		.dc.b 14,'G','R','A','F','_','R','U','B','B','E','R','B','O','X','(',TOK_SUBFUNC_208,162
+		.dc.b 12,'G','R','A','F','_','D','R','A','G','B','O','X','(',TOK_SUBFUNC_208,163
+		.dc.b 12,'G','R','A','F','_','M','O','V','E','B','O','X','(',TOK_SUBFUNC_208,164
+		.dc.b 12,'G','R','A','F','_','G','R','O','W','B','O','X','(',TOK_SUBFUNC_208,165
+		.dc.b 14,'G','R','A','F','_','S','H','R','I','N','K','B','O','X','(',TOK_SUBFUNC_208,166
+		.dc.b 13,'G','R','A','F','_','W','A','T','C','H','B','O','X','(',TOK_SUBFUNC_208,167
+		.dc.b 13,'G','R','A','F','_','S','L','I','D','E','B','O','X','(',TOK_SUBFUNC_208,168
+		.dc.b 11,'G','R','A','F','_','H','A','N','D','L','E','(',TOK_SUBFUNC_208,169
+		.dc.b 10,'G','R','A','F','_','M','O','U','S','E','(',TOK_SUBFUNC_208,170
+		.dc.b 12,'G','R','A','F','_','M','K','S','T','A','T','E','(',TOK_SUBFUNC_208,171
+		.dc.b 4,'G','D','O','S','?',TOK_SUBFUNC_208,104
+		.dc.b 7,'G','E','T','S','I','Z','E','(',TOK_SUBFUNC_208,239
 	.IFNE GBE
-		.dc.b 9,'G','E','T','C','O','O','K','I','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,252
-		.dc.b 6,'G','M','O','U','S','E','K'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,247
-		.dc.b 6,'G','M','O','U','S','E','X'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,248
-		.dc.b 6,'G','M','O','U','S','E','Y'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,249
-		.dc.b 16,'G','R','A','F','_','M','U','L','T','I','R','U','B','B','E','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,168
-		.dc.b 4,'G','P','I','O','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,37
-		.dc.b 7,'G','E','T','R','E','Z','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,118
-		.dc.b 8,'G','E','T','T','I','M','E','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,109
-		.dc.b 6,'G','E','T','B','P','B','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,158
-		.dc.b 8,'G','I','A','C','C','E','S','S','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,212
-		.dc.b 7,'G','S','T','I','C','K','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,74
-		.dc.b 7,'G','S','T','R','I','G','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,75
+		.dc.b 2,'G','~','H',TOK_SUBFUNC_210,242
+		.dc.b 2,'G','~','R',TOK_SUBFUNC_210,243
+		.dc.b 9,'G','E','T','C','O','O','K','I','E','(',TOK_SUBFUNC_208,252
+		.dc.b 6,'G','M','O','U','S','E','K',TOK_SUBFUNC_208,247
+		.dc.b 6,'G','M','O','U','S','E','X',TOK_SUBFUNC_208,248
+		.dc.b 6,'G','M','O','U','S','E','Y',TOK_SUBFUNC_208,249
+		.dc.b 16,'G','R','A','F','_','M','U','L','T','I','R','U','B','B','E','R','(',TOK_SUBFUNC_209,168
+		.dc.b 4,'G','P','I','O','(',TOK_SUBFUNC_209,37
+		.dc.b 7,'G','E','T','R','E','Z','(',')',TOK_SUBFUNC_209,118
+		.dc.b 8,'G','E','T','T','I','M','E','(',')',TOK_SUBFUNC_209,109
+		.dc.b 6,'G','E','T','B','P','B','(',TOK_SUBFUNC_209,158
+		.dc.b 8,'G','I','A','C','C','E','S','S','(',TOK_SUBFUNC_209,212
+		.dc.b 7,'G','S','T','I','C','K','(',')',TOK_SUBFUNC_209,74
+		.dc.b 7,'G','S','T','R','I','G','(',')',TOK_SUBFUNC_209,75
+		.dc.b 6,'G','E','T','S','T','R','(',TOK_SUBFUNC_210,179
+		.dc.b 9,'G','R','A','Y','S','C','A','L','E','(',TOK_SUBFUNC_210,213
 	.ENDC
 func_h_table: /* 12f4a */
-		.dc.b 4,'H','E','X','$','('
-		.ascii ""
-		.dc.b 0,193
-		.dc.b 4,'H','I','M','E','M'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,30
+		.dc.b 4,'H','E','X','$','(',0,TOK_HEX1
+		.dc.b 4,'H','I','M','E','M',TOK_SUBFUNC_208,30
 	.IFNE GBE
-		.dc.b 8,'H','A','R','D','W','A','R','E','?'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,254
+		.dc.b 7,'H','I','N','Y','B','L','E','(',TOK_SUBFUNC_210,195
+		.dc.b 6,'H','I','B','Y','T','E','(',TOK_SUBFUNC_210,196
+		.dc.b 6,'H','I','W','O','R','D','(',TOK_SUBFUNC_210,197
+		.dc.b 6,'H','I','C','A','R','D','(',TOK_SUBFUNC_210,198
+		.dc.b 6,'H','O','U','R','2','4','(',TOK_SUBFUNC_210,218
+		.dc.b 6,'H','O','U','R','1','2','(',TOK_SUBFUNC_211,3
 	.ENDC
 func_i_table: /* 12f5e */
-		.dc.b 1,'I','F'
-		.ascii ""
-		.dc.b 0,90
-		.dc.b 2,'I','M','P'
-		.ascii ""
-		.dc.b 0,3
-		.dc.b 3,'I','M','P','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,9
-		.dc.b 5,'I','N','K','E','Y','$'
-		.ascii ""
-		.dc.b 0,83
-		.dc.b 6,'I','N','P','U','T','$','('
-		.ascii ""
-		.dc.b 0,94
-		.dc.b 4,'I','N','P','(','#'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,77
-		.dc.b 3,'I','N','P','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,74
-		.dc.b 5,'I','N','P','&','(','#'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,224
-		.dc.b 4,'I','N','P','&','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,223
-		.dc.b 5,'I','N','P','%','(','#'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,226
-		.dc.b 4,'I','N','P','%','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,225
-		.dc.b 4,'I','N','P','?','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,93
-		.dc.b 4,'I','N','P','U','T'
-		.ascii ""
-		.dc.b 0,96
-		.dc.b 5,'I','N','S','T','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,68
-		.dc.b 3,'I','N','T','('
-		.ascii ""
-		.dc.b 0,37
-		.dc.b 3,'I','B','O','X'
-		.ascii ""
-		.dc.b 0,172
-		.dc.b 5,'I','N','T','I','N','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,32
-		.dc.b 4,'I','N','T','I','N'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,33
-		.dc.b 6,'I','N','T','O','U','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,34
-		.dc.b 5,'I','N','T','O','U','T'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,35
-		.dc.b 3,'I','N','T','{'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,114
-		.dc.b 6,'I','N','P','A','U','X','$'
-		.ascii ""
-		.dc.b 0,52
-		.dc.b 6,'I','N','P','M','I','D','$'
-		.ascii ""
-		.dc.b 0,54
+		.dc.b 1,'I','F',0,TOK_IF
+		.dc.b 2,'I','M','P',0,TOK_IMP
+		.dc.b 3,'I','M','P','(',TOK_SUBFUNC_208,9
+		.dc.b 5,'I','N','K','E','Y','$',0,TOK_INKEY
+		.dc.b 6,'I','N','P','U','T','$','(',0,TOK_INPUT1
 	.IFNE GBE
-		.dc.b 5,'I','O','R','E','C','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,209
-		.dc.b 6,'I','K','B','D','W','S','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,210
+		.dc.b 8,'I','N','P','U','T','B','O','X','(',TOK_SUBFUNC_210,22
+		.dc.b 10,'I','N','P','U','T','R','A','D','I','O','(',TOK_SUBFUNC_211,184
+	.ENDC
+		.dc.b 4,'I','N','P','(','#',TOK_SUBFUNC_208,77
+		.dc.b 3,'I','N','P','(',TOK_SUBFUNC_208,74
+		.dc.b 5,'I','N','P','&','(','#',TOK_SUBFUNC_208,224
+		.dc.b 4,'I','N','P','&','(',TOK_SUBFUNC_208,223
+		.dc.b 5,'I','N','P','%','(','#',TOK_SUBFUNC_208,226
+		.dc.b 4,'I','N','P','%','(',TOK_SUBFUNC_208,225
+		.dc.b 4,'I','N','P','?','(',TOK_SUBFUNC_208,93
+		.dc.b 4,'I','N','P','U','T',0,TOK_INPUT3
+		.dc.b 5,'I','N','S','T','R','(',TOK_SUBFUNC_208,68
+		.dc.b 3,'I','N','T','(',0,TOK_INT
+		.dc.b 3,'I','B','O','X',0,TOK_IBOX
+		.dc.b 5,'I','N','T','I','N','(',TOK_SUBFUNC_208,32
+		.dc.b 4,'I','N','T','I','N',TOK_SUBFUNC_208,33
+		.dc.b 6,'I','N','T','O','U','T','(',TOK_SUBFUNC_208,34
+		.dc.b 5,'I','N','T','O','U','T',TOK_SUBFUNC_208,35
+		.dc.b 3,'I','N','T','{',TOK_SUBFUNC_208,114
+		.dc.b 6,'I','N','P','A','U','X','$',0,TOK_INPAUX
+		.dc.b 6,'I','N','P','M','I','D','$',0,TOK_INPMID
+	.IFNE GBE
+		.dc.b 10,'I','N','D','E','X','C','O','U','N','T','(',TOK_SUBFUNC_210,30
+		.dc.b 8,'I','N','I','T','M','O','U','S','(',TOK_SUBFUNC_211,182
+		.dc.b 5,'I','O','R','E','C','(',TOK_SUBFUNC_209,209
+		.dc.b 6,'I','K','B','D','W','S','(',TOK_SUBFUNC_209,210
+		.dc.b 7,'I','S','A','S','C','I','I','(',TOK_SUBFUNC_209,98
+		.dc.b 7,'I','S','B','L','A','N','K','(',TOK_SUBFUNC_210,153
+		.dc.b 7,'I','S','C','N','T','R','L','(',TOK_SUBFUNC_210,154
+		.dc.b 7,'I','S','P','R','I','N','T','(',TOK_SUBFUNC_210,155
+		.dc.b 7,'I','S','S','P','A','C','E','(',TOK_SUBFUNC_210,156
+		.dc.b 8,'I','B','_','P','M','A','S','K','(',TOK_SUBFUNC_211,142
+		.dc.b 8,'I','B','_','P','D','A','T','A','(',TOK_SUBFUNC_211,143
+		.dc.b 8,'I','B','_','P','T','E','X','T','(',TOK_SUBFUNC_211,144
+		.dc.b 7,'I','B','_','C','H','A','R','(',TOK_SUBFUNC_211,145
+		.dc.b 8,'I','B','_','X','C','H','A','R','(',TOK_SUBFUNC_211,146
+		.dc.b 8,'I','B','_','Y','C','H','A','R','(',TOK_SUBFUNC_211,147
+		.dc.b 8,'I','B','_','X','I','C','O','N','(',TOK_SUBFUNC_211,148
+		.dc.b 8,'I','B','_','Y','I','C','O','N','(',TOK_SUBFUNC_211,149
+		.dc.b 8,'I','B','_','W','I','C','O','N','(',TOK_SUBFUNC_211,150
+		.dc.b 8,'I','B','_','H','I','C','O','N','(',TOK_SUBFUNC_211,151
+		.dc.b 8,'I','B','_','X','T','E','X','T','(',TOK_SUBFUNC_211,152
+		.dc.b 8,'I','B','_','Y','T','E','X','T','(',TOK_SUBFUNC_211,153
+		.dc.b 8,'I','B','_','W','T','E','X','T','(',TOK_SUBFUNC_211,154
+		.dc.b 8,'I','B','_','H','T','E','X','T','(',TOK_SUBFUNC_211,155
+		.dc.b 9,'I','B','_','F','C','O','L','O','R','(',TOK_SUBFUNC_211,156
+		.dc.b 9,'I','B','_','B','C','O','L','O','R','(',TOK_SUBFUNC_211,157
+		.dc.b 9,'I','B','_','L','E','T','T','E','R','(',TOK_SUBFUNC_211,158
 	.ENDC
 func_j_table: /* 13048 */
 	.IFNE GBE
-		.dc.b 6,'J','O','Y','P','A','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,93
-		.dc.b 7,'J','D','I','S','I','N','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,224
-		.dc.b 8,'J','E','N','A','B','I','N','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,225
+		.dc.b 4,'J','O','I','N','(',TOK_SUBFUNC_210,178
+		.dc.b 6,'J','O','Y','P','A','D','(',TOK_SUBFUNC_209,93
+		.dc.b 7,'J','D','I','S','I','N','T','(',TOK_SUBFUNC_209,224
+		.dc.b 8,'J','E','N','A','B','I','N','T','(',TOK_SUBFUNC_209,225
+		.dc.b 11,'J','P','E','G','D','_','I','N','I','T','(',')',TOK_SUBFUNC_211,5
+		.dc.b 16,'J','P','E','G','D','_','O','P','E','N','D','R','I','V','E','R','(',TOK_SUBFUNC_211,6
+		.dc.b 17,'J','P','E','G','D','_','C','L','O','S','E','D','R','I','V','E','R','(',TOK_SUBFUNC_211,7
+		.dc.b 20,'J','P','E','G','D','_','G','E','T','S','T','R','U','C','T','S','I','Z','E','(',')',TOK_SUBFUNC_211,8
+		.dc.b 18,'J','P','E','G','D','_','G','E','T','I','M','A','G','E','I','N','F','O','(',TOK_SUBFUNC_211,9
+		.dc.b 18,'J','P','E','G','D','_','G','E','T','I','M','A','G','E','S','I','Z','E','(',TOK_SUBFUNC_211,10
+		.dc.b 17,'J','P','E','G','D','_','D','E','C','O','D','E','I','M','A','G','E','(',TOK_SUBFUNC_211,11
 	.ENDC
 func_k_table: /* 13048 */
 	.IFNE GBE
-		.dc.b 6,'K','E','Y','T','B','L','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,26
-		.dc.b 7,'K','B','S','H','I','F','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,10
+		.dc.b 6,'K','E','Y','T','B','L','(',TOK_SUBFUNC_209,26
+		.dc.b 7,'K','B','S','H','I','F','T','(',TOK_SUBFUNC_209,10
 	.ENDC
-		.dc.b 2,'K','E','Y'
-		.ascii ""
-		.dc.b 0,170
-		.dc.b 3,'K','I','L','L'
-		.ascii ""
-		.dc.b 0,176
+		.dc.b 2,'K','E','Y',0,TOK_KEY
+		.dc.b 3,'K','I','L','L',0,TOK_KILL
 	.IFNE GBE
-		.dc.b 6,'K','B','R','A','T','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,203
-		.dc.b 9,'K','B','D','V','B','A','S','E','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,207
+		.dc.b 6,'K','B','R','A','T','E','(',TOK_SUBFUNC_209,203
+		.dc.b 9,'K','B','D','V','B','A','S','E','(',')',TOK_SUBFUNC_209,207
 	.ENDC
 func_l_table: /* 13059 */
-		.dc.b 5,'L','E','F','T','$','('
-		.ascii ""
-		.dc.b 0,58
-		.dc.b 3,'L','E','N','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,66
-		.dc.b 4,'L','O','C','(','#'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,80
-		.dc.b 3,'L','O','C','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,80
-		.dc.b 4,'L','O','F','(','#'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,79
-		.dc.b 3,'L','O','F','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,79
-		.dc.b 3,'L','O','G','('
-		.ascii ""
-		.dc.b 0,48
-		.dc.b 5,'L','O','G','1','0','('
-		.ascii ""
-		.dc.b 0,49
-		.dc.b 5,'L','P','E','E','K','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,65
-		.dc.b 1,'L',':'
-		.ascii ""
-		.dc.b 0,138
-		.dc.b 4,'L','P','O','S','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,91
-		.dc.b 4,'L','O','N','G','{'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,113
-		.dc.b 2,'L','~','A'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,212
-		.dc.b 4,'L','P','E','N','X'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,231
-		.dc.b 4,'L','P','E','N','Y'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,232
+		.dc.b 5,'L','E','F','T','$','(',0,TOK_LEFT1
+		.dc.b 3,'L','E','N','(',TOK_SUBFUNC_208,66
+		.dc.b 4,'L','O','C','(','#',TOK_SUBFUNC_208,80
+		.dc.b 3,'L','O','C','(',TOK_SUBFUNC_208,80
+		.dc.b 4,'L','O','F','(','#',TOK_SUBFUNC_208,79
+		.dc.b 3,'L','O','F','(',TOK_SUBFUNC_208,79
+		.dc.b 3,'L','O','G','(',0,TOK_LOG
+		.dc.b 5,'L','O','G','1','0','(',0,TOK_LOG10
+		.dc.b 5,'L','P','E','E','K','(',TOK_SUBFUNC_208,65
+		.dc.b 1,'L',':',0,TOK_LONGARG
+		.dc.b 4,'L','P','O','S','(',TOK_SUBFUNC_208,91
+		.dc.b 4,'L','O','N','G','{',TOK_SUBFUNC_208,113
+		.dc.b 2,'L','~','A',TOK_SUBFUNC_208,212
+		.dc.b 4,'L','P','E','N','X',TOK_SUBFUNC_208,231
+		.dc.b 4,'L','P','E','N','Y',TOK_SUBFUNC_208,232
 	.IFNE GBE
-		.dc.b 6,'L','C','A','S','E','$','('
-		.ascii ""
-		.dc.b 0,146
-		.dc.b 6,'L','T','R','I','M','$','('
-		.ascii ""
-		.dc.b 0,144
-		.dc.b 6,'L','O','W','E','R','$','('
-		.ascii ""
-		.dc.b 0,148
-		.dc.b 8,'L','O','C','K','S','N','D','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,27
-		.dc.b 8,'L','O','G','B','A','S','E','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,119
-		.dc.b 6,'L','R','W','A','B','S','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,251
-		.dc.b 9,'L','D','G','_','I','N','I','T','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,50
-		.dc.b 8,'L','D','G','_','O','P','E','N','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,51
-		.dc.b 8,'L','D','G','_','F','I','N','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,52
-		.dc.b 9,'L','D','G','_','C','L','O','S','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,53
-		.dc.b 11,'L','D','G','_','L','I','B','P','A','T','H','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,54
-		.dc.b 10,'L','D','G','_','E','R','R','O','R','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,55
+		.dc.b 4,'L','E','A','P','(',TOK_SUBFUNC_211,0
+		.dc.b 7,'L','O','A','D','S','T','R','(',TOK_SUBFUNC_210,191
+		.dc.b 7,'L','O','A','D','M','E','M','(',TOK_SUBFUNC_210,18
+		.dc.b 6,'L','C','A','S','E','$','(',0,TOK_LCASE
+		.dc.b 6,'L','T','R','I','M','$','(',0,TOK_LTRIM
+		.dc.b 6,'L','O','W','E','R','$','(',0,TOK_LOWER
+		.dc.b 8,'L','O','C','K','S','N','D','(',')',TOK_SUBFUNC_209,27
+		.dc.b 8,'L','O','G','B','A','S','E','(',')',TOK_SUBFUNC_209,119
+		.dc.b 6,'L','R','W','A','B','S','(',TOK_SUBFUNC_209,251
+		.dc.b 9,'L','D','G','_','I','N','I','T','(',')',TOK_SUBFUNC_210,50
+		.dc.b 8,'L','D','G','_','O','P','E','N','(',TOK_SUBFUNC_210,51
+		.dc.b 8,'L','D','G','_','F','I','N','D','(',TOK_SUBFUNC_210,52
+		.dc.b 9,'L','D','G','_','C','L','O','S','E','(',TOK_SUBFUNC_210,53
+		.dc.b 11,'L','D','G','_','L','I','B','P','A','T','H','(',TOK_SUBFUNC_210,54
+		.dc.b 10,'L','D','G','_','E','R','R','O','R','(',')',TOK_SUBFUNC_210,55
 	.ENDC
 func_m_table: /* 130e9 */
-		.dc.b 3,'M','A','X','('
-		.ascii ""
-		.dc.b 0,119
-		.dc.b 4,'M','I','D','$','('
-		.ascii ""
-		.dc.b 0,62
-		.dc.b 3,'M','I','N','('
-		.ascii ""
-		.dc.b 0,117
-		.dc.b 4,'M','K','D','$','('
-		.ascii ""
-		.dc.b 0,102
-		.dc.b 4,'M','K','F','$','('
-		.ascii ""
-		.dc.b 0,101
-		.dc.b 4,'M','K','I','$','('
-		.ascii ""
-		.dc.b 0,98
-		.dc.b 4,'M','K','L','$','('
-		.ascii ""
-		.dc.b 0,99
-		.dc.b 4,'M','K','S','$','('
-		.ascii ""
-		.dc.b 0,100
-		.dc.b 2,'M','O','D'
-		.ascii ""
-		.dc.b 0,10
-		.dc.b 3,'M','O','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,4
-		.dc.b 8,'M','E','N','U','_','B','A','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,143
-		.dc.b 11,'M','E','N','U','_','I','C','H','E','C','K','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,144
-		.dc.b 12,'M','E','N','U','_','I','E','N','A','B','L','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,145
-		.dc.b 12,'M','E','N','U','_','T','N','O','R','M','A','L','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,146
-		.dc.b 9,'M','E','N','U','_','T','E','X','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,147
-		.dc.b 13,'M','E','N','U','_','R','E','G','I','S','T','E','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,148
+		.dc.b 3,'M','A','X','(',0,TOK_MAX
+		.dc.b 4,'M','I','D','$','(',0,TOK_MID2
+		.dc.b 3,'M','I','N','(',0,TOK_MIN
+		.dc.b 4,'M','K','D','$','(',0,TOK_MKD
+		.dc.b 4,'M','K','F','$','(',0,TOK_MKF
+		.dc.b 4,'M','K','I','$','(',0,TOK_MKI
+		.dc.b 4,'M','K','L','$','(',0,TOK_MKL
+		.dc.b 4,'M','K','S','$','(',0,TOK_MKS
+		.dc.b 2,'M','O','D',0,TOK_MOD
+		.dc.b 3,'M','O','D','(',TOK_SUBFUNC_208,4
+		.dc.b 8,'M','E','N','U','_','B','A','R','(',TOK_SUBFUNC_208,143
+		.dc.b 11,'M','E','N','U','_','I','C','H','E','C','K','(',TOK_SUBFUNC_208,144
+		.dc.b 12,'M','E','N','U','_','I','E','N','A','B','L','E','(',TOK_SUBFUNC_208,145
+		.dc.b 12,'M','E','N','U','_','T','N','O','R','M','A','L','(',TOK_SUBFUNC_208,146
+		.dc.b 9,'M','E','N','U','_','T','E','X','T','(',TOK_SUBFUNC_208,147
+		.dc.b 13,'M','E','N','U','_','R','E','G','I','S','T','E','R','(',TOK_SUBFUNC_208,148
 	.IFNE GBE
-		.dc.b 9,'M','E','N','U','.','T','E','X','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,6
-		.dc.b 10,'M','E','N','U','_','P','O','P','U','P','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,163
-		.dc.b 11,'M','E','N','U','_','I','S','T','A','R','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,162
-		.dc.b 11,'M','E','N','U','_','A','T','T','A','C','H','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,161
-		.dc.b 13,'M','E','N','U','_','S','E','T','T','I','N','G','S','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,164
+		.dc.b 9,'M','E','N','U','.','T','E','X','T','(',TOK_SUBFUNC_210,6
+		.dc.b 10,'M','E','N','U','_','P','O','P','U','P','(',TOK_SUBFUNC_209,163
+		.dc.b 11,'M','E','N','U','_','I','S','T','A','R','T','(',TOK_SUBFUNC_209,162
+		.dc.b 11,'M','E','N','U','_','A','T','T','A','C','H','(',TOK_SUBFUNC_209,161
+		.dc.b 13,'M','E','N','U','_','S','E','T','T','I','N','G','S','(',TOK_SUBFUNC_209,164
 	.ENDC
-		.dc.b 5,'M','O','U','S','E','K'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,60
-		.dc.b 5,'M','O','U','S','E','X'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,58
-		.dc.b 5,'M','O','U','S','E','Y'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,59
-		.dc.b 4,'M','E','N','U','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,92
-		.dc.b 3,'M','E','N','U'
-		.ascii ""
-		.dc.b 0,167
-		.dc.b 6,'M','E','S','S','A','G','E'
-		.ascii ""
-		.dc.b 0,174
-		.dc.b 3,'M','U','L','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,0
-		.dc.b 6,'M','A','L','L','O','C','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,184
-		.dc.b 5,'M','F','R','E','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,185
-		.dc.b 7,'M','S','H','R','I','N','K','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,186
+		.dc.b 5,'M','O','U','S','E','K',TOK_SUBFUNC_208,60
+		.dc.b 5,'M','O','U','S','E','X',TOK_SUBFUNC_208,58
+		.dc.b 5,'M','O','U','S','E','Y',TOK_SUBFUNC_208,59
+		.dc.b 4,'M','E','N','U','(',TOK_SUBFUNC_208,92
+		.dc.b 3,'M','E','N','U',0,TOK_MENU
+		.dc.b 6,'M','E','S','S','A','G','E',0,TOK_MESSAGE
+		.dc.b 3,'M','U','L','(',TOK_SUBFUNC_208,0
+		.dc.b 6,'M','A','L','L','O','C','(',TOK_SUBFUNC_208,184
+		.dc.b 5,'M','F','R','E','E','(',TOK_SUBFUNC_208,185
+		.dc.b 7,'M','S','H','R','I','N','K','(',TOK_SUBFUNC_208,186
 	.IFNE GBE
-		.dc.b 7,'M','_','A','L','L','O','C','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,66
-		.dc.b 7,'M','X','A','L','L','O','C','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,9
-		.dc.b 7,'M','E','D','I','A','C','H','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,157
-		.dc.b 6,'M','I','D','I','W','S','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,211
-		.dc.b 7,'M','I','R','R','O','R','|','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,11
-		.dc.b 7,'M','I','R','R','O','R','&','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,12
-		.dc.b 6,'M','I','R','R','O','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,13
-		.dc.b 7,'M','I','R','R','O','R','3','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,14
-		.dc.b 7,'M','I','R','R','O','R','$','('
-		.ascii ""
-		.dc.b 0,160
+		.dc.b 8,'M','E','R','I','D','I','E','M','(',TOK_SUBFUNC_211,4
+		.dc.b 6,'M','I','N','U','T','E','(',TOK_SUBFUNC_210,219
+		.dc.b 5,'M','O','N','T','H','(',TOK_SUBFUNC_210,216
+		.dc.b 8,'M','E','M','B','T','S','T','|','(',TOK_SUBFUNC_210,141
+		.dc.b 8,'M','E','M','B','T','S','T','&','(',TOK_SUBFUNC_210,142
+		.dc.b 8,'M','E','M','B','T','S','T','%','(',TOK_SUBFUNC_210,143
+		.dc.b 7,'M','X','A','L','L','O','C','(',TOK_SUBFUNC_209,9
+		.dc.b 7,'M','E','D','I','A','C','H','(',TOK_SUBFUNC_209,157
+		.dc.b 6,'M','I','D','I','W','S','(',TOK_SUBFUNC_209,211
+		.dc.b 7,'M','I','R','R','O','R','|','(',TOK_SUBFUNC_210,11
+		.dc.b 7,'M','I','R','R','O','R','&','(',TOK_SUBFUNC_210,12
+		.dc.b 6,'M','I','R','R','O','R','(',TOK_SUBFUNC_210,13
+		.dc.b 7,'M','I','R','R','O','R','3','(',TOK_SUBFUNC_210,14
+		.dc.b 7,'M','I','R','R','O','R','$','(',0,TOK_MIRROR
+		.dc.b 4,'M','A','K','E','(',TOK_SUBFUNC_210,140
+		.dc.b 5,'M','A','K','E','|','(',TOK_SUBFUNC_210,118
+		.dc.b 5,'M','A','K','E','&','(',TOK_SUBFUNC_210,116
+		.dc.b 5,'M','A','K','E','%','(',TOK_SUBFUNC_210,117
+		.dc.b 7,'M','A','C','C','E','S','S','(',TOK_SUBFUNC_210,172
+		.dc.b 9,'M','V','A','L','I','D','A','T','E','(',TOK_SUBFUNC_210,173
+		.dc.b 6,'M','R','O','U','N','D','(',TOK_SUBFUNC_210,9
+		.dc.b 3,'M','S','G','(',TOK_SUBFUNC_210,193
+		.dc.b 2,'M','S','G',TOK_SUBFUNC_210,194
+		.dc.b 4,'M','6','8','K','?',TOK_SUBFUNC_210,226
 	.ENDC
 func_n_table: /* 1321a */
-		.dc.b 3,'N','E','X','T'
-		.ascii ""
-		.dc.b 0,168
-		.dc.b 2,'N','O','T'
-		.ascii ""
-		.dc.b 0,31
+		.dc.b 3,'N','E','X','T',0,TOK_NEXT
+		.dc.b 2,'N','O','T',0,TOK_UNOT
 	.IFNE GBE
-		.dc.b 3,'N','U','L','L'
-		.ascii ""
-		.dc.b 0,183
-		.dc.b 9,'N','V','M','A','C','C','E','S','S','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,208
-		.dc.b 10,'N','Y','B','L','E','2','B','Y','T','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,118
+		.dc.b 3,'N','U','L','L',0,TOK_NULL
+		.dc.b 5,'N','Y','B','L','E','(',TOK_SUBFUNC_210,139
+		.dc.b 7,'N','E','T','W','O','R','K','?',TOK_SUBFUNC_210,27
+		.dc.b 9,'N','V','M','A','C','C','E','S','S','(',TOK_SUBFUNC_209,208
+		.dc.b 11,'N','E','A','R','E','S','T','_','R','G','B','(',TOK_SUBFUNC_210,212
 	.ENDC
 func_o_table: /* 1322b */
-		.dc.b 3,'O','B','O','X'
-		.ascii ""
-		.dc.b 0,173
-		.dc.b 4,'O','C','T','$','('
-		.ascii ""
-		.dc.b 0,195
-		.dc.b 3,'O','D','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,102
+		.dc.b 3,'O','B','O','X',0,TOK_OBOX
+		.dc.b 4,'O','C','T','$','(',0,TOK_OCT1
+		.dc.b 3,'O','D','D','(',TOK_SUBFUNC_208,102
 	.IFNE GBE
-		.dc.b 8,'O','F','F','G','I','B','I','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,221
+		.dc.b 8,'O','F','F','G','I','B','I','T','(',TOK_SUBFUNC_209,221
 	.ENDC
-		.dc.b 5,'O','F','F','S','E','T'
-		.ascii ""
-		.dc.b 0,109
-		.dc.b 2,'O','F','F'
-		.ascii ""
-		.dc.b 0,175
-		.dc.b 1,'O','R'
-		.ascii ""
-		.dc.b 0,1
-		.dc.b 2,'O','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,6
-		.dc.b 4,'O','U','T','?','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,94
-		.dc.b 8,'O','B','J','C','_','A','D','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,149
-		.dc.b 11,'O','B','J','C','_','D','E','L','E','T','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,150
-		.dc.b 9,'O','B','J','C','_','D','R','A','W','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,151
-		.dc.b 9,'O','B','J','C','_','F','I','N','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,152
-		.dc.b 11,'O','B','J','C','_','O','F','F','S','E','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,153
-		.dc.b 10,'O','B','J','C','_','O','R','D','E','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,154
-		.dc.b 9,'O','B','J','C','_','E','D','I','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,155
-		.dc.b 11,'O','B','J','C','_','C','H','A','N','G','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,156
+		.dc.b 5,'O','F','F','S','E','T',0,TOK_OFFSET
+		.dc.b 2,'O','F','F',0,TOK_OFF
+		.dc.b 1,'O','R',0,TOK_OR
+		.dc.b 2,'O','R','(',TOK_SUBFUNC_208,6
+		.dc.b 4,'O','U','T','?','(',TOK_SUBFUNC_208,94
+		.dc.b 8,'O','B','J','C','_','A','D','D','(',TOK_SUBFUNC_208,149
+		.dc.b 11,'O','B','J','C','_','D','E','L','E','T','E','(',TOK_SUBFUNC_208,150
+		.dc.b 9,'O','B','J','C','_','D','R','A','W','(',TOK_SUBFUNC_208,151
+		.dc.b 9,'O','B','J','C','_','F','I','N','D','(',TOK_SUBFUNC_208,152
+		.dc.b 11,'O','B','J','C','_','O','F','F','S','E','T','(',TOK_SUBFUNC_208,153
+		.dc.b 10,'O','B','J','C','_','O','R','D','E','R','(',TOK_SUBFUNC_208,154
+		.dc.b 9,'O','B','J','C','_','E','D','I','T','(',TOK_SUBFUNC_208,155
+		.dc.b 11,'O','B','J','C','_','C','H','A','N','G','E','(',TOK_SUBFUNC_208,156
 	.IFNE GBE
-		.dc.b 10,'O','B','J','C','_','X','F','I','N','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,165
-		.dc.b 11,'O','B','J','C','_','S','Y','S','V','A','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,24
+		.dc.b 10,'O','B','J','C','_','X','F','I','N','D','(',TOK_SUBFUNC_209,165
+		.dc.b 11,'O','B','J','C','_','S','Y','S','V','A','R','(',TOK_SUBFUNC_209,24
 	.ENDC
-		.dc.b 6,'O','B','_','A','D','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,191
-		.dc.b 7,'O','B','_','N','E','X','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,192
-		.dc.b 7,'O','B','_','H','E','A','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,193
-		.dc.b 7,'O','B','_','T','A','I','L','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,194
-		.dc.b 7,'O','B','_','T','Y','P','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,195
-		.dc.b 8,'O','B','_','F','L','A','G','S','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,196
-		.dc.b 8,'O','B','_','S','T','A','T','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,197
-		.dc.b 7,'O','B','_','S','P','E','C','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,198
-		.dc.b 4,'O','B','_','X','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,199
-		.dc.b 4,'O','B','_','Y','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,200
-		.dc.b 4,'O','B','_','W','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,201
-		.dc.b 4,'O','B','_','H','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,202
+		.dc.b 6,'O','B','_','A','D','R','(',TOK_SUBFUNC_208,191
+		.dc.b 7,'O','B','_','N','E','X','T','(',TOK_SUBFUNC_208,192
+		.dc.b 7,'O','B','_','H','E','A','D','(',TOK_SUBFUNC_208,193
+		.dc.b 7,'O','B','_','T','A','I','L','(',TOK_SUBFUNC_208,194
+		.dc.b 7,'O','B','_','T','Y','P','E','(',TOK_SUBFUNC_208,195
+		.dc.b 8,'O','B','_','F','L','A','G','S','(',TOK_SUBFUNC_208,196
+		.dc.b 8,'O','B','_','S','T','A','T','E','(',TOK_SUBFUNC_208,197
+		.dc.b 7,'O','B','_','S','P','E','C','(',TOK_SUBFUNC_208,198
+		.dc.b 4,'O','B','_','X','(',TOK_SUBFUNC_208,199
+		.dc.b 4,'O','B','_','Y','(',TOK_SUBFUNC_208,200
+		.dc.b 4,'O','B','_','W','(',TOK_SUBFUNC_208,201
+		.dc.b 4,'O','B','_','H','(',TOK_SUBFUNC_208,202
 	.IFNE GBE
-		.dc.b 8,'O','B','.','S','T','A','T','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,19
-		.dc.b 8,'O','B','.','F','L','A','G','S','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,20
-		.dc.b 11,'O','B','_','S','E','L','E','C','T','E','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,21
-		.dc.b 10,'O','B','_','C','R','O','S','S','E','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,22
-		.dc.b 10,'O','B','_','C','H','E','C','K','E','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,23
-		.dc.b 11,'O','B','_','D','I','S','A','B','L','E','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,24
-		.dc.b 13,'O','B','_','S','E','L','E','C','T','A','B','L','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,25
-		.dc.b 10,'O','B','_','D','E','F','A','U','L','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,26
-		.dc.b 7,'O','B','_','E','X','I','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,27
-		.dc.b 11,'O','B','_','E','D','I','T','A','B','L','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,28
-		.dc.b 10,'O','B','_','R','B','U','T','T','O','N','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,29
-		.dc.b 9,'O','B','_','L','A','S','T','O','B','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,30
-		.dc.b 12,'O','B','_','T','O','U','C','H','E','X','I','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,31
-		.dc.b 11,'O','B','_','H','I','D','E','T','R','E','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,32
-		.dc.b 10,'O','B','.','R','B','U','T','T','O','N','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,33
-		.dc.b 8,'O','B','_','T','E','X','T','$','('
-		.ascii ""
-		.dc.b 0,149
-		.dc.b 7,'O','N','G','I','B','I','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,220
+		.dc.b 8,'O','B','.','S','T','A','T','E','(',TOK_SUBFUNC_210,19
+		.dc.b 8,'O','B','.','F','L','A','G','S','(',TOK_SUBFUNC_210,20
+		.dc.b 8,'O','B','_','R','A','D','I','O','(',TOK_SUBFUNC_210,33
+		.dc.b 8,'O','B','_','T','E','X','T','$','(',0,TOK_OB_TEXT
+		.dc.b 7,'O','N','G','I','B','I','T','(',TOK_SUBFUNC_209,220
+		.dc.b 11,'O','B','_','S','E','L','E','C','T','E','D','(',TOK_SUBFUNC_211,88
+		.dc.b 10,'O','B','_','C','R','O','S','S','E','D','(',TOK_SUBFUNC_211,89
+		.dc.b 10,'O','B','_','C','H','E','C','K','E','D','(',TOK_SUBFUNC_211,90
+		.dc.b 11,'O','B','_','D','I','S','A','B','L','E','D','(',TOK_SUBFUNC_211,91
+		.dc.b 11,'O','B','_','O','U','T','L','I','N','E','D','(',TOK_SUBFUNC_211,92
+		.dc.b 11,'O','B','_','S','H','A','D','O','W','E','D','(',TOK_SUBFUNC_211,93
+		.dc.b 11,'O','B','_','W','H','I','T','E','B','A','K','(',TOK_SUBFUNC_211,94
+		.dc.b 13,'O','B','_','S','E','L','E','C','T','A','B','L','E','(',TOK_SUBFUNC_211,96
+		.dc.b 10,'O','B','_','D','E','F','A','U','L','T','(',TOK_SUBFUNC_211,97
+		.dc.b 7,'O','B','_','E','X','I','T','(',TOK_SUBFUNC_211,98
+		.dc.b 11,'O','B','_','E','D','I','T','A','B','L','E','(',TOK_SUBFUNC_211,99
+		.dc.b 10,'O','B','_','R','B','U','T','T','O','N','(',TOK_SUBFUNC_211,100
+		.dc.b 9,'O','B','_','L','A','S','T','O','B','(',TOK_SUBFUNC_211,101
+		.dc.b 12,'O','B','_','T','O','U','C','H','E','X','I','T','(',TOK_SUBFUNC_211,102
+		.dc.b 11,'O','B','_','H','I','D','E','T','R','E','E','(',TOK_SUBFUNC_211,103
+		.dc.b 11,'O','B','_','I','N','D','I','R','E','C','T','(',TOK_SUBFUNC_211,104
+		.dc.b 10,'O','B','_','F','L','3','D','I','N','D','(',TOK_SUBFUNC_211,105
+		.dc.b 10,'O','B','_','F','L','3','D','A','C','T','(',TOK_SUBFUNC_211,106
+		.dc.b 10,'O','B','_','S','U','B','M','E','N','U','(',TOK_SUBFUNC_211,107
+		.dc.b 10,'O','B','_','F','L','3','D','B','A','K','(',TOK_SUBFUNC_211,109
 	.ENDC
 func_p_table: /* 13382 */
-		.dc.b 4,'P','E','E','K','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,63
-		.dc.b 1,'P','I'
-		.ascii ""
-		.dc.b 0,79
-		.dc.b 5,'P','O','I','N','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,72
-		.dc.b 3,'P','O','S','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,90
-		.dc.b 5,'P','T','S','I','N','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,36
-		.dc.b 4,'P','T','S','I','N'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,37
-		.dc.b 6,'P','T','S','O','U','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,38
-		.dc.b 5,'P','T','S','O','U','T'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,39
-		.dc.b 4,'P','T','S','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,43
-		.dc.b 4,'P','R','E','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,97
-		.dc.b 4,'P','A','D','X','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,228
-		.dc.b 4,'P','A','D','Y','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,229
-		.dc.b 4,'P','A','D','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,230
+		.dc.b 4,'P','E','E','K','(',TOK_SUBFUNC_208,63
+		.dc.b 1,'P','I',0,TOK_PI
+		.dc.b 5,'P','O','I','N','T','(',TOK_SUBFUNC_208,72
+		.dc.b 3,'P','O','S','(',TOK_SUBFUNC_208,90
+		.dc.b 5,'P','T','S','I','N','(',TOK_SUBFUNC_208,36
+		.dc.b 4,'P','T','S','I','N',TOK_SUBFUNC_208,37
+		.dc.b 6,'P','T','S','O','U','T','(',TOK_SUBFUNC_208,38
+		.dc.b 5,'P','T','S','O','U','T',TOK_SUBFUNC_208,39
+		.dc.b 4,'P','T','S','T','(',TOK_SUBFUNC_208,43
+		.dc.b 4,'P','R','E','D','(',TOK_SUBFUNC_208,97
+		.dc.b 4,'P','A','D','X','(',TOK_SUBFUNC_208,228
+		.dc.b 4,'P','A','D','Y','(',TOK_SUBFUNC_208,229
+		.dc.b 4,'P','A','D','T','(',TOK_SUBFUNC_208,230
 	.IFNE GBE
-		.dc.b 7,'P','S','Y','S','C','T','L','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,180
-		.dc.b 7,'P','D','O','M','A','I','N','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,17
-		.dc.b 5,'P','E','X','E','C','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,16
-		.dc.b 9,'P','H','Y','S','B','A','S','E','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,120
-		.dc.b 7,'P','R','O','T','O','B','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,226
-		.dc.b 6,'P','R','T','B','L','K','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,228
-		.dc.b 8,'P','T','E','R','M','R','E','S','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,255
-		.dc.b 3,'P','C','R','?'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,15
-		.dc.b 3,'P','C','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,17
+		.dc.b 5,'P','O','P','U','P','(',TOK_SUBFUNC_210,125
+		.dc.b 7,'P','S','I','G','N','A','L','(',TOK_SUBFUNC_210,190
+		.dc.b 5,'P','K','I','L','L','(',TOK_SUBFUNC_210,186
+		.dc.b 5,'P','R','E','A','D','(',TOK_SUBFUNC_209,92
+		.dc.b 6,'P','W','R','I','T','E','(',TOK_SUBFUNC_209,91
+		.dc.b 5,'P','N','I','C','E','(',TOK_SUBFUNC_210,145
+		.dc.b 7,'P','R','E','N','I','C','E','(',TOK_SUBFUNC_210,146
+		.dc.b 9,'P','G','E','T','P','P','I','D','(',')',TOK_SUBFUNC_210,147
+		.dc.b 7,'P','R','U','S','A','G','E','(',TOK_SUBFUNC_210,135
+		.dc.b 8,'P','G','E','T','P','I','D','(',')',TOK_SUBFUNC_210,128
+		.dc.b 7,'P','S','Y','S','C','T','L','(',TOK_SUBFUNC_209,180
+		.dc.b 7,'P','D','O','M','A','I','N','(',TOK_SUBFUNC_209,17
+		.dc.b 5,'P','E','X','E','C','(',TOK_SUBFUNC_209,16
+		.dc.b 9,'P','H','Y','S','B','A','S','E','(',')',TOK_SUBFUNC_209,120
+		.dc.b 7,'P','R','O','T','O','B','T','(',TOK_SUBFUNC_209,226
+		.dc.b 6,'P','R','T','B','L','K','(',TOK_SUBFUNC_209,228
+		.dc.b 8,'P','T','E','R','M','R','E','S','(',TOK_SUBFUNC_209,255
+		.dc.b 3,'P','C','R','?',TOK_SUBFUNC_210,15
+		.dc.b 3,'P','C','R','(',TOK_SUBFUNC_210,17
+		.dc.b 12,'P','G','E','T','P','R','I','O','R','I','T','Y','(',TOK_SUBFUNC_210,149
+		.dc.b 12,'P','S','E','T','P','R','I','O','R','I','T','Y','(',TOK_SUBFUNC_210,150
+		.dc.b 9,'P','S','E','T','L','I','M','I','T','(',TOK_SUBFUNC_210,162
+		.dc.b 7,'P','U','S','R','V','A','L','(',TOK_SUBFUNC_210,161
 	.ENDC
 func_q_table: /* 13405 */
 func_r_table: /* 13405 */
-		.dc.b 6,'R','A','N','D','O','M','('
-		.ascii ""
-		.dc.b 0,86
-		.dc.b 4,'R','A','N','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,82
-		.dc.b 6,'R','I','G','H','T','$','('
-		.ascii ""
-		.dc.b 0,60
+		.dc.b 6,'R','A','N','D','O','M','(',0,TOK_RANDOM
+		.dc.b 4,'R','A','N','D','(',TOK_SUBFUNC_208,82
+		.dc.b 6,'R','I','G','H','T','$','(',0,TOK_RIGHT1
 	.IFNE GBE
-		.dc.b 6,'R','T','R','I','M','$','('
-		.ascii ""
-		.dc.b 0,145
+		.dc.b 6,'R','T','R','I','M','$','(',0,TOK_RTRIM
 	.ENDC
-		.dc.b 3,'R','N','D','('
-		.ascii ""
-		.dc.b 0,84
-		.dc.b 2,'R','N','D'
-		.ascii ""
-		.dc.b 0,85
-		.dc.b 3,'R','O','L','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,12
-		.dc.b 3,'R','O','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,13
-		.dc.b 4,'R','O','L','&','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,50
-		.dc.b 4,'R','O','R','&','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,51
-		.dc.b 4,'R','O','L','|','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,54
-		.dc.b 4,'R','O','R','|','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,55
-		.dc.b 9,'R','S','R','C','_','L','O','A','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,124
-		.dc.b 10,'R','S','R','C','_','F','R','E','E','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,125
-		.dc.b 10,'R','S','R','C','_','G','A','D','D','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,126
-		.dc.b 10,'R','S','R','C','_','S','A','D','D','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,127
-		.dc.b 10,'R','S','R','C','_','O','B','F','I','X','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,128
+		.dc.b 3,'R','N','D','(',0,TOK_RND1
+		.dc.b 2,'R','N','D',0,TOK_RND
+		.dc.b 3,'R','O','L','(',TOK_SUBFUNC_208,12
+		.dc.b 3,'R','O','R','(',TOK_SUBFUNC_208,13
+		.dc.b 4,'R','O','L','&','(',TOK_SUBFUNC_208,50
+		.dc.b 4,'R','O','R','&','(',TOK_SUBFUNC_208,51
+		.dc.b 4,'R','O','L','|','(',TOK_SUBFUNC_208,54
+		.dc.b 4,'R','O','R','|','(',TOK_SUBFUNC_208,55
+		.dc.b 9,'R','S','R','C','_','L','O','A','D','(',TOK_SUBFUNC_208,124
+		.dc.b 10,'R','S','R','C','_','F','R','E','E','(',')',TOK_SUBFUNC_208,125
+		.dc.b 10,'R','S','R','C','_','G','A','D','D','R','(',TOK_SUBFUNC_208,126
+		.dc.b 10,'R','S','R','C','_','S','A','D','D','R','(',TOK_SUBFUNC_208,127
+		.dc.b 10,'R','S','R','C','_','O','B','F','I','X','(',TOK_SUBFUNC_208,128
 	.IFNE GBE
-		.dc.b 10,'R','S','R','C','_','R','C','F','I','X','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,166
+		.dc.b 10,'R','S','R','C','_','R','C','F','I','X','(',TOK_SUBFUNC_209,166
 	.ENDC
-		.dc.b 3,'R','A','D','('
-		.ascii ""
-		.dc.b 0,104
-		.dc.b 5,'R','O','U','N','D','('
-		.ascii ""
-		.dc.b 0,112
-		.dc.b 6,'R','I','N','S','T','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,209
-		.dc.b 12,'R','C','_','I','N','T','E','R','S','E','C','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,217
+		.dc.b 3,'R','A','D','(',0,TOK_RAD
+		.dc.b 5,'R','O','U','N','D','(',0,TOK_ROUND1
+		.dc.b 6,'R','I','N','S','T','R','(',TOK_SUBFUNC_208,209
+		.dc.b 12,'R','C','_','I','N','T','E','R','S','E','C','T','(',TOK_SUBFUNC_208,217
 	.IFNE GBE
-		.dc.b 6,'R','S','C','O','N','F','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,204
-		.dc.b 8,'R','A','N','D','O','M','%','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,117
-		.dc.b 5,'R','W','A','B','S','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,159
+		.dc.b 3,'R','G','B','(',TOK_SUBFUNC_210,157
+		.dc.b 6,'R','G','B','2','5','6','(',TOK_SUBFUNC_210,158
+		.dc.b 7,'R','G','B','1','0','0','0','(',TOK_SUBFUNC_210,159
+		.dc.b 6,'R','S','C','O','N','F','(',TOK_SUBFUNC_209,204
+		.dc.b 8,'R','A','N','D','O','M','%','(',')',TOK_SUBFUNC_209,117
+		.dc.b 5,'R','W','A','B','S','(',TOK_SUBFUNC_209,159
+		.dc.b 8,'R','E','P','L','A','C','E','$','(',0,TOK_REPLACE
 	.ENDC
 func_s_table: /* 134f3 */
-		.dc.b 3,'S','G','N','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,100
-		.dc.b 3,'S','I','N','('
-		.ascii ""
-		.dc.b 0,41
-		.dc.b 4,'S','I','N','Q','('
-		.ascii ""
-		.dc.b 0,123
-		.dc.b 6,'S','P','A','C','E','$','('
-		.ascii ""
-		.dc.b 0,128
-		.dc.b 3,'S','P','C','('
-		.ascii ""
-		.dc.b 0,162
-		.dc.b 3,'S','Q','R','('
-		.ascii ""
-		.dc.b 0,78
-		.dc.b 3,'S','T','E','P'
-		.ascii ""
-		.dc.b 0,72
-		.dc.b 4,'S','T','R','$','('
-		.ascii ""
-		.dc.b 0,190
-		.dc.b 7,'S','T','R','I','N','G','$','('
-		.ascii ""
-		.dc.b 0,129
-		.dc.b 3,'S','H','L','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,10
-		.dc.b 3,'S','H','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,11
-		.dc.b 4,'S','H','L','&','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,48
-		.dc.b 4,'S','H','R','&','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,49
-		.dc.b 4,'S','H','L','|','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,52
-		.dc.b 4,'S','H','R','|','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,53
-		.dc.b 4,'S','W','A','P','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,17
-		.dc.b 9,'S','H','E','L','_','R','E','A','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,129
-		.dc.b 10,'S','H','E','L','_','W','R','I','T','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,130
-		.dc.b 8,'S','H','E','L','_','G','E','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,131
-		.dc.b 8,'S','H','E','L','_','P','U','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,132
-		.dc.b 9,'S','H','E','L','_','F','I','N','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,133
-		.dc.b 10,'S','H','E','L','_','E','N','V','R','N','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,134
-		.dc.b 9,'S','C','R','P','_','R','E','A','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,172
-		.dc.b 10,'S','C','R','P','_','W','R','I','T','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,173
-		.dc.b 4,'S','U','C','C','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,96
-		.dc.b 3,'S','U','B','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,3
-		.dc.b 5,'S','T','I','C','K','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,206
-		.dc.b 5,'S','T','R','I','G','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,207
-		.dc.b 3,'S','T','O','P'
-		.ascii ""
-		.dc.b 0,152
-		.dc.b 6,'S','I','N','G','L','E','{'
-		.ascii ""
-		.dc.b 0,121
-		.dc.b 3,'S','T','E','?'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,233
-		.dc.b 5,'S','C','A','L','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,235
+		.dc.b 3,'S','G','N','(',TOK_SUBFUNC_208,100
+		.dc.b 3,'S','I','N','(',0,TOK_SIN
+		.dc.b 4,'S','I','N','Q','(',0,TOK_SINQ
+		.dc.b 6,'S','P','A','C','E','$','(',0,TOK_SPACE
+		.dc.b 3,'S','P','C','(',0,TOK_SPC
+		.dc.b 3,'S','Q','R','(',0,TOK_SQR
+		.dc.b 3,'S','T','E','P',0,TOK_STEP
+		.dc.b 4,'S','T','R','$','(',0,TOK_STR1
+		.dc.b 7,'S','T','R','I','N','G','$','(',0,TOK_STRING_CODE
+		.dc.b 3,'S','H','L','(',TOK_SUBFUNC_208,10
+		.dc.b 3,'S','H','R','(',TOK_SUBFUNC_208,11
+		.dc.b 4,'S','H','L','&','(',TOK_SUBFUNC_208,48
+		.dc.b 4,'S','H','R','&','(',TOK_SUBFUNC_208,49
+		.dc.b 4,'S','H','L','|','(',TOK_SUBFUNC_208,52
+		.dc.b 4,'S','H','R','|','(',TOK_SUBFUNC_208,53
+		.dc.b 4,'S','W','A','P','(',TOK_SUBFUNC_208,17
+		.dc.b 9,'S','H','E','L','_','R','E','A','D','(',TOK_SUBFUNC_208,129
+		.dc.b 10,'S','H','E','L','_','W','R','I','T','E','(',TOK_SUBFUNC_208,130
+		.dc.b 8,'S','H','E','L','_','G','E','T','(',TOK_SUBFUNC_208,131
+		.dc.b 8,'S','H','E','L','_','P','U','T','(',TOK_SUBFUNC_208,132
+		.dc.b 9,'S','H','E','L','_','F','I','N','D','(',TOK_SUBFUNC_208,133
+		.dc.b 10,'S','H','E','L','_','E','N','V','R','N','(',TOK_SUBFUNC_208,134
+		.dc.b 9,'S','C','R','P','_','R','E','A','D','(',TOK_SUBFUNC_208,172
+		.dc.b 10,'S','C','R','P','_','W','R','I','T','E','(',TOK_SUBFUNC_208,173
+		.dc.b 4,'S','U','C','C','(',TOK_SUBFUNC_208,96
+		.dc.b 3,'S','U','B','(',TOK_SUBFUNC_208,3
+		.dc.b 5,'S','T','I','C','K','(',TOK_SUBFUNC_208,206
+		.dc.b 5,'S','T','R','I','G','(',TOK_SUBFUNC_208,207
+		.dc.b 3,'S','T','O','P',0,TOK_STOP
+		.dc.b 6,'S','I','N','G','L','E','{',0,TOK_SINGLE_REF
+		.dc.b 3,'S','T','E','?',TOK_SUBFUNC_208,233
+		.dc.b 5,'S','C','A','L','E','(',TOK_SUBFUNC_208,235
 	.IFNE GBE
-		.dc.b 10,'S','H','E','L','.','W','R','I','T','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,7
-		.dc.b 1,'S',':'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,1
-		.dc.b 6,'S','U','B','P','T','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,0
-		.dc.b 7,'S','S','Y','S','T','E','M','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,13
-		.dc.b 7,'S','Y','S','C','O','N','F','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,12
-		.dc.b 9,'S','E','T','B','U','F','F','E','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,30
-		.dc.b 7,'S','E','T','M','O','D','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,31
-		.dc.b 12,'S','E','T','M','O','N','T','R','A','C','K','S','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,33
-		.dc.b 9,'S','E','T','T','R','A','C','K','S','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,32
-		.dc.b 9,'S','N','D','S','T','A','T','U','S','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,39
-		.dc.b 8,'S','O','U','N','D','C','M','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,29
-		.dc.b 12,'S','E','T','I','N','T','E','R','R','U','P','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,34
-		.dc.b 5,'S','U','P','E','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,50
-		.dc.b 7,'S','U','P','E','X','E','C','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,202
-		.dc.b 6,'S','E','T','E','X','C','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,155
-		.dc.b 9,'S','E','T','S','C','R','E','E','N','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,200
-		.dc.b 10,'S','E','T','P','A','L','E','T','T','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,201
-		.dc.b 7,'S','Y','I','E','L','D','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,174
-		.dc.b 8,'S','H','U','T','D','O','W','N','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,179
-		.dc.b 7,'S','E','T','T','I','M','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,110
-		.dc.b 6,'S','E','T','P','R','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,223
-		.dc.b 8,'S','E','T','C','O','L','O','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,199
-		.dc.b 3,'S','N','D','?'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,58
-		.dc.b 6,'S','A','L','E','R','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,253
-		.dc.b 6,'S','Y','S','T','A','B','?'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,8
-		.dc.b 6,'S','Y','S','T','A','B','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,3
-		.dc.b 5,'S','Y','S','T','A','B'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,4
-		.dc.b 9,'S','T','I','K','_','I','N','I','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,56
-		.dc.b 11,'S','T','I','K','_','K','R','F','R','E','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,58
-		.dc.b 14,'S','T','I','K','_','K','R','G','E','T','F','R','E','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,59
-		.dc.b 17,'S','T','I','K','_','G','E','T','_','E','R','R','_','T','E','X','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,61
-		.dc.b 12,'S','T','I','K','_','G','E','T','V','S','T','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,62
-		.dc.b 13,'S','T','I','K','_','T','C','P','_','O','P','E','N','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,64
-		.dc.b 14,'S','T','I','K','_','T','C','P','_','C','L','O','S','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,65
-		.dc.b 13,'S','T','I','K','_','T','C','P','_','S','E','N','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,66
-		.dc.b 19,'S','T','I','K','_','T','C','P','_','W','A','I','T','_','S','T','A','T','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,67
-		.dc.b 11,'S','T','I','K','_','C','N','K','I','C','K','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,72
-		.dc.b 17,'S','T','I','K','_','C','N','B','Y','T','E','_','C','O','U','N','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,73
-		.dc.b 15,'S','T','I','K','_','C','N','G','E','T','_','C','H','A','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,74
-		.dc.b 16,'S','T','I','K','_','C','N','G','E','T','_','B','L','O','C','K','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,76
-		.dc.b 12,'S','T','I','K','_','R','E','S','O','L','V','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,78
-		.dc.b 14,'S','T','I','K','_','C','N','G','E','T','I','N','F','O','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,83
+		.dc.b 11,'S','U','P','E','R','S','C','A','L','A','R','(',TOK_SUBFUNC_211,86
+		.dc.b 6,'S','E','C','O','N','D','(',TOK_SUBFUNC_210,220
+		.dc.b 6,'S','E','T','S','T','R','(',TOK_SUBFUNC_210,21
+		.dc.b 5,'S','B','Y','T','E','(',TOK_SUBFUNC_210,28
+		.dc.b 5,'S','B','Y','T','E','{',TOK_SUBFUNC_210,29
+		.dc.b 9,'S','E','T','C','O','O','K','I','E','(',TOK_SUBFUNC_210,203
+		.dc.b 9,'S','H','E','L','_','R','D','E','F','(',TOK_SUBFUNC_210,185
+		.dc.b 9,'S','H','E','L','_','W','D','E','F','(',TOK_SUBFUNC_210,184
+		.dc.b 9,'S','H','E','L','_','H','E','L','P','(',TOK_SUBFUNC_210,183
+		.dc.b 5,'S','P','L','I','T','(',TOK_SUBFUNC_210,177
+		.dc.b 7,'S','U','P','T','I','M','E','(',TOK_SUBFUNC_210,136
+		.dc.b 7,'S','C','R','D','M','P','(',')',TOK_SUBFUNC_210,133
+		.dc.b 8,'S','T','R','P','E','E','K','$','(',0,TOK_CHAR
+		.dc.b 5,'S','W','A','P','|','(',TOK_SUBFUNC_210,130
+		.dc.b 7,'S','L','B','O','P','E','N','(',TOK_SUBFUNC_210,122
+		.dc.b 8,'S','L','B','C','L','O','S','E','(',TOK_SUBFUNC_210,123
+		.dc.b 10,'S','H','E','L','.','W','R','I','T','E','(',TOK_SUBFUNC_210,7
+		.dc.b 1,'S',':',TOK_SUBFUNC_210,1
+		.dc.b 6,'S','U','B','P','T','R','(',TOK_SUBFUNC_210,0
+		.dc.b 7,'S','S','Y','S','T','E','M','(',TOK_SUBFUNC_209,13
+		.dc.b 7,'S','Y','S','C','O','N','F','(',TOK_SUBFUNC_209,12
+		.dc.b 9,'S','E','T','B','U','F','F','E','R','(',TOK_SUBFUNC_209,30
+		.dc.b 7,'S','E','T','M','O','D','E','(',TOK_SUBFUNC_209,31
+		.dc.b 12,'S','E','T','M','O','N','T','R','A','C','K','S','(',TOK_SUBFUNC_209,33
+		.dc.b 9,'S','E','T','T','R','A','C','K','S','(',TOK_SUBFUNC_209,32
+		.dc.b 9,'S','N','D','S','T','A','T','U','S','(',TOK_SUBFUNC_209,39
+		.dc.b 8,'S','O','U','N','D','C','M','D','(',TOK_SUBFUNC_209,29
+		.dc.b 12,'S','E','T','I','N','T','E','R','R','U','P','T','(',TOK_SUBFUNC_209,34
+		.dc.b 5,'S','U','P','E','R','(',TOK_SUBFUNC_209,50
+		.dc.b 7,'S','U','P','E','X','E','C','(',TOK_SUBFUNC_209,202
+		.dc.b 6,'S','E','T','E','X','C','(',TOK_SUBFUNC_209,155
+		.dc.b 9,'S','E','T','S','C','R','E','E','N','(',TOK_SUBFUNC_209,200
+		.dc.b 10,'S','E','T','P','A','L','E','T','T','E','(',TOK_SUBFUNC_209,201
+		.dc.b 7,'S','Y','I','E','L','D','(',')',TOK_SUBFUNC_209,174
+		.dc.b 8,'S','H','U','T','D','O','W','N','(',TOK_SUBFUNC_209,179
+		.dc.b 7,'S','E','T','T','I','M','E','(',TOK_SUBFUNC_209,110
+		.dc.b 6,'S','E','T','P','R','T','(',TOK_SUBFUNC_209,223
+		.dc.b 8,'S','E','T','C','O','L','O','R','(',TOK_SUBFUNC_209,199
+		.dc.b 3,'S','N','D','?',TOK_SUBFUNC_209,58
+		.dc.b 6,'S','A','L','E','R','T','(',TOK_SUBFUNC_209,253
+		.dc.b 6,'S','Y','S','T','A','B','?',TOK_SUBFUNC_210,8
+		.dc.b 6,'S','Y','S','T','A','B','(',TOK_SUBFUNC_210,3
+		.dc.b 5,'S','Y','S','T','A','B',TOK_SUBFUNC_210,4
+		.dc.b 9,'S','T','I','K','_','I','N','I','T','(',TOK_SUBFUNC_210,56
+		.dc.b 11,'S','T','I','K','_','K','R','F','R','E','E','(',TOK_SUBFUNC_210,58
+		.dc.b 14,'S','T','I','K','_','K','R','G','E','T','F','R','E','E','(',TOK_SUBFUNC_210,59
+		.dc.b 17,'S','T','I','K','_','G','E','T','_','E','R','R','_','T','E','X','T','(',TOK_SUBFUNC_210,61
+		.dc.b 12,'S','T','I','K','_','G','E','T','V','S','T','R','(',TOK_SUBFUNC_210,62
+		.dc.b 13,'S','T','I','K','_','T','C','P','_','O','P','E','N','(',TOK_SUBFUNC_210,64
+		.dc.b 14,'S','T','I','K','_','T','C','P','_','C','L','O','S','E','(',TOK_SUBFUNC_210,65
+		.dc.b 13,'S','T','I','K','_','T','C','P','_','S','E','N','D','(',TOK_SUBFUNC_210,66
+		.dc.b 19,'S','T','I','K','_','T','C','P','_','W','A','I','T','_','S','T','A','T','E','(',TOK_SUBFUNC_210,67
+		.dc.b 11,'S','T','I','K','_','C','N','K','I','C','K','(',TOK_SUBFUNC_210,72
+		.dc.b 17,'S','T','I','K','_','C','N','B','Y','T','E','_','C','O','U','N','T','(',TOK_SUBFUNC_210,73
+		.dc.b 15,'S','T','I','K','_','C','N','G','E','T','_','C','H','A','R','(',TOK_SUBFUNC_210,74
+		.dc.b 16,'S','T','I','K','_','C','N','G','E','T','_','B','L','O','C','K','(',TOK_SUBFUNC_210,76
+		.dc.b 12,'S','T','I','K','_','R','E','S','O','L','V','E','(',TOK_SUBFUNC_210,78
+		.dc.b 14,'S','T','I','K','_','C','N','G','E','T','I','N','F','O','(',TOK_SUBFUNC_210,83
 	.ENDC
 func_t_table: /* 1365c */
-		.dc.b 3,'T','A','B','('
-		.ascii ""
-		.dc.b 0,161
-		.dc.b 3,'T','A','N','('
-		.ascii ""
-		.dc.b 0,43
-		.dc.b 3,'T','H','E','N'
-		.ascii ""
-		.dc.b 0,74
+		.dc.b 3,'T','A','B','(',0,TOK_TAB
+		.dc.b 3,'T','A','N','(',0,TOK_TAN
+		.dc.b 3,'T','H','E','N',0,TOK_THEN
 	.IFNE GBE
-		.dc.b 5,'T','I','M','E','$','('
-		.ascii ""
-		.dc.b 0,165
+		.dc.b 5,'T','I','M','E','$','(',0,TOK_TIME1
 	.ENDC
-		.dc.b 4,'T','I','M','E','$'
-		.ascii ""
-		.dc.b 0,56
-		.dc.b 4,'T','I','M','E','R'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,62
+		.dc.b 4,'T','I','M','E','$',0,TOK_TIME
+		.dc.b 4,'T','I','M','E','R',TOK_SUBFUNC_208,62
 	.IFNE GBE
-		.dc.b 10,'T','I','M','E','S','T','A','M','P','$','('
-		.ascii ""
-		.dc.b 0,166
+		.dc.b 10,'T','I','M','E','S','T','A','M','P','$','(',0,TOK_TIMESTAMP
 	.ENDC
-		.dc.b 1,'T','O'
-		.ascii ""
-		.dc.b 0,71
-		.dc.b 3,'T','R','U','E'
-		.ascii ""
-		.dc.b 0,188
-		.dc.b 5,'T','R','U','N','C','('
-		.ascii ""
-		.dc.b 0,38
-		.dc.b 4,'T','Y','P','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,190
-		.dc.b 5,'T','R','A','C','E','$'
-		.ascii ""
-		.dc.b 0,111
-		.dc.b 5,'T','R','I','M','$','('
-		.ascii ""
-		.dc.b 0,135
-		.dc.b 2,'T','T','?'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,234
+		.dc.b 1,'T','O',0,TOK_TO
+		.dc.b 3,'T','R','U','E',0,TOK_TRUE
+		.dc.b 5,'T','R','U','N','C','(',0,TOK_TRUNC
+		.dc.b 4,'T','Y','P','E','(',TOK_SUBFUNC_208,190
+		.dc.b 5,'T','R','A','C','E','$',0,TOK_TRACE
+		.dc.b 5,'T','R','I','M','$','(',0,TOK_TRIM
+		.dc.b 2,'T','T','?',TOK_SUBFUNC_208,234
 	.IFNE GBE
-		.dc.b 9,'T','G','E','T','D','A','T','E','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,19
-		.dc.b 9,'T','G','E','T','T','I','M','E','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,20
-		.dc.b 8,'T','S','E','T','D','A','T','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,105
-		.dc.b 8,'T','S','E','T','T','I','M','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,106
-		.dc.b 8,'T','I','C','K','C','A','L','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,156
+		.dc.b 4,'T','I','M','E','(',TOK_SUBFUNC_210,221
+		.dc.b 9,'T','G','E','T','D','A','T','E','(',')',TOK_SUBFUNC_209,19
+		.dc.b 9,'T','G','E','T','T','I','M','E','(',')',TOK_SUBFUNC_209,20
+		.dc.b 8,'T','S','E','T','D','A','T','E','(',TOK_SUBFUNC_209,105
+		.dc.b 8,'T','S','E','T','T','I','M','E','(',TOK_SUBFUNC_209,106
+		.dc.b 8,'T','I','C','K','C','A','L','(',')',TOK_SUBFUNC_209,156
+		.dc.b 8,'T','E','_','P','T','E','X','T','(',TOK_SUBFUNC_211,126
+		.dc.b 9,'T','E','_','P','T','M','P','L','T','(',TOK_SUBFUNC_211,127
+		.dc.b 9,'T','E','_','P','V','A','L','I','D','(',TOK_SUBFUNC_211,128
+		.dc.b 7,'T','E','_','F','O','N','T','(',TOK_SUBFUNC_211,129
+		.dc.b 9,'T','E','_','F','O','N','T','I','D','(',TOK_SUBFUNC_211,130
+		.dc.b 7,'T','E','_','J','U','S','T','(',TOK_SUBFUNC_211,131
+		.dc.b 8,'T','E','_','C','O','L','O','R','(',TOK_SUBFUNC_211,132
+		.dc.b 11,'T','E','_','F','O','N','T','S','I','Z','E','(',TOK_SUBFUNC_211,133
+		.dc.b 12,'T','E','_','T','H','I','C','K','N','E','S','S','(',TOK_SUBFUNC_211,134
+		.dc.b 9,'T','E','_','T','X','T','L','E','N','(',TOK_SUBFUNC_211,135
+		.dc.b 9,'T','E','_','T','M','P','L','E','N','(',TOK_SUBFUNC_211,136
+		.dc.b 11,'T','E','_','F','R','A','M','E','C','O','L','(',TOK_SUBFUNC_211,137
+		.dc.b 10,'T','E','_','T','E','X','T','C','O','L','(',TOK_SUBFUNC_211,138
+		.dc.b 11,'T','E','_','T','E','X','T','M','O','D','E','(',TOK_SUBFUNC_211,139
+		.dc.b 14,'T','E','_','F','I','L','L','P','A','T','T','E','R','N','(',TOK_SUBFUNC_211,140
+		.dc.b 14,'T','E','_','I','N','T','E','R','I','O','R','C','O','L','(',TOK_SUBFUNC_211,141
 	.ENDC
 func_u_table: /* 136ce */
-		.dc.b 6,'U','P','P','E','R','$','('
-		.ascii ""
-		.dc.b 0,127
-		.dc.b 4,'U','S','I','N','G'
-		.ascii ""
-		.dc.b 0,163
+		.dc.b 6,'U','P','P','E','R','$','(',0,TOK_UPPER
+		.dc.b 4,'U','S','I','N','G',0,TOK_USING
 	.IFNE GBE
-		.dc.b 6,'U','C','A','S','E','$','('
-		.ascii ""
-		.dc.b 0,147
-		.dc.b 10,'U','N','L','O','C','K','S','N','D','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,28
-		.dc.b 6,'U','N','P','A','C','K','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,94
+		.dc.b 6,'U','C','A','S','E','$','(',0,TOK_RCASE
+		.dc.b 10,'U','N','L','O','C','K','S','N','D','(',')',TOK_SUBFUNC_209,28
+		.dc.b 6,'U','N','P','A','C','K','(',TOK_SUBFUNC_209,94
+		.dc.b 7,'U','B','_','C','O','D','E','(',TOK_SUBFUNC_211,124
+		.dc.b 7,'U','B','_','P','A','R','M','(',TOK_SUBFUNC_211,125
 	.ENDC
 func_v_table: /* 136e4 */
-		.dc.b 3,'V','A','L','('
-		.ascii ""
-		.dc.b 0,53
-		.dc.b 4,'V','A','L','?','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,73
-		.dc.b 6,'V','A','R','P','T','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,187
-		.dc.b 6,'V','A','R','I','A','T','('
-		.ascii ""
-		.dc.b 0,143
-		.dc.b 2,'V','A','R'
-		.ascii ""
-		.dc.b 0,50
-		.dc.b 6,'V','D','I','B','A','S','E'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,40
-		.dc.b 1,'V',':'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,203
-		.dc.b 2,'V','~','H'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,213
-		.dc.b 7,'V','_','O','P','N','W','K','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,105
-		.dc.b 8,'V','_','C','L','S','W','K','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,106
-		.dc.b 8,'V','_','O','P','N','V','W','K','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,107
-		.dc.b 9,'V','_','C','L','S','V','W','K','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,108
-		.dc.b 8,'V','_','U','P','D','W','K','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,109
-		.dc.b 14,'V','S','T','_','L','O','A','D','_','F','O','N','T','S','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,110
-		.dc.b 16,'V','S','T','_','U','N','L','O','A','D','_','F','O','N','T','S','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,111
-		.dc.b 8,'V','_','C','L','R','W','K','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,214
-		.dc.b 8,'V','Q','T','_','N','A','M','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,215
-		.dc.b 10,'V','Q','T','_','E','X','T','E','N','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,216
+		.dc.b 3,'V','A','L','(',0,TOK_VAL
+		.dc.b 4,'V','A','L','?','(',TOK_SUBFUNC_208,73
+		.dc.b 6,'V','A','R','P','T','R','(',TOK_SUBFUNC_208,187
+		.dc.b 6,'V','A','R','I','A','T','(',0,TOK_VARIAT
+		.dc.b 2,'V','A','R',0,TOK_VAR
+		.dc.b 6,'V','D','I','B','A','S','E',TOK_SUBFUNC_208,40
+		.dc.b 1,'V',':',TOK_SUBFUNC_208,203
+		.dc.b 2,'V','~','H',TOK_SUBFUNC_208,213
+		.dc.b 7,'V','_','O','P','N','W','K','(',TOK_SUBFUNC_208,105
+		.dc.b 8,'V','_','C','L','S','W','K','(',')',TOK_SUBFUNC_208,106
+		.dc.b 8,'V','_','O','P','N','V','W','K','(',TOK_SUBFUNC_208,107
+		.dc.b 9,'V','_','C','L','S','V','W','K','(',')',TOK_SUBFUNC_208,108
+		.dc.b 8,'V','_','U','P','D','W','K','(',')',TOK_SUBFUNC_208,109
+		.dc.b 14,'V','S','T','_','L','O','A','D','_','F','O','N','T','S','(',TOK_SUBFUNC_208,110
+		.dc.b 16,'V','S','T','_','U','N','L','O','A','D','_','F','O','N','T','S','(',TOK_SUBFUNC_208,111
+		.dc.b 8,'V','_','C','L','R','W','K','(',')',TOK_SUBFUNC_208,214
+		.dc.b 8,'V','Q','T','_','N','A','M','E','(',TOK_SUBFUNC_208,215
+		.dc.b 10,'V','Q','T','_','E','X','T','E','N','T','(',TOK_SUBFUNC_208,216
 	.IFNE GBE
-		.dc.b 9,'V','Q','_','V','G','D','O','S','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,14
-		.dc.b 7,'V','_','O','P','N','B','M','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,6
-		.dc.b 8,'V','Q','_','C','O','L','O','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,0
-		.dc.b 9,'V','S','T','_','P','O','I','N','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,21
-		.dc.b 12,'V','G','E','T','M','O','N','I','T','O','R','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,229
-		.dc.b 8,'V','G','E','T','S','I','Z','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,230
-		.dc.b 8,'V','S','E','T','M','O','D','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,231
-		.dc.b 10,'V','C','H','E','C','K','M','O','D','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,232
-		.dc.b 10,'V','S','E','T','S','C','R','E','E','N','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,233
-		.dc.b 11,'V','_','G','E','T','_','P','I','X','E','L','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,73
-		.dc.b 10,'V','_','B','E','Z','_','Q','U','A','L','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,135
-		.dc.b 9,'V','_','H','I','D','E','_','C','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,88
-		.dc.b 9,'V','_','S','H','O','W','_','C','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,87
-		.dc.b 15,'V','Q','F','_','A','T','T','R','I','B','U','T','E','S','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,127
-		.dc.b 15,'V','Q','L','_','A','T','T','R','I','B','U','T','E','S','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,128
-		.dc.b 15,'V','Q','M','_','A','T','T','R','I','B','U','T','E','S','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,129
-		.dc.b 15,'V','Q','T','_','A','T','T','R','I','B','U','T','E','S','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,130
-		.dc.b 12,'V','Q','T','_','F','O','N','T','I','N','F','O','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,42
-		.dc.b 9,'V','Q','T','_','W','I','D','T','H','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,41
-		.dc.b 9,'V','R','O','_','C','P','Y','F','M','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,4
-		.dc.b 9,'V','R','T','_','C','P','Y','F','M','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,5
-		.dc.b 8,'V','R','_','T','R','N','F','M','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,131
-		.dc.b 8,'V','Q','_','E','X','T','N','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,132
-		.dc.b 11,'V','Q','_','S','C','R','N','I','N','F','O','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,133
-		.dc.b 8,'V','_','C','L','S','B','M','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,7
-		.dc.b 8,'V','Q','_','M','O','U','S','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,136
-		.dc.b 13,'V','S','T','_','A','L','I','G','N','M','E','N','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,15
-		.dc.b 8,'V','S','_','C','O','L','O','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,253
-		.dc.b 5,'V','_','B','E','Z','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,134
-		.dc.b 7,'V','G','E','T','R','G','B','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,234
-		.dc.b 7,'V','S','E','T','R','G','B','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,235
-		.dc.b 8,'V','S','E','T','M','A','S','K','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,236
-		.dc.b 8,'V','S','E','T','S','Y','N','C','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,237
-		.dc.b 9,'V','_','C','U','R','T','E','X','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,121
-		.dc.b 9,'V','S','T','_','C','O','L','O','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,122
-		.dc.b 11,'V','S','T','_','E','F','F','E','C','T','S','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,123
-		.dc.b 12,'V','S','T','_','R','O','T','A','T','I','O','N','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,124
-		.dc.b 10,'V','S','T','_','H','E','I','G','H','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,125
-		.dc.b 8,'V','S','T','_','F','O','N','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,126
-		.dc.b 8,'V','S','L','_','T','Y','P','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,137
-		.dc.b 9,'V','S','L','_','W','I','D','T','H','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,138
-		.dc.b 8,'V','S','L','_','E','N','D','S','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,139
-		.dc.b 9,'V','S','L','_','U','D','S','T','Y','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,140
-		.dc.b 9,'V','S','L','_','C','O','L','O','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,141
-		.dc.b 9,'V','S','M','_','C','O','L','O','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,142
-		.dc.b 10,'V','S','M','_','H','E','I','G','H','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,143
-		.dc.b 8,'V','S','M','_','T','Y','P','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,144
-		.dc.b 9,'V','S','W','R','_','M','O','D','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,145
-		.dc.b 9,'V','S','F','_','C','O','L','O','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,146
-		.dc.b 12,'V','S','F','_','I','N','T','E','R','I','O','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,147
-		.dc.b 13,'V','S','F','_','P','E','R','I','M','E','T','E','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,148
-		.dc.b 9,'V','S','F','_','S','T','Y','L','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,149
-		.dc.b 9,'V','S','F','_','U','D','P','A','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,150
-		.dc.b 7,'V','S','_','C','L','I','P','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,169
-		.dc.b 9,'V','S','C','_','F','O','R','M','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,170
-		.dc.b 5,'V','_','B','A','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,181
-		.dc.b 6,'V','_','R','B','O','X','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,182
-		.dc.b 7,'V','_','R','F','B','O','X','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,183
-		.dc.b 8,'V','R','_','R','E','C','F','L','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,184
-		.dc.b 5,'V','_','A','R','C','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,185
-		.dc.b 8,'V','_','C','I','R','C','L','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,186
-		.dc.b 8,'V','_','E','L','L','A','R','C','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,187
-		.dc.b 8,'V','_','E','L','L','P','I','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,188
-		.dc.b 9,'V','_','E','L','L','I','P','S','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,189
-		.dc.b 10,'V','_','P','I','E','S','L','I','C','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,190
-		.dc.b 13,'V','_','C','O','N','T','O','U','R','F','I','L','L','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,191
-		.dc.b 7,'V','_','G','T','E','X','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,192
-		.dc.b 7,'V','_','P','L','I','N','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,193
-		.dc.b 9,'V','_','P','M','A','R','K','E','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,194
-		.dc.b 10,'V','_','F','I','L','L','A','R','E','A','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,195
-		.dc.b 11,'V','_','J','U','S','T','I','F','I','E','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,196
-		.dc.b 8,'V','Q','_','K','E','Y','_','S','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,197
-		.dc.b 10,'V','_','B','E','Z','_','F','I','L','L','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,198
-		.dc.b 8,'V','A','_','S','T','A','R','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,115
+		.dc.b 11,'V','_','H','A','R','D','C','O','P','Y','(',')',TOK_SUBFUNC_211,54
+		.dc.b 9,'V','Q','_','V','G','D','O','S','(',')',TOK_SUBFUNC_209,14
+		.dc.b 7,'V','_','O','P','N','B','M','(',TOK_SUBFUNC_209,6
+		.dc.b 8,'V','Q','_','C','O','L','O','R','(',TOK_SUBFUNC_209,0
+		.dc.b 9,'V','S','T','_','P','O','I','N','T','(',TOK_SUBFUNC_209,21
+		.dc.b 12,'V','G','E','T','M','O','N','I','T','O','R','(',')',TOK_SUBFUNC_209,229
+		.dc.b 8,'V','G','E','T','S','I','Z','E','(',TOK_SUBFUNC_209,230
+		.dc.b 8,'V','S','E','T','M','O','D','E','(',TOK_SUBFUNC_209,231
+		.dc.b 10,'V','C','H','E','C','K','M','O','D','E','(',TOK_SUBFUNC_209,232
+		.dc.b 10,'V','S','E','T','S','C','R','E','E','N','(',TOK_SUBFUNC_209,233
+		.dc.b 11,'V','_','G','E','T','_','P','I','X','E','L','(',TOK_SUBFUNC_209,73
+		.dc.b 10,'V','_','B','E','Z','_','Q','U','A','L','(',TOK_SUBFUNC_209,135
+		.dc.b 9,'V','_','H','I','D','E','_','C','(',')',TOK_SUBFUNC_209,88
+		.dc.b 9,'V','_','S','H','O','W','_','C','(',')',TOK_SUBFUNC_209,87
+		.dc.b 15,'V','Q','F','_','A','T','T','R','I','B','U','T','E','S','(',')',TOK_SUBFUNC_209,127
+		.dc.b 15,'V','Q','L','_','A','T','T','R','I','B','U','T','E','S','(',')',TOK_SUBFUNC_209,128
+		.dc.b 15,'V','Q','M','_','A','T','T','R','I','B','U','T','E','S','(',')',TOK_SUBFUNC_209,129
+		.dc.b 15,'V','Q','T','_','A','T','T','R','I','B','U','T','E','S','(',')',TOK_SUBFUNC_209,130
+		.dc.b 12,'V','Q','T','_','F','O','N','T','I','N','F','O','(',TOK_SUBFUNC_209,42
+		.dc.b 9,'V','Q','T','_','W','I','D','T','H','(',TOK_SUBFUNC_209,41
+		.dc.b 9,'V','R','O','_','C','P','Y','F','M','(',TOK_SUBFUNC_209,4
+		.dc.b 9,'V','R','T','_','C','P','Y','F','M','(',TOK_SUBFUNC_209,5
+		.dc.b 8,'V','R','_','T','R','N','F','M','(',TOK_SUBFUNC_209,131
+		.dc.b 8,'V','Q','_','E','X','T','N','D','(',TOK_SUBFUNC_209,132
+		.dc.b 11,'V','Q','_','S','C','R','N','I','N','F','O','(',TOK_SUBFUNC_209,133
+		.dc.b 8,'V','_','C','L','S','B','M','(',')',TOK_SUBFUNC_209,7
+		.dc.b 8,'V','Q','_','M','O','U','S','E','(',TOK_SUBFUNC_209,136
+		.dc.b 13,'V','S','T','_','A','L','I','G','N','M','E','N','T','(',TOK_SUBFUNC_209,15
+		.dc.b 8,'V','S','_','C','O','L','O','R','(',TOK_SUBFUNC_208,253
+		.dc.b 5,'V','_','B','E','Z','(',TOK_SUBFUNC_209,134
+		.dc.b 7,'V','G','E','T','R','G','B','(',TOK_SUBFUNC_209,234
+		.dc.b 7,'V','S','E','T','R','G','B','(',TOK_SUBFUNC_209,235
+		.dc.b 8,'V','S','E','T','M','A','S','K','(',TOK_SUBFUNC_209,236
+		.dc.b 8,'V','S','E','T','S','Y','N','C','(',TOK_SUBFUNC_209,237
+		.dc.b 9,'V','_','C','U','R','T','E','X','T','(',TOK_SUBFUNC_209,121
+		.dc.b 9,'V','S','T','_','C','O','L','O','R','(',TOK_SUBFUNC_209,122
+		.dc.b 11,'V','S','T','_','E','F','F','E','C','T','S','(',TOK_SUBFUNC_209,123
+		.dc.b 12,'V','S','T','_','R','O','T','A','T','I','O','N','(',TOK_SUBFUNC_209,124
+		.dc.b 10,'V','S','T','_','H','E','I','G','H','T','(',TOK_SUBFUNC_209,125
+		.dc.b 8,'V','S','T','_','F','O','N','T','(',TOK_SUBFUNC_209,126
+		.dc.b 8,'V','S','L','_','T','Y','P','E','(',TOK_SUBFUNC_209,137
+		.dc.b 9,'V','S','L','_','W','I','D','T','H','(',TOK_SUBFUNC_209,138
+		.dc.b 8,'V','S','L','_','E','N','D','S','(',TOK_SUBFUNC_209,139
+		.dc.b 9,'V','S','L','_','U','D','S','T','Y','(',TOK_SUBFUNC_209,140
+		.dc.b 9,'V','S','L','_','C','O','L','O','R','(',TOK_SUBFUNC_209,141
+		.dc.b 9,'V','S','M','_','C','O','L','O','R','(',TOK_SUBFUNC_209,142
+		.dc.b 10,'V','S','M','_','H','E','I','G','H','T','(',TOK_SUBFUNC_209,143
+		.dc.b 8,'V','S','M','_','T','Y','P','E','(',TOK_SUBFUNC_209,144
+		.dc.b 9,'V','S','W','R','_','M','O','D','E','(',TOK_SUBFUNC_209,145
+		.dc.b 9,'V','S','F','_','C','O','L','O','R','(',TOK_SUBFUNC_209,146
+		.dc.b 12,'V','S','F','_','I','N','T','E','R','I','O','R','(',TOK_SUBFUNC_209,147
+		.dc.b 13,'V','S','F','_','P','E','R','I','M','E','T','E','R','(',TOK_SUBFUNC_209,148
+		.dc.b 9,'V','S','F','_','S','T','Y','L','E','(',TOK_SUBFUNC_209,149
+		.dc.b 9,'V','S','F','_','U','D','P','A','T','(',TOK_SUBFUNC_209,150
+		.dc.b 7,'V','S','_','C','L','I','P','(',TOK_SUBFUNC_209,169
+		.dc.b 9,'V','S','C','_','F','O','R','M','(',')',TOK_SUBFUNC_209,170
+		.dc.b 5,'V','_','B','A','R','(',TOK_SUBFUNC_209,181
+		.dc.b 6,'V','_','R','B','O','X','(',TOK_SUBFUNC_209,182
+		.dc.b 7,'V','_','R','F','B','O','X','(',TOK_SUBFUNC_209,183
+		.dc.b 8,'V','R','_','R','E','C','F','L','(',TOK_SUBFUNC_209,184
+		.dc.b 5,'V','_','A','R','C','(',TOK_SUBFUNC_209,185
+		.dc.b 8,'V','_','C','I','R','C','L','E','(',TOK_SUBFUNC_209,186
+		.dc.b 8,'V','_','E','L','L','A','R','C','(',TOK_SUBFUNC_209,187
+		.dc.b 8,'V','_','E','L','L','P','I','E','(',TOK_SUBFUNC_209,188
+		.dc.b 9,'V','_','E','L','L','I','P','S','E','(',TOK_SUBFUNC_209,189
+		.dc.b 10,'V','_','P','I','E','S','L','I','C','E','(',TOK_SUBFUNC_209,190
+		.dc.b 13,'V','_','C','O','N','T','O','U','R','F','I','L','L','(',TOK_SUBFUNC_209,191
+		.dc.b 7,'V','_','G','T','E','X','T','(',TOK_SUBFUNC_209,192
+		.dc.b 7,'V','_','P','L','I','N','E','(',TOK_SUBFUNC_209,193
+		.dc.b 9,'V','_','P','M','A','R','K','E','R','(',TOK_SUBFUNC_209,194
+		.dc.b 10,'V','_','F','I','L','L','A','R','E','A','(',TOK_SUBFUNC_209,195
+		.dc.b 11,'V','_','J','U','S','T','I','F','I','E','D','(',TOK_SUBFUNC_209,196
+		.dc.b 8,'V','Q','_','K','E','Y','_','S','(',TOK_SUBFUNC_209,197
+		.dc.b 10,'V','_','B','E','Z','_','F','I','L','L','(',TOK_SUBFUNC_209,198
+		.dc.b 8,'V','A','_','S','T','A','R','T','(',TOK_SUBFUNC_210,115
+		.dc.b 6,'V','S','Y','N','C','(',')',TOK_SUBFUNC_210,151
+		.dc.b 16,'V','R','_','T','R','A','N','S','F','E','R','_','B','I','T','S','(',TOK_SUBFUNC_211,44
+		.dc.b 13,'V','_','C','R','E','A','T','E','_','C','T','A','B','(',TOK_SUBFUNC_211,45
+		.dc.b 13,'V','_','D','E','L','E','T','E','_','C','T','A','B','(',TOK_SUBFUNC_211,46
+		.dc.b 13,'V','_','C','R','E','A','T','E','_','I','T','A','B','(',TOK_SUBFUNC_211,47
+		.dc.b 13,'V','_','D','E','L','E','T','E','_','I','T','A','B','(',TOK_SUBFUNC_211,48
+		.dc.b 12,'V','Q','_','P','X','_','F','O','R','M','A','T','(',TOK_SUBFUNC_211,49
+		.dc.b 14,'V','_','G','E','T','_','C','T','A','B','_','I','D','(',')',TOK_SUBFUNC_211,50
+		.dc.b 12,'V','Q','T','_','E','X','T','_','N','A','M','E','(',TOK_SUBFUNC_211,51
+		.dc.b 9,'V','_','O','P','E','N','_','B','M','(',TOK_SUBFUNC_211,52
+		.dc.b 11,'V','_','R','E','S','I','Z','E','_','B','M','(',TOK_SUBFUNC_211,53
+		.dc.b 8,'V','S','T','_','N','A','M','E','(',TOK_SUBFUNC_211,55
+		.dc.b 15,'V','Q','T','_','N','A','M','E','_','A','N','D','_','I','D','(',TOK_SUBFUNC_211,56
+		.dc.b 12,'V','S','T','_','F','G','_','C','O','L','O','R','(',TOK_SUBFUNC_211,57
+		.dc.b 12,'V','S','F','_','F','G','_','C','O','L','O','R','(',TOK_SUBFUNC_211,58
+		.dc.b 12,'V','S','L','_','F','G','_','C','O','L','O','R','(',TOK_SUBFUNC_211,59
+		.dc.b 12,'V','S','M','_','F','G','_','C','O','L','O','R','(',TOK_SUBFUNC_211,60
+		.dc.b 12,'V','S','R','_','F','G','_','C','O','L','O','R','(',TOK_SUBFUNC_211,61
+		.dc.b 12,'V','Q','T','_','F','G','_','C','O','L','O','R','(',TOK_SUBFUNC_211,62
+		.dc.b 12,'V','Q','F','_','F','G','_','C','O','L','O','R','(',TOK_SUBFUNC_211,63
+		.dc.b 12,'V','Q','L','_','F','G','_','C','O','L','O','R','(',TOK_SUBFUNC_211,64
+		.dc.b 12,'V','Q','M','_','F','G','_','C','O','L','O','R','(',TOK_SUBFUNC_211,65
+		.dc.b 12,'V','Q','R','_','F','G','_','C','O','L','O','R','(',TOK_SUBFUNC_211,66
+		.dc.b 12,'V','S','T','_','B','G','_','C','O','L','O','R','(',TOK_SUBFUNC_211,67
+		.dc.b 12,'V','S','F','_','B','G','_','C','O','L','O','R','(',TOK_SUBFUNC_211,68
+		.dc.b 12,'V','S','L','_','B','G','_','C','O','L','O','R','(',TOK_SUBFUNC_211,69
+		.dc.b 12,'V','S','M','_','B','G','_','C','O','L','O','R','(',TOK_SUBFUNC_211,70
+		.dc.b 12,'V','S','R','_','B','G','_','C','O','L','O','R','(',TOK_SUBFUNC_211,71
+		.dc.b 12,'V','Q','T','_','B','G','_','C','O','L','O','R','(',TOK_SUBFUNC_211,72
+		.dc.b 12,'V','Q','F','_','B','G','_','C','O','L','O','R','(',TOK_SUBFUNC_211,73
+		.dc.b 12,'V','Q','L','_','B','G','_','C','O','L','O','R','(',TOK_SUBFUNC_211,74
+		.dc.b 12,'V','Q','M','_','B','G','_','C','O','L','O','R','(',TOK_SUBFUNC_211,75
+		.dc.b 12,'V','Q','R','_','B','G','_','C','O','L','O','R','(',TOK_SUBFUNC_211,76
+		.dc.b 15,'V','S','_','H','I','L','I','T','E','_','C','O','L','O','R','(',TOK_SUBFUNC_211,77
+		.dc.b 12,'V','S','_','M','I','N','_','C','O','L','O','R','(',TOK_SUBFUNC_211,78
+		.dc.b 12,'V','S','_','M','A','X','_','C','O','L','O','R','(',TOK_SUBFUNC_211,79
+		.dc.b 15,'V','S','_','W','E','I','G','H','T','_','C','O','L','O','R','(',TOK_SUBFUNC_211,80
+		.dc.b 15,'V','Q','_','H','I','L','I','T','E','_','C','O','L','O','R','(',TOK_SUBFUNC_211,81
+		.dc.b 12,'V','Q','_','M','I','N','_','C','O','L','O','R','(',TOK_SUBFUNC_211,82
+		.dc.b 12,'V','Q','_','M','A','X','_','C','O','L','O','R','(',TOK_SUBFUNC_211,83
+		.dc.b 15,'V','Q','_','W','E','I','G','H','T','_','C','O','L','O','R','(',TOK_SUBFUNC_211,84
+		.dc.b 8,'V','_','S','E','T','R','G','B','(',TOK_SUBFUNC_211,85
+		.dc.b 12,'V','Q','T','_','X','F','N','T','I','N','F','O','(',TOK_SUBFUNC_211,87
+		.dc.b 13,'V','_','C','O','L','O','R','2','V','A','L','U','E','(',TOK_SUBFUNC_210,211
+		.dc.b 13,'V','_','V','A','L','U','E','2','C','O','L','O','R','(',TOK_SUBFUNC_210,210
+		.dc.b 15,'V','_','C','O','L','O','R','2','N','E','A','R','E','S','T','(',TOK_SUBFUNC_210,209
+		.dc.b 12,'V','Q','_','D','F','L','T','_','C','T','A','B','(',TOK_SUBFUNC_210,208
+		.dc.b 16,'V','_','C','T','A','B','_','I','D','X','2','V','A','L','U','E','(',TOK_SUBFUNC_210,207
+		.dc.b 14,'V','_','C','T','A','B','_','V','D','I','2','I','D','X','(',TOK_SUBFUNC_210,206
+		.dc.b 14,'V','_','C','T','A','B','_','I','D','X','2','V','D','I','(',TOK_SUBFUNC_211,166
+		.dc.b 11,'V','Q','_','C','T','A','B','_','I','D','(',')',TOK_SUBFUNC_211,167
+		.dc.b 13,'V','Q','_','C','T','A','B','_','E','N','T','R','Y','(',TOK_SUBFUNC_211,168
+		.dc.b 7,'V','Q','_','C','T','A','B','(',TOK_SUBFUNC_211,169
+		.dc.b 13,'V','S','_','D','F','L','T','_','C','T','A','B','(',')',TOK_SUBFUNC_211,170
+		.dc.b 13,'V','S','_','C','T','A','B','_','E','N','T','R','Y','(',TOK_SUBFUNC_211,171
+		.dc.b 7,'V','S','_','C','T','A','B','(',TOK_SUBFUNC_211,172
+		.dc.b 21,'V','R','_','C','L','I','P','_','R','E','C','T','S','_','B','Y','_','D','S','T','(',')',TOK_SUBFUNC_211,173
+		.dc.b 21,'V','R','_','C','L','I','P','_','R','E','C','T','S','_','B','Y','_','S','R','C','(',')',TOK_SUBFUNC_211,174
+		.dc.b 14,'V','Q','T','_','F','O','N','T','H','E','A','D','E','R','(',TOK_SUBFUNC_211,175
+		.dc.b 9,'V','S','T','_','W','I','D','T','H','(',TOK_SUBFUNC_211,176
+		.dc.b 18,'V','_','C','L','E','A','R','_','D','I','S','P','_','L','I','S','T','(',')',TOK_SUBFUNC_211,177
+		.dc.b 8,'V','E','X','_','T','I','M','V','(',TOK_SUBFUNC_211,178
+		.dc.b 8,'V','E','X','_','B','U','T','V','(',TOK_SUBFUNC_211,179
+		.dc.b 8,'V','E','X','_','M','O','T','V','(',TOK_SUBFUNC_211,180
+		.dc.b 8,'V','E','X','_','C','U','R','V','(',TOK_SUBFUNC_211,181
 	.ENDC
 func_w_table: /* 137ce */
-		.dc.b 1,'W',':'
-		.ascii ""
-		.dc.b 0,139
-		.dc.b 7,'W','I','N','D','T','A','B','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,41
-		.dc.b 6,'W','I','N','D','T','A','B'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,42
-		.dc.b 4,'W','O','R','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,14
-		.dc.b 11,'W','I','N','D','_','C','R','E','A','T','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,175
-		.dc.b 9,'W','I','N','D','_','O','P','E','N','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,176
-		.dc.b 10,'W','I','N','D','_','C','L','O','S','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,177
-		.dc.b 11,'W','I','N','D','_','D','E','L','E','T','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,178
-		.dc.b 8,'W','I','N','D','_','G','E','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,179
-		.dc.b 8,'W','I','N','D','_','S','E','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,180
-		.dc.b 9,'W','I','N','D','_','F','I','N','D','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,181
-		.dc.b 11,'W','I','N','D','_','U','P','D','A','T','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,182
-		.dc.b 9,'W','I','N','D','_','C','A','L','C','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,183
-		.dc.b 7,'W','_','H','A','N','D','(','#'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,98
-		.dc.b 8,'W','_','I','N','D','E','X','(','#'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,99
-		.dc.b 8,'W','O','R','K','_','O','U','T','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,208
-		.dc.b 3,'W','I','T','H'
-		.ascii ""
-		.dc.b 0,114
-		.dc.b 4,'W','O','R','D','{'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,222
+		.dc.b 1,'W',':',0,TOK_WORDARG
+		.dc.b 7,'W','I','N','D','T','A','B','(',TOK_SUBFUNC_208,41
+		.dc.b 6,'W','I','N','D','T','A','B',TOK_SUBFUNC_208,42
+		.dc.b 4,'W','O','R','D','(',TOK_SUBFUNC_208,14
+		.dc.b 11,'W','I','N','D','_','C','R','E','A','T','E','(',TOK_SUBFUNC_208,175
+		.dc.b 9,'W','I','N','D','_','O','P','E','N','(',TOK_SUBFUNC_208,176
+		.dc.b 10,'W','I','N','D','_','C','L','O','S','E','(',TOK_SUBFUNC_208,177
+		.dc.b 11,'W','I','N','D','_','D','E','L','E','T','E','(',TOK_SUBFUNC_208,178
+		.dc.b 8,'W','I','N','D','_','G','E','T','(',TOK_SUBFUNC_208,179
+		.dc.b 8,'W','I','N','D','_','S','E','T','(',TOK_SUBFUNC_208,180
+		.dc.b 9,'W','I','N','D','_','F','I','N','D','(',TOK_SUBFUNC_208,181
+		.dc.b 11,'W','I','N','D','_','U','P','D','A','T','E','(',TOK_SUBFUNC_208,182
+		.dc.b 9,'W','I','N','D','_','C','A','L','C','(',TOK_SUBFUNC_208,183
+		.dc.b 7,'W','_','H','A','N','D','(','#',TOK_SUBFUNC_208,98
+		.dc.b 8,'W','_','I','N','D','E','X','(','#',TOK_SUBFUNC_208,99
+		.dc.b 8,'W','O','R','K','_','O','U','T','(',TOK_SUBFUNC_208,208
+		.dc.b 3,'W','I','T','H',0,TOK_WITH
+		.dc.b 4,'W','O','R','D','{',TOK_SUBFUNC_208,222
 	.IFNE GBE
-		.dc.b 9,'W','I','N','D','_','N','E','W','(',')'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,85
-		.dc.b 8,'W','A','K','E','T','I','M','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,227
-		.dc.b 7,'W','F','_','N','A','M','E','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,248
-		.dc.b 7,'W','F','_','I','N','F','O','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,249
-		.dc.b 7,'W','E','E','K','D','A','Y','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,91
-		.dc.b 9,'W','O','R','D','2','L','O','N','G','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_210,117
+		.dc.b 9,'W','I','N','D','_','S','G','E','T','(',TOK_SUBFUNC_210,182
+		.dc.b 9,'W','I','N','D','_','N','E','W','(',')',TOK_SUBFUNC_209,85
+		.dc.b 8,'W','A','K','E','T','I','M','E','(',TOK_SUBFUNC_209,227
+		.dc.b 7,'W','F','_','N','A','M','E','(',TOK_SUBFUNC_209,248
+		.dc.b 7,'W','F','_','I','N','F','O','(',TOK_SUBFUNC_209,249
+		.dc.b 7,'W','E','E','K','D','A','Y','(',TOK_SUBFUNC_210,91
+		.dc.b 6,'W','F','_','T','O','P','(',TOK_SUBFUNC_210,160
+		.dc.b 4,'W','E','E','K','(',TOK_SUBFUNC_211,1
 	.ENDC
 func_x_table: /* 138c0 */
-		.dc.b 5,'X','B','I','O','S','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,86
-		.dc.b 2,'X','O','R'
-		.ascii ""
-		.dc.b 0,2
-		.dc.b 3,'X','O','R','('
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,7
+		.dc.b 5,'X','B','I','O','S','(',TOK_SUBFUNC_208,86
+		.dc.b 2,'X','O','R',0,TOK_XOR
+		.dc.b 3,'X','O','R','(',TOK_SUBFUNC_208,7
+	.IFNE GBE
+		.dc.b 6,'X','L','A','T','E','$','(',0,TOK_XLATE
+	.ENDC
 func_y_table:
+	.IFNE GBE
+		.dc.b 4,'Y','E','A','R','(',TOK_SUBFUNC_210,215
+	.ENDC
 func_z_table:
 	.IFNE GBE
-		.dc.b 6,'Z','T','R','I','M','$','('
-		.ascii ""
-		.dc.b 0,150
+		.dc.b 6,'Z','T','R','I','M','$','(',0,TOK_ZTRIM
 	.ENDC
 
 func_other_table:
-		.dc.b 0,0x5c
-		.dc.b 0,TOK_INTDIV
-		.dc.b 0,'['
-		.ascii ""
-		.dc.b 0,TOK_LBRACKET
-		.dc.b 0,']'
-		.ascii ""
-		.dc.b 0,TOK_RBRACKET
-		.dc.b 4,'_','D','A','T','A'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,227
+		.dc.b 0,0x5c,0,TOK_INTDIV
+		.dc.b 0,'[',0,TOK_LBRACKET
+		.dc.b 0,']',0,TOK_RBRACKET
+		.dc.b 4,'_','D','A','T','A',TOK_SUBFUNC_208,227
 	.IFNE GBE
-		.dc.b 6,'_','G','E','M','D','O','S'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,18
-		.dc.b 4,'_','M','I','N','T'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,1
-		.dc.b 3,'_','A','E','S'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,242
-		.dc.b 3,'_','C','P','U'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,57
-		.dc.b 3,'_','T','O','S'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,243
-		.dc.b 2,'_','S','W'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,2
-		.dc.b 2,'_','S','H'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_209,3
+		.dc.b 9,'_','B','U','I','L','D','I','N','F','O',TOK_SUBFUNC_210,240
+		.dc.b 7,'_','V','E','R','S','I','O','N',TOK_SUBFUNC_210,227
+		.dc.b 6,'_','G','E','M','D','O','S',TOK_SUBFUNC_209,18
+		.dc.b 5,'_','C','P','U','I','D',TOK_SUBFUNC_210,224
+		.dc.b 4,'_','M','I','N','T',TOK_SUBFUNC_209,1
+		.dc.b 3,'_','P','I','D',TOK_SUBFUNC_210,129
+		.dc.b 3,'_','A','E','S',TOK_SUBFUNC_208,242
+		.dc.b 3,'_','C','P','U',TOK_SUBFUNC_209,57
+		.dc.b 3,'_','F','P','U',TOK_SUBFUNC_210,222
+		.dc.b 3,'_','M','C','H',TOK_SUBFUNC_210,223
+		.dc.b 3,'_','T','O','S',TOK_SUBFUNC_208,243
+		.dc.b 3,'_','C','F','_',TOK_SUBFUNC_210,241
+		.dc.b 2,'_','C','W',TOK_SUBFUNC_210,228
+		.dc.b 2,'_','C','H',TOK_SUBFUNC_210,229
+		.dc.b 2,'_','S','W',TOK_SUBFUNC_209,2
+		.dc.b 2,'_','S','H',TOK_SUBFUNC_209,3
+		.dc.b 2,'_','D','X',TOK_SUBFUNC_210,245
+		.dc.b 2,'_','D','Y',TOK_SUBFUNC_210,246
+		.dc.b 2,'_','D','W',TOK_SUBFUNC_210,247
+		.dc.b 2,'_','D','H',TOK_SUBFUNC_210,248
 	.ENDC
-		.dc.b 1,'_','X'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,236
-		.dc.b 1,'_','Y'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,237
+		.dc.b 1,'_','X',TOK_SUBFUNC_208,236
+		.dc.b 1,'_','Y',TOK_SUBFUNC_208,237
 	.IFNE GBE
-		.dc.b 1,'_','P'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,255
+		.dc.b 1,'_','P',TOK_SUBFUNC_208,255
 	.ENDC
-		.dc.b 1,'_','C'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,238
+		.dc.b 1,'_','C',TOK_SUBFUNC_208,238
 	.IFNE GBE
-		.dc.b 1,'_','B'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,241
+		.dc.b 1,'_','B',TOK_SUBFUNC_208,241
+		.dc.b 1,'_','0',TOK_SUBFUNC_210,230
+		.dc.b 1,'_','1',TOK_SUBFUNC_210,231
+		.dc.b 1,'_','2',TOK_SUBFUNC_210,232
+		.dc.b 1,'_','3',TOK_SUBFUNC_210,233
+		.dc.b 1,'_','4',TOK_SUBFUNC_210,234
+		.dc.b 1,'_','5',TOK_SUBFUNC_210,235
+		.dc.b 1,'_','6',TOK_SUBFUNC_210,236
+		.dc.b 1,'_','7',TOK_SUBFUNC_210,237
+		.dc.b 1,'_','8',TOK_SUBFUNC_210,238
+		.dc.b 1,'_','9',TOK_SUBFUNC_210,239
 	.ENDC
-		.dc.b 0,'^'
-		.ascii ""
-		.dc.b 0,TOK_POWER
-		.dc.b 0,'{'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,112
-		.dc.b 0,'}'
-		.ascii ""
-		.dc.b 0,TOK_RBRACE
-		.dc.b 4,'E','O','F','(','#'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,78
-		.dc.b 4,'L','O','F','(','#'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,79
-		.dc.b 4,'L','O','C','(','#'
-		.ascii ""
-		.dc.b TOK_SUBFUNC_208,80
-		.dc.b 3,' ','A','T','('
-		.ascii ""
-		.dc.b 0,122
-		.dc.b 4,'S','U','C','C','('
-		.ascii ""
-		.dc.b 0,131
-		.dc.b 4,'P','R','E','D','('
-		.ascii ""
-		.dc.b 0,133
-		.dc.b 0,'/'
-		.ascii ""
-		.dc.b 0,TOK_DIVIDE
+		.dc.b 0,'^',0,TOK_POWER
+		.dc.b 0,'{',TOK_SUBFUNC_208,112
+		.dc.b 0,'}',0,TOK_RBRACE
+		.dc.b 4,'E','O','F','(','#',TOK_SUBFUNC_208,78
+		.dc.b 4,'L','O','F','(','#',TOK_SUBFUNC_208,79
+		.dc.b 4,'L','O','C','(','#',TOK_SUBFUNC_208,80
+		.dc.b 3,' ','A','T','(',0,TOK_AT2
+		.dc.b 4,'S','U','C','C','(',0,TOK_SUCC
+		.dc.b 4,'P','R','E','D','(',0,TOK_PRED
+		.dc.b 0,'/',0,TOK_DIVIDE
 		.dc.b -1
 		.even
 
@@ -7362,7 +6265,7 @@ x1395a_14:
  * function code in d0.w
  * bits 8-15: secondary table code
  */
-/* gbe: 00054000 */
+/* gbe: 573b4 */
 handle_function:
 		bsr        find_function
 handle_function_1:
@@ -7931,7 +6834,7 @@ f13e8c_4:
  * 0xfe,-2: two bytes offset to function follow
  * 0xff,-1: two bytes offset to subtable follow
  */
-/* gbe: 544b0 */
+/* gbe: 57864 */
 x13ed2:
 	.dc.b -2,(f13e8c-jmpbase)/256,(f13e8c-jmpbase)&255
 x13ed5:
@@ -11447,7 +10350,7 @@ x14be6_1:
 		addq.l     #4,a7
 		bra        x1395a_1
 
-/* gbe: 55256 */
+/* gbe: 586c4 */
 x14c16:
 		.dc.w f13696-jmpbase
 		.dc.w x14d00-jmpbase
@@ -11687,6 +10590,7 @@ x14d32:
 x14d33:
 	.dc.b -4
 
+/* gbe: 58899 */
 x14d34:
 		.dc.b 0x5a,0x5c
 		.dc.b 0x5e,0x62

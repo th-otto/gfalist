@@ -2,9 +2,7 @@
 
 FILE *out;
 
-#define jmpbase 0x53c6c
-#undef jmpbase
-#define jmpbase 0x13696
+#define jmpbase 0x5701f
 
 static void dump_table(FILE *fp, int offset, int end)
 {
@@ -88,12 +86,12 @@ int main(void)
 	int first_char;
 	
 	out = stdout;
-	fp = fopen("/windows/c/atari/devtools/gbe/gbe.prg", "rb");
+	fp = fopen("gbe/gbe.prg", "rb");
 	if (fp == NULL)
 		return 1;
 
 	first_char = 0;
-	offset = 0x51d51;
+	offset = 0x540f7;
 	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
 	while (offset < 0x70000)
 	{
@@ -130,7 +128,7 @@ int main(void)
 	fprintf(out, "offset = %05x\n", offset);
 
 	first_char = 0;
-	offset = 0x50c42;
+	offset = 0x5292c;
 	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
 	while (offset < 0x70000)
 	{
@@ -177,9 +175,9 @@ int main(void)
 	fprintf(out, "offset = %05x\n", offset);
 	fprintf(out, "\n");
 
-	offset = 0x55256;
+	offset = 0x586c4;
 	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
-	while (offset < 0x552f8)
+	while (offset < 0x58798)
 	{
 		c = getc(fp);
 		c2 = getc(fp);
@@ -192,11 +190,13 @@ int main(void)
 	fprintf(out, "offset = %05x\n", offset);
 	fprintf(out, "\n");
 	
-	dump_table(fp, 0x544b0, 0x546b2);
+	dump_table(fp, 0x57864, 0x57a66);
 	fprintf(out, "\n");
-	dump_table(fp, 0x546f4, 0x54b6a);
+	dump_table(fp, 0x57aa8, 0x57f20);
 	fprintf(out, "\n");
-	dump_table(fp, 0x54bba, 0x55b86);
+	dump_table(fp, 0x57f6e, 0x592aa);
+	fprintf(out, "\n");
+	dump_table(fp, 0x58798, 0x5883e);
 	fprintf(out, "\n");
 	
 	return 0;
