@@ -7,6 +7,7 @@ extern const char *const gfapft[256];
 extern const char *const gfasft_208[256];
 extern const char *const gfasft_209[256];
 extern const char *const gfasft_210[256];
+extern const char *const gfasft_211[256];
 struct gfaversinfo {
 	short len_magic;
 	short num_offsets;
@@ -58,7 +59,9 @@ extern struct gfaversinfo const gfarecl[71];
 #define TOK_CMD_DATA               117
 #define TOK_CMD_END                124
 #define TOK_CMD_INC_FLOAT          160
-#define TOK_CMD_OFF                175
+#define TOK_CMD_ADD_FLOAT          176
+#define TOK_CMD_SUB_FLOAT          184
+#define TOK_CMD_MUL_FLOAT          192
 #define TOK_CMD_DIV_FLOAT          200
 #define TOK_CMD_DIV_BYTE_ARR       207
 #define TOK_CMD_ADDROUT            225
@@ -216,12 +219,12 @@ extern struct gfaversinfo const gfarecl[71];
 #define TOK_DRAW                   134
 #define TOK_TRIM                   135
 #define TOK_CMDLINE                136
-#define TOK_CMDLINE2               137
+#define TOK_CURDIR                 137
 #define TOK_LONGARG                138
 #define TOK_WORDARG                139
 #define TOK_FACT                   140
 #define TOK_COMBIN                 141
-#define TOK_COMBIN2                142
+#define TOK_ENVIRON                142
 #define TOK_VARIAT                 143
 #define TOK_LTRIM                  144
 #define TOK_RTRIM                  145
@@ -256,11 +259,11 @@ extern struct gfaversinfo const gfarecl[71];
 #define TOK_MESSAGE                174
 #define TOK_OFF                    175
 #define TOK_KILL                   176
-#define TOK_KILL2                  177
-#define TOK_KILL3                  178
-#define TOK_KILL4                  179
-#define TOK_KILL5                  180
-#define TOK_KILL6                  181
+#define TOK_DIGITAL                177
+#define TOK_REPLACE                178
+#define TOK_CRYPT                  179
+#define TOK_XLATE                  180
+#define TOK_RES_181                181
 #define TOK_BASE                   182
 #define TOK_NULL                   183
 #define TOK_CONST_ZERO             184
@@ -276,7 +279,7 @@ extern struct gfaversinfo const gfarecl[71];
 #define TOK_HEX2                   194
 #define TOK_OCT1                   195
 #define TOK_OCT2                   196
-#define TOK_OCT3                   197
+#define TOK_RES_197                197
 #define TOK_CHAR_CONST             198
 #define TOK_CHAR_CONST_PAD         199
 #define TOK_DEC_CONST              200
