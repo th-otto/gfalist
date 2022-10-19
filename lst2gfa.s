@@ -352,20 +352,34 @@ TYPE_FUNCTION_STR  = 15
  */
 
 		.offset 0
-error_jmp:          ds.b 8  /*    0 */
-file_buffer:        ds.l 1  /*    8 */
-file_buffer_size:   ds.l 1  /*   12 */
-ptr_table:          ds.l 38 /*   16 */
-                    ds.l 1  /*  168 */
-                    ds.l 1  /*  172 */
-                    ds.l 1  /*  176 */
-                    ds.l 1  /*  180 */
-                    ds.l 1  /*  184 */
-                    ds.l 1  /*  188 */
-                    ds.l 1  /*  192 */
-                    ds.l 1  /*  196 */
-                    ds.l 1  /*  200 */
-baspag:             ds.l 1  /*  204 */
+error_jmp:          ds.b 8    /*    0 */
+file_buffer:        ds.l 1    /*    8 */
+file_buffer_size:   ds.l 1    /*   12 */
+ptr_table:          ds.l 38   /*   16 */
+                    ds.l 1    /*  168 */
+                    ds.l 1    /*  172 */
+                    ds.l 1    /*  176 */
+                    ds.l 1    /*  180 */
+                    ds.l 1    /*  184 */
+                    ds.l 1    /*  188 */
+                    ds.l 1    /*  192 */
+                    ds.l 1    /*  196 */
+                    ds.l 1    /*  200 */
+baspag:             ds.l 1    /*  204 */
+pgmsize:            ds.l 1    /*  208 */
+                    ds.w 1    /*  212 */
+extjmp_table:       ds.b 26*6 /*  214 */
+                    ds.b 40   /*  370 */
+                    ds.l 10   /*  410 */
+                    ds.l 1    /*  450 */
+                    ds.l 1    /*  454 */
+                    ds.l 1    /*  458 */
+                    ds.w 1    /*  462 */
+                    ds.b 26   /*  464 */
+fstr_tmpbuf:        ds.b 22   /*  490 */
+fstr_outbuf:        ds.b 30   /*  512 */
+decimal_digits:     ds.w 1    /*  542 */
+
 
 		.text
 
@@ -1036,7 +1050,7 @@ FADD_10:
 	.IFNE FOR_LIB
 		bra        ERROR
 	.ELSE
-		jmp        (a6) /* ERROR */
+		jmp        error_jmp(a6) /* ERROR */
 	.ENDC
 FADD_11:
 		subx.w     d4,d1
@@ -1191,7 +1205,7 @@ FDIV_2:
 	.IFNE FOR_LIB
 		bra        ERROR
 	.ELSE
-		jmp        (a6) /* ERROR */
+		jmp        error_jmp(a6) /* ERROR */
 	.ENDC
 FDIV_3:
 		moveq.l    #0,d2
@@ -1519,7 +1533,7 @@ ftstr_restart:
  */
 FTstr:
 		andi.l     #0x0000FFFF,d1
-		lea.l      490(a6),a0
+		lea.l      fstr_tmpbuf(a6),a0
 		moveq.l    #32,d3
 		tst.w      d2
 		bge.s      FTstr_1
@@ -1581,7 +1595,7 @@ FTstr_8:
 		andi.l     #0x0FFFFFFF,d0
 		moveq.l    #0,d4
 		bsr        Fvm10
-		lea.l      505(a6),a1
+		lea.l      fstr_tmpbuf+15(a6),a1
 		cmpa.l     a1,a0
 		bne.s      FTstr_8
 FTstr_9:
@@ -1607,7 +1621,7 @@ FTstr_11:
 		swap       d6
 		ori.b      #'0',d6
 		move.b     d6,(a0)+
-		lea.l      490(a6),a0
+		lea.l      fstr_tmpbuf(a6),a0
 		rts
 FTstr_12:
 		moveq.l    #0,d0
@@ -1618,7 +1632,7 @@ FTstr_12:
 
 roundup:
 		pea.l      (a1)
-		move.w     542(a6),d1
+		move.w     decimal_digits(a6),d1
 		cmpi.w     #14,d1
 		bcs.s      roundup_1
 		beq.s      roundup_6
@@ -1657,7 +1671,7 @@ Fstr:
 		bsr        FTstr
 		bsr.s      roundup
 		move.l     a1,-(a7)
-		lea.l      512(a6),a1
+		lea.l      fstr_outbuf(a6),a1
 		moveq.l    #14,d1
 		cmpi.b     #' ',(a0)+
 		beq.s      Fstr_1
@@ -1700,7 +1714,7 @@ Fstr_7:
 		move.b     #'0',(a1)+
 Fstr_8:
 		clr.b      (a1)
-		lea.l      512(a6),a0
+		lea.l      fstr_outbuf(a6),a0
 		suba.l     a0,a1
 		move.l     a1,d0
 		movea.l    (a7)+,a1
@@ -1715,7 +1729,7 @@ Fstr_10:
 		move.b     (a0)+,(a1)+
 		dbf        d1,Fstr_10
 Fstr_11:
-		lea.l      505(a6),a0
+		lea.l      fstr_tmpbuf+15(a6),a0
 		move.b     (a0)+,(a1)+
 		move.b     (a0)+,(a1)+
 		move.b     (a0)+,d0
@@ -1730,7 +1744,7 @@ Fstr_12:
 DEFNUM:
 		cmpi.w     #3,d0
 		bcs.s      DEFNUM_1
-		move.w     d0,542(a6)
+		move.w     d0,decimal_digits(a6)
 DEFNUM_1:
 		rts
 
@@ -1888,14 +1902,14 @@ mem_end: .dc.l 0
 x10cae: .dc.l 0
 
 x10cb2:
-		.dc.l dummy_rts
-		.dc.l dummy_rts
-		.dc.l dummy_rts
-		.dc.l dummy_rts
-		.dc.l dummy_rts
-		.dc.l dummy_rts
-		.dc.l dummy_rts
-		.dc.l dummy_rts
+		.dc.l dummy_rts /* primary_expr */
+		.dc.l dummy_rts /* get_2expr */
+		.dc.l dummy_rts /* get_3expr */
+		.dc.l dummy_rts /* get_4expr */
+		.dc.l dummy_rts /* get_5expr */
+		.dc.l dummy_rts /* get_6expr */
+		.dc.l dummy_rts /* get_7expr */
+		.dc.l dummy_rts /* get_8expr */
 		.dc.l dummy_rts
 		.dc.l dummy_rts
 		.dc.l dummy_rts
@@ -1904,16 +1918,16 @@ x10cb2:
 		.dc.l GarColl
 		.dc.l FADD
 		.dc.l FSUB
-		.dc.l dummy_rts
+		.dc.l dummy_rts /* FMUL */
 		.dc.l FDIV
 		.dc.l FITOF
-		.dc.l dummy_rts
-		.dc.l dummy_rts
-		.dc.l dummy_rts
-		.dc.l dummy_rts
-		.dc.l dummy_rts
-		.dc.l dummy_rts
-		.dc.l dummy_rts
+		.dc.l dummy_rts /* FFTOI */
+		.dc.l dummy_rts /* FSIN */
+		.dc.l dummy_rts /* FCOS */
+		.dc.l dummy_rts /* FTAN */
+		.dc.l dummy_rts /* FATN */
+		.dc.l dummy_rts /* FEXP */
+		.dc.l dummy_rts /* FLOG */
 
 main:
 		movea.l    4(a7),a5
@@ -1935,13 +1949,13 @@ main_1:
 		adda.l     #36820,a0
 		move.l     a6,mem_end
 		lea.l      x10cb2(pc),a1
-		lea.l      214(a6),a2
-		moveq.l    #25,d0
+		lea.l      extjmp_table(a6),a2
+		moveq.l    #26-1,d0
 main_2:
 		move.w     #0x4EF9,(a2)+ /* jmp.l opcode */
 		move.l     (a1)+,(a2)+
 		dbf        d0,main_2
-		move.w     #13,542(a6)
+		move.w     #13,decimal_digits(a6)
 		move.b     612(a6),d0
 		ori.b      #'.',d0
 		bclr       #4,d0
@@ -1954,7 +1968,7 @@ main_2:
 		suba.l     a5,a0
 		pea.l      (a0)
 		pea.l      (a5)
-		move.l     a0,208(a6)
+		move.l     a0,pgmsize(a6)
 		clr.w      -(a7)
 		move.w     #74,-(a7) /* Mshrink */
 		trap       #1
@@ -2119,7 +2133,7 @@ ALLOT_2:
 	.IFNE FOR_LIB
 		bra        ERROR
 	.ELSE
-		jmp        (a6) /* ERROR */
+		jmp        error_jmp(a6) /* ERROR */
 	.ENDC
 
 Lddre:
@@ -2263,7 +2277,7 @@ STcreat:
 	.IFNE FOR_LIB
 		bra        ERROR
 	.ELSE
-		jmp        (a6) /* ERROR */
+		jmp        error_jmp(a6) /* ERROR */
 	.ENDC
 
 GarColl:
@@ -2355,7 +2369,7 @@ x11162:
 	.IFNE FOR_LIB
 		bra        ERROR
 	.ELSE
-		jmp        (a6) /* ERROR */
+		jmp        error_jmp(a6) /* ERROR */
 	.ENDC
 
 /* gfa: 000157be */
@@ -2446,7 +2460,7 @@ eaccdn:
 	.IFNE FOR_LIB
 		bra        ERROR
 	.ELSE
-		jmp        (a6) /* ERROR */
+		jmp        error_jmp(a6) /* ERROR */
 	.ENDC
 
 x1121a:
@@ -2505,7 +2519,7 @@ FClose_2:
 	.IFNE FOR_LIB
 		bra        ERROR
 	.ELSE
-		jmp        (a6) /* ERROR */
+		jmp        error_jmp(a6) /* ERROR */
 	.ENDC
 
 /* gfa: 00015986 */
@@ -2537,7 +2551,7 @@ FlushBuf_3:
 	.IFNE FOR_LIB
 		bra        ERROR
 	.ELSE
-		jmp        (a6) /* ERROR */
+		jmp        error_jmp(a6) /* ERROR */
 	.ENDC
 
 /* gfa: 000159c2 */
@@ -2575,7 +2589,7 @@ _FillBuf_3:
 	.IFNE FOR_LIB
 		bra        ERROR
 	.ELSE
-		jmp        (a6) /* ERROR */
+		jmp        error_jmp(a6) /* ERROR */
 	.ENDC
 
 
@@ -3148,12 +3162,12 @@ x1185c_2:
 x1185c_3:
 		move.l     a0,(a1)+
 		dbf        d0,x1185c_3
-		move.l     d1,(a1)+
-		move.l     d1,(a1)+
+		move.l     d1,(a1)+ /* 172(a6) */
+		move.l     d1,(a1)+ /* 176(a6) */
 		move.l     d1,x10cae
-		move.l     d1,(a1)+
-		clr.l      (a1)+
-		clr.l      (a1)+
+		move.l     d1,(a1)+ /* 180(a6) */
+		clr.l      (a1)+ /* 184(a6) */
+		clr.l      (a1)+ /* 188(a6) */
 		lea.l      410(a6),a0
 		moveq.l    #9,d0
 x1185c_4:
@@ -13380,7 +13394,7 @@ x16028_1:
 		move.l     (a1)+,d0
 		move.w     (a1)+,d1
 		move.w     (a1)+,d2
-		jsr        328(a6) /* -> dummy */
+		jsr        extjmp_table+19*6(a6) /* -> FFTOI */
 		bsr        print_hex
 		bra        x15c52_13
 x16028_2:
@@ -13389,7 +13403,7 @@ x16028_3:
 		move.l     (a1)+,d0
 		move.w     (a1)+,d1
 		move.w     (a1)+,d2
-		jsr        328(a6) /* -> dummy */
+		jsr        extjmp_table+19*6(a6) /* -> FFTOI */
 		bsr        print_oct
 		bra        x15c52_13
 x16028_4:
@@ -13398,7 +13412,7 @@ x16028_5:
 		move.l     (a1)+,d0
 		move.w     (a1)+,d1
 		move.w     (a1)+,d2
-		jsr        328(a6) /* -> dummy */
+		jsr        extjmp_table+19*6(a6) /* -> FFTOI */
 		bsr        print_bin
 		bra        x15c52_13
 
@@ -13623,9 +13637,9 @@ print_int:
 		jsr        FITOF.l
 print_float:
 		movem.l    a0-a1,-(a7)
-		st         542(a6)
+		st         decimal_digits(a6)
 		jsr        Fstr.l
-		sf         542(a6)
+		sf         decimal_digits(a6)
 		movea.l    a0,a2
 		movem.l    (a7)+,a0-a1
 		cmpi.b     #' ',(a2)
