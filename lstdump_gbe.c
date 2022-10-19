@@ -226,8 +226,21 @@ int main(void)
 	fprintf(out, "\n");
 	dump_table(fp, 0x58d18, 0x592a8, 0x43E30);
 	fprintf(out, "\n");
+	fprintf(out, "\n");
 
-
-		
+	/* detokenize table */
+	offset = 0x610a8;
+	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
+	i = 0;
+	while (i < 639)
+	{
+		fprintf(out, "\t/* %3d */ \"", i);
+		while ((c = getc(fp)) != 0)
+			putc(c, out);
+		fprintf(out, "\",\n");
+		i++;
+	}
+	fprintf(out, "\n");
+	
 	return 0;
 }

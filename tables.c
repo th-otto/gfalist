@@ -49,8 +49,8 @@ const char *const gfalct[] = {
 	/*  43 */ "EXIT IF ",
 	/*  44 */ "SELECT ",					/* SELECT string */
 	/*  45 */ "",							/* End of program */
-	/*  46 */ "SELECT ",					/* SELECT ??? */
-	/*  47 */ "SELECT ",					/* SELECT ??? */
+	/*  46 */ NULL,
+	/*  47 */ NULL,
 	/*  48 */ "MONITOR",
 	/*  49 */ "DO WHILE ",
 	/*  50 */ "DO UNTIL ",
@@ -456,13 +456,13 @@ const char *const gfalct[] = {
 	/* 450 */ "DMASOUND ",
 	/* 451 */ "DMACONTROL ",
 	/* 452 */ "MW_OUT ",
-	/* 453 */ "MW_OUT ",					/* todo */
-	/* 454 */ "MW_OUT ",					/* todo */
-	/* 455 */ "MW_OUT ",					/* todo */
-	/* 456 */ "MW_OUT ",					/* todo */
-	/* 457 */ "MW_OUT ",					/* todo */
-	/* 458 */ "MW_OUT ",					/* todo */
-	/* 459 */ "MW_OUT ",					/* todo */
+	/* 453 */ NULL,
+	/* 454 */ NULL,
+	/* 455 */ NULL,
+	/* 456 */ NULL,
+	/* 457 */ NULL,
+	/* 458 */ NULL,
+	/* 459 */ NULL,
 
 	/*
 	 * below are new in 3.7 (GBE)
@@ -481,7 +481,7 @@ const char *const gfalct[] = {
 	/* 470 */ "VRC_COPY ",
 	/* 471 */ "VGET ",
 	/* 472 */ "VPLOT ",
-	/* 473 */ "AVERAGE_RGB", /* was: TIMESTAMP in 3.70 */
+	/* 473 */ "AVERAGE_RGB ", /* was: TIMESTAMP in 3.70 */
 	/* 474 */ "AMOUSE ",
 	/* 475 */ "VLINE ",
 	/* 476 */ "CPUFLUSH",
@@ -505,59 +505,59 @@ const char *const gfalct[] = {
 	/* 494 */ "STRPOKE ", /* was: CHAR$ in 3.70 */
 	/* 495 */ "SET.SOCKADDR_IN ", /* was: SET.SOCKADDR in 3.70 */
 	/* 496 */ "TPUT ",
-	/* 497 */ "SNDH",
-	/* 498 */ "MEMSWAP&",
-	/* 499 */ "MEMSWAP%",
-	/* 500 */ "MEMFILL&",
-	/* 501 */ "MEMFILL%",
+	/* 497 */ "SNDH ",
+	/* 498 */ "MEMSWAP& ",
+	/* 499 */ "MEMSWAP% ",
+	/* 500 */ "MEMFILL& ",
+	/* 501 */ "MEMFILL% ",
 	/* 502 */ "PALGET ",
 	/* 503 */ "PALSET ",
 	/* 504 */ "OB.STATE(",
 	/* 505 */ "OB.FLAGS(",
 	/* 506 */ "SBYTE{", /* was: OB_SELECTED( in 3.70 */
 	/* 507 */ "C2P ", /* was: OB_CROSSED( in 3.70 */
-	/* 508 */ "SET.SXYWH", /* was: OB_CHECKED( in 3.70 */
-	/* 509 */ "SET.DXYWH", /* was: OB_DISABLED( in 3.70 */
+	/* 508 */ "SET.SXYWH ", /* was: OB_CHECKED( in 3.70 */
+	/* 509 */ "SET.DXYWH ", /* was: OB_DISABLED( in 3.70 */
 	/* 510 */ "OB_RADIO(", /* was: OB.RBUTTON( in 3.70 */
 	/* 511 */ "OB_TEXT$(",
 	/* 512 */ "WARMBOOT", /* was: OB_SELECTABLE( in 3.70 */
-	/* 513 */ "JOYPAD", /* was: OB_DEFAULT( in 3.70 */
-	/* 514 */ "SLEEP", /* was: OB_EXIT( in 3.70 */
-	/* 515 */ "MEMAND", /* was: OB_EDITABLE( in 3.70 */
-	/* 516 */ "MEMZERO%", /* was: OB_RBUTTON( in 3.70 */
-	/* 517 */ "SET.SXYXY", /* was: OB_LASTOB( in 3.70 */
-	/* 518 */ "SET.DXYXY", /* was: OB_TOUCHEXIT( in 3.70 */
-	/* 519 */ "SET.RXYWH", /* was: OB_HIDETREE( in 3.70 */
-	/* 520 */ "ENDSEEK ",
-	/* 521 */ "SET.GCBITMAP",
-	/* 522 */ "MEMAND",
-	/* 523 */ "MEMOR",
-	/* 524 */ "MEMXOR",
-	/* 525 */ "MEMBSET|",
-	/* 526 */ "MEMBSET&",
-	/* 527 */ "MEMBSET%",
-	/* 528 */ "MEMBCLR|",
-	/* 529 */ "MEMBCLR&",
-	/* 530 */ "MEMBCLR%",
-	/* 531 */ "MEMBCHG|",
-	/* 532 */ "MEMBCHG&",
-	/* 533 */ "MEMBCHG%",
-	/* 534 */ "SCREEN",
-	/* 535 */ "BREPLACE",
-	/* 536 */ "RGB",
-	/* 537 */ "STRARRAYFILL",
-	/* 538 */ "ENVIRON",
-	/* 539 */ "MEMREPLACE&",
-	/* 540 */ "MEMREPLACE%",
-	/* 541 */ "SET.MENU",
+	/* 513 */ "JOYPAD ", /* was: OB_DEFAULT( in 3.70 */
+	/* 514 */ "SLEEP ", /* was: OB_EXIT( in 3.70 */
+	/* 515 */ "MEMZERO& ", /* was: OB_EDITABLE( in 3.70 */
+	/* 516 */ "MEMZERO% ", /* was: OB_RBUTTON( in 3.70 */
+	/* 517 */ "SET.SXYXY ", /* was: OB_LASTOB( in 3.70 */
+	/* 518 */ "SET.DXYXY ", /* was: OB_TOUCHEXIT( in 3.70 */
+	/* 519 */ "SET.RXYWH ", /* was: OB_HIDETREE( in 3.70 */
+	/* 520 */ "ENDSEEK #",
+	/* 521 */ "SET.GCBITMAP ",
+	/* 522 */ "MEMAND ",
+	/* 523 */ "MEMOR ",
+	/* 524 */ "MEMXOR ",
+	/* 525 */ "MEMBSET| ",
+	/* 526 */ "MEMBSET& ",
+	/* 527 */ "MEMBSET% ",
+	/* 528 */ "MEMBCLR| ",
+	/* 529 */ "MEMBCLR& ",
+	/* 530 */ "MEMBCLR% ",
+	/* 531 */ "MEMBCHG| ",
+	/* 532 */ "MEMBCHG& ",
+	/* 533 */ "MEMBCHG% ",
+	/* 534 */ "SCREEN ",
+	/* 535 */ "BREPLACE ",
+	/* 536 */ "RGB ",
+	/* 537 */ "STRARRAYFILL ",
+	/* 538 */ "ENVIRON ",
+	/* 539 */ "MEMREPLACE& ",
+	/* 540 */ "MEMREPLACE% ",
+	/* 541 */ "SET.MENU ",
 	/* 542 */ "WAITVBL",
 	/* 543 */ "COLDBOOT",
-	/* 544 */ "BMIRROR",
-	/* 545 */ "MEMMIRROR&",
-	/* 546 */ "MEMMIRROR%",
-	/* 547 */ "MEMMIRROR3",
-	/* 548 */ "MEMEXG&",
-	/* 549 */ "MEMEXG%",
+	/* 544 */ "BMIRROR ",
+	/* 545 */ "MEMMIRROR& ",
+	/* 546 */ "MEMMIRROR% ",
+	/* 547 */ "MEMMIRROR3 ",
+	/* 548 */ "MEMEXG& ",
+	/* 549 */ "MEMEXG% ",
 	/* 550 */ "_0=",
 	/* 551 */ "_1=",
 	/* 552 */ "_2=",
@@ -646,7 +646,7 @@ const char *const gfalct[] = {
 	/* 635 */ "CI_SEL_DATA(",
 	/* 636 */ "CI_SEL_MASK(",
 	/* 637 */ "CI_NEXT_RES(",
-	/* 638 */ "BEXG"
+	/* 638 */ "BEXG "
 };
 unsigned int const size_lct = sizeof(gfalct) / sizeof(gfalct[0]);
 
