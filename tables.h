@@ -58,6 +58,7 @@ extern struct gfaversinfo const gfarecl[71];
 #define TOK_CMD_SYNERR             116
 #define TOK_CMD_DATA               117
 #define TOK_CMD_END                124
+#define TOK_CMD_FORM_INPUT         153
 #define TOK_CMD_INC_FLOAT          160
 #define TOK_CMD_ADD_FLOAT          176
 #define TOK_CMD_SUB_FLOAT          184

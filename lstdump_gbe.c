@@ -4,7 +4,7 @@ FILE *out;
 
 #define jmpbase 0x5701f
 
-static void dump_table(FILE *fp, int offset, int end)
+static void dump_table(FILE *fp, int offset, int end, int diffbase)
 {
 	int c;
 	int c2;
@@ -13,7 +13,7 @@ static void dump_table(FILE *fp, int offset, int end)
 	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
 	while (offset < end)
 	{
-		fprintf(out, "x%05x:\n", offset);
+		fprintf(out, "x%05x:\n", offset - diffbase);
 		c = fgetc(fp);
 		switch (c)
 		{
@@ -40,7 +40,7 @@ static void dump_table(FILE *fp, int offset, int end)
 			c = c * 256 + c2;
 			c = (short)c;
 			dst = jmpbase + c;
-			fprintf(out, "\t.dc.b -2,(f%05x-x%05x)/256,(f%05x-x%05x)&255\n", dst, jmpbase, dst, jmpbase);
+			fprintf(out, "\t.dc.b -2,(f%05x-jmpbase)/256,(f%05x-jmpbase)&255\n", dst, dst);
 			offset += 3;
 			break;
 		case 255:
@@ -49,7 +49,7 @@ static void dump_table(FILE *fp, int offset, int end)
 			c = c * 256 + c2;
 			c = (short)c;
 			dst = jmpbase + c;
-			fprintf(out, "\t.dc.b -1,(x%05x-x%05x)/256,(x%05x-x%05x)&255\n", dst, jmpbase, dst, jmpbase);
+			fprintf(out, "\t.dc.b -1,(x%05x-jmpbase)/256,(x%05x-jmpbase)&255\n", dst, dst);
 			offset += 3;
 			break;
 		case 240:
@@ -126,6 +126,7 @@ int main(void)
 		offset += len + 6;
 	}
 	fprintf(out, "offset = %05x\n", offset);
+	fprintf(out, "\n");
 
 	first_char = 0;
 	offset = 0x5292c;
@@ -175,6 +176,31 @@ int main(void)
 	fprintf(out, "offset = %05x\n", offset);
 	fprintf(out, "\n");
 
+	/* mat cmd table */
+	offset = 0x57794;
+	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
+	for (;;)
+	{
+		c = getc(fp);
+		if (c == 0)
+			break;
+		fprintf(out, "\t\t.ascii \"%c", c);
+		for (;;)
+		{
+			c = getc(fp);
+			if (c == 0)
+				break;
+			putc(c, out);
+		}
+		fprintf(out, "\"\n\t\t.dc.b 0\n");
+		c = getc(fp);
+		c2 = getc(fp);
+		c = c * 256 + c2;
+		dst = jmpbase + c;
+		fprintf(out, "\t\t.dc.b (x%05x-jmpbase)/256,(x%05x-jmpbase)&255\n", dst, dst);
+	}
+	fprintf(out, "\n");
+
 	offset = 0x586c4;
 	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
 	while (offset < 0x58798)
@@ -190,16 +216,18 @@ int main(void)
 	fprintf(out, "offset = %05x\n", offset);
 	fprintf(out, "\n");
 	
-	dump_table(fp, 0x57864, 0x57a66);
+	dump_table(fp, 0x57864, 0x57a67, 0x43992);
 	fprintf(out, "\n");
-	dump_table(fp, 0x57aa8, 0x57f20);
+	dump_table(fp, 0x57aa8, 0x57f20, 0x43992);
 	fprintf(out, "\n");
-	dump_table(fp, 0x57f6e, 0x592aa);
+	dump_table(fp, 0x57f6e, 0x592aa, 0x439A8);
 	fprintf(out, "\n");
-	dump_table(fp, 0x58798, 0x5883e);
+	dump_table(fp, 0x58798, 0x5883e, 0x43B0A);
 	fprintf(out, "\n");
-	dump_table(fp, 0x58d18, 0x592a8);
+	dump_table(fp, 0x58d18, 0x592a8, 0x43E30);
 	fprintf(out, "\n");
-	
+
+
+		
 	return 0;
 }

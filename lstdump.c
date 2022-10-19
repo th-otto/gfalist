@@ -126,6 +126,7 @@ int main(void)
 		offset += len + 6;
 	}
 	fprintf(out, "offset = %05x\n", offset);
+	fprintf(out, "\n");
 
 	first_char = 0;
 	offset = 0x11afa;
@@ -173,6 +174,31 @@ int main(void)
 		offset += len + 6;
 	}
 	fprintf(out, "offset = %05x\n", offset);
+	fprintf(out, "\n");
+
+	/* mat cmd table */
+	offset = 0x13e02;
+	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
+	for (;;)
+	{
+		c = getc(fp);
+		if (c == 0)
+			break;
+		fprintf(out, "\t\t.ascii \"%c", c);
+		for (;;)
+		{
+			c = getc(fp);
+			if (c == 0)
+				break;
+			putc(c, out);
+		}
+		fprintf(out, "\"\n\t\t.dc.b 0\n");
+		c = getc(fp);
+		c2 = getc(fp);
+		c = c * 256 + c2;
+		dst = jmpbase + c;
+		fprintf(out, "\t\t.dc.b (x%05x-jmpbase)/256,(x%05x-jmpbase)&255\n", dst, dst);
+	}
 	fprintf(out, "\n");
 
 	offset = 0x14c16;
