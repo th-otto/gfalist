@@ -49,8 +49,8 @@ const char *const gfalct[] = {
 	/*  43 */ "EXIT IF ",
 	/*  44 */ "SELECT ",					/* SELECT string */
 	/*  45 */ "",							/* End of program */
-	/*  46 */ "SELECT ",					/* SELECT ??? */
-	/*  47 */ "SELECT ",					/* SELECT ??? */
+	/*  46 */ NULL,
+	/*  47 */ NULL,
 	/*  48 */ "MONITOR",
 	/*  49 */ "DO WHILE ",
 	/*  50 */ "DO UNTIL ",
@@ -106,12 +106,12 @@ const char *const gfalct[] = {
 	/* 100 */ "SPOKE ",
 	/* 101 */ "SDPOKE ",
 	/* 102 */ "SLPOKE ",
-	/* 103 */ "RESERVE",
-	/* 104 */ "RESERVE ",					/* todo */
-	/* 105 */ "RESUME",
-	/* 106 */ "RESUME ",					/* todo */
+	/* 103 */ "RESERVE",					/* no arguments */
+	/* 104 */ "RESERVE ",					/* 1 argument */
+	/* 105 */ "RESUME",						/* no arguments or RESUME NEXT */
+	/* 106 */ "RESUME ",					/* RESUME label */
 	/* 107 */ "RESUME ",					/* todo */
-	/* 108 */ "",							/* todo */
+	/* 108 */ "",							/* unused? */
 	/* 109 */ "RECORD ",
 	/* 110 */ "DELAY ",
 	/* 111 */ "BGET ",
@@ -121,11 +121,11 @@ const char *const gfalct[] = {
 	/* 115 */ "'",							/* also !, // and / *; Append " " if at least one char long. */
 	/* 116 */ "==>",						/* Append " " if at least one char long. */
 	/* 117 */ "DATA",						/* Append " " if at least one char long. */
-	/* 118 */ "SWAP ",						/* todo */
-	/* 119 */ "SWAP ",						/* todo */
-	/* 120 */ "SWAP ",						/* todo */
-	/* 121 */ "*",
-	/* 122 */ "*",							/* todo */
+	/* 118 */ "SWAP ",						/* SWAP a,b */
+	/* 119 */ "SWAP ",						/* SWAP a(),b() */
+	/* 120 */ "SWAP ",						/* SWAP *c,d() */
+	/* 121 */ "*",							/* *c=a */
+	/* 122 */ "*",							/* *c=a$ */
 	/* 123 */ "SINGLE{",
 	/* 124 */ "END",
 	/* 125 */ "LOCATE ",
@@ -139,21 +139,21 @@ const char *const gfalct[] = {
 	/* 133 */ "ON MENU GOSUB ",
 	/* 134 */ "ON MENU MESSAGE GOSUB ",
 	/* 135 */ "ON MENU KEY GOSUB ",
-	/* 136 */ "ON MENU BUTTON ",
-	/* 137 */ "ON MENU",
-	/* 138 */ "ON MENU ",					/* todo */
-	/* 139 */ "MENU ",
+	/* 136 */ "ON MENU BUTTON ",			/* todo */
+	/* 137 */ "ON MENU",					/* no arguments */
+	/* 138 */ "ON MENU ",					/* ON MENU n */
+	/* 139 */ "MENU ",						/* MENU m$() */
 	/* 140 */ "MENU OFF",
 	/* 141 */ "MENU KILL",
-	/* 142 */ "MENU ",						/* todo */
-	/* 143 */ "TRON",
-	/* 144 */ "TRON ",						/* todo */
-	/* 145 */ "TRON ",						/* todo */
+	/* 142 */ "MENU ",						/* MENU x,y */
+	/* 143 */ "TRON",						/* no arguments */
+	/* 144 */ "TRON ",						/* TRON #n */
+	/* 145 */ "TRON ",						/* TRON n */
 	/* 146 */ "TROFF",
 	/* 147 */ "PRINT",						/* Append space if it has parameters */
 	/* 148 */ "PRINT ",						/* PRINT # */
-	/* 149 */ "TEXT ",
-	/* 150 */ "TEXT ",						/* todo */
+	/* 149 */ "TEXT ",						/* TEXT x,y,expression */
+	/* 150 */ "TEXT ",						/* TEXT x,y,l,expression */
 	/* 151 */ "RCALL ",
 	/* 152 */ "CALL ",
 	/* 153 */ "FORM INPUT ",
@@ -214,15 +214,15 @@ const char *const gfalct[] = {
 	/* 208 */ "SEEK #",
 	/* 209 */ "RELSEEK #",
 	/* 210 */ "DIM ",
-	/* 211 */ "SETCOLOR ",
-	/* 212 */ "SETCOLOR ",					/* todo */
+	/* 211 */ "SETCOLOR ",					/* SETCOLOR reg,composite */
+	/* 212 */ "SETCOLOR ",					/* SETCOLOR reg,r,g,b */
 	/* 213 */ "BMOVE ",
 	/* 214 */ "VDISYS",						/* No further tokens follow */
-	/* 215 */ "VDISYS ",					/* todo */
-	/* 216 */ "VDISYS ",					/* todo */
-	/* 217 */ "VDISYS ",					/* todo */
-	/* 218 */ "GEMSYS",
-	/* 219 */ "GEMSYS ",					/* todo */
+	/* 215 */ "VDISYS ",					/* VDISYS opcode */
+	/* 216 */ "VDISYS ",					/* VDISYS opcode,int_cnt,pts_cnt */
+	/* 217 */ "VDISYS ",					/* VDISYS opcode,int_cnt,pts_cnt,subopc */
+	/* 218 */ "GEMSYS",						/* no arguments */
+	/* 219 */ "GEMSYS ",					/* GEMSYS n */
 	/* 220 */ "PTSIN(",
 	/* 221 */ "PTSOUT(",
 	/* 222 */ "INTIN(",
@@ -260,13 +260,13 @@ const char *const gfalct[] = {
 	/* 254 */ ".",
 	/* 255 */ "RANDOMIZE",
 	/* 256 */ "ALERT ",
-	/* 257 */ "GET ",
-	/* 258 */ "GET ",						/* todo */
-	/* 259 */ "GET ",						/* todo */
-	/* 260 */ "PUT ",
-	/* 261 */ "PUT ",						/* todo */
-	/* 262 */ "PUT ",						/* todo */
-	/* 263 */ "PUT ",						/* todo */
+	/* 257 */ "GET ",						/* GET x1,y1,x2,y2,s$ */
+	/* 258 */ "GET ",						/* GET #n */
+	/* 259 */ "GET ",						/* GET #n,x */
+	/* 260 */ "PUT ",						/* PUT x,y,s$ */
+	/* 261 */ "PUT ",						/* PUT x,y,s$,mode */
+	/* 262 */ "PUT ",						/* PUT #n */
+	/* 263 */ "PUT ",						/* PUT #n,x */
 	/* 264 */ "",							/* todo */
 	/* 265 */ "OPEN ",
 	/* 266 */ "OPENW ",
@@ -282,41 +282,41 @@ const char *const gfalct[] = {
 	/* 276 */ "INFOW #",
 	/* 277 */ "DEFLINE",
 	/* 278 */ "GRAPHMODE ",
-	/* 279 */ "DEFMOUSE ",
-	/* 280 */ "DEFMOUSE ",					/* todo */
+	/* 279 */ "DEFMOUSE ",					/* DEFMOUSE sym */
+	/* 280 */ "DEFMOUSE ",					/* DEFMOUSE pattern$ */
 	/* 281 */ "DEFLIST ",
 	/* 282 */ "DEFMARK",
 	/* 283 */ "DEFNUM ",
 	/* 284 */ "DEFTEXT",
-	/* 285 */ "DEFFILL",
-	/* 286 */ "DEFFILL",					/* todo */
+	/* 285 */ "DEFFILL",					/* DEFFILL color,interior,style */
+	/* 286 */ "DEFFILL",					/* DEFFILT color,pattern$ */
 	/* 287 */ "BOX ",
 	/* 288 */ "PBOX ",
 	/* 289 */ "RBOX ",
 	/* 290 */ "PRBOX ",
-	/* 291 */ "CIRCLE ",
-	/* 292 */ "CIRCLE ",					/* todo */
-	/* 293 */ "PCIRCLE ",
-	/* 294 */ "PCIRCLE ",					/* todo */
-	/* 295 */ "ELLIPSE ",
-	/* 296 */ "ELLIPSE ",					/* todo */
-	/* 297 */ "PELLIPSE ",
-	/* 298 */ "PELLIPSE ",					/* todo */
+	/* 291 */ "CIRCLE ",					/* CIRCLE x,y,r */
+	/* 292 */ "CIRCLE ",					/* CIRCLE x,y,r,w1,w2 */
+	/* 293 */ "PCIRCLE ",					/* PCIRCLE x,y,r */
+	/* 294 */ "PCIRCLE ",					/* PCIRCLE x,y,r,w1,w2 */
+	/* 295 */ "ELLIPSE ",					/* ELLIPSE x,y,rx,ry */
+	/* 296 */ "ELLIPSE ",					/* ELLIPSE x,y,rx,ry,w1,w2 */
+	/* 297 */ "PELLIPSE ",					/* PELLIPSE x,y,rx,ry */
+	/* 298 */ "PELLIPSE ",					/* PELLIPSE x,y,rx,ry,w1,w2 */
 	/* 299 */ "ERROR ",
-	/* 300 */ "FILL ",
-	/* 301 */ "FILL ",						/* todo */
+	/* 300 */ "FILL ",						/* FILL x,y */
+	/* 301 */ "FILL ",						/* FILL x,y,f */
 	/* 302 */ "HIDEM",
 	/* 303 */ "LPRINT",						/* Append space if it has parameters */
 	/* 304 */ "LSET ",
 	/* 305 */ "MID$(",
 	/* 306 */ "NEW",
-	/* 307 */ "OUT ",
-	/* 308 */ "OUT ",						/* todo */
+	/* 307 */ "OUT ",						/* OUT n,x */
+	/* 308 */ "OUT ",						/* OUT #n,x */
 	/* 309 */ "QUIT",
 	/* 310 */ "",							/* todo */
 	/* 311 */ "CHDIR ",
-	/* 312 */ "CHDRIVE ",
-	/* 313 */ "CHDRIVE ",					/* todo */
+	/* 312 */ "CHDRIVE ",					/* CHDRIVE n */
+	/* 313 */ "CHDRIVE ",					/* CHDRIVE n$ */
 	/* 314 */ "CLR ",
 	/* 315 */ "CLS",						/* Append space if it has parameters */
 	/* 316 */ "",							/* todo */
@@ -359,21 +359,21 @@ const char *const gfalct[] = {
 	/* 353 */ "STICK ",
 	/* 354 */ "SOUND",
 	/* 355 */ "WAVE",
-	/* 356 */ "CLIP ",
-	/* 357 */ "CLIP ",						/* todo */
-	/* 358 */ "CLIP ",						/* todo */
-	/* 359 */ "CLIP ",						/* todo */
-	/* 360 */ "CLIP ",						/* todo */
+	/* 356 */ "CLIP ",						/* CLIP OFF */
+	/* 357 */ "CLIP ",						/* CLIP #n */
+	/* 358 */ "CLIP ",						/* CLIP x,y,w,h */
+	/* 359 */ "CLIP ",						/* CLIP x,y TO x,y */
+	/* 360 */ "CLIP ",						/* CLIP  OFFSET x,y */ /* NOTE: prints 2 spaces (same as in editor) */
 	/* 361 */ "FULLW ",
-	/* 362 */ "EVERY ",
-	/* 363 */ "EVERY ",						/* todo */
-	/* 364 */ "EVERY ",						/* todo */
-	/* 365 */ "AFTER ",
-	/* 366 */ "AFTER ",						/* todo */
-	/* 367 */ "AFTER ",
-	/* 368 */ "INPUT ",
-	/* 369 */ "INPUT ",						/* todo */
-	/* 370 */ "DRAW ",
+	/* 362 */ "EVERY ",						/* EVERY n GOSUB proc */
+	/* 363 */ "EVERY ",						/* EVERY STOP */
+	/* 364 */ "EVERY ",						/* EVERY  CONT */ /* NOTE: prints 2 spaces (same as in editor) */
+	/* 365 */ "AFTER ",						/* AFTER n GOSUB proc */
+	/* 366 */ "AFTER ",						/* AFTER STOP */
+	/* 367 */ "AFTER ",						/* AFTER  CONT */ /* NOTE: prints 2 spaces (same as in editor) */
+	/* 368 */ "INPUT ",						/* INPUT x */
+	/* 369 */ "INPUT ",						/* INPUT #n,x */
+	/* 370 */ "DRAW ",						/* DRAW x,y */
 	/* 371 */ "DRAW ",						/* todo */
 	/* 372 */ "READ ",
 	/* 373 */ "",							/* todo */
@@ -456,13 +456,13 @@ const char *const gfalct[] = {
 	/* 450 */ "DMASOUND ",
 	/* 451 */ "DMACONTROL ",
 	/* 452 */ "MW_OUT ",
-	/* 453 */ "MW_OUT ",					/* todo */
-	/* 454 */ "MW_OUT ",					/* todo */
-	/* 455 */ "MW_OUT ",					/* todo */
-	/* 456 */ "MW_OUT ",					/* todo */
-	/* 457 */ "MW_OUT ",					/* todo */
-	/* 458 */ "MW_OUT ",					/* todo */
-	/* 459 */ "MW_OUT ",					/* todo */
+	/* 453 */ NULL,
+	/* 454 */ NULL,
+	/* 455 */ NULL,
+	/* 456 */ NULL,
+	/* 457 */ NULL,
+	/* 458 */ NULL,
+	/* 459 */ NULL,
 
 	/*
 	 * below are new in 3.7 (GBE)
@@ -470,7 +470,7 @@ const char *const gfalct[] = {
 
 	/* 460 */ "SET.MFDB ",
 	/* 461 */ "SET.PXYWH ",
-	/* 462 */ "BCLEAR ",
+	/* 462 */ "BZERO ", /* was: BCLEAR in 3.70 */
 	/* 463 */ "BFILL ",
 	/* 464 */ "BXLATE ",
 	/* 465 */ "BEEP",
@@ -481,7 +481,7 @@ const char *const gfalct[] = {
 	/* 470 */ "VRC_COPY ",
 	/* 471 */ "VGET ",
 	/* 472 */ "VPLOT ",
-	/* 473 */ "TIMESTAMP",
+	/* 473 */ "AVERAGE_RGB ", /* was: TIMESTAMP in 3.70 */
 	/* 474 */ "AMOUSE ",
 	/* 475 */ "VLINE ",
 	/* 476 */ "CPUFLUSH",
@@ -490,44 +490,163 @@ const char *const gfalct[] = {
 	/* 479 */ "VSGET ",
 	/* 480 */ "VSPUT ",
 	/* 481 */ "VCLS ",
-	/* 482 */ "PALGET ",
-	/* 483 */ "PALSET ",
+	/* 482 */ "VPALGET ", /* was: PALGET in 3.70 */
+	/* 483 */ "VPALSET ", /* was: PALSET in 3.70 */
 	/* 484 */ "LOG_MSG ",
 	/* 485 */ "LOG_SET ",
 	/* 486 */ "LOG_FILE ",
 	/* 487 */ "LOG_KILL",
 	/* 488 */ "SET.PXYXY ",
 	/* 489 */ "VBOX ",
-	/* 490 */ "VBITBLT ",
+	/* 490 */ "TBITBLT ", /* was: VBITBLT in 3.70 */
 	/* 491 */ "SCALL ",
-	/* 492 */ "VPUT ",
-	/* 493 */ "VPUT ",
-	/* 494 */ "CHAR$ ",
-	/* 495 */ "SET.SOCKADDR ",
-	/* 496 */ "SET.SOCKADDR ",
-	/* 497 */ "SET.SOCKADDR ",
-	/* 498 */ "SET.SOCKADDR ",
-	/* 499 */ "SET.SOCKADDR ",
-	/* 500 */ "SET.SOCKADDR ",
-	/* 501 */ "SET.SOCKADDR ",
-	/* 502 */ "SET.SOCKADDR ",
-	/* 503 */ "SET.SOCKADDR ",
+	/* 492 */ "VPUT ", /* 3 arguments */
+	/* 493 */ "VPUT ", /* 4 arguments */
+	/* 494 */ "STRPOKE ", /* was: CHAR$ in 3.70 */
+	/* 495 */ "SET.SOCKADDR_IN ", /* was: SET.SOCKADDR in 3.70 */
+	/* 496 */ "TPUT ",
+	/* 497 */ "SNDH ",
+	/* 498 */ "MEMSWAP& ",
+	/* 499 */ "MEMSWAP% ",
+	/* 500 */ "MEMFILL& ",
+	/* 501 */ "MEMFILL% ",
+	/* 502 */ "PALGET ",
+	/* 503 */ "PALSET ",
 	/* 504 */ "OB.STATE(",
 	/* 505 */ "OB.FLAGS(",
-	/* 506 */ "OB_SELECTED(",
-	/* 507 */ "OB_CROSSED(",
-	/* 508 */ "OB_CHECKED(",
-	/* 509 */ "OB_DISABLED(",
-	/* 510 */ "OB.RBUTTON(",
+	/* 506 */ "SBYTE{", /* was: OB_SELECTED( in 3.70 */
+	/* 507 */ "C2P ", /* was: OB_CROSSED( in 3.70 */
+	/* 508 */ "SET.SXYWH ", /* was: OB_CHECKED( in 3.70 */
+	/* 509 */ "SET.DXYWH ", /* was: OB_DISABLED( in 3.70 */
+	/* 510 */ "OB_RADIO(", /* was: OB.RBUTTON( in 3.70 */
 	/* 511 */ "OB_TEXT$(",
-	/* 512 */ "OB_SELECTABLE(",
-	/* 513 */ "OB_DEFAULT(",
-	/* 514 */ "OB_EXIT(",
-	/* 515 */ "OB_EDITABLE(",
-	/* 516 */ "OB_RBUTTON(",
-	/* 517 */ "OB_LASTOB(",
-	/* 518 */ "OB_TOUCHEXIT(",
-	/* 519 */ "OB_HIDETREE("
+	/* 512 */ "WARMBOOT", /* was: OB_SELECTABLE( in 3.70 */
+	/* 513 */ "JOYPAD ", /* was: OB_DEFAULT( in 3.70 */
+	/* 514 */ "SLEEP ", /* was: OB_EXIT( in 3.70 */
+	/* 515 */ "MEMZERO& ", /* was: OB_EDITABLE( in 3.70 */
+	/* 516 */ "MEMZERO% ", /* was: OB_RBUTTON( in 3.70 */
+	/* 517 */ "SET.SXYXY ", /* was: OB_LASTOB( in 3.70 */
+	/* 518 */ "SET.DXYXY ", /* was: OB_TOUCHEXIT( in 3.70 */
+	/* 519 */ "SET.RXYWH ", /* was: OB_HIDETREE( in 3.70 */
+	/* 520 */ "ENDSEEK #",
+	/* 521 */ "SET.GCBITMAP ",
+	/* 522 */ "MEMAND ",
+	/* 523 */ "MEMOR ",
+	/* 524 */ "MEMXOR ",
+	/* 525 */ "MEMBSET| ",
+	/* 526 */ "MEMBSET& ",
+	/* 527 */ "MEMBSET% ",
+	/* 528 */ "MEMBCLR| ",
+	/* 529 */ "MEMBCLR& ",
+	/* 530 */ "MEMBCLR% ",
+	/* 531 */ "MEMBCHG| ",
+	/* 532 */ "MEMBCHG& ",
+	/* 533 */ "MEMBCHG% ",
+	/* 534 */ "SCREEN ",
+	/* 535 */ "BREPLACE ",
+	/* 536 */ "RGB ",
+	/* 537 */ "STRARRAYFILL ",
+	/* 538 */ "ENVIRON ",
+	/* 539 */ "MEMREPLACE& ",
+	/* 540 */ "MEMREPLACE% ",
+	/* 541 */ "SET.MENU ",
+	/* 542 */ "WAITVBL",
+	/* 543 */ "COLDBOOT",
+	/* 544 */ "BMIRROR ",
+	/* 545 */ "MEMMIRROR& ",
+	/* 546 */ "MEMMIRROR% ",
+	/* 547 */ "MEMMIRROR3 ",
+	/* 548 */ "MEMEXG& ",
+	/* 549 */ "MEMEXG% ",
+	/* 550 */ "_0=",
+	/* 551 */ "_1=",
+	/* 552 */ "_2=",
+	/* 553 */ "_3=",
+	/* 554 */ "_4=",
+	/* 555 */ "_5=",
+	/* 556 */ "_6=",
+	/* 557 */ "_7=",
+	/* 558 */ "_8=",
+	/* 559 */ "_9=",
+	/* 560 */ "OB_SELECTED(",
+	/* 561 */ "OB_CROSSED(",
+	/* 562 */ "OB_CHECKED(",
+	/* 563 */ "OB_DISABLED(",
+	/* 564 */ "OB_OUTLINED(",
+	/* 565 */ "OB_SHADOWED(",
+	/* 566 */ "OB_WHITEBAK(",
+	/* 567 */ NULL, /* unused */
+	/* 568 */ "OB_SELECTABLE(",
+	/* 569 */ "OB_DEFAULT(",
+	/* 570 */ "OB_EXIT(",
+	/* 571 */ "OB_EDITABLE(",
+	/* 572 */ "OB_RBUTTON(",
+	/* 573 */ "OB_LASTOB(",
+	/* 574 */ "OB_TOUCHEXIT(",
+	/* 575 */ "OB_HIDETREE(",
+	/* 576 */ "OB_INDIRECT(",
+	/* 577 */ "OB_FL3DIND(",
+	/* 578 */ "OB_FL3DACT(",
+	/* 579 */ "OB_SUBMENU(",
+	/* 580 */ NULL, /* unused */
+	/* 581 */ "OB_FL3DBAK(",
+	/* 582 */ "BF_OBSPEC(",
+	/* 583 */ "BF_CHARACTER(",
+	/* 584 */ "BF_FRAMESIZE(",
+	/* 585 */ "BF_FRAMECOL(",
+	/* 586 */ "BF_TEXTCOL(",
+	/* 587 */ "BF_TEXTMODE(",
+	/* 588 */ "BF_FILLPATTERN(",
+	/* 589 */ "BF_INTERIORCOL(",
+	/* 590 */ "BI_PDATA(",
+	/* 591 */ "BI_WB(",
+	/* 592 */ "BI_HL(",
+	/* 593 */ "BI_X(",
+	/* 594 */ "BI_Y(",
+	/* 595 */ "BI_COLOR(",
+	/* 596 */ "UB_CODE(",
+	/* 597 */ "UB_PARM(",
+	/* 598 */ "TE_PTEXT(",
+	/* 599 */ "TE_PTMPLT(",
+	/* 600 */ "TE_PVALID(",
+	/* 601 */ "TE_FONT(",
+	/* 602 */ "TE_FONTID(",
+	/* 603 */ "TE_JUST(",
+	/* 604 */ "TE_COLOR(",
+	/* 605 */ "TE_FONTSIZE(",
+	/* 606 */ "TE_THICKNESS(",
+	/* 607 */ "TE_TXTLEN(",
+	/* 608 */ "TE_TMPLEN(",
+	/* 609 */ "TE_FRAMECOL(",
+	/* 610 */ "TE_TEXTCOL(",
+	/* 611 */ "TE_TEXTMODE(",
+	/* 612 */ "TE_FILLPATTERN(",
+	/* 613 */ "TE_INTERIORCOL(",
+	/* 614 */ "IB_PMASK(",
+	/* 615 */ "IB_PDATA(",
+	/* 616 */ "IB_PTEXT(",
+	/* 617 */ "IB_CHAR(",
+	/* 618 */ "IB_XCHAR(",
+	/* 619 */ "IB_YCHAR(",
+	/* 620 */ "IB_XICON(",
+	/* 621 */ "IB_YICON(",
+	/* 622 */ "IB_WICON(",
+	/* 623 */ "IB_HICON(",
+	/* 624 */ "IB_XTEXT(",
+	/* 625 */ "IB_YTEXT(",
+	/* 626 */ "IB_WTEXT(",
+	/* 627 */ "IB_HTEXT(",
+	/* 628 */ "IB_FCOLOR(",
+	/* 629 */ "IB_BCOLOR(",
+	/* 630 */ "IB_LETTER(",
+	/* 631 */ "CI_MAINLIST(",
+	/* 632 */ "CI_NUM_PLANES(",
+	/* 633 */ "CI_COL_DATA(",
+	/* 634 */ "CI_COL_MASK(",
+	/* 635 */ "CI_SEL_DATA(",
+	/* 636 */ "CI_SEL_MASK(",
+	/* 637 */ "CI_NEXT_RES(",
+	/* 638 */ "BEXG "
 };
 unsigned int const size_lct = sizeof(gfalct) / sizeof(gfalct[0]);
 
@@ -687,7 +806,7 @@ const char *const gfapft[256] = {
 	/*  151 */ "ERROR",
 	/*  152 */ "STOP",
 	/*  153 */ "BREAK",
-	/*  154 */ " CONT",
+	/*  154 */ " CONT",		/* EVERY  CONT */
 	/*  155 */ "FIX(",
 	/*  156 */ ",", /* precedes string parameter in parameter list */
 	/*  157 */ "(", /* starts parameter list of C: or CALL */
