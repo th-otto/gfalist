@@ -198,6 +198,8 @@ int main(void)
 	fprintf(out, "\n");
 	dump_table(fp, 0x58798, 0x5883e);
 	fprintf(out, "\n");
+	dump_table(fp, 0x58d18, 0x592a8);
+	fprintf(out, "\n");
 	
 	return 0;
 }

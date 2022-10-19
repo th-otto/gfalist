@@ -683,7 +683,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 		mrk = NULL;
 	if (mrk == NULL)
 	{
-		gf4tp_output("Error at line %lu:%lu: %u is an unknown control code to me\n", gl->lineno, (unsigned long)(src - 1 - gl->line), lcp);
+		gf4tp_output("Error at line %lu:%lu: %u is an unknown control code to me\n", gl->lineno, (unsigned long)(src - 2 - gl->line), lcp);
 	} else
 	{
 		printname(gi, mrk, TRUE);
