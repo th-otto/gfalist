@@ -106,12 +106,12 @@ const char *const gfalct[] = {
 	/* 100 */ "SPOKE ",
 	/* 101 */ "SDPOKE ",
 	/* 102 */ "SLPOKE ",
-	/* 103 */ "RESERVE",
-	/* 104 */ "RESERVE ",					/* todo */
-	/* 105 */ "RESUME",
-	/* 106 */ "RESUME ",					/* todo */
+	/* 103 */ "RESERVE",					/* no arguments */
+	/* 104 */ "RESERVE ",					/* 1 argument */
+	/* 105 */ "RESUME",						/* no arguments or RESUME NEXT */
+	/* 106 */ "RESUME ",					/* RESUME label */
 	/* 107 */ "RESUME ",					/* todo */
-	/* 108 */ "",							/* todo */
+	/* 108 */ "",							/* unused? */
 	/* 109 */ "RECORD ",
 	/* 110 */ "DELAY ",
 	/* 111 */ "BGET ",
@@ -121,11 +121,11 @@ const char *const gfalct[] = {
 	/* 115 */ "'",							/* also !, // and / *; Append " " if at least one char long. */
 	/* 116 */ "==>",						/* Append " " if at least one char long. */
 	/* 117 */ "DATA",						/* Append " " if at least one char long. */
-	/* 118 */ "SWAP ",						/* todo */
-	/* 119 */ "SWAP ",						/* todo */
-	/* 120 */ "SWAP ",						/* todo */
-	/* 121 */ "*",
-	/* 122 */ "*",							/* todo */
+	/* 118 */ "SWAP ",						/* SWAP a,b */
+	/* 119 */ "SWAP ",						/* SWAP a(),b() */
+	/* 120 */ "SWAP ",						/* SWAP *c,d() */
+	/* 121 */ "*",							/* *c=a */
+	/* 122 */ "*",
 	/* 123 */ "SINGLE{",
 	/* 124 */ "END",
 	/* 125 */ "LOCATE ",
@@ -140,20 +140,20 @@ const char *const gfalct[] = {
 	/* 134 */ "ON MENU MESSAGE GOSUB ",
 	/* 135 */ "ON MENU KEY GOSUB ",
 	/* 136 */ "ON MENU BUTTON ",
-	/* 137 */ "ON MENU",
-	/* 138 */ "ON MENU ",					/* todo */
-	/* 139 */ "MENU ",
+	/* 137 */ "ON MENU",					/* no arguments */
+	/* 138 */ "ON MENU ",					/* ON MENU n */
+	/* 139 */ "MENU ",						/* MENU m$() */
 	/* 140 */ "MENU OFF",
 	/* 141 */ "MENU KILL",
-	/* 142 */ "MENU ",						/* todo */
-	/* 143 */ "TRON",
-	/* 144 */ "TRON ",						/* todo */
-	/* 145 */ "TRON ",						/* todo */
+	/* 142 */ "MENU ",						/* MENU x,y */
+	/* 143 */ "TRON",						/* no arguments */
+	/* 144 */ "TRON ",						/* TRON #n */
+	/* 145 */ "TRON ",						/* TRON n */
 	/* 146 */ "TROFF",
 	/* 147 */ "PRINT",						/* Append space if it has parameters */
 	/* 148 */ "PRINT ",						/* PRINT # */
-	/* 149 */ "TEXT ",
-	/* 150 */ "TEXT ",						/* todo */
+	/* 149 */ "TEXT ",						/* TEXT x,y,expression */
+	/* 150 */ "TEXT ",						/* TEXT x,y,l,expression */
 	/* 151 */ "RCALL ",
 	/* 152 */ "CALL ",
 	/* 153 */ "FORM INPUT ",
@@ -214,15 +214,15 @@ const char *const gfalct[] = {
 	/* 208 */ "SEEK #",
 	/* 209 */ "RELSEEK #",
 	/* 210 */ "DIM ",
-	/* 211 */ "SETCOLOR ",
-	/* 212 */ "SETCOLOR ",					/* todo */
+	/* 211 */ "SETCOLOR ",					/* SETCOLOR reg,composite */
+	/* 212 */ "SETCOLOR ",					/* SETCOLOR reg,r,g,b */
 	/* 213 */ "BMOVE ",
 	/* 214 */ "VDISYS",						/* No further tokens follow */
-	/* 215 */ "VDISYS ",					/* todo */
-	/* 216 */ "VDISYS ",					/* todo */
-	/* 217 */ "VDISYS ",					/* todo */
-	/* 218 */ "GEMSYS",
-	/* 219 */ "GEMSYS ",					/* todo */
+	/* 215 */ "VDISYS ",					/* VDISYS opcode */
+	/* 216 */ "VDISYS ",					/* VDISYS opcode,int_cnt,pts_cnt */
+	/* 217 */ "VDISYS ",					/* VDISYS opcode,int_cnt,pts_cnt,subopc */
+	/* 218 */ "GEMSYS",						/* no arguments */
+	/* 219 */ "GEMSYS ",					/* GEMSYS n */
 	/* 220 */ "PTSIN(",
 	/* 221 */ "PTSOUT(",
 	/* 222 */ "INTIN(",
@@ -260,13 +260,13 @@ const char *const gfalct[] = {
 	/* 254 */ ".",
 	/* 255 */ "RANDOMIZE",
 	/* 256 */ "ALERT ",
-	/* 257 */ "GET ",
-	/* 258 */ "GET ",						/* todo */
-	/* 259 */ "GET ",						/* todo */
-	/* 260 */ "PUT ",
-	/* 261 */ "PUT ",						/* todo */
-	/* 262 */ "PUT ",						/* todo */
-	/* 263 */ "PUT ",						/* todo */
+	/* 257 */ "GET ",						/* GET x1,y1,x2,y2,s$ */
+	/* 258 */ "GET ",						/* GET #n */
+	/* 259 */ "GET ",						/* GET #n,x */
+	/* 260 */ "PUT ",						/* PUT x,y,s$ */
+	/* 261 */ "PUT ",						/* PUT x,y,s$,mode */
+	/* 262 */ "PUT ",						/* PUT #n */
+	/* 263 */ "PUT ",						/* PUT #n,x */
 	/* 264 */ "",							/* todo */
 	/* 265 */ "OPEN ",
 	/* 266 */ "OPENW ",
@@ -282,41 +282,41 @@ const char *const gfalct[] = {
 	/* 276 */ "INFOW #",
 	/* 277 */ "DEFLINE",
 	/* 278 */ "GRAPHMODE ",
-	/* 279 */ "DEFMOUSE ",
-	/* 280 */ "DEFMOUSE ",					/* todo */
+	/* 279 */ "DEFMOUSE ",					/* DEFMOUSE sym */
+	/* 280 */ "DEFMOUSE ",					/* DEFMOUSE pattern$ */
 	/* 281 */ "DEFLIST ",
 	/* 282 */ "DEFMARK",
 	/* 283 */ "DEFNUM ",
 	/* 284 */ "DEFTEXT",
-	/* 285 */ "DEFFILL",
-	/* 286 */ "DEFFILL",					/* todo */
+	/* 285 */ "DEFFILL",					/* DEFFILL color,interior,style */
+	/* 286 */ "DEFFILL",					/* DEFFILT color,pattern$ */
 	/* 287 */ "BOX ",
 	/* 288 */ "PBOX ",
 	/* 289 */ "RBOX ",
 	/* 290 */ "PRBOX ",
-	/* 291 */ "CIRCLE ",
-	/* 292 */ "CIRCLE ",					/* todo */
-	/* 293 */ "PCIRCLE ",
-	/* 294 */ "PCIRCLE ",					/* todo */
-	/* 295 */ "ELLIPSE ",
-	/* 296 */ "ELLIPSE ",					/* todo */
-	/* 297 */ "PELLIPSE ",
-	/* 298 */ "PELLIPSE ",					/* todo */
+	/* 291 */ "CIRCLE ",					/* CIRCLE x,y,r */
+	/* 292 */ "CIRCLE ",					/* CIRCLE x,y,r,w1,w2 */
+	/* 293 */ "PCIRCLE ",					/* PCIRCLE x,y,r */
+	/* 294 */ "PCIRCLE ",					/* PCIRCLE x,y,r,w1,w2 */
+	/* 295 */ "ELLIPSE ",					/* ELLIPSE x,y,rx,ry */
+	/* 296 */ "ELLIPSE ",					/* ELLIPSE x,y,rx,ry,w1,w2 */
+	/* 297 */ "PELLIPSE ",					/* PELLIPSE x,y,rx,ry */
+	/* 298 */ "PELLIPSE ",					/* PELLIPSE x,y,rx,ry,w1,w2 */
 	/* 299 */ "ERROR ",
-	/* 300 */ "FILL ",
-	/* 301 */ "FILL ",						/* todo */
+	/* 300 */ "FILL ",						/* FILL x,y */
+	/* 301 */ "FILL ",						/* FILL x,y,f */
 	/* 302 */ "HIDEM",
 	/* 303 */ "LPRINT",						/* Append space if it has parameters */
 	/* 304 */ "LSET ",
 	/* 305 */ "MID$(",
 	/* 306 */ "NEW",
-	/* 307 */ "OUT ",
-	/* 308 */ "OUT ",						/* todo */
+	/* 307 */ "OUT ",						/* OUT n,x */
+	/* 308 */ "OUT ",						/* OUT #n,x */
 	/* 309 */ "QUIT",
 	/* 310 */ "",							/* todo */
 	/* 311 */ "CHDIR ",
-	/* 312 */ "CHDRIVE ",
-	/* 313 */ "CHDRIVE ",					/* todo */
+	/* 312 */ "CHDRIVE ",					/* CHDRIVE n */
+	/* 313 */ "CHDRIVE ",					/* CHDRIVE n$ */
 	/* 314 */ "CLR ",
 	/* 315 */ "CLS",						/* Append space if it has parameters */
 	/* 316 */ "",							/* todo */
@@ -359,21 +359,21 @@ const char *const gfalct[] = {
 	/* 353 */ "STICK ",
 	/* 354 */ "SOUND",
 	/* 355 */ "WAVE",
-	/* 356 */ "CLIP ",
-	/* 357 */ "CLIP ",						/* todo */
-	/* 358 */ "CLIP ",						/* todo */
-	/* 359 */ "CLIP ",						/* todo */
-	/* 360 */ "CLIP ",						/* todo */
+	/* 356 */ "CLIP ",						/* CLIP OFF */
+	/* 357 */ "CLIP ",						/* CLIP #n */
+	/* 358 */ "CLIP ",						/* CLIP x,y,w,h */
+	/* 359 */ "CLIP ",						/* CLIP x,y TO x,y */
+	/* 360 */ "CLIP ",						/* CLIP  OFFSET x,y */ /* NOTE: prints 2 spaces (same as in editor) */
 	/* 361 */ "FULLW ",
-	/* 362 */ "EVERY ",
-	/* 363 */ "EVERY ",						/* todo */
-	/* 364 */ "EVERY ",						/* todo */
-	/* 365 */ "AFTER ",
-	/* 366 */ "AFTER ",						/* todo */
-	/* 367 */ "AFTER ",
-	/* 368 */ "INPUT ",
-	/* 369 */ "INPUT ",						/* todo */
-	/* 370 */ "DRAW ",
+	/* 362 */ "EVERY ",						/* EVERY n GOSUB proc */
+	/* 363 */ "EVERY ",						/* EVERY STOP */
+	/* 364 */ "EVERY ",						/* EVERY  CONT */ /* NOTE: prints 2 spaces (same as in editor) */
+	/* 365 */ "AFTER ",						/* AFTER n GOSUB proc */
+	/* 366 */ "AFTER ",						/* AFTER STOP */
+	/* 367 */ "AFTER ",						/* AFTER  CONT */ /* NOTE: prints 2 spaces (same as in editor) */
+	/* 368 */ "INPUT ",						/* INPUT x */
+	/* 369 */ "INPUT ",						/* INPUT #n,x */
+	/* 370 */ "DRAW ",						/* DRAW x,y */
 	/* 371 */ "DRAW ",						/* todo */
 	/* 372 */ "READ ",
 	/* 373 */ "",							/* todo */
@@ -500,8 +500,8 @@ const char *const gfalct[] = {
 	/* 489 */ "VBOX ",
 	/* 490 */ "TBITBLT ", /* was: VBITBLT in 3.70 */
 	/* 491 */ "SCALL ",
-	/* 492 */ "VPUT ",
-	/* 493 */ "VPUT ",
+	/* 492 */ "VPUT ", /* 3 arguments */
+	/* 493 */ "VPUT ", /* 4 arguments */
 	/* 494 */ "STRPOKE ", /* was: CHAR$ in 3.70 */
 	/* 495 */ "SET.SOCKADDR_IN ", /* was: SET.SOCKADDR in 3.70 */
 	/* 496 */ "TPUT ",
@@ -806,7 +806,7 @@ const char *const gfapft[256] = {
 	/*  151 */ "ERROR",
 	/*  152 */ "STOP",
 	/*  153 */ "BREAK",
-	/*  154 */ " CONT",
+	/*  154 */ " CONT",		/* EVERY  CONT */
 	/*  155 */ "FIX(",
 	/*  156 */ ",", /* precedes string parameter in parameter list */
 	/*  157 */ "(", /* starts parameter list of C: or CALL */
