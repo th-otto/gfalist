@@ -125,7 +125,7 @@ const char *const gfalct[] = {
 	/* 119 */ "SWAP ",						/* SWAP a(),b() */
 	/* 120 */ "SWAP ",						/* SWAP *c,d() */
 	/* 121 */ "*",							/* *c=a */
-	/* 122 */ "*",
+	/* 122 */ "*",							/* *c=a$ */
 	/* 123 */ "SINGLE{",
 	/* 124 */ "END",
 	/* 125 */ "LOCATE ",
@@ -139,7 +139,7 @@ const char *const gfalct[] = {
 	/* 133 */ "ON MENU GOSUB ",
 	/* 134 */ "ON MENU MESSAGE GOSUB ",
 	/* 135 */ "ON MENU KEY GOSUB ",
-	/* 136 */ "ON MENU BUTTON ",
+	/* 136 */ "ON MENU BUTTON ",			/* todo */
 	/* 137 */ "ON MENU",					/* no arguments */
 	/* 138 */ "ON MENU ",					/* ON MENU n */
 	/* 139 */ "MENU ",						/* MENU m$() */
