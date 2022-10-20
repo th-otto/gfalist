@@ -1,19 +1,108 @@
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 FILE *out;
+char *used[1048576];
+int funcused[1048576];
+int label;
+int funclabel;
 
 #define jmpbase 0x13696
 
-static void dump_table(FILE *fp, int offset, int end)
+static void scan_table(FILE *fp, int offset, int end)
 {
 	int c;
 	int c2;
 	int dst;
 
 	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
+	if (used[offset] == 0)
+	{
+		++label;
+		used[offset] = malloc(20);
+		sprintf(used[offset], "%d", label);
+	}
 	while (offset < end)
 	{
-		fprintf(out, "x%05x:\n", offset);
+		c = fgetc(fp);
+		switch (c)
+		{
+		case 250:
+			offset += 1;
+			break;
+		case 251:
+			c = fgetc(fp);
+			offset += 2;
+			break;
+		case 252:
+			offset += 1;
+			break;
+		case 253:
+			offset += 1;
+			break;
+		case 254:
+			c = getc(fp);
+			c2 = getc(fp);
+			c = c * 256 + c2;
+			c = (short)c;
+			dst = jmpbase + c;
+			if (funcused[dst] == 0)
+			{
+				++funclabel;
+				funcused[dst] = funclabel;
+			}
+			offset += 3;
+			break;
+		case 255:
+			c = getc(fp);
+			c2 = getc(fp);
+			c = c * 256 + c2;
+			c = (short)c;
+			dst = jmpbase + c;
+			if (used[dst] == 0)
+			{
+				++label;
+				used[dst] = malloc(20);
+				sprintf(used[dst], "%d", label);
+			}
+			offset += 3;
+			break;
+		case 240:
+		case 241:
+		case 242:
+		case 243:
+		case 244:
+		case 245:
+		case 246:
+		case 247:
+		case 248:
+		case 249:
+			c2 = getc(fp);
+			offset += 2;
+			break;
+		default:
+			offset += 1;
+			break;
+		}
+	}
+}
+
+
+static void dump_table(FILE *fp, int offset, int end, int diffbase)
+{
+	int c;
+	int c2;
+	int dst;
+
+	(void)diffbase;
+	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
+	while (offset < end)
+	{
+		if (used[offset])
+		{
+			fprintf(out, "y%s:\n", used[offset]);
+		}
 		c = fgetc(fp);
 		switch (c)
 		{
@@ -40,7 +129,7 @@ static void dump_table(FILE *fp, int offset, int end)
 			c = c * 256 + c2;
 			c = (short)c;
 			dst = jmpbase + c;
-			fprintf(out, "\t.dc.b -2,(f%05x-x%05x)/256,(f%05x-x%05x)&255\n", dst, jmpbase, dst, jmpbase);
+			fprintf(out, "\t.dc.b -2,(f%d-jmpbase)/256,(f%d-jmpbase)&255\n", funcused[dst], funcused[dst]);
 			offset += 3;
 			break;
 		case 255:
@@ -49,7 +138,7 @@ static void dump_table(FILE *fp, int offset, int end)
 			c = c * 256 + c2;
 			c = (short)c;
 			dst = jmpbase + c;
-			fprintf(out, "\t.dc.b -1,(x%05x-x%05x)/256,(x%05x-x%05x)&255\n", dst, jmpbase, dst, jmpbase);
+			fprintf(out, "\t.dc.b -1,(y%s-jmpbase)/256,(y%s-jmpbase)&255\n", used[dst], used[dst]);
 			offset += 3;
 			break;
 		case 240:
@@ -84,7 +173,8 @@ int main(void)
 	int c2;
 	int dst;
 	int first_char;
-	
+	char name[100];
+
 	out = stdout;
 	fp = fopen("lst2gfa_orig.ttp", "rb");
 	if (fp == NULL)
@@ -156,7 +246,24 @@ int main(void)
 				fprintf(out, "\t\t.ascii \"");
 			}
 			putc(c, out);
+			switch (c)
+			{
+			case ' ':
+			case '(':
+			case '{':
+			case '#':
+			case '?':
+			case '$':
+				c = '_';
+				break;
+			}
+			name[i] = c;
 		}
+		name[len + 1] = '\0';
+		if (name[len] == '_')
+			name[len--] = '\0';
+		if (name[len] == '_')
+			name[len--] = '\0';
 		fprintf(out, "\"\n");
 		c = getc(fp);
 		c2 = getc(fp);
@@ -169,7 +276,12 @@ int main(void)
 		c = c * 256 + c2;
 		c = (short)c;
 		dst = jmpbase + c;
-		fprintf(out, ",(x%05x-x%05x)/256,(x%05x-x%05x)&255\n", dst, jmpbase, dst, jmpbase);
+		if (used[dst] == 0)
+		{
+			strcat(name, "_args");
+			used[dst] = strdup(name);
+		}
+		fprintf(out, ",(y%s-jmpbase)/256,(y%s-jmpbase)&255\n", used[dst], used[dst]);
 
 		offset += len + 6;
 	}
@@ -184,6 +296,9 @@ int main(void)
 		c = getc(fp);
 		if (c == 0)
 			break;
+		strcpy(name, "mat_");
+		i = 4;
+		name[i++] = c;
 		fprintf(out, "\t\t.ascii \"%c", c);
 		for (;;)
 		{
@@ -191,13 +306,30 @@ int main(void)
 			if (c == 0)
 				break;
 			putc(c, out);
+			switch (c)
+			{
+			case ' ':
+			case '(':
+			case '{':
+			case '#':
+			case '?':
+				c = '_';
+				break;
+			}
+			name[i++] = c;
 		}
+		name[i] = '\0';
 		fprintf(out, "\"\n\t\t.dc.b 0\n");
 		c = getc(fp);
 		c2 = getc(fp);
 		c = c * 256 + c2;
 		dst = jmpbase + c;
-		fprintf(out, "\t\t.dc.b (x%05x-jmpbase)/256,(x%05x-jmpbase)&255\n", dst, dst);
+		if (used[dst] == 0)
+		{
+			strcat(name, "_args");
+			used[dst] = strdup(name);
+		}
+		fprintf(out, "\t\t.dc.b (y%s-jmpbase)/256,(y%s-jmpbase)&255\n", used[dst], used[dst]);
 	}
 	fprintf(out, "\n");
 
@@ -210,21 +342,27 @@ int main(void)
 		c = c * 256 + c2;
 		c = (short)c;
 		dst = jmpbase + c;
-		fprintf(out, "\t\t.dc.w x%05x-x%05x\n", dst, jmpbase);
+		fprintf(out, "\t\t.dc.w x%05x-jmpbase\n", dst);
 		offset += 2;
 	}
 	fprintf(out, "offset = %05x\n", offset);
 	fprintf(out, "\n");
 	
-	dump_table(fp, 0x13ed2, 0x140d6);
+	scan_table(fp, 0x13ed2, 0x140d6);
+	scan_table(fp, 0x14116, 0x14578);
+	scan_table(fp, 0x145c6, 0x14bde);
+	scan_table(fp, 0x14c8e, 0x14d34);
+	scan_table(fp, 0x14ee8, 0x152e4);
+	
+	dump_table(fp, 0x13ed2, 0x140d6, 0);
 	fprintf(out, "\n");
-	dump_table(fp, 0x14116, 0x14578);
+	dump_table(fp, 0x14116, 0x14578, 0);
 	fprintf(out, "\n");
-	dump_table(fp, 0x145c6, 0x14bde);
+	dump_table(fp, 0x145c6, 0x14bde, 0);
 	fprintf(out, "\n");
-	dump_table(fp, 0x14c8e, 0x14d34);
+	dump_table(fp, 0x14c8e, 0x14d34, 0);
 	fprintf(out, "\n");
-	dump_table(fp, 0x14ee8, 0x152e4);
+	dump_table(fp, 0x14ee8, 0x152e4, 0);
 	fprintf(out, "\n");
 	
 	return 0;
