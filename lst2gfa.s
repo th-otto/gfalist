@@ -1,5 +1,5 @@
 FOR_LIB = 0
-GBE = 1
+GBE = 0
 STRANGE_CHECK = 1
 
 
@@ -4236,7 +4236,7 @@ cmd_l_table: /* 12081 */
 		.dc.b ((1*2)/256),((1*2)&255),(x141cd-jmpbase)/256,(x141cd-jmpbase)&255
 		.dc.b 2
 		.ascii "LET"
-		.dc.b ((64*2)/256),((64*2)&255),(x14083-jmpbase)/256,(x14083-jmpbase)&255
+		.dc.b ((64*2)/256),((64*2)&255),(yLET_args-jmpbase)/256,(yLET_args-jmpbase)&255
 		.dc.b 3
 		.ascii "LINE"
 		.dc.b ((155*2)/256),((155*2)&255),(yLINE_args-jmpbase)/256,(yLINE_args-jmpbase)&255
@@ -4591,7 +4591,7 @@ cmd_q_table: /* 122e6 */
 		.dc.b ((309*2)/256),((309*2)&255),(yQUIT_args-jmpbase)/256,(yQUIT_args-jmpbase)&255
 		.dc.b 4
 		.ascii "QSORT"
-		.dc.b ((345*2)/256),((345*2)&255),(x14031-jmpbase)/256,(x14031-jmpbase)&255
+		.dc.b ((345*2)/256),((345*2)&255),(yQSORT_args-jmpbase)/256,(yQSORT_args-jmpbase)&255
 cmd_r_table: /* 122f9 */
 		.dc.b 2
 		.ascii "REM"
@@ -4703,7 +4703,7 @@ cmd_s_table: /* 123c3 */
 		.dc.b ((341*2)/256),((341*2)&255),(ySYSTEM_args-jmpbase)/256,(ySYSTEM_args-jmpbase)&255
 		.dc.b 4
 		.ascii "SSORT"
-		.dc.b ((346*2)/256),((346*2)&255),(x14031-jmpbase)/256,(x14031-jmpbase)&255
+		.dc.b ((346*2)/256),((346*2)&255),(ySSORT_args-jmpbase)/256,(ySSORT_args-jmpbase)&255
 		.dc.b 4
 		.ascii "STICK"
 		.dc.b ((353*2)/256),((353*2)&255),(yBOUNDARY_args-jmpbase)/256,(yBOUNDARY_args-jmpbase)&255
@@ -4880,7 +4880,7 @@ cmd_v_table: /* 1250c */
 		.dc.b ((214*2)/256),((214*2)&255),(x14b74-jmpbase)/256,(x14b74-jmpbase)&255
 		.dc.b 3
 		.ascii "VOID"
-		.dc.b ((240*2)/256),((240*2)&255),(x1407e-jmpbase)/256,(x1407e-jmpbase)&255
+		.dc.b ((240*2)/256),((240*2)&255),(yVOID_args-jmpbase)/256,(yVOID_args-jmpbase)&255
 		.dc.b 4
 		.ascii "VSYNC"
 		.dc.b ((342*2)/256),((342*2)&255),(yVSYNC_args-jmpbase)/256,(yVSYNC_args-jmpbase)&255
@@ -6598,7 +6598,7 @@ x137b8: .dc.l 0
 x137bc: .dc.l 0
 
 /*
- * a2 = x14083/x1499f/yGOSUB_args
+ * a2 = yLET_args/x1499f/yGOSUB_args
  */
 x137c0:
 		lea.l      1364(a6),a1
@@ -6621,7 +6621,7 @@ x137d2:
 		bsr        x1395a
 		move.l     a1,d0
 		bne.s      x137d2_1
-		lea.l      x14083(pc),a2
+		lea.l      yLET_args(pc),a2
 		move.w     #152,d0
 		bsr.s      x137c0
 		bne.s      x137d2_1
@@ -6758,7 +6758,7 @@ x1389c_9:
 		rts
 x1389c_10:
 		move.w     #152,(a1)+ /* TOK_CMD_ASSIGN_FLOAT*2 */
-		lea.l      x14083.l,a2
+		lea.l      yLET_args.l,a2
 		rts
 
 /* gfa: 22f7e */
@@ -7337,67 +7337,67 @@ f13de4_2:
 x13e02:
 		.ascii "ADD"
 		.dc.b 0
-		.dc.b (mat_ADD_args-jmpbase)/256,(mat_ADD_args-jmpbase)&255
+		.dc.b (ymat_ADD_args-jmpbase)/256,(ymat_ADD_args-jmpbase)&255
 		.ascii "ABS"
 		.dc.b 0
-		.dc.b (mat_ABS_args-jmpbase)/256,(mat_ABS_args-jmpbase)&255
+		.dc.b (ymat_ABS_args-jmpbase)/256,(ymat_ABS_args-jmpbase)&255
 		.ascii "BASE"
 		.dc.b 0
-		.dc.b (mat_BASE_args-jmpbase)/256,(mat_BASE_args-jmpbase)&255
+		.dc.b (ymat_BASE_args-jmpbase)/256,(ymat_BASE_args-jmpbase)&255
 		.ascii "CPY"
 		.dc.b 0
-		.dc.b (mat_CPY_args-jmpbase)/256,(mat_CPY_args-jmpbase)&255
+		.dc.b (ymat_CPY_args-jmpbase)/256,(ymat_CPY_args-jmpbase)&255
 		.ascii "CLR"
 		.dc.b 0
-		.dc.b (mat_CLR_args-jmpbase)/256,(mat_CLR_args-jmpbase)&255
+		.dc.b (ymat_CLR_args-jmpbase)/256,(ymat_CLR_args-jmpbase)&255
 		.ascii "DET"
 		.dc.b 0
-		.dc.b (mat_DET_args-jmpbase)/256,(mat_DET_args-jmpbase)&255
+		.dc.b (ymat_DET_args-jmpbase)/256,(ymat_DET_args-jmpbase)&255
 		.ascii "QDET"
 		.dc.b 0
-		.dc.b (mat_QDET_args-jmpbase)/256,(mat_QDET_args-jmpbase)&255
+		.dc.b (ymat_QDET_args-jmpbase)/256,(ymat_QDET_args-jmpbase)&255
 		.ascii "INV"
 		.dc.b 0
-		.dc.b (mat_INV_args-jmpbase)/256,(mat_INV_args-jmpbase)&255
+		.dc.b (ymat_INV_args-jmpbase)/256,(ymat_INV_args-jmpbase)&255
 		.ascii "INPUT"
 		.dc.b 0
-		.dc.b (mat_INPUT_args-jmpbase)/256,(mat_INPUT_args-jmpbase)&255
+		.dc.b (ymat_INPUT_args-jmpbase)/256,(ymat_INPUT_args-jmpbase)&255
 		.ascii "MUL"
 		.dc.b 0
-		.dc.b (mat_MUL_args-jmpbase)/256,(mat_MUL_args-jmpbase)&255
+		.dc.b (ymat_MUL_args-jmpbase)/256,(ymat_MUL_args-jmpbase)&255
 		.ascii "NORM"
 		.dc.b 0
-		.dc.b (mat_NORM_args-jmpbase)/256,(mat_NORM_args-jmpbase)&255
+		.dc.b (ymat_NORM_args-jmpbase)/256,(ymat_NORM_args-jmpbase)&255
 		.ascii "NEG"
 		.dc.b 0
-		.dc.b (mat_NEG_args-jmpbase)/256,(mat_NEG_args-jmpbase)&255
+		.dc.b (ymat_NEG_args-jmpbase)/256,(ymat_NEG_args-jmpbase)&255
 		.ascii "ONE"
 		.dc.b 0
-		.dc.b (mat_ONE_args-jmpbase)/256,(mat_ONE_args-jmpbase)&255
+		.dc.b (ymat_ONE_args-jmpbase)/256,(ymat_ONE_args-jmpbase)&255
 		.ascii "PRINT"
 		.dc.b 0
-		.dc.b (mat_PRINT_args-jmpbase)/256,(mat_PRINT_args-jmpbase)&255
+		.dc.b (ymat_PRINT_args-jmpbase)/256,(ymat_PRINT_args-jmpbase)&255
 		.ascii "?"
 		.dc.b 0
-		.dc.b (mat_PRINT_args-jmpbase)/256,(mat_PRINT_args-jmpbase)&255
+		.dc.b (ymat_PRINT_args-jmpbase)/256,(ymat_PRINT_args-jmpbase)&255
 		.ascii "READ"
 		.dc.b 0
-		.dc.b (mat_READ_args-jmpbase)/256,(mat_READ_args-jmpbase)&255
+		.dc.b (ymat_READ_args-jmpbase)/256,(ymat_READ_args-jmpbase)&255
 		.ascii "RANG"
 		.dc.b 0
-		.dc.b (mat_RANG_args-jmpbase)/256,(mat_RANG_args-jmpbase)&255
+		.dc.b (ymat_RANG_args-jmpbase)/256,(ymat_RANG_args-jmpbase)&255
 		.ascii "SUB"
 		.dc.b 0
-		.dc.b (mat_SUB_args-jmpbase)/256,(mat_SUB_args-jmpbase)&255
+		.dc.b (ymat_SUB_args-jmpbase)/256,(ymat_SUB_args-jmpbase)&255
 		.ascii "SET"
 		.dc.b 0
-		.dc.b (mat_SET_args-jmpbase)/256,(mat_SET_args-jmpbase)&255
+		.dc.b (ymat_SET_args-jmpbase)/256,(ymat_SET_args-jmpbase)&255
 		.ascii "TRANS"
 		.dc.b 0
-		.dc.b (mat_TRANS_args-jmpbase)/256,(mat_TRANS_args-jmpbase)&255
+		.dc.b (ymat_TRANS_args-jmpbase)/256,(ymat_TRANS_args-jmpbase)&255
 		.ascii "XCPY"
 		.dc.b 0
-		.dc.b (mat_XCPY_args-jmpbase)/256,(mat_XCPY_args-jmpbase)&255
+		.dc.b (ymat_XCPY_args-jmpbase)/256,(ymat_XCPY_args-jmpbase)&255
 		.dc.b 0
 		.even
 
@@ -7450,13 +7450,13 @@ f13e8c_4:
 yMAT_args:
 	.dc.b -2,(f13e8c-jmpbase)/256,(f13e8c-jmpbase)&255
 	.dc.b -3
-	.dc.b -1,(mat_ADD_args-jmpbase)/256,(mat_ADD_args-jmpbase)&255
+	.dc.b -1,(ymat_ADD_args-jmpbase)/256,(ymat_ADD_args-jmpbase)&255
 	.dc.b -3
-	.dc.b -1,(mat_SUB_args-jmpbase)/256,(mat_SUB_args-jmpbase)&255
+	.dc.b -1,(ymat_SUB_args-jmpbase)/256,(ymat_SUB_args-jmpbase)&255
 	.dc.b -3
-	.dc.b -1,(mat_MUL_args-jmpbase)/256,(mat_MUL_args-jmpbase)&255
+	.dc.b -1,(ymat_MUL_args-jmpbase)/256,(ymat_MUL_args-jmpbase)&255
 	.dc.b -4
-mat_ADD_args:
+ymat_ADD_args:
 	.dc.b -5,80
 	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 	.dc.b 32
@@ -7477,7 +7477,7 @@ x13eec:
 	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 	.dc.b 70
 	.dc.b -4
-mat_SUB_args:
+ymat_SUB_args:
 	.dc.b -5,84
 	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 	.dc.b 32
@@ -7498,7 +7498,7 @@ x13f0e:
 	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 	.dc.b 70
 	.dc.b -4
-mat_MUL_args:
+ymat_MUL_args:
 	.dc.b -1,(x13f2a-jmpbase)/256,(x13f2a-jmpbase)&255
 	.dc.b -4
 x13f2a:
@@ -7537,7 +7537,7 @@ x13f2a:
 	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 	.dc.b 70
 	.dc.b -4
-mat_DET_args:
+ymat_DET_args:
 	.dc.b -5,92
 x13f6b:
 	.dc.b -2,(f15464-jmpbase)/256,(f15464-jmpbase)&255
@@ -7554,19 +7554,19 @@ x13f77:
 	.dc.b -3
 	.dc.b 32
 	.dc.b -4
-mat_QDET_args:
+ymat_QDET_args:
 	.dc.b -5,114
 	.dc.b -1,(x13f6b-jmpbase)/256,(x13f6b-jmpbase)&255
 	.dc.b -4
-mat_RANG_args:
+ymat_RANG_args:
 	.dc.b -5,118
 	.dc.b -1,(x13f6b-jmpbase)/256,(x13f6b-jmpbase)&255
 	.dc.b -4
-mat_XCPY_args:
+ymat_XCPY_args:
 	.dc.b -5,90
 	.dc.b -1,(x13f96-jmpbase)/256,(x13f96-jmpbase)&255
 	.dc.b -4
-mat_CPY_args:
+ymat_CPY_args:
 	.dc.b -5,88
 x13f96:
 	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
@@ -7585,7 +7585,7 @@ x13fab:
 	.dc.b -1,(x1503f-jmpbase)/256,(x1503f-jmpbase)&255
 	.dc.b -3
 	.dc.b -4
-mat_PRINT_args:
+ymat_PRINT_args:
 	.dc.b -5,102
 	.dc.b -1,(x15252-jmpbase)/256,(x15252-jmpbase)&255
 	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
@@ -7600,19 +7600,19 @@ x13fbe:
 	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 	.dc.b -3
 	.dc.b -4
-mat_INPUT_args:
+ymat_INPUT_args:
 	.dc.b -5,116
 	.dc.b -1,(x15252-jmpbase)/256,(x15252-jmpbase)&255
 	.dc.b -1,(x13fd3-jmpbase)/256,(x13fd3-jmpbase)&255
 	.dc.b -4
-mat_READ_args:
+ymat_READ_args:
 	.dc.b -5,100
 x13fd3:
 	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 	.dc.b 32
 	.dc.b 70
 	.dc.b -4
-mat_TRANS_args:
+ymat_TRANS_args:
 	.dc.b -5,104
 	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 	.dc.b 32
@@ -7625,37 +7625,37 @@ x13fe4:
 	.dc.b 32
 	.dc.b -3
 	.dc.b -4
-mat_INV_args:
+ymat_INV_args:
 	.dc.b -5,128
 	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 	.dc.b 32
 	.dc.b 19
 	.dc.b -1,(x13fd3-jmpbase)/256,(x13fd3-jmpbase)&255
 	.dc.b -4
-mat_CLR_args:
+ymat_CLR_args:
 	.dc.b -5,106
 	.dc.b -1,(x13fd3-jmpbase)/256,(x13fd3-jmpbase)&255
 	.dc.b -4
-mat_ONE_args:
+ymat_ONE_args:
 	.dc.b -5,110
 	.dc.b -1,(x13fd3-jmpbase)/256,(x13fd3-jmpbase)&255
 	.dc.b -4
-mat_NEG_args:
+ymat_NEG_args:
 	.dc.b -5,94
 	.dc.b -1,(x13fd3-jmpbase)/256,(x13fd3-jmpbase)&255
 	.dc.b -4
-mat_ABS_args:
+ymat_ABS_args:
 	.dc.b -5,96
 	.dc.b -1,(x13fd3-jmpbase)/256,(x13fd3-jmpbase)&255
 	.dc.b -4
-mat_NORM_args:
+ymat_NORM_args:
 	.dc.b -5,98
 	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 	.dc.b 32
 	.dc.b 33
-	.dc.b -1,(yBOUNDARY_args-jmpbase)/256,(yBOUNDARY_args-jmpbase)&255
+	.dc.b -1,(yCLEARW_args-jmpbase)/256,(yCLEARW_args-jmpbase)&255
 	.dc.b -4
-mat_SET_args:
+ymat_SET_args:
 	.dc.b -5,108
 	.dc.b -2,(f15474-jmpbase)/256,(f15474-jmpbase)&255
 	.dc.b 32
@@ -7663,7 +7663,7 @@ mat_SET_args:
 	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 	.dc.b 70
 	.dc.b -4
-mat_BASE_args:
+ymat_BASE_args:
 	.dc.b -5,112
 	.dc.b -1,(x1402b-jmpbase)/256,(x1402b-jmpbase)&255
 	.dc.b -4
@@ -7674,7 +7674,8 @@ x1402b:
 	.dc.b 185
 	.dc.b 70
 	.dc.b -4
-x14031:
+ySSORT_args:
+yQSORT_args:
 	.dc.b -1,(x14039-jmpbase)/256,(x14039-jmpbase)&255
 	.dc.b -1,(x14066-jmpbase)/256,(x14066-jmpbase)&255
 	.dc.b 70
@@ -7727,15 +7728,15 @@ x14076:
 	.dc.b -3
 	.dc.b 32
 	.dc.b -4
-x1407e:
+yVOID_args:
 	.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 	.dc.b 70
 	.dc.b -4
-x14083:
+yLET_args:
 	.dc.b -1,(x14392-jmpbase)/256,(x14392-jmpbase)&255
 	.dc.b 19
 	.dc.b -5,69
-	.dc.b -1,(yBOUNDARY_args-jmpbase)/256,(yBOUNDARY_args-jmpbase)&255
+	.dc.b -1,(yCLEARW_args-jmpbase)/256,(yCLEARW_args-jmpbase)&255
 	.dc.b -3
 	.dc.b -1,(x1435e-jmpbase)/256,(x1435e-jmpbase)&255
 	.dc.b 19

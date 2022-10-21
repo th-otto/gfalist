@@ -15,6 +15,8 @@ int funclabel;
 #define jmpbase 0x5701f
 
 static int maptable[500];
+static char *oldtable[500];
+static char *functable[100];
 
 static void scan_table(FILE *fp, int offset, int end)
 {
@@ -29,7 +31,7 @@ static void scan_table(FILE *fp, int offset, int end)
 		used[offset] = malloc(sizeof(struct label));
 		used[offset]->name = malloc(20);
 		used[offset]->next = NULL;
-		sprintf(used[offset]->name, "%d", maptable[label]);
+		sprintf(used[offset]->name, "y%d", maptable[label]);
 	}
 	while (offset < end)
 	{
@@ -74,7 +76,10 @@ static void scan_table(FILE *fp, int offset, int end)
 				used[dst] = malloc(sizeof(struct label));
 				used[dst]->name = malloc(20);
 				used[dst]->next = NULL;
-				sprintf(used[dst]->name, "%d", maptable[label]);
+				if (oldtable[label])
+					used[dst]->name = oldtable[label];
+				else
+					sprintf(used[dst]->name, "y%d", maptable[label]);
 			}
 			offset += 3;
 			break;
@@ -113,7 +118,7 @@ static void dump_table(FILE *fp, int offset, int end, int diffbase)
 		{
 			struct label *l;
 			for (l = used[offset]; l; l = l->next)
-				fprintf(out, "y%s:\n", l->name);
+				fprintf(out, "%s:\n", l->name);
 		}
 		c = fgetc(fp);
 		switch (c)
@@ -141,7 +146,10 @@ static void dump_table(FILE *fp, int offset, int end, int diffbase)
 			c = c * 256 + c2;
 			c = (short)c;
 			dst = jmpbase + c;
-			fprintf(out, "\t.dc.b -2,(f%d-jmpbase)/256,(f%d-jmpbase)&255\n", funcused[dst], funcused[dst]);
+			if (functable[funcused[dst]])
+				fprintf(out, "\t.dc.b -2,(%s-jmpbase)/256,(%s-jmpbase)&255\n", functable[funcused[dst]], functable[funcused[dst]]);
+			else
+				fprintf(out, "\t.dc.b -2,(f%d-jmpbase)/256,(f%d-jmpbase)&255\n", funcused[dst], funcused[dst]);
 			offset += 3;
 			break;
 		case 255:
@@ -150,7 +158,7 @@ static void dump_table(FILE *fp, int offset, int end, int diffbase)
 			c = c * 256 + c2;
 			c = (short)c;
 			dst = jmpbase + c;
-			fprintf(out, "\t.dc.b -1,(y%s-jmpbase)/256,(y%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
+			fprintf(out, "\t.dc.b -1,(%s-jmpbase)/256,(%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
 			offset += 3;
 			break;
 		case 240:
@@ -293,11 +301,12 @@ int main(void)
 			
 			strcat(name, "_args");
 			l = malloc(sizeof(struct label));
-			l->name = strdup(name);
+			l->name = malloc(strlen(name) + 2);
+			sprintf(l->name, "y%s", name);
 			l->next = used[dst];
 			used[dst] = l;
 		}
-		fprintf(out, ",(y%s-jmpbase)/256,(y%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
+		fprintf(out, ",(%s-jmpbase)/256,(%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
 
 		offset += len + 6;
 	}
@@ -342,12 +351,16 @@ int main(void)
 		dst = jmpbase + c;
 		if (used[dst] == 0)
 		{
+			struct label *l;
+			
 			strcat(name, "_args");
-			used[dst] = malloc(sizeof(struct label));
-			used[dst]->name = strdup(name);
-			used[dst]->next = NULL;
+			l = malloc(sizeof(struct label));
+			l->name = malloc(strlen(name) + 2);
+			sprintf(l->name, "y%s", name);
+			l->next = NULL;
+			used[dst] = l;
 		}
-		fprintf(out, "\t\t.dc.b (y%s-jmpbase)/256,(y%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
+		fprintf(out, "\t\t.dc.b (%s-jmpbase)/256,(%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
 	}
 	fprintf(out, "\n");
 
@@ -368,6 +381,202 @@ int main(void)
 
 	for (i = 0; i < (int)(sizeof(maptable) / sizeof(maptable[0])); i++)
 		maptable[i] = i;
+	
+	oldtable[1] = "x13eec";
+	oldtable[2] = "x13fd3";
+	oldtable[3] = "x14b9a";
+	oldtable[4] = "x13f0e";
+	oldtable[5] = "x13f2a";
+	oldtable[6] = "x13f77";
+	oldtable[7] = "x1503f";
+	oldtable[8] = "x14b96";
+	oldtable[9] = "x13f6b";
+	oldtable[10] = "x13f96";
+	oldtable[11] = "x13fab";
+	oldtable[12] = "x13faa";
+	oldtable[13] = "x15252";
+	oldtable[14] = "x13fbe";
+	oldtable[15] = "x13fe4";
+	oldtable[16] = "x1402b";
+	oldtable[17] = "x14039";
+	oldtable[18] = "x14066";
+	oldtable[19] = "x14076";
+	oldtable[20] = "x14054";
+	oldtable[21] = "x1404d";
+	oldtable[22] = "x1436a";
+	oldtable[23] = "x1405a";
+	oldtable[24] = "x1406f";
+	oldtable[25] = "x14392";
+	oldtable[26] = "x1435e";
+	oldtable[27] = "x1438e";
+	oldtable[28] = "";
+	oldtable[29] = "";
+	oldtable[30] = "";
+	oldtable[31] = "";
+	oldtable[32] = "";
+	oldtable[33] = "";
+	oldtable[34] = "";
+	oldtable[35] = "";
+	oldtable[36] = "";
+	oldtable[37] = "";
+	oldtable[38] = "";
+	oldtable[39] = "";
+	oldtable[40] = "";
+	oldtable[41] = "";
+	oldtable[42] = "";
+	oldtable[43] = "";
+	oldtable[44] = "";
+	oldtable[45] = "";
+	oldtable[46] = "";
+	oldtable[47] = "";
+	oldtable[48] = "";
+	oldtable[49] = "";
+	oldtable[50] = "";
+	oldtable[51] = "";
+	oldtable[52] = "";
+	oldtable[53] = "";
+	oldtable[54] = "";
+	oldtable[55] = "";
+	oldtable[56] = "";
+	oldtable[57] = "";
+	oldtable[58] = "";
+	oldtable[59] = "";
+	oldtable[60] = "";
+	oldtable[61] = "";
+	oldtable[62] = "";
+	oldtable[63] = "";
+	oldtable[64] = "";
+	oldtable[65] = "";
+	oldtable[66] = "";
+	oldtable[67] = "";
+	oldtable[68] = "";
+	oldtable[69] = "";
+	oldtable[70] = "";
+	oldtable[71] = "";
+	oldtable[72] = "";
+	oldtable[73] = "";
+	oldtable[74] = "";
+	oldtable[75] = "";
+	oldtable[76] = "";
+	oldtable[77] = "";
+	oldtable[78] = "";
+	oldtable[79] = "";
+	oldtable[80] = "";
+	oldtable[81] = "";
+	oldtable[82] = "";
+	oldtable[83] = "";
+	oldtable[84] = "";
+	oldtable[85] = "";
+	oldtable[86] = "";
+	oldtable[87] = "";
+	oldtable[88] = "";
+	oldtable[89] = "";
+	oldtable[90] = "";
+	oldtable[91] = "";
+	oldtable[92] = "";
+	oldtable[93] = "";
+	oldtable[94] = "";
+	oldtable[95] = "";
+	oldtable[96] = "";
+	oldtable[97] = "";
+	oldtable[98] = "";
+	oldtable[99] = "";
+	oldtable[100] = "";
+	oldtable[101] = "";
+	oldtable[102] = "";
+	oldtable[103] = "";
+	oldtable[104] = "";
+	oldtable[105] = "";
+	oldtable[106] = "";
+	oldtable[107] = "";
+	oldtable[108] = "";
+	oldtable[109] = "";
+	oldtable[110] = "";
+	oldtable[111] = "";
+	oldtable[112] = "";
+	oldtable[113] = "";
+	oldtable[114] = "";
+	oldtable[115] = "";
+	oldtable[116] = "";
+	oldtable[117] = "";
+	oldtable[118] = "";
+	oldtable[119] = "";
+	oldtable[120] = "";
+	oldtable[121] = "";
+	oldtable[122] = "";
+	oldtable[123] = "";
+	oldtable[124] = "";
+	oldtable[125] = "";
+	oldtable[126] = "";
+	oldtable[127] = "";
+	oldtable[128] = "";
+	oldtable[129] = "";
+	oldtable[130] = "";
+	oldtable[131] = "";
+	oldtable[132] = "";
+	oldtable[133] = "";
+	oldtable[134] = "";
+	oldtable[135] = "";
+	oldtable[136] = "";
+	oldtable[137] = "";
+	oldtable[138] = "";
+	oldtable[139] = "";
+	oldtable[140] = "";
+	oldtable[141] = "";
+	oldtable[142] = "";
+	oldtable[143] = "";
+	oldtable[144] = "";
+	oldtable[145] = "";
+	oldtable[146] = "";
+	oldtable[147] = "";
+	oldtable[148] = "";
+	oldtable[149] = "";
+	oldtable[150] = "";
+	oldtable[151] = "";
+	oldtable[152] = "";
+	oldtable[153] = "";
+	oldtable[154] = "";
+	oldtable[155] = "";
+	oldtable[156] = "";
+	oldtable[157] = "";
+	oldtable[158] = "";
+	oldtable[159] = "";
+	oldtable[160] = "";
+	oldtable[161] = "";
+	oldtable[162] = "";
+	oldtable[163] = "";
+	oldtable[164] = "";
+	oldtable[165] = "";
+	oldtable[166] = "";
+	oldtable[167] = "";
+	oldtable[168] = "";
+	oldtable[169] = "";
+	oldtable[170] = "";
+	oldtable[171] = "";
+	oldtable[172] = "";
+	oldtable[173] = "";
+	oldtable[174] = "";
+	oldtable[175] = "";
+	oldtable[176] = "";
+	oldtable[177] = "";
+	oldtable[178] = "";
+	oldtable[179] = "";
+	oldtable[180] = "";
+	oldtable[181] = "";
+	oldtable[182] = "";
+	oldtable[183] = "";
+	oldtable[184] = "";
+	
+	functable[1] = "f13e8c";
+	functable[2] = "f15474";
+	functable[3] = "f13d64";
+	functable[4] = "f15464";
+	functable[5] = "f15478";
+	functable[6] = "f1547c";
+	functable[7] = "f1548c";
+	functable[8] = "f15490";
+	functable[9] = "f140e2";
+	functable[10] = "f140d6";
 	
 	scan_table(fp, 0x57864, 0x57a67);
 	scan_table(fp, 0x57aa8, 0x57f20);
