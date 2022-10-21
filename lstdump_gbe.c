@@ -3,12 +3,18 @@
 #include <stdlib.h>
 
 FILE *out;
-char *used[1048576];
+struct label {
+	struct label *next;
+	char *name;
+};
+struct label *used[1048576];
 int funcused[1048576];
 int label;
 int funclabel;
 
 #define jmpbase 0x5701f
+
+static int maptable[500];
 
 static void scan_table(FILE *fp, int offset, int end)
 {
@@ -20,8 +26,10 @@ static void scan_table(FILE *fp, int offset, int end)
 	if (used[offset] == 0)
 	{
 		++label;
-		used[offset] = malloc(20);
-		sprintf(used[offset], "%d", label);
+		used[offset] = malloc(sizeof(struct label));
+		used[offset]->name = malloc(20);
+		used[offset]->next = NULL;
+		sprintf(used[offset]->name, "%d", maptable[label]);
 	}
 	while (offset < end)
 	{
@@ -63,8 +71,10 @@ static void scan_table(FILE *fp, int offset, int end)
 			if (used[dst] == 0)
 			{
 				++label;
-				used[dst] = malloc(20);
-				sprintf(used[dst], "%d", label);
+				used[dst] = malloc(sizeof(struct label));
+				used[dst]->name = malloc(20);
+				used[dst]->next = NULL;
+				sprintf(used[dst]->name, "%d", maptable[label]);
 			}
 			offset += 3;
 			break;
@@ -101,7 +111,9 @@ static void dump_table(FILE *fp, int offset, int end, int diffbase)
 	{
 		if (used[offset])
 		{
-			fprintf(out, "y%s:\n", used[offset]);
+			struct label *l;
+			for (l = used[offset]; l; l = l->next)
+				fprintf(out, "y%s:\n", l->name);
 		}
 		c = fgetc(fp);
 		switch (c)
@@ -138,7 +150,7 @@ static void dump_table(FILE *fp, int offset, int end, int diffbase)
 			c = c * 256 + c2;
 			c = (short)c;
 			dst = jmpbase + c;
-			fprintf(out, "\t.dc.b -1,(y%s-jmpbase)/256,(y%s-jmpbase)&255\n", used[dst], used[dst]);
+			fprintf(out, "\t.dc.b -1,(y%s-jmpbase)/256,(y%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
 			offset += 3;
 			break;
 		case 240:
@@ -276,12 +288,16 @@ int main(void)
 		c = c * 256 + c2;
 		c = (short)c;
 		dst = jmpbase + c;
-		if (used[dst] == 0)
 		{
+			struct label *l;
+			
 			strcat(name, "_args");
-			used[dst] = strdup(name);
+			l = malloc(sizeof(struct label));
+			l->name = strdup(name);
+			l->next = used[dst];
+			used[dst] = l;
 		}
-		fprintf(out, ",(y%s-jmpbase)/256,(y%s-jmpbase)&255\n", used[dst], used[dst]);
+		fprintf(out, ",(y%s-jmpbase)/256,(y%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
 
 		offset += len + 6;
 	}
@@ -327,9 +343,11 @@ int main(void)
 		if (used[dst] == 0)
 		{
 			strcat(name, "_args");
-			used[dst] = strdup(name);
+			used[dst] = malloc(sizeof(struct label));
+			used[dst]->name = strdup(name);
+			used[dst]->next = NULL;
 		}
-		fprintf(out, "\t\t.dc.b (y%s-jmpbase)/256,(y%s-jmpbase)&255\n", used[dst], used[dst]);
+		fprintf(out, "\t\t.dc.b (y%s-jmpbase)/256,(y%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
 	}
 	fprintf(out, "\n");
 
@@ -347,10 +365,13 @@ int main(void)
 	}
 	fprintf(out, "offset = %05x\n", offset);
 	fprintf(out, "\n");
+
+	for (i = 0; i < (int)(sizeof(maptable) / sizeof(maptable[0])); i++)
+		maptable[i] = i;
 	
 	scan_table(fp, 0x57864, 0x57a67);
 	scan_table(fp, 0x57aa8, 0x57f20);
-	scan_table(fp, 0x57f6e, 0x592aa);
+	scan_table(fp, 0x57f6e, 0x5862c);
 	scan_table(fp, 0x58798, 0x5883e);
 	scan_table(fp, 0x58d18, 0x592a8);
 
@@ -358,7 +379,7 @@ int main(void)
 	fprintf(out, "\n");
 	dump_table(fp, 0x57aa8, 0x57f20, 0x43992);
 	fprintf(out, "\n");
-	dump_table(fp, 0x57f6e, 0x592aa, 0x439A8);
+	dump_table(fp, 0x57f6e, 0x5862c, 0x439A8);
 	fprintf(out, "\n");
 	dump_table(fp, 0x58798, 0x5883e, 0x43B0A);
 	fprintf(out, "\n");

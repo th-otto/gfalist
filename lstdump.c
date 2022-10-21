@@ -3,12 +3,18 @@
 #include <stdlib.h>
 
 FILE *out;
-char *used[1048576];
+struct label {
+	struct label *next;
+	char *name;
+};
+struct label *used[1048576];
 int funcused[1048576];
 int label;
 int funclabel;
 
 #define jmpbase 0x13696
+
+static int maptable[500];
 
 static void scan_table(FILE *fp, int offset, int end)
 {
@@ -20,8 +26,10 @@ static void scan_table(FILE *fp, int offset, int end)
 	if (used[offset] == 0)
 	{
 		++label;
-		used[offset] = malloc(20);
-		sprintf(used[offset], "%d", label);
+		used[offset] = malloc(sizeof(struct label));
+		used[offset]->name = malloc(20);
+		used[offset]->next = NULL;
+		sprintf(used[offset]->name, "%d", maptable[label]);
 	}
 	while (offset < end)
 	{
@@ -63,8 +71,10 @@ static void scan_table(FILE *fp, int offset, int end)
 			if (used[dst] == 0)
 			{
 				++label;
-				used[dst] = malloc(20);
-				sprintf(used[dst], "%d", label);
+				used[dst] = malloc(sizeof(struct label));
+				used[dst]->name = malloc(20);
+				used[dst]->next = NULL;
+				sprintf(used[dst]->name, "%d", maptable[label]);
 			}
 			offset += 3;
 			break;
@@ -101,7 +111,9 @@ static void dump_table(FILE *fp, int offset, int end, int diffbase)
 	{
 		if (used[offset])
 		{
-			fprintf(out, "y%s:\n", used[offset]);
+			struct label *l;
+			for (l = used[offset]; l; l = l->next)
+				fprintf(out, "y%s:\n", l->name);
 		}
 		c = fgetc(fp);
 		switch (c)
@@ -138,7 +150,7 @@ static void dump_table(FILE *fp, int offset, int end, int diffbase)
 			c = c * 256 + c2;
 			c = (short)c;
 			dst = jmpbase + c;
-			fprintf(out, "\t.dc.b -1,(y%s-jmpbase)/256,(y%s-jmpbase)&255\n", used[dst], used[dst]);
+			fprintf(out, "\t.dc.b -1,(y%s-jmpbase)/256,(y%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
 			offset += 3;
 			break;
 		case 240:
@@ -276,12 +288,16 @@ int main(void)
 		c = c * 256 + c2;
 		c = (short)c;
 		dst = jmpbase + c;
-		if (used[dst] == 0)
 		{
+			struct label *l;
+			
 			strcat(name, "_args");
-			used[dst] = strdup(name);
+			l = malloc(sizeof(struct label));
+			l->name = strdup(name);
+			l->next = used[dst];
+			used[dst] = l;
 		}
-		fprintf(out, ",(y%s-jmpbase)/256,(y%s-jmpbase)&255\n", used[dst], used[dst]);
+		fprintf(out, ",(y%s-jmpbase)/256,(y%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
 
 		offset += len + 6;
 	}
@@ -327,9 +343,11 @@ int main(void)
 		if (used[dst] == 0)
 		{
 			strcat(name, "_args");
-			used[dst] = strdup(name);
+			used[dst] = malloc(sizeof(struct label));
+			used[dst]->name = strdup(name);
+			used[dst]->next = NULL;
 		}
-		fprintf(out, "\t\t.dc.b (y%s-jmpbase)/256,(y%s-jmpbase)&255\n", used[dst], used[dst]);
+		fprintf(out, "\t\t.dc.b (y%s-jmpbase)/256,(y%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
 	}
 	fprintf(out, "\n");
 
@@ -347,6 +365,68 @@ int main(void)
 	}
 	fprintf(out, "offset = %05x\n", offset);
 	fprintf(out, "\n");
+
+	for (i = 0; i < (int)(sizeof(maptable) / sizeof(maptable[0])); i++)
+		maptable[i] = i;
+	maptable[182] = 191;
+	maptable[181] = 190;
+	maptable[180] = 189;
+	maptable[179] = 188;
+	maptable[178] = 187;
+	maptable[177] = 186;
+	maptable[176] = 185;
+	maptable[175] = 184;
+	maptable[174] = 183;
+	maptable[173] = 182;
+	maptable[172] = 181;
+	maptable[171] = 180;
+	maptable[170] = 179;
+	maptable[169] = 9169;
+	maptable[168] = 178;
+	maptable[167] = 177;
+	maptable[166] = 176;
+	maptable[165] = 175;
+	maptable[164] = 174;
+	maptable[163] = 173;
+	maptable[162] = 172;
+	maptable[161] = 171;
+	maptable[160] = 170;
+	maptable[159] = 169;
+	maptable[158] = 168;
+	maptable[157] = 167;
+	maptable[156] = 166;
+	maptable[155] = 165;
+	maptable[153] = 163;
+	maptable[152] = 162;
+	maptable[151] = 161;
+	maptable[150] = 160;
+	maptable[149] = 159;
+	maptable[148] = 158;
+	maptable[147] = 157;
+	maptable[146] = 156;
+	maptable[145] = 155;
+	maptable[144] = 154;
+	maptable[143] = 153;
+	maptable[142] = 152;
+	maptable[141] = 151;
+	maptable[140] = 147;
+	maptable[139] = 146;
+	maptable[138] = 145;
+	maptable[137] = 144;
+	maptable[136] = 143;
+	maptable[79] = 78;
+	maptable[78] = 77;
+	maptable[77] = 76;
+	maptable[76] = 75;
+	maptable[75] = 74;
+	maptable[74] = 73;
+	maptable[73] = 72;
+	maptable[72] = 71;
+	maptable[71] = 70;
+	maptable[70] = 69;
+	maptable[69] = 68;
+	maptable[68] = 67;
+	maptable[67] = 66;
 	
 	scan_table(fp, 0x13ed2, 0x140d6);
 	scan_table(fp, 0x14116, 0x14578);
@@ -364,6 +444,6 @@ int main(void)
 	fprintf(out, "\n");
 	dump_table(fp, 0x14ee8, 0x152e4, 0);
 	fprintf(out, "\n");
-	
+
 	return 0;
 }
