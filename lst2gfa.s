@@ -11484,6 +11484,25 @@ x14fa6:
 	.dc.b -4
 
 	.IFNE GBE
+ySCALL_args:
+	.dc.b -1,(x14346-jmpbase)/256,(x14346-jmpbase)&255
+	.dc.b 70
+	.dc.b -4
+	.dc.b -1,(x14346-jmpbase)/256,(x14346-jmpbase)&255
+	.dc.b 33
+	.dc.b -1,(x14346-jmpbase)/256,(x14346-jmpbase)&255
+	.dc.b 32
+	.dc.b -4
+	.dc.b -1,(x14f9b-jmpbase)/256,(x14f9b-jmpbase)&255
+	.dc.b 33
+	.dc.b -1,(x14346-jmpbase)/256,(x14346-jmpbase)&255
+	.dc.b 33
+	.dc.b -1,(x14346-jmpbase)/256,(x14346-jmpbase)&255
+	.dc.b 32
+	.dc.b -4
+	.dc.b -1,(x14f9b-jmpbase)/256,(x14f9b-jmpbase)&255
+	.dc.b 32
+	.dc.b -4
 	.ENDC
 
 x14fae:
@@ -11747,11 +11766,11 @@ x1506f:
 	.dc.b 32
 	.dc.b -3
 	.dc.b 179
-	.dc.b -1,(y159-jmpbase)/256,(y159-jmpbase)&255
+	.dc.b -1,(x14fa6-jmpbase)/256,(x14fa6-jmpbase)&255
 	.dc.b 32
 	.dc.b -3
 	.dc.b 180
-	.dc.b -1,(y159-jmpbase)/256,(y159-jmpbase)&255
+	.dc.b -1,(x14fa6-jmpbase)/256,(x14fa6-jmpbase)&255
 	.dc.b 32
 	.dc.b -3
 .ENDC
