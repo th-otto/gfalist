@@ -1,5 +1,5 @@
 FOR_LIB = 0
-GBE = 0
+GBE = 1
 STRANGE_CHECK = 1
 
 
@@ -419,7 +419,11 @@ x10004_2:
 x10004_3:
 		lea.l      lowercase_filenames(pc),a0
 		move.w     d1,(a0)
+		.IFNE GBE /* YYY */
+		lea.l      reading_msg,a0
+		.ELSE
 		lea.l      reading_msg(pc),a0
+		.ENDC
 		bsr        printstr
 		movea.l    baspag(a6),a0
 		lea.l      129(a0),a0
@@ -446,11 +450,23 @@ x1007a_1:
 		move.l     d0,-(a7)
 		move.l     x10302(pc),d0
 		bsr        print_decimal
+		.IFNE GBE
+		lea.l      lines_msg,a0
+		.ELSE
 		lea.l      lines_msg(pc),a0
+		.ENDC
 		bsr        printstr
+		.IFNE GBE /* YYY */
+		move.l     x16786+6,d0
+		.ELSE
 		move.l     x16786+6(pc),d0
+		.ENDC
 		bsr        print_decimal
+		.IFNE GBE /* YYY */
+		lea.l      bytes_msg,a0
+		.ELSE
 		lea.l      bytes_msg(pc),a0
+		.ENDC
 		bsr        printstr
 		move.w     d6,d0
 		cmpi.w     #6,d0
@@ -469,7 +485,11 @@ x1007a_2:
 x1007a_3:
 		move.l     6(a0),d0
 		bsr        print_decimal
+		.IFNE GBE /* YYY */
+		lea.l      exitcode_msg,a0
+		.ELSE
 		lea.l      exitcode_msg(pc),a0
+		.ENDC
 		bsr        printstr
 		move.l     x10306(pc),d0
 		bne.s      x1007a_5
@@ -490,14 +510,22 @@ exit:
 
 x1007a_5:
 		bsr        print_decimal
+		.IFNE GBE /* YYY */
+		lea.l      x16780,a0
+		.ELSE
 		lea.l      x16780(pc),a0
+		.ENDC
 		move.w     #0x0200,(a0)
 		moveq.l    #0,d1
 x1007a_6:
 		lea.l      x10306(pc),a1
 		subq.l     #1,(a1)
 		bmi.s      x1007a_10
+		.IFNE GBE /* YYY */
+		movea.l    x16782,a1
+		.ELSE
 		movea.l    x16782(pc),a1
+		.ENDC
 		move.l     a1,d0
 		beq.s      x1007a_10
 		move.w     d1,d0
@@ -512,10 +540,18 @@ x1007a_7:
 		divu.w     #10,d2
 		tst.w      d2
 		bne.s      x1007a_7
+		.IFNE GBE /* YYY */
+		lea.l      x16780,a0
+		.ELSE
 		lea.l      x16780(pc),a0
+		.ENDC
 		move.w     (a0),d2
 		add.w      d3,d2
+		.IFNE GBE /* YYY */
+		cmp.w      columns,d2
+		.ELSE
 		cmp.w      columns(pc),d2
+		.ENDC
 		blt.s      x1007a_8
 		subq.w     #1,d3
 		move.w     d3,(a0)
@@ -536,31 +572,63 @@ x1007a_10:
 		bra.s      x101d0
 
 ERROR:
+		.IFNE GBE /* YYY */
+		lea.l      error_str,a0
+		.ELSE
 		lea.l      error_str(pc),a0
+		.ENDC
 		bra.s      failure
 
 x10194:
+		.IFNE GBE /* YYY */
+		lea.l      usage_msg,a0
+		.ELSE
 		lea.l      usage_msg(pc),a0
+		.ENDC
 		bra.s      failure_1
 stackoverflow:
+		.IFNE GBE /* YYY */
+		lea.l      stack_overflow_msg,a0
+		.ELSE
 		lea.l      stack_overflow_msg(pc),a0
+		.ENDC
 		bra.s      failure
 x10194_1:
 		bsr        x1022c
 		bra.s      failure
 x10194_2:
+		.IFNE GBE /* YYY */
+		lea.l      notalst_msg,a0
+		.ELSE
 		lea.l      notalst_msg(pc),a0
+		.ENDC
 x101aa:
+		.IFNE GBE /* YYY */
+		lea.l      open_err_msg,a0
+		.ELSE
 		lea.l      open_err_msg(pc),a0
+		.ENDC
 		bra.s      failure
 x10194_3:
+		.IFNE GBE /* YYY */
+		lea.l      save_err_msg,a0
+		.ELSE
 		lea.l      save_err_msg(pc),a0
+		.ENDC
 		bra.s      failure
 x10194_4:
+		.IFNE GBE /* YYY */
+		lea.l      load_err_msg,a0
+		.ELSE
 		lea.l      load_err_msg(pc),a0
+		.ENDC
 
 failure:
+		.IFNE GBE /* YYY */
+		pea.l      att_msg
+		.ELSE
 		pea.l      att_msg(pc)
+		.ENDC
 		bra.s      failure_2
 failure_1:
 		clr.l      -(a7)
@@ -573,9 +641,17 @@ failure_2:
 
 x101d0:
 		bsr.w      printnl
+		.IFNE GBE /* YYY */
+		move.w     mtask,d0
+		.ELSE
 		move.w     mtask(pc),d0
+		.ENDC
 		bne.s      x101d0_1
+		.IFNE GBE /* YYY */
+		lea.l      waitkey_msg,a0
+		.ELSE
 		lea.l      waitkey_msg(pc),a0
+		.ENDC
 		bsr.w      printstr
 		move.w     #7,-(a7) /* Crawcin */
 		trap       #1
@@ -593,7 +669,11 @@ x101f0:
 		addq.l     #8,a7
 		tst.w      d0
 		bmi.s      x101aa
+		.IFNE GBE /* YYY */
+		lea.l      x16786,a1
+		.ELSE
 		lea.l      x16786(pc),a1
+		.ENDC
 		move.w     d0,d1
 		add.w      d1,d1
 		add.w      d0,d1
@@ -625,7 +705,11 @@ copy32b_1:
 		rts
 
 printnl:
+		.IFNE GBE /* YYY */
+		lea.l      crnl,a0
+		.ELSE
 		lea.l      crnl(pc),a0
+		.ENDC
 printstr:
 		movem.l    d0-d2/a0-a2,-(a7)
 		pea.l      (a0)
@@ -730,7 +814,11 @@ x1030a:
 		adda.l     4(a7),a0
 		movem.l    d1-d3/a1-a2,-(a7)
 		lea.l      -64(a7),a7
+		.IFNE GBE /* YYY */
+		lea.l      x16778,a1
+		.ELSE
 		lea.l      x16778(pc),a1
+		.ENDC
 		move.l     (a1),d1
 		clr.l      (a1)
 		cmp.l      d1,d0
@@ -799,7 +887,11 @@ x1030a_4:
 		addq.l     #4,a7
 		tst.w      d0
 		bmi.s      x1030a_11
+		.IFNE GBE /* YYY */
+		lea.l      inline_msg,a0
+		.ELSE
 		lea.l      inline_msg(pc),a0
+		.ENDC
 		bsr        printstr
 		lea.l      (a7),a0
 x1030a_5:
@@ -808,7 +900,11 @@ x1030a_5:
 		bsr        cconout
 		move.l     d3,d0
 		bsr        print_decimal
+		.IFNE GBE /* YYY */
+		lea.l      bytes_read_msg,a0
+		.ELSE
 		lea.l      bytes_read_msg(pc),a0
+		.ENDC
 x1030a_6:
 		bsr        printstr
 x1030a_7:
@@ -816,19 +912,35 @@ x1030a_7:
 		movem.l    (a7)+,d1-d3/a1-a2
 		rts
 x1030a_8:
+		.IFNE GBE /* YYY */
+		lea.l      inline_msg,a0
+		.ELSE
 		lea.l      inline_msg(pc),a0
+		.ENDC
 		bsr        printstr
 		lea.l      (a7),a0
 		bsr        printstr
+		.IFNE GBE /* YYY */
+		lea.l      cannot_open_msg,a0
+		.ELSE
 		lea.l      cannot_open_msg(pc),a0
+		.ENDC
 x1030a_9:
 		bra.s      x1030a_6
 x1030a_10:
+		.IFNE GBE /* YYY */
+		lea.l      inline_msg,a0
+		.ELSE
 		lea.l      inline_msg(pc),a0
+		.ENDC
 		bsr        printstr
 		lea.l      (a7),a0
 		bsr        printstr
+		.IFNE GBE /* YYY */
+		lea.l      cannot_read_msg,a0
+		.ELSE
 		lea.l      cannot_read_msg(pc),a0
+		.ENDC
 		bsr        printstr
 		move.w     d3,-(a7)
 		move.w     #62,-(a7) /* Fclose */
@@ -836,15 +948,27 @@ x1030a_10:
 		addq.l     #4,a7
 		bra.s      x1030a_7
 x1030a_11:
+		.IFNE GBE /* YYY */
+		lea.l      inline_msg,a0
+		.ELSE
 		lea.l      inline_msg(pc),a0
+		.ENDC
 		bsr        printstr
 		lea.l      (a7),a0
 		bsr        printstr
+		.IFNE GBE /* YYY */
+		lea.l      cannot_close_msg,a0
+		.ELSE
 		lea.l      cannot_close_msg(pc),a0
+		.ENDC
 		bra.s      x1030a_5
 x1030a_12:
 		addq.l     #8,a7
+		.IFNE GBE /* YYY */
+		lea.l      not_inline_msg,a0
+		.ELSE
 		lea.l      not_inline_msg(pc),a0
+		.ENDC
 		bsr        printstr
 		lea.l      1106(a6),a0
 x1030a_13:
@@ -857,7 +981,11 @@ x1030a_13:
 		bsr        printstr
 		movem.l    (a7)+,d0/a0
 		move.b     d0,(a0)
+		.IFNE GBE /* YYY */
+		lea.l      crnl,a0
+		.ELSE
 		lea.l      crnl(pc),a0
+		.ENDC
 		bra.s      x1030a_9
 
 lowercase_filenames: .dc.w 0
@@ -885,11 +1013,19 @@ x1047e:
 		.dc.w       0x0000
 
 startup:
+		.IFNE GBE /* YYY */
+		pea.l      find_mtask
+		.ELSE
 		pea.l      find_mtask(pc)
+		.ENDC
 		move.w     #38,-(a7) /* Supexec */
 		trap       #14
 		addq.l     #6,a7
+		.IFNE GBE /* YYY */
+		move.w     mtask,d0
+		.ELSE
 		move.w     mtask(pc),d0
+		.ENDC
 		beq.s      startup_5
 		lea.l      _entry-212(pc),a0 /* get environment ptr from basepage */
 		move.l     (a0),d0
@@ -954,9 +1090,17 @@ startup_6:
 startup_7:
 		moveq.l    #80,d0
 startup_8:
+		.IFNE GBE /* YYY */
+		lea.l      columns,a0
+		.ELSE
 		lea.l      columns(pc),a0
+		.ENDC
 		move.w     d0,(a0)
+		.IFNE GBE /* YYY */
+		lea.l      x16768,a0
+		.ELSE
 		lea.l      x16768(pc),a0
+		.ENDC
 		move.l     #0x40ACEAD6,d0 /* d0 = 2056756B ' Vuk' */
 		ror.l      #1,d0
 		move.l     d0,(a0)+
@@ -968,9 +1112,17 @@ startup_8:
 		move.l     d0,(a0)+
 		move.w     #0x2000,(a0)
 		bsr        printnl
+		.IFNE GBE /* YYY */
+		lea.l      x16768,a0
+		.ELSE
 		lea.l      x16768(pc),a0
+		.ENDC
 		bsr        printstr
+		.IFNE GBE /* YYY */
+		lea.l      version_msg,a0
+		.ELSE
 		lea.l      version_msg(pc),a0
+		.ENDC
 		bsr        printstr
 		jmp        main.l
 
@@ -1973,7 +2125,11 @@ main_2:
 		clr.w      -(a7)
 		move.w     #74,-(a7) /* Mshrink */
 		trap       #1
+		.IFNE GBE /* YYY */
+		jsr        x16534
+		.ELSE
 		bsr        x16534
+		.ENDC
 		jsr        x11a44.l
 		.dc.w 0xa000 /* ALINE      #0 */
 		move.l     a1,200(a6)
@@ -2716,7 +2872,11 @@ x1142c:
 		pea.l      (a1)
 		move.w     d0,-(a7)
 	.IFNE STRANGE_CHECK
+		.IFNE GBE /* YYY */
+		lea.l      x16768-8196,a0
+		.ELSE
 		lea.l      x16768-8196(pc),a0
+		.ENDC
 		lea.l      8196(a0),a0 /* a0 = 00016768 */
 		move.l     #0x8159D5AC,d0
 		ror.l      #2,d0 /* d0 = 2056756B ' Vuk' */
@@ -2750,11 +2910,19 @@ x11480:
 		move.w     #62,-(a7) /* Fclose */
 		trap       #1
 		addq.l     #4,a7  /* leave filename on stack */
+		.IFNE GBE /* YYY */
+		lea.l      file_msg,a0
+		.ELSE
 		lea.l      file_msg(pc),a0
+		.ENDC
 		bsr        printstr
 		movea.l    (a7),a0
 		bsr        printstr
+		.IFNE GBE /* YYY */
+		lea.l      already_exists_msg,a0
+		.ELSE
 		lea.l      already_exists_msg(pc),a0
+		.ENDC
 		bsr        printstr
 		movea.l    (a7),a1
 		lea.l      850(a6),a0
@@ -2795,7 +2963,11 @@ x11480_6:
 		addq.l     #2,a7
 		tst.l      d0
 		bmi.s      x11480_7
+		.IFNE GBE /* YYY */
+		lea.l      deleted_file_msg,a0
+		.ELSE
 		lea.l      deleted_file_msg(pc),a0
+		.ENDC
 		bsr        printstr
 		lea.l      850(a6),a0
 		bsr        printstr
@@ -2808,11 +2980,19 @@ x11480_7:
 		lea.l      12(a7),a7
 		tst.l      d0
 		bmi.s      x11480_8
+		.IFNE GBE /* YYY */
+		lea.l      renamed_file_msg,a0
+		.ELSE
 		lea.l      renamed_file_msg(pc),a0
+		.ENDC
 		bsr        printstr
 		movea.l    (a7),a0
 		bsr        printstr
+		.IFNE GBE /* YYY */
+		lea.l      to_msg,a0
+		.ELSE
 		lea.l      to_msg(pc),a0
+		.ENDC
 		bsr        printstr
 		lea.l      850(a6),a0
 		bsr        printstr
@@ -2978,7 +3158,11 @@ x1160e_14:
 		cmpi.l     #8192-1,d1
 		bgt.s      x1160e_15
 		lsl.w      #2,d1
+		.IFNE GBE /* YYY */
+		lea.l      x16782,a1
+		.ELSE
 		lea.l      x16782(pc),a1
+		.ENDC
 		tst.l      (a1)
 		beq.s      x1160e_15
 		movea.l    (a1),a1
@@ -3014,7 +3198,11 @@ x1160e_17:
 x1160e_18:
 		addq.l     #3,a1
 		move.l     (a1)+,d1
+		.IFNE GBE /* YYY */
+		lea.l      x16778,a2
+		.ELSE
 		lea.l      x16778(pc),a2
+		.ENDC
 		move.l     d1,(a2)
 		add.l      d0,d1
 		addq.l     #1,d1
@@ -3423,41 +3611,41 @@ x11af6: .dc.l 0
 cmd_table: /* 11afa */
 		.dc.b 0
 		.ascii "!"
-		.dc.b ((115*2)/256),((115*2)&255),(x1465e-jmpbase)/256,(x1465e-jmpbase)&255
+		.dc.b ((115*2)/256),((115*2)&255),(REM_args-jmpbase)/256,(REM_args-jmpbase)&255
 		.dc.b 1
 		.ascii "//"
-		.dc.b ((115*2)/256),((115*2)&255),(x1465e-jmpbase)/256,(x1465e-jmpbase)&255
+		.dc.b ((115*2)/256),((115*2)&255),(REM_args-jmpbase)/256,(REM_args-jmpbase)&255
 		.dc.b 1
 		.ascii "/*"
-		.dc.b ((115*2)/256),((115*2)&255),(x1465e-jmpbase)/256,(x1465e-jmpbase)&255
+		.dc.b ((115*2)/256),((115*2)&255),(REM_args-jmpbase)/256,(REM_args-jmpbase)&255
 		.dc.b 0
 		.ascii "'"
-		.dc.b ((115*2)/256),((115*2)&255),(x1465e-jmpbase)/256,(x1465e-jmpbase)&255
+		.dc.b ((115*2)/256),((115*2)&255),(REM_args-jmpbase)/256,(REM_args-jmpbase)&255
 		.dc.b 0
 		.ascii "*"
-		.dc.b ((121*2)/256),((121*2)&255),(x144c0-jmpbase)/256,(x144c0-jmpbase)&255
+		.dc.b ((121*2)/256),((121*2)&255),(star_args-jmpbase)/256,(star_args-jmpbase)&255
 		.dc.b 0
 		.ascii "."
-		.dc.b ((254*2)/256),((254*2)&255),(x1465e-jmpbase)/256,(x1465e-jmpbase)&255
+		.dc.b ((254*2)/256),((254*2)&255),(REM_args-jmpbase)/256,(REM_args-jmpbase)&255
 		.dc.b 2
 		.ascii "==>"
-		.dc.b ((116*2)/256),((116*2)&255),(x1465e-jmpbase)/256,(x1465e-jmpbase)&255
+		.dc.b ((116*2)/256),((116*2)&255),(REM_args-jmpbase)/256,(REM_args-jmpbase)&255
 		.dc.b 0
 		.ascii "?"
 		.dc.b ((147*2)/256),((147*2)&255),(yPRINT_args-jmpbase)/256,(yPRINT_args-jmpbase)&255
 		.dc.b 0
 		.ascii "$"
-		.dc.b ((411*2)/256),((411*2)&255),(x1465e-jmpbase)/256,(x1465e-jmpbase)&255
+		.dc.b ((411*2)/256),((411*2)&255),(REM_args-jmpbase)/256,(REM_args-jmpbase)&255
 		.dc.b 0
 		.ascii "@"
-		.dc.b ((62*2)/256),((62*2)&255),(x1495a-jmpbase)/256,(x1495a-jmpbase)&255
+		.dc.b ((62*2)/256),((62*2)&255),(yGOSUB_args-jmpbase)/256,(yGOSUB_args-jmpbase)&255
 cmd_a_table: /* 11b3a */
 		.dc.b 4
 		.ascii "ALERT"
 		.dc.b ((256*2)/256),((256*2)&255),(yALERT_args-jmpbase)/256,(yALERT_args-jmpbase)&255
 		.dc.b 2
 		.ascii "ADD"
-		.dc.b ((176*2)/256),((176*2)&255),(x142c4-jmpbase)/256,(x142c4-jmpbase)&255
+		.dc.b ((176*2)/256),((176*2)&255),(yADD_args-jmpbase)/256,(yADD_args-jmpbase)&255
 		.dc.b 4
 		.ascii "ALINE"
 		.dc.b ((90*2)/256),((90*2)&255),(yALINE_args-jmpbase)/256,(yALINE_args-jmpbase)&255
@@ -3476,27 +3664,27 @@ cmd_a_table: /* 11b3a */
 cmd_addrin:
 		.dc.b 6
 		.ascii "ADDRIN("
-		.dc.b ((224*2)/256),((224*2)&255),(x14152-jmpbase)/256,(x14152-jmpbase)&255
+		.dc.b ((224*2)/256),((224*2)&255),(yADDRIN_args-jmpbase)/256,(yADDRIN_args-jmpbase)&255
 cmd_addrout:
 		.dc.b 7
 		.ascii "ADDROUT("
-		.dc.b ((225*2)/256),((225*2)&255),(x14152-jmpbase)/256,(x14152-jmpbase)&255
+		.dc.b ((225*2)/256),((225*2)&255),(yADDROUT_args-jmpbase)/256,(yADDROUT_args-jmpbase)&255
 		.dc.b 7
 		.ascii "ABSOLUTE"
 		.dc.b ((253*2)/256),((253*2)&255),(yABSOLUTE_args-jmpbase)/256,(yABSOLUTE_args-jmpbase)&255
 		.dc.b 4
 		.ascii "AFTER"
-		.dc.b ((365*2)/256),((365*2)&255),(x148b7-jmpbase)/256,(x148b7-jmpbase)&255
+		.dc.b ((365*2)/256),((365*2)&255),(yAFTER_args-jmpbase)/256,(yAFTER_args-jmpbase)&255
 		.dc.b 4
 		.ascii "ATEXT"
 		.dc.b ((113*2)/256),((113*2)&255),(yATEXT_args-jmpbase)/256,(yATEXT_args-jmpbase)&255
 		.dc.b 8
 		.ascii "ARRAYFILL"
-		.dc.b ((397*2)/256),((397*2)&255),(x14a66-jmpbase)/256,(x14a66-jmpbase)&255
+		.dc.b ((397*2)/256),((397*2)&255),(yARRAYFILL_args-jmpbase)/256,(yARRAYFILL_args-jmpbase)&255
 	.IFNE GBE
 		.dc.b 5
 		.ascii "AMOUSE"
-		.dc.b ((474*2)/256),((474*2)&255),(yBOUNDARY_args-jmpbase)/256,(yBOUNDARY_args-jmpbase)&255
+		.dc.b ((474*2)/256),((474*2)&255),(yAMOUSE_args-jmpbase)/256,(yAMOUSE_args-jmpbase)&255
 		.dc.b 10
 		.ascii "AVERAGE_RGB"
 		.dc.b ((473*2)/256),((473*2)&255),(yAVERAGE_RGB_args-jmpbase)/256,(yAVERAGE_RGB_args-jmpbase)&255
@@ -3504,7 +3692,7 @@ cmd_addrout:
 cmd_b_table: /* 11bc6 */
 		.dc.b 4
 		.ascii "BMOVE"
-		.dc.b ((213*2)/256),((213*2)&255),(x14461-jmpbase)/256,(x14461-jmpbase)&255
+		.dc.b ((213*2)/256),((213*2)&255),(yBMOVE_args-jmpbase)/256,(yBMOVE_args-jmpbase)&255
 		.dc.b 4
 		.ascii "BYTE{"
 		.dc.b ((234*2)/256),((234*2)&255),(yBYTE_args-jmpbase)/256,(yBYTE_args-jmpbase)&255
@@ -3513,35 +3701,35 @@ cmd_b_table: /* 11bc6 */
 		.dc.b ((287*2)/256),((287*2)&255),(yBOX_args-jmpbase)/256,(yBOX_args-jmpbase)&255
 		.dc.b 3
 		.ascii "BGET"
-		.dc.b ((111*2)/256),((111*2)&255),(x14b22-jmpbase)/256,(x14b22-jmpbase)&255
+		.dc.b ((111*2)/256),((111*2)&255),(yBGET_args-jmpbase)/256,(yBGET_args-jmpbase)&255
 		.dc.b 3
 		.ascii "BPUT"
-		.dc.b ((112*2)/256),((112*2)&255),(x14b22-jmpbase)/256,(x14b22-jmpbase)&255
+		.dc.b ((112*2)/256),((112*2)&255),(yBPUT_args-jmpbase)/256,(yBPUT_args-jmpbase)&255
 		.dc.b 7
 		.ascii "BOUNDARY"
 		.dc.b ((387*2)/256),((387*2)&255),(yBOUNDARY_args-jmpbase)/256,(yBOUNDARY_args-jmpbase)&255
 		.dc.b 5
 		.ascii "BITBLT"
-		.dc.b ((399*2)/256),((399*2)&255),(x14a78-jmpbase)/256,(x14a78-jmpbase)&255
+		.dc.b ((399*2)/256),((399*2)&255),(yBITBLT_args-jmpbase)/256,(yBITBLT_args-jmpbase)&255
 		.dc.b 4
 		.ascii "BSAVE"
-		.dc.b ((404*2)/256),((404*2)&255),(x146d6-jmpbase)/256,(x146d6-jmpbase)&255
+		.dc.b ((404*2)/256),((404*2)&255),(yBSAVE_args-jmpbase)/256,(yBSAVE_args-jmpbase)&255
 		.dc.b 4
 		.ascii "BLOAD"
-		.dc.b ((405*2)/256),((405*2)&255),(x146e1-jmpbase)/256,(x146e1-jmpbase)&255
+		.dc.b ((405*2)/256),((405*2)&255),(yBLOAD_args-jmpbase)/256,(yBLOAD_args-jmpbase)&255
 	.IFNE GBE
 		.dc.b 3
 		.ascii "BEXG"
-		.dc.b ((638*2)/256),((638*2)&255),(yBMOVE_args-jmpbase)/256,(yBMOVE_args-jmpbase)&255
+		.dc.b ((638*2)/256),((638*2)&255),(yBEXG_args-jmpbase)/256,(yBEXG_args-jmpbase)&255
 		.dc.b 6
 		.ascii "BMIRROR"
 		.dc.b ((544*2)/256),((544*2)&255),(yBMIRROR_args-jmpbase)/256,(yBMIRROR_args-jmpbase)&255
 		.dc.b 4
 		.ascii "BZERO"
-		.dc.b ((462*2)/256),((462*2)&255),(yBMIRROR_args-jmpbase)/256,(yBMIRROR_args-jmpbase)&255
+		.dc.b ((462*2)/256),((462*2)&255),(yBZERO_args-jmpbase)/256,(yBZERO_args-jmpbase)&255
 		.dc.b 4
 		.ascii "BFILL"
-		.dc.b ((463*2)/256),((463*2)&255),(yBMOVE_args-jmpbase)/256,(yBMOVE_args-jmpbase)&255
+		.dc.b ((463*2)/256),((463*2)&255),(yBFILL_args-jmpbase)/256,(yBFILL_args-jmpbase)&255
 		.dc.b 3
 		.ascii "BEEP"
 		.dc.b ((465*2)/256),((465*2)&255),(yBEEP_args-jmpbase)/256,(yBEEP_args-jmpbase)&255
@@ -3550,81 +3738,81 @@ cmd_b_table: /* 11bc6 */
 		.dc.b ((477*2)/256),((477*2)&255),(yBCRYPT_args-jmpbase)/256,(yBCRYPT_args-jmpbase)&255
 		.dc.b 5
 		.ascii "BXLATE"
-		.dc.b ((464*2)/256),((464*2)&255),(yBCRYPT_args-jmpbase)/256,(yBCRYPT_args-jmpbase)&255
+		.dc.b ((464*2)/256),((464*2)&255),(yBXLATE_args-jmpbase)/256,(yBXLATE_args-jmpbase)&255
 		.dc.b 7
 		.ascii "BREPLACE"
-		.dc.b ((535*2)/256),((535*2)&255),(yBOX_args-jmpbase)/256,(yBOX_args-jmpbase)&255
+		.dc.b ((535*2)/256),((535*2)&255),(yBREPLACE_args-jmpbase)/256,(yBREPLACE_args-jmpbase)&255
 		.dc.b 9
 		.ascii "BF_OBSPEC("
-		.dc.b ((582*2)/256),((582*2)&255),(yOB_NEXT_args-jmpbase)/256,(yOB_NEXT_args-jmpbase)&255
+		.dc.b ((582*2)/256),((582*2)&255),(yBF_OBSPEC_args-jmpbase)/256,(yBF_OBSPEC_args-jmpbase)&255
 		.dc.b 12
 		.ascii "BF_CHARACTER("
-		.dc.b ((583*2)/256),((583*2)&255),(yOB_NEXT_args-jmpbase)/256,(yOB_NEXT_args-jmpbase)&255
+		.dc.b ((583*2)/256),((583*2)&255),(yBF_CHARACTER_args-jmpbase)/256,(yBF_CHARACTER_args-jmpbase)&255
 		.dc.b 12
 		.ascii "BF_FRAMESIZE("
-		.dc.b ((584*2)/256),((584*2)&255),(yOB_NEXT_args-jmpbase)/256,(yOB_NEXT_args-jmpbase)&255
+		.dc.b ((584*2)/256),((584*2)&255),(yBF_FRAMESIZE_args-jmpbase)/256,(yBF_FRAMESIZE_args-jmpbase)&255
 		.dc.b 11
 		.ascii "BF_FRAMECOL("
-		.dc.b ((585*2)/256),((585*2)&255),(yOB_NEXT_args-jmpbase)/256,(yOB_NEXT_args-jmpbase)&255
+		.dc.b ((585*2)/256),((585*2)&255),(yBF_FRAMECOL_args-jmpbase)/256,(yBF_FRAMECOL_args-jmpbase)&255
 		.dc.b 10
 		.ascii "BF_TEXTCOL("
-		.dc.b ((586*2)/256),((586*2)&255),(yOB_NEXT_args-jmpbase)/256,(yOB_NEXT_args-jmpbase)&255
+		.dc.b ((586*2)/256),((586*2)&255),(yBF_TEXTCOL_args-jmpbase)/256,(yBF_TEXTCOL_args-jmpbase)&255
 		.dc.b 11
 		.ascii "BF_TEXTMODE("
-		.dc.b ((587*2)/256),((587*2)&255),(yOB_NEXT_args-jmpbase)/256,(yOB_NEXT_args-jmpbase)&255
+		.dc.b ((587*2)/256),((587*2)&255),(yBF_TEXTMODE_args-jmpbase)/256,(yBF_TEXTMODE_args-jmpbase)&255
 		.dc.b 14
 		.ascii "BF_FILLPATTERN("
-		.dc.b ((588*2)/256),((588*2)&255),(yOB_NEXT_args-jmpbase)/256,(yOB_NEXT_args-jmpbase)&255
+		.dc.b ((588*2)/256),((588*2)&255),(yBF_FILLPATTERN_args-jmpbase)/256,(yBF_FILLPATTERN_args-jmpbase)&255
 		.dc.b 14
 		.ascii "BF_INTERIORCOL("
-		.dc.b ((589*2)/256),((589*2)&255),(yOB_NEXT_args-jmpbase)/256,(yOB_NEXT_args-jmpbase)&255
+		.dc.b ((589*2)/256),((589*2)&255),(yBF_INTERIORCOL_args-jmpbase)/256,(yBF_INTERIORCOL_args-jmpbase)&255
 		.dc.b 8
 		.ascii "BI_PDATA("
-		.dc.b ((590*2)/256),((590*2)&255),(yOB_NEXT_args-jmpbase)/256,(yOB_NEXT_args-jmpbase)&255
+		.dc.b ((590*2)/256),((590*2)&255),(yBI_PDATA_args-jmpbase)/256,(yBI_PDATA_args-jmpbase)&255
 		.dc.b 5
 		.ascii "BI_WB("
-		.dc.b ((591*2)/256),((591*2)&255),(yOB_NEXT_args-jmpbase)/256,(yOB_NEXT_args-jmpbase)&255
+		.dc.b ((591*2)/256),((591*2)&255),(yBI_WB_args-jmpbase)/256,(yBI_WB_args-jmpbase)&255
 		.dc.b 5
 		.ascii "BI_HL("
-		.dc.b ((592*2)/256),((592*2)&255),(yOB_NEXT_args-jmpbase)/256,(yOB_NEXT_args-jmpbase)&255
+		.dc.b ((592*2)/256),((592*2)&255),(yBI_HL_args-jmpbase)/256,(yBI_HL_args-jmpbase)&255
 		.dc.b 4
 		.ascii "BI_X("
-		.dc.b ((593*2)/256),((593*2)&255),(yOB_NEXT_args-jmpbase)/256,(yOB_NEXT_args-jmpbase)&255
+		.dc.b ((593*2)/256),((593*2)&255),(yBI_X_args-jmpbase)/256,(yBI_X_args-jmpbase)&255
 		.dc.b 4
 		.ascii "BI_Y("
-		.dc.b ((594*2)/256),((594*2)&255),(yOB_NEXT_args-jmpbase)/256,(yOB_NEXT_args-jmpbase)&255
+		.dc.b ((594*2)/256),((594*2)&255),(yBI_Y_args-jmpbase)/256,(yBI_Y_args-jmpbase)&255
 		.dc.b 8
 		.ascii "BI_COLOR("
-		.dc.b ((595*2)/256),((595*2)&255),(yOB_NEXT_args-jmpbase)/256,(yOB_NEXT_args-jmpbase)&255
+		.dc.b ((595*2)/256),((595*2)&255),(yBI_COLOR_args-jmpbase)/256,(yBI_COLOR_args-jmpbase)&255
 	.ENDC
 cmd_c_table: /* 11c20 */
 		.dc.b 4
 		.ascii "COLOR"
-		.dc.b ((96*2)/256),((96*2)&255),(yBOUNDARY_args-jmpbase)/256,(yBOUNDARY_args-jmpbase)&255
+		.dc.b ((96*2)/256),((96*2)&255),(yCOLOR_args-jmpbase)/256,(yCOLOR_args-jmpbase)&255
 		.dc.b 3
 		.ascii "CASE"
-		.dc.b ((56*2)/256),((56*2)&255),(x14259-jmpbase)/256,(x14259-jmpbase)&255
+		.dc.b ((56*2)/256),((56*2)&255),(yCASE_args-jmpbase)/256,(yCASE_args-jmpbase)&255
 		.dc.b 3
 		.ascii "CONT"
-		.dc.b ((317*2)/256),((317*2)&255),(x1415e-jmpbase)/256,(x1415e-jmpbase)&255
+		.dc.b ((317*2)/256),((317*2)&255),(yCONT_args-jmpbase)/256,(yCONT_args-jmpbase)&255
 cmd_contrl:
 		.dc.b 6
 		.ascii "CONTRL("
-		.dc.b ((228*2)/256),((228*2)&255),(x14152-jmpbase)/256,(x14152-jmpbase)&255
+		.dc.b ((228*2)/256),((228*2)&255),(yCONTRL_args-jmpbase)/256,(yCONTRL_args-jmpbase)&255
 		.dc.b 4
 		.ascii "CARD{"
 		.dc.b ((233*2)/256),((233*2)&255),(yCARD_args-jmpbase)/256,(yCARD_args-jmpbase)&255
 		.dc.b 4
 		.ascii "CHAR{"
-		.dc.b ((235*2)/256),((235*2)&255),(x14175-jmpbase)/256,(x14175-jmpbase)&255
+		.dc.b ((235*2)/256),((235*2)&255),(yCHAR_args-jmpbase)/256,(yCHAR_args-jmpbase)&255
 	.IFNE GBE
 		.dc.b 4
 		.ascii "CHAR$"
-		.dc.b ((494*2)/256),((494*2)&255),(x58005-jmpbase)/256,(x58005-jmpbase)&255
+		.dc.b ((494*2)/256),((494*2)&255),(ySTRPOKE_args-jmpbase)/256,(ySTRPOKE_args-jmpbase)&255
 	.ENDC
 		.dc.b 4
 		.ascii "CLOSE"
-		.dc.b ((268*2)/256),((268*2)&255),(x14603-jmpbase)/256,(x14603-jmpbase)&255
+		.dc.b ((268*2)/256),((268*2)&255),(yCLOSE_args-jmpbase)/256,(yCLOSE_args-jmpbase)&255
 		.dc.b 4
 		.ascii "CLEAR"
 		.dc.b ((271*2)/256),((271*2)&255),(yCLEAR_args-jmpbase)/256,(yCLEAR_args-jmpbase)&255
@@ -3636,10 +3824,10 @@ cmd_contrl:
 		.dc.b ((311*2)/256),((311*2)&255),(yCHDIR_args-jmpbase)/256,(yCHDIR_args-jmpbase)&255
 		.dc.b 6
 		.ascii "CHDRIVE"
-		.dc.b ((312*2)/256),((312*2)&255),(x14494-jmpbase)/256,(x14494-jmpbase)&255
+		.dc.b ((312*2)/256),((312*2)&255),(yCHDRIVE_args-jmpbase)/256,(yCHDRIVE_args-jmpbase)&255
 		.dc.b 2
 		.ascii "CLR"
-		.dc.b ((314*2)/256),((314*2)&255),(x14aa9-jmpbase)/256,(x14aa9-jmpbase)&255
+		.dc.b ((314*2)/256),((314*2)&255),(yCLR_args-jmpbase)/256,(yCLR_args-jmpbase)&255
 		.dc.b 2
 		.ascii "CLS"
 		.dc.b ((315*2)/256),((315*2)&255),(yCLS_args-jmpbase)/256,(yCLS_args-jmpbase)&255
@@ -3658,60 +3846,60 @@ cmd_contrl:
 	.IFNE GBE
 		.dc.b 2
 		.ascii "C2P"
-		.dc.b ((507*2)/256),((507*2)&255),(yBOX_args-jmpbase)/256,(yBOX_args-jmpbase)&255
+		.dc.b ((507*2)/256),((507*2)&255),(yC2P_args-jmpbase)/256,(yC2P_args-jmpbase)&255
 		.dc.b 7
 		.ascii "CPUFLUSH"
-		.dc.b ((476*2)/256),((476*2)&255),(yBEEP_args-jmpbase)/256,(yBEEP_args-jmpbase)&255
+		.dc.b ((476*2)/256),((476*2)&255),(yCPUFLUSH_args-jmpbase)/256,(yCPUFLUSH_args-jmpbase)&255
 		.dc.b 7
 		.ascii "COLDBOOT"
-		.dc.b ((543*2)/256),((543*2)&255),(yBEEP_args-jmpbase)/256,(yBEEP_args-jmpbase)&255
+		.dc.b ((543*2)/256),((543*2)&255),(yCOLDBOOT_args-jmpbase)/256,(yCOLDBOOT_args-jmpbase)&255
 		.dc.b 11
 		.ascii "CI_MAINLIST("
-		.dc.b ((631*2)/256),((631*2)&255),(yOB_NEXT_args-jmpbase)/256,(yOB_NEXT_args-jmpbase)&255
+		.dc.b ((631*2)/256),((631*2)&255),(yCI_MAINLIST_args-jmpbase)/256,(yCI_MAINLIST_args-jmpbase)&255
 		.dc.b 13
 		.ascii "CI_NUM_PLANES("
-		.dc.b ((632*2)/256),((632*2)&255),(yOB_NEXT_args-jmpbase)/256,(yOB_NEXT_args-jmpbase)&255
+		.dc.b ((632*2)/256),((632*2)&255),(yCI_NUM_PLANES_args-jmpbase)/256,(yCI_NUM_PLANES_args-jmpbase)&255
 		.dc.b 11
 		.ascii "CI_COL_DATA("
-		.dc.b ((633*2)/256),((633*2)&255),(yOB_NEXT_args-jmpbase)/256,(yOB_NEXT_args-jmpbase)&255
+		.dc.b ((633*2)/256),((633*2)&255),(yCI_COL_DATA_args-jmpbase)/256,(yCI_COL_DATA_args-jmpbase)&255
 		.dc.b 11
 		.ascii "CI_COL_MASK("
-		.dc.b ((634*2)/256),((634*2)&255),(yOB_NEXT_args-jmpbase)/256,(yOB_NEXT_args-jmpbase)&255
+		.dc.b ((634*2)/256),((634*2)&255),(yCI_COL_MASK_args-jmpbase)/256,(yCI_COL_MASK_args-jmpbase)&255
 		.dc.b 11
 		.ascii "CI_SEL_DATA("
-		.dc.b ((635*2)/256),((635*2)&255),(yOB_NEXT_args-jmpbase)/256,(yOB_NEXT_args-jmpbase)&255
+		.dc.b ((635*2)/256),((635*2)&255),(yCI_SEL_DATA_args-jmpbase)/256,(yCI_SEL_DATA_args-jmpbase)&255
 		.dc.b 11
 		.ascii "CI_SEL_MASK("
-		.dc.b ((636*2)/256),((636*2)&255),(yOB_NEXT_args-jmpbase)/256,(yOB_NEXT_args-jmpbase)&255
+		.dc.b ((636*2)/256),((636*2)&255),(yCI_SEL_MASK_args-jmpbase)/256,(yCI_SEL_MASK_args-jmpbase)&255
 		.dc.b 11
 		.ascii "CI_NEXT_RES("
-		.dc.b ((637*2)/256),((637*2)&255),(yOB_NEXT_args-jmpbase)/256,(yOB_NEXT_args-jmpbase)&255
+		.dc.b ((637*2)/256),((637*2)&255),(yCI_NEXT_RES_args-jmpbase)/256,(yCI_NEXT_RES_args-jmpbase)&255
 	.ENDC
 cmd_d_table: /* 11cc7 */
 		.dc.b 3
 		.ascii "DATA"
-		.dc.b ((117*2)/256),((117*2)&255),(x1465e-jmpbase)/256,(x1465e-jmpbase)&255
+		.dc.b ((117*2)/256),((117*2)&255),(yDATA_args-jmpbase)/256,(yDATA_args-jmpbase)&255
 		.dc.b 1
 		.ascii "DO"
-		.dc.b ((0*2)/256),((0*2)&255),(x141bc-jmpbase)/256,(x141bc-jmpbase)&255
+		.dc.b ((0*2)/256),((0*2)&255),(yDO_args-jmpbase)/256,(yDO_args-jmpbase)&255
 		.dc.b 6
 		.ascii "DEFLINE"
-		.dc.b ((277*2)/256),((277*2)&255),(x14aed-jmpbase)/256,(x14aed-jmpbase)&255
+		.dc.b ((277*2)/256),((277*2)&255),(yDEFLINE_args-jmpbase)/256,(yDEFLINE_args-jmpbase)&255
 		.dc.b 7
 		.ascii "DEFMOUSE"
 		.dc.b ((279*2)/256),((279*2)&255),(yDEFMOUSE_args-jmpbase)/256,(yDEFMOUSE_args-jmpbase)&255
 		.dc.b 6
 		.ascii "DEFLIST"
-		.dc.b ((281*2)/256),((281*2)&255),(yBOUNDARY_args-jmpbase)/256,(yBOUNDARY_args-jmpbase)&255
+		.dc.b ((281*2)/256),((281*2)&255),(yDEFLIST_args-jmpbase)/256,(yDEFLIST_args-jmpbase)&255
 		.dc.b 6
 		.ascii "DEFMARK"
-		.dc.b ((282*2)/256),((282*2)&255),(x14afe-jmpbase)/256,(x14afe-jmpbase)&255
+		.dc.b ((282*2)/256),((282*2)&255),(yDEFMARK_args-jmpbase)/256,(yDEFMARK_args-jmpbase)&255
 		.dc.b 5
 		.ascii "DEFNUM"
-		.dc.b ((283*2)/256),((283*2)&255),(yBOUNDARY_args-jmpbase)/256,(yBOUNDARY_args-jmpbase)&255
+		.dc.b ((283*2)/256),((283*2)&255),(yDEFNUM_args-jmpbase)/256,(yDEFNUM_args-jmpbase)&255
 		.dc.b 6
 		.ascii "DEFTEXT"
-		.dc.b ((284*2)/256),((284*2)&255),(x14ae1-jmpbase)/256,(x14ae1-jmpbase)&255
+		.dc.b ((284*2)/256),((284*2)&255),(yDEFTEXT_args-jmpbase)/256,(yDEFTEXT_args-jmpbase)&255
 		.dc.b 6
 		.ascii "DEFFILL"
 		.dc.b ((285*2)/256),((285*2)&255),(yDEFFILL_args-jmpbase)/256,(yDEFFILL_args-jmpbase)&255
@@ -3720,90 +3908,90 @@ cmd_d_table: /* 11cc7 */
 		.dc.b ((57*2)/256),((57*2)&255),(yDEFFN_args-jmpbase)/256,(yDEFFN_args-jmpbase)&255
 		.dc.b 6
 		.ascii "DEFAULT"
-		.dc.b ((15*2)/256),((15*2)&255),(x1429f-jmpbase)/256,(x1429f-jmpbase)&255
+		.dc.b ((15*2)/256),((15*2)&255),(yDEFAULT_args-jmpbase)/256,(yDEFAULT_args-jmpbase)&255
 		.dc.b 2
 		.ascii "DEC"
 		.dc.b ((168*2)/256),((168*2)&255),(yDEC_args-jmpbase)/256,(yDEC_args-jmpbase)&255
 		.dc.b 2
 		.ascii "DIV"
-		.dc.b ((200*2)/256),((200*2)&255),(x142fc-jmpbase)/256,(x142fc-jmpbase)&255
+		.dc.b ((200*2)/256),((200*2)&255),(yDIV_args-jmpbase)/256,(yDIV_args-jmpbase)&255
 		.dc.b 4
 		.ascii "DPOKE"
 		.dc.b ((98*2)/256),((98*2)&255),(yDPOKE_args-jmpbase)/256,(yDPOKE_args-jmpbase)&255
 		.dc.b 2
 		.ascii "DIM"
-		.dc.b ((210*2)/256),((210*2)&255),(x147fc-jmpbase)/256,(x147fc-jmpbase)&255
+		.dc.b ((210*2)/256),((210*2)&255),(yDIM_args-jmpbase)/256,(yDIM_args-jmpbase)&255
 		.dc.b 7
 		.ascii "DMASOUND"
-		.dc.b ((450*2)/256),((450*2)&255),(x14796-jmpbase)/256,(x14796-jmpbase)&255
+		.dc.b ((450*2)/256),((450*2)&255),(yDMASOUND_args-jmpbase)/256,(yDMASOUND_args-jmpbase)&255
 		.dc.b 9
 		.ascii "DMACONTROL"
-		.dc.b ((451*2)/256),((451*2)&255),(yBOUNDARY_args-jmpbase)/256,(yBOUNDARY_args-jmpbase)&255
+		.dc.b ((451*2)/256),((451*2)&255),(yDMACONTROL_args-jmpbase)/256,(yDMACONTROL_args-jmpbase)&255
 cmd_double_ref:
 		.dc.b 6
 		.ascii "DOUBLE{"
 		.dc.b ((237*2)/256),((237*2)&255),(yDOUBLE_args-jmpbase)/256,(yDOUBLE_args-jmpbase)&255
 		.dc.b 2
 		.ascii "DIR"
-		.dc.b ((319*2)/256),((319*2)&255),(x14520-jmpbase)/256,(x14520-jmpbase)&255
+		.dc.b ((319*2)/256),((319*2)&255),(yDIR_args-jmpbase)/256,(yDIR_args-jmpbase)&255
 		.dc.b 5
 		.ascii "DELETE"
 		.dc.b ((351*2)/256),((351*2)&255),(yDELETE_args-jmpbase)/256,(yDELETE_args-jmpbase)&255
 		.dc.b 3
 		.ascii "DRAW"
-		.dc.b ((370*2)/256),((370*2)&255),(x1469c-jmpbase)/256,(x1469c-jmpbase)&255
+		.dc.b ((370*2)/256),((370*2)&255),(yDRAW_args-jmpbase)/256,(yDRAW_args-jmpbase)&255
 		.dc.b 4
 		.ascii "DELAY"
-		.dc.b ((110*2)/256),((110*2)&255),(yBOUNDARY_args-jmpbase)/256,(yBOUNDARY_args-jmpbase)&255
+		.dc.b ((110*2)/256),((110*2)&255),(yDELAY_args-jmpbase)/256,(yDELAY_args-jmpbase)&255
 		.dc.b 5
 		.ascii "DEFINT"
-		.dc.b ((381*2)/256),((381*2)&255),(x14555-jmpbase)/256,(x14555-jmpbase)&255
+		.dc.b ((381*2)/256),((381*2)&255),(yDEFINT_args-jmpbase)/256,(yDEFINT_args-jmpbase)&255
 		.dc.b 5
 		.ascii "DEFBYT"
-		.dc.b ((383*2)/256),((383*2)&255),(x14555-jmpbase)/256,(x14555-jmpbase)&255
+		.dc.b ((383*2)/256),((383*2)&255),(yDEFBYT_args-jmpbase)/256,(yDEFBYT_args-jmpbase)&255
 		.dc.b 5
 		.ascii "DEFWRD"
-		.dc.b ((384*2)/256),((384*2)&255),(x14555-jmpbase)/256,(x14555-jmpbase)&255
+		.dc.b ((384*2)/256),((384*2)&255),(yDEFWRD_args-jmpbase)/256,(yDEFWRD_args-jmpbase)&255
 		.dc.b 5
 		.ascii "DEFBIT"
-		.dc.b ((385*2)/256),((385*2)&255),(x14555-jmpbase)/256,(x14555-jmpbase)&255
+		.dc.b ((385*2)/256),((385*2)&255),(yDEFBIT_args-jmpbase)/256,(yDEFBIT_args-jmpbase)&255
 		.dc.b 5
 		.ascii "DEFSTR"
-		.dc.b ((386*2)/256),((386*2)&255),(x14555-jmpbase)/256,(x14555-jmpbase)&255
+		.dc.b ((386*2)/256),((386*2)&255),(yDEFSTR_args-jmpbase)/256,(yDEFSTR_args-jmpbase)&255
 		.dc.b 5
 		.ascii "DEFSNG"
-		.dc.b ((382*2)/256),((382*2)&255),(x14555-jmpbase)/256,(x14555-jmpbase)&255
+		.dc.b ((382*2)/256),((382*2)&255),(yDEFSNG_args-jmpbase)/256,(yDEFSNG_args-jmpbase)&255
 		.dc.b 5
 		.ascii "DEFDBL"
-		.dc.b ((382*2)/256),((382*2)&255),(x14555-jmpbase)/256,(x14555-jmpbase)&255
+		.dc.b ((382*2)/256),((382*2)&255),(yDEFDBL_args-jmpbase)/256,(yDEFDBL_args-jmpbase)&255
 		.dc.b 5
 		.ascii "DEFFLT"
-		.dc.b ((382*2)/256),((382*2)&255),(x14555-jmpbase)/256,(x14555-jmpbase)&255
+		.dc.b ((382*2)/256),((382*2)&255),(yDEFFLT_args-jmpbase)/256,(yDEFFLT_args-jmpbase)&255
 		.dc.b 3
 		.ascii "DUMP"
-		.dc.b ((398*2)/256),((398*2)&255),(x14520-jmpbase)/256,(x14520-jmpbase)&255
+		.dc.b ((398*2)/256),((398*2)&255),(yDUMP_args-jmpbase)/256,(yDUMP_args-jmpbase)&255
 		.dc.b 5
 		.ascii "DATE$="
 		.dc.b ((408*2)/256),((408*2)&255),(yCHDIR_args-jmpbase)/256,(yCHDIR_args-jmpbase)&255
 cmd_e_table: /* 11e1d */
 		.dc.b 3
 		.ascii "ELSE"
-		.dc.b ((14*2)/256),((14*2)&255),(x141da-jmpbase)/256,(x141da-jmpbase)&255
+		.dc.b ((14*2)/256),((14*2)&255),(yELSE_args-jmpbase)/256,(yELSE_args-jmpbase)&255
 		.dc.b 4
 		.ascii "ENDIF"
-		.dc.b ((9*2)/256),((9*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
+		.dc.b ((9*2)/256),((9*2)&255),(yENDIF_args-jmpbase)/256,(yENDIF_args-jmpbase)&255
 		.dc.b 6
 		.ascii "ENDFUNC"
-		.dc.b ((11*2)/256),((11*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
+		.dc.b ((11*2)/256),((11*2)&255),(yENDFUNC_args-jmpbase)/256,(yENDFUNC_args-jmpbase)&255
 		.dc.b 8
 		.ascii "ENDSWITCH"
-		.dc.b ((13*2)/256),((13*2)&255),(x142a4-jmpbase)/256,(x142a4-jmpbase)&255
+		.dc.b ((13*2)/256),((13*2)&255),(yENDSWITCH_args-jmpbase)/256,(yENDSWITCH_args-jmpbase)&255
 		.dc.b 8
 		.ascii "ENDSELECT"
-		.dc.b ((13*2)/256),((13*2)&255),(x142a4-jmpbase)/256,(x142a4-jmpbase)&255
+		.dc.b ((13*2)/256),((13*2)&255),(yENDSELECT_args-jmpbase)/256,(yENDSELECT_args-jmpbase)&255
 		.dc.b 7
 		.ascii "ENDWHILE"
-		.dc.b ((5*2)/256),((5*2)&255),(x141b7-jmpbase)/256,(x141b7-jmpbase)&255
+		.dc.b ((5*2)/256),((5*2)&255),(yENDWHILE_args-jmpbase)/256,(yENDWHILE_args-jmpbase)&255
 		.dc.b 4
 		.ascii "ENDDO"
 		.dc.b ((1*2)/256),((1*2)&255),(x141cd-jmpbase)/256,(x141cd-jmpbase)&255
@@ -3833,7 +4021,7 @@ cmd_e_table: /* 11e1d */
 		.dc.b ((299*2)/256),((299*2)&255),(yBOUNDARY_args-jmpbase)/256,(yBOUNDARY_args-jmpbase)&255
 		.dc.b 3
 		.ascii "EDIT"
-		.dc.b ((328*2)/256),((328*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
+		.dc.b ((328*2)/256),((328*2)&255),(yEDIT_args-jmpbase)/256,(yEDIT_args-jmpbase)&255
 		.dc.b 4
 		.ascii "ERASE"
 		.dc.b ((322*2)/256),((322*2)&255),(yERASE_args-jmpbase)/256,(yERASE_args-jmpbase)&255
@@ -3881,7 +4069,7 @@ cmd_fileselect:
 cmd_g_table: /* 11f49 */
 		.dc.b 4
 		.ascii "GOSUB"
-		.dc.b ((61*2)/256),((61*2)&255),(x1495a-jmpbase)/256,(x1495a-jmpbase)&255
+		.dc.b ((61*2)/256),((61*2)&255),(yGOSUB_args-jmpbase)/256,(yGOSUB_args-jmpbase)&255
 		.dc.b 3
 		.ascii "GOTO"
 		.dc.b ((58*2)/256),((58*2)&255),(x149a7-jmpbase)/256,(x149a7-jmpbase)&255
@@ -3920,10 +4108,10 @@ cmd_g_table: /* 11f49 */
 cmd_h_table: /* 11fa3 */
 		.dc.b 7
 		.ascii "HARDCOPY"
-		.dc.b ((343*2)/256),((343*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
+		.dc.b ((343*2)/256),((343*2)&255),(yHARDCOPY_args-jmpbase)/256,(yHARDCOPY_args-jmpbase)&255
 		.dc.b 4
 		.ascii "HIDEM"
-		.dc.b ((302*2)/256),((302*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
+		.dc.b ((302*2)/256),((302*2)&255),(yHIDEM_args-jmpbase)/256,(yHIDEM_args-jmpbase)&255
 		.dc.b 4
 		.ascii "HLINE"
 		.dc.b ((91*2)/256),((91*2)&255),(yHLINE_args-jmpbase)/256,(yHLINE_args-jmpbase)&255
@@ -4060,7 +4248,7 @@ cmd_l_table: /* 12081 */
 		.dc.b ((231*2)/256),((231*2)&255),(yLONG_args-jmpbase)/256,(yLONG_args-jmpbase)&255
 		.dc.b 4
 		.ascii "LOCAL"
-		.dc.b ((53*2)/256),((53*2)&255),(x14aa9-jmpbase)/256,(x14aa9-jmpbase)&255
+		.dc.b ((53*2)/256),((53*2)&255),(yLOCAL_args-jmpbase)/256,(yLOCAL_args-jmpbase)&255
 		.dc.b 5
 		.ascii "LPRINT"
 		.dc.b ((303*2)/256),((303*2)&255),(yLPRINT_args-jmpbase)/256,(yLPRINT_args-jmpbase)&255
@@ -4096,7 +4284,7 @@ cmd_l_table: /* 12081 */
 cmd_m_table: /* 120f4 */
 		.dc.b 2
 		.ascii "MAT"
-		.dc.b ((424*2)/256),((424*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
+		.dc.b ((424*2)/256),((424*2)&255),(yMAT_args-jmpbase)/256,(yMAT_args-jmpbase)&255
 		.dc.b 6
 		.ascii "MONITOR"
 		.dc.b ((48*2)/256),((48*2)&255),(yMONITOR_args-jmpbase)/256,(yMONITOR_args-jmpbase)&255
@@ -4207,7 +4395,7 @@ cmd_n_table: /* 1214b */
 		.dc.b ((330*2)/256),((330*2)&255),(yNAME_args-jmpbase)/256,(yNAME_args-jmpbase)&255
 		.dc.b 2
 		.ascii "NEW"
-		.dc.b ((306*2)/256),((306*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
+		.dc.b ((306*2)/256),((306*2)&255),(yNEW_args-jmpbase)/256,(yNEW_args-jmpbase)&255
 cmd_o_table: /* 12165 */
 		.dc.b 3
 		.ascii "OPEN"
@@ -4259,7 +4447,7 @@ cmd_o_table: /* 12165 */
 		.dc.b ((420*2)/256),((420*2)&255),(x147c1-jmpbase)/256,(x147c1-jmpbase)&255
 		.dc.b 8
 		.ascii "OTHERWISE"
-		.dc.b ((15*2)/256),((15*2)&255),(x1429f-jmpbase)/256,(x1429f-jmpbase)&255
+		.dc.b ((15*2)/256),((15*2)&255),(yDEFAULT_args-jmpbase)/256,(yDEFAULT_args-jmpbase)&255
 		.dc.b 5
 		.ascii "OPTION"
 		.dc.b ((410*2)/256),((410*2)&255),(x1453f-jmpbase)/256,(x1453f-jmpbase)&255
@@ -4407,10 +4595,10 @@ cmd_q_table: /* 122e6 */
 cmd_r_table: /* 122f9 */
 		.dc.b 2
 		.ascii "REM"
-		.dc.b ((114*2)/256),((114*2)&255),(x1465e-jmpbase)/256,(x1465e-jmpbase)&255
+		.dc.b ((114*2)/256),((114*2)&255),(REM_args-jmpbase)/256,(REM_args-jmpbase)&255
 		.dc.b 5
 		.ascii "REPEAT"
-		.dc.b ((2*2)/256),((2*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
+		.dc.b ((2*2)/256),((2*2)&255),(yREPEAT_args-jmpbase)/256,(yREPEAT_args-jmpbase)&255
 		.dc.b 6
 		.ascii "RESTORE"
 		.dc.b ((59*2)/256),((59*2)&255),(x149a5-jmpbase)/256,(x149a5-jmpbase)&255
@@ -4506,10 +4694,10 @@ cmd_s_table: /* 123c3 */
 		.dc.b ((339*2)/256),((339*2)&255),(x1420e-jmpbase)/256,(x1420e-jmpbase)&255
 		.dc.b 4
 		.ascii "SHOWM"
-		.dc.b ((338*2)/256),((338*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
+		.dc.b ((338*2)/256),((338*2)&255),(ySHOWM_args-jmpbase)/256,(ySHOWM_args-jmpbase)&255
 		.dc.b 3
 		.ascii "STOP"
-		.dc.b ((340*2)/256),((340*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
+		.dc.b ((340*2)/256),((340*2)&255),(ySTOP_args-jmpbase)/256,(ySTOP_args-jmpbase)&255
 		.dc.b 5
 		.ascii "SYSTEM"
 		.dc.b ((341*2)/256),((341*2)&255),(ySYSTEM_args-jmpbase)/256,(ySYSTEM_args-jmpbase)&255
@@ -4558,7 +4746,7 @@ cmd_s_table: /* 123c3 */
 		.dc.b ((491*2)/256),((491*2)&255),(ySCALL_args-jmpbase)/256,(ySCALL_args-jmpbase)&255
 		.dc.b 6
 		.ascii "STRPOKE"
-		.dc.b ((494*2)/256),((494*2)&255),(yINFOW_args-jmpbase)/256,(yINFOW_args-jmpbase)&255
+		.dc.b ((494*2)/256),((494*2)&255),(ySTRPOKE_args-jmpbase)/256,(ySTRPOKE_args-jmpbase)&255
 		.dc.b 7
 		.ascii "SET.MFDB"
 		.dc.b ((460*2)/256),((460*2)&255),(ySET.MFDB_args-jmpbase)/256,(ySET.MFDB_args-jmpbase)&255
@@ -4605,7 +4793,7 @@ cmd_t_table: /* 124bd */
 		.dc.b ((143*2)/256),((143*2)&255),(yTRON_args-jmpbase)/256,(yTRON_args-jmpbase)&255
 		.dc.b 4
 		.ascii "TROFF"
-		.dc.b ((146*2)/256),((146*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
+		.dc.b ((146*2)/256),((146*2)&255),(yTROFF_args-jmpbase)/256,(yTROFF_args-jmpbase)&255
 		.dc.b 3
 		.ascii "TOPW"
 		.dc.b ((274*2)/256),((274*2)&255),(x1464d-jmpbase)/256,(x1464d-jmpbase)&255
@@ -4695,7 +4883,7 @@ cmd_v_table: /* 1250c */
 		.dc.b ((240*2)/256),((240*2)&255),(x1407e-jmpbase)/256,(x1407e-jmpbase)&255
 		.dc.b 4
 		.ascii "VSYNC"
-		.dc.b ((342*2)/256),((342*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
+		.dc.b ((342*2)/256),((342*2)&255),(yVSYNC_args-jmpbase)/256,(yVSYNC_args-jmpbase)&255
 		.dc.b 3
 		.ascii "VTAB"
 		.dc.b ((321*2)/256),((321*2)&255),(yBOUNDARY_args-jmpbase)/256,(yBOUNDARY_args-jmpbase)&255
@@ -4749,7 +4937,7 @@ cmd_w_table: /* 1254a */
 		.dc.b ((4*2)/256),((4*2)&255),(x141a8-jmpbase)/256,(x141a8-jmpbase)&255
 		.dc.b 3
 		.ascii "WEND"
-		.dc.b ((5*2)/256),((5*2)&255),(x141b7-jmpbase)/256,(x141b7-jmpbase)&255
+		.dc.b ((5*2)/256),((5*2)&255),(yWEND_args-jmpbase)/256,(yWEND_args-jmpbase)&255
 		.dc.b 3
 		.ascii "WAVE"
 		.dc.b ((355*2)/256),((355*2)&255),(x147a9-jmpbase)/256,(x147a9-jmpbase)&255
@@ -4824,22 +5012,22 @@ cmd_other_table:
 		.dc.b ((154*2)/256),((154*2)&255),(yLINE_INPUT_args-jmpbase)/256,(yLINE_INPUT_args-jmpbase)&255
 		.dc.b 6
 		.ascii "ELSE IF"
-		.dc.b ((16*2)/256),((16*2)&255),(x141da-jmpbase)/256,(x141da-jmpbase)&255
+		.dc.b ((16*2)/256),((16*2)&255),(yELSE_args-jmpbase)/256,(yELSE_args-jmpbase)&255
 		.dc.b 2
 		.ascii "END"
-		.dc.b ((124*2)/256),((124*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
+		.dc.b ((124*2)/256),((124*2)&255),(yEND_args-jmpbase)/256,(yEND_args-jmpbase)&255
 		.dc.b 7
 		.ascii "DO WHILE"
-		.dc.b ((49*2)/256),((49*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
+		.dc.b ((49*2)/256),((49*2)&255),(yDO_WHILE_args-jmpbase)/256,(yDO_WHILE_args-jmpbase)&255
 		.dc.b 7
 		.ascii "DO UNTIL"
-		.dc.b ((50*2)/256),((50*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
+		.dc.b ((50*2)/256),((50*2)&255),(yDO_UNTIL_args-jmpbase)/256,(yDO_UNTIL_args-jmpbase)&255
 		.dc.b 9
 		.ascii "LOOP WHILE"
-		.dc.b ((51*2)/256),((51*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
+		.dc.b ((51*2)/256),((51*2)&255),(yLOOP_WHILE_args-jmpbase)/256,(yLOOP_WHILE_args-jmpbase)&255
 		.dc.b 9
 		.ascii "LOOP UNTIL"
-		.dc.b ((52*2)/256),((52*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
+		.dc.b ((52*2)/256),((52*2)&255),(yLOOP_UNTIL_args-jmpbase)/256,(yLOOP_UNTIL_args-jmpbase)&255
 		.dc.b 7
 		.ascii "ON ERROR"
 		.dc.b ((128*2)/256),((128*2)&255),(x1482d-jmpbase)/256,(x1482d-jmpbase)&255
@@ -4905,10 +5093,10 @@ cmd_other_table:
 		.dc.b ((273*2)/256),((273*2)&255),(yCLEARW_args-jmpbase)/256,(yCLEARW_args-jmpbase)&255
 		.dc.b 10
 		.ascii "> PROCEDURE"
-		.dc.b ((54*2)/256),((54*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
+		.dc.b ((54*2)/256),((54*2)&255),(yPROCEDURE_flapped_args-jmpbase)/256,(yPROCEDURE_flapped_args-jmpbase)&255
 		.dc.b 9
 		.ascii "> FUNCTION"
-		.dc.b ((449*2)/256),((449*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
+		.dc.b ((449*2)/256),((449*2)&255),(yFUNCTION_flapped_args-jmpbase)/256,(yFUNCTION_flapped_args-jmpbase)&255
 		.dc.b 8
 		.ascii "RELSEEK #"
 		.dc.b ((209*2)/256),((209*2)&255),(yRELSEEK_args-jmpbase)/256,(yRELSEEK_args-jmpbase)&255
@@ -4931,70 +5119,70 @@ cmd_other_table:
 	.ENDC
 		.dc.b 6
 		.ascii "DEFAULT"
-		.dc.b ((15*2)/256),((15*2)&255),(x1429f-jmpbase)/256,(x1429f-jmpbase)&255
+		.dc.b ((15*2)/256),((15*2)&255),(yDEFAULT_args-jmpbase)/256,(yDEFAULT_args-jmpbase)&255
 		.dc.b 5
 		.ascii "SELECT"
-		.dc.b ((44*2)/256),((44*2)&255),(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
+		.dc.b ((44*2)/256),((44*2)&255),(ySELECT_args-jmpbase)/256,(ySELECT_args-jmpbase)&255
 		.dc.b 6
 		.ascii "MAT ADD"
-		.dc.b ((424*2)/256),((424*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
+		.dc.b ((424*2)/256),((424*2)&255),(yMAT_args-jmpbase)/256,(yMAT_args-jmpbase)&255
 		.dc.b 6
 		.ascii "MAT SUB"
-		.dc.b ((426*2)/256),((426*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
+		.dc.b ((426*2)/256),((426*2)&255),(yMAT_args-jmpbase)/256,(yMAT_args-jmpbase)&255
 		.dc.b 6
 		.ascii "MAT CPY"
-		.dc.b ((428*2)/256),((428*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
+		.dc.b ((428*2)/256),((428*2)&255),(yMAT_args-jmpbase)/256,(yMAT_args-jmpbase)&255
 		.dc.b 7
 		.ascii "MAT XCPY"
-		.dc.b ((429*2)/256),((429*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
+		.dc.b ((429*2)/256),((429*2)&255),(yMAT_args-jmpbase)/256,(yMAT_args-jmpbase)&255
 		.dc.b 6
 		.ascii "MAT DET"
-		.dc.b ((430*2)/256),((430*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
+		.dc.b ((430*2)/256),((430*2)&255),(yMAT_args-jmpbase)/256,(yMAT_args-jmpbase)&255
 		.dc.b 6
 		.ascii "MAT NEG"
-		.dc.b ((431*2)/256),((431*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
+		.dc.b ((431*2)/256),((431*2)&255),(yMAT_args-jmpbase)/256,(yMAT_args-jmpbase)&255
 		.dc.b 6
 		.ascii "MAT ABS"
-		.dc.b ((432*2)/256),((432*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
+		.dc.b ((432*2)/256),((432*2)&255),(yMAT_args-jmpbase)/256,(yMAT_args-jmpbase)&255
 		.dc.b 7
 		.ascii "MAT NORM"
-		.dc.b ((433*2)/256),((433*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
+		.dc.b ((433*2)/256),((433*2)&255),(yMAT_args-jmpbase)/256,(yMAT_args-jmpbase)&255
 		.dc.b 7
 		.ascii "MAT READ"
-		.dc.b ((434*2)/256),((434*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
+		.dc.b ((434*2)/256),((434*2)&255),(yMAT_args-jmpbase)/256,(yMAT_args-jmpbase)&255
 		.dc.b 8
 		.ascii "MAT PRINT"
-		.dc.b ((435*2)/256),((435*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
+		.dc.b ((435*2)/256),((435*2)&255),(yMAT_args-jmpbase)/256,(yMAT_args-jmpbase)&255
 		.dc.b 8
 		.ascii "MAT TRANS"
-		.dc.b ((436*2)/256),((436*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
+		.dc.b ((436*2)/256),((436*2)&255),(yMAT_args-jmpbase)/256,(yMAT_args-jmpbase)&255
 		.dc.b 6
 		.ascii "MAT CLR"
-		.dc.b ((437*2)/256),((437*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
+		.dc.b ((437*2)/256),((437*2)&255),(yMAT_args-jmpbase)/256,(yMAT_args-jmpbase)&255
 		.dc.b 6
 		.ascii "MAT SET"
-		.dc.b ((438*2)/256),((438*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
+		.dc.b ((438*2)/256),((438*2)&255),(yMAT_args-jmpbase)/256,(yMAT_args-jmpbase)&255
 		.dc.b 6
 		.ascii "MAT ONE"
-		.dc.b ((439*2)/256),((439*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
+		.dc.b ((439*2)/256),((439*2)&255),(yMAT_args-jmpbase)/256,(yMAT_args-jmpbase)&255
 		.dc.b 7
 		.ascii "MAT BASE"
-		.dc.b ((440*2)/256),((440*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
+		.dc.b ((440*2)/256),((440*2)&255),(yMAT_args-jmpbase)/256,(yMAT_args-jmpbase)&255
 		.dc.b 7
 		.ascii "MAT QDET"
-		.dc.b ((441*2)/256),((441*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
+		.dc.b ((441*2)/256),((441*2)&255),(yMAT_args-jmpbase)/256,(yMAT_args-jmpbase)&255
 		.dc.b 8
 		.ascii "MAT INPUT"
-		.dc.b ((442*2)/256),((442*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
+		.dc.b ((442*2)/256),((442*2)&255),(yMAT_args-jmpbase)/256,(yMAT_args-jmpbase)&255
 		.dc.b 7
 		.ascii "MAT RANG"
-		.dc.b ((443*2)/256),((443*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
+		.dc.b ((443*2)/256),((443*2)&255),(yMAT_args-jmpbase)/256,(yMAT_args-jmpbase)&255
 		.dc.b 6
 		.ascii "MAT MUL"
-		.dc.b ((444*2)/256),((444*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
+		.dc.b ((444*2)/256),((444*2)&255),(yMAT_args-jmpbase)/256,(yMAT_args-jmpbase)&255
 		.dc.b 6
 		.ascii "MAT INV"
-		.dc.b ((448*2)/256),((448*2)&255),(x13ed2-jmpbase)/256,(x13ed2-jmpbase)&255
+		.dc.b ((448*2)/256),((448*2)&255),(yMAT_args-jmpbase)/256,(yMAT_args-jmpbase)&255
 		.dc.b -1
 /* gfa: 21edb */
 /* gbe: 54030 */
@@ -6410,7 +6598,7 @@ x137b8: .dc.l 0
 x137bc: .dc.l 0
 
 /*
- * a2 = x14083/x1499f/x1495a
+ * a2 = x14083/x1499f/yGOSUB_args
  */
 x137c0:
 		lea.l      1364(a6),a1
@@ -6441,7 +6629,7 @@ x137d2:
 		move.w     #126,d0
 		bsr.s      x137c0
 		bne.s      x137d2_1
-		lea.l      x1495a(pc),a2
+		lea.l      yGOSUB_args(pc),a2
 		move.w     #120,d0
 		bsr.s      x137c0
 		beq.s      x137d2_5
@@ -6514,7 +6702,7 @@ x1389c:
 x1389c_1:
 		addq.l     #3,a0
 		move.w     #248,(a1)+ /* TOK_CMD_END*2 */
-		lea.l      x1446a(pc),a2
+		lea.l      yENDIF_args(pc),a2
 		rts
 x1389c_2:
 		lea.l      cmd_table(pc),a2
@@ -7259,7 +7447,7 @@ f13e8c_4:
  * 0xff,-1: two bytes offset to subtable follow
  */
 /* gbe: 57864 */
-x13ed2:
+yMAT_args:
 	.dc.b -2,(f13e8c-jmpbase)/256,(f13e8c-jmpbase)&255
 	.dc.b -3
 	.dc.b -1,(mat_ADD_args-jmpbase)/256,(mat_ADD_args-jmpbase)&255
@@ -7588,12 +7776,33 @@ x14083:
 x140d4:
 	.dc.b -4
 
+	.IFNE GBE
+f140d6: /* YYY */
+f140e2:
+f140e2:
+f140ee:
+f140fa:
+
+x14f52:
+x14f55:
+x14f5d:
+x14f66:
+x14f6a:
+x14f6e:
+x14f76:
+x14f7a:
+x14f83:
+x14f87:
+x14f8a:
+x14f92:
+	.ENDC
+
 	.IFEQ GBE
 	.even
 
 f140d6:
 		move.w     #TOK_CMD_ADD_FLOAT*2,d0
-		lea.l      x142c4.l,a2
+		lea.l      yADD_args.l,a2
 		bra.s      f140fa_1
 
 f140e2:
@@ -7607,7 +7816,7 @@ f140ee:
 		bra.s      f140fa_1
 f140fa:
 		move.w     #TOK_CMD_DIV_FLOAT*2,d0
-		lea.l      x142fc.l,a2
+		lea.l      yDIV_args.l,a2
 f140fa_1:
 		lea.l      1106(a6),a0
 		lea.l      1364(a6),a1
@@ -7654,8 +7863,8 @@ x14147:
 	.dc.b -4
 	.IFNE GBE
 yOB_TEXT_args:
-	.dc.b -1,(y35-jmpbase)/256,(y35-jmpbase)&255
-	.dc.b -1,(y8-jmpbase)/256,(y8-jmpbase)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 	.dc.b 32
 	.dc.b -6
 	.dc.b 19
@@ -7665,7 +7874,7 @@ yOB_TEXT_args:
 yOB_RADIO_args:
 yOB.FLAGS_args:
 yOB.STATE_args:
-	.dc.b -1,(y35-jmpbase)/256,(y35-jmpbase)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 	.ENDC
 yWINDTAB_args:
 yUB_PARM_args:
@@ -7757,6 +7966,9 @@ yBF_CHARACTER_args:
 yBF_OBSPEC_args:
 	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14152:
+yADDRIN_args:
+yADDROUT_args:
+yCONTRL_args:
 	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x14155:
 	.dc.b 32
@@ -7790,8 +8002,8 @@ x1416f_1:
 	.ENDC
 x1415d:
 	.dc.b -4
-x1415e:
-	.dc.b -1,(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
+yCONT_args:
+	.dc.b -1,(yENDIF_args-jmpbase)/256,(yENDIF_args-jmpbase)&255
 x14161:
 	.dc.b -3
 x14162:
@@ -7823,7 +8035,7 @@ x14171:
 	.dc.b -1,(yBOUNDARY_args-jmpbase)/256,(yBOUNDARY_args-jmpbase)&255
 x14174:
 	.dc.b -4
-x14175:
+yCHAR_args:
 	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x14178:
 	.dc.b 88
@@ -7897,13 +8109,14 @@ x141b5:
 	.dc.b -3
 x141b6:
 	.dc.b -4
-x141b7:
+yENDWHILE_args:
+yWEND_args:
 	.dc.b -2,(f13b62-jmpbase)/256,(f13b62-jmpbase)&255
 x141ba:
 	.dc.b 70
 x141bb:
 	.dc.b -4
-x141bc:
+yDO_args:
 	.dc.b 70
 x141bd:
 	.dc.b -3
@@ -7935,7 +8148,7 @@ x141d8:
 	.dc.b 70
 x141d9:
 	.dc.b -4
-x141da:
+yELSE_args:
 	.dc.b -2,(f13b62-jmpbase)/256,(f13b62-jmpbase)&255
 x141dd:
 	.dc.b 70
@@ -8070,7 +8283,7 @@ x14257:
 	.dc.b 70
 x14258:
 	.dc.b -4
-x14259:
+yCASE_args:
 	.dc.b -2,(f13b62-jmpbase)/256,(f13b62-jmpbase)&255
 x1425c:
 	.dc.b -1,(x14264-jmpbase)/256,(x14264-jmpbase)&255
@@ -8140,13 +8353,14 @@ x1429b:
 	.dc.b -1,(x14139-jmpbase)/256,(x14139-jmpbase)&255
 x1429e:
 	.dc.b -4
-x1429f:
+yDEFAULT_args:
 	.dc.b -2,(f13b62-jmpbase)/256,(f13b62-jmpbase)&255
 x142a2:
 	.dc.b 70
 x142a3:
 	.dc.b -4
-x142a4:
+yENDSWITCH_args:
+yENDSELECT_args:
 	.dc.b 70
 x142a5:
 	.dc.b -4
@@ -8178,7 +8392,7 @@ x142c0:
 	.dc.b -1,(x148e4-jmpbase)/256,(x148e4-jmpbase)&255
 x142c3:
 	.dc.b -4
-x142c4:
+yADD_args:
 	.dc.b -1,(x143cb-jmpbase)/256,(x143cb-jmpbase)&255
 x142c7:
 	.dc.b -1,(x14319-jmpbase)/256,(x14319-jmpbase)&255
@@ -8226,7 +8440,7 @@ x142f8:
 	.dc.b -1,(yBOUNDARY_args-jmpbase)/256,(yBOUNDARY_args-jmpbase)&255
 x142fb:
 	.dc.b -4
-x142fc:
+yDIV_args:
 	.dc.b -1,(x143cb-jmpbase)/256,(x143cb-jmpbase)&255
 x142ff:
 	.dc.b -1,(x14329-jmpbase)/256,(x14329-jmpbase)&255
@@ -8593,6 +8807,9 @@ yPBOX_args:
 yBOX_args:
 	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14461:
+yBMOVE_args:
+yBEXG_args:
+yBFILL_args:
 	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14464:
 yVPLOT_args:
@@ -8614,11 +8831,45 @@ yLPOKE_args:
 yDPOKE_args:
 yBZERO_args:
 yBMIRROR_args:
+yBZERO_args:
 	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 yBOUNDARY_args:
+yDEFLIST_args:
+yDEFNUM_args:
+yAMOUSE_args:
 yCLEARW_args:
+yCOLOR_args:
+yDMACONTROL_args:
+yDELAY_args:
 	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
-x1446a:
+
+ySELECT_args:
+yPROCEDURE_flapped_args:
+yFUNCTION_flapped_args:
+yLOOP_UNTIL_args:
+yLOOP_WHILE_args:
+yDO_UNTIL_args:
+yDO_WHILE_args:
+yEND_args:
+yWARMBOOT_args:
+yWAITVBL_args:
+yVSYNC_args:
+yTROFF_args:
+ySTOP_args:
+ySHOWM_args:
+yREPEAT_args:
+yNEW_args:
+yLOG_KILL_args:
+yHIDEM_args:
+yHARDCOPY_args:
+yGSHOWM_args:
+yGHIDEM_args:
+yEDIT_args:
+yENDFUNC_args:
+yENDIF_args:
+yCOLDBOOT_args:
+yCPUFLUSH_args:
+yBEEP_args:
 	.dc.b 70
 x1446b:
 	.dc.b -4
@@ -8637,7 +8888,7 @@ x14475:
 	.dc.b 33
 	.dc.b -4
 	.IFNE GBE
-	.dc.b -1,(x14475-jmpbase)/256,(y35-jmpbase)&255
+	.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 	.ENDC
 yVCURVE_args:
 ySET.PXYXY_args:
@@ -8667,7 +8918,7 @@ x14490:
 yACLIP_args:
 	.dc.b -1,(yVGET_args-jmpbase)/256,(yVGET_args-jmpbase)&255
 	.dc.b -4
-x14494:
+yCHDRIVE_args:
 	.dc.b -1,(yBOUNDARY_args-jmpbase)/256,(yBOUNDARY_args-jmpbase)&255
 x14497:
 	.dc.b -3
@@ -8717,7 +8968,7 @@ x144bd:
 	.dc.b -5,71
 x144bf:
 	.dc.b -4
-x144c0:
+star_args:
 	.dc.b -1,(x14386-jmpbase)/256,(x14386-jmpbase)&255
 x144c3:
 	.dc.b 19
@@ -8815,7 +9066,8 @@ x1451c:
 	.dc.b -3
 x1451d:
 	.dc.b -2,(f13d76-jmpbase)/256,(f13d76-jmpbase)&255
-x14520:
+yDIR_args:
+yDUMP_args:
 	.dc.b 70
 x14521:
 	.dc.b -3
@@ -8898,7 +9150,15 @@ x14553:
 	.dc.b 70
 x14554:
 	.dc.b -4
-x14555:
+
+yDEFINT_args:
+yDEFBYT_args:
+yDEFWRD_args:
+yDEFBIT_args:
+yDEFSTR_args:
+yDEFSNG_args:
+yDEFDBL_args:
+yDEFFLT_args:
 	.dc.b -1,(x1455c-jmpbase)/256,(x1455c-jmpbase)&255
 x14558:
 	.dc.b -2,(execute_defint-jmpbase)/256,(execute_defint-jmpbase)&255
@@ -8929,6 +9189,8 @@ x14570:
 
 	.IFNE GBE
 		.dc.b 0
+f14578: /* YYY */
+f59408:
 	.ELSE
 f14578:
 		movem.l    a0-a1,-(a7)
@@ -9031,7 +9293,7 @@ x145ff:
 	.dc.b -1,(yACHAR_args-jmpbase)/256,(yACHAR_args-jmpbase)&255
 x14602:
 	.dc.b -4
-x14603:
+yCLOSE_args:
 	.dc.b -2,(f13d5a-jmpbase)/256,(f13d5a-jmpbase)&255
 x14606:
 	.dc.b -1,(x14628-jmpbase)/256,(x14628-jmpbase)&255
@@ -9123,7 +9385,8 @@ x1465a:
 	.ENDC
 x1465d:
 	.dc.b -4
-x1465e:
+REM_args:
+yDATA_args:
 	.dc.b -2,(f13bca-jmpbase)/256,(f13bca-jmpbase)&255
 x14661:
 	.dc.b -4
@@ -9171,7 +9434,7 @@ x14698:
 	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x1469b:
 	.dc.b -4
-x1469c:
+yDRAW_args:
 	.dc.b -1,(x146d3-jmpbase)/256,(x146d3-jmpbase)&255
 x1469f:
 	.dc.b -1,(x14692-jmpbase)/256,(x14692-jmpbase)&255
@@ -9237,7 +9500,7 @@ x146d4:
 	.dc.b -3
 x146d5:
 	.dc.b -4
-x146d6:
+yBSAVE_args:
 	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 x146d9:
 	.dc.b -1,(x14695-jmpbase)/256,(x14695-jmpbase)&255
@@ -9247,7 +9510,7 @@ x146df:
 	.dc.b 70
 x146e0:
 	.dc.b -4
-x146e1:
+yBLOAD_args:
 	.dc.b -1,(x14139-jmpbase)/256,(x14139-jmpbase)&255
 x146e4:
 	.dc.b -3
@@ -9377,7 +9640,7 @@ yVPUT_args:
 	.ENDC
 
 yDEFFILL_args:
-	.dc.b -1,(x14afe-jmpbase)/256,(x14afe-jmpbase)&255
+	.dc.b -1,(yDEFMARK_args-jmpbase)/256,(yDEFMARK_args-jmpbase)&255
 	.dc.b -3
 	.dc.b -5,60
 	.dc.b -1,(x14b91-jmpbase)/256,(x14b91-jmpbase)&255
@@ -9411,7 +9674,7 @@ yCLIP_args:
 	.dc.b -1,(x1503f-jmpbase)/256,(x1503f-jmpbase)&255
 	.dc.b 70
 	.dc.b -4
-x14796:
+yDMASOUND_args:
 	.dc.b -1,(x1445e-jmpbase)/256,(x1445e-jmpbase)&255
 x14799:
 	.dc.b -3
@@ -9438,7 +9701,7 @@ x147b1:
 x147b4:
 	.dc.b -3
 x147b5:
-	.dc.b -1,(x1446a-jmpbase)/256,(x1446a-jmpbase)&255
+	.dc.b -1,(yENDIF_args-jmpbase)/256,(yENDIF_args-jmpbase)&255
 x147b8:
 	.dc.b -3
 x147b9:
@@ -9505,7 +9768,7 @@ x147f8:
 	.dc.b -1,(yBOUNDARY_args-jmpbase)/256,(yBOUNDARY_args-jmpbase)&255
 x147fb:
 	.dc.b -4
-x147fc:
+yDIM_args:
 	.dc.b -1,(x143a6-jmpbase)/256,(x143a6-jmpbase)&255
 x147ff:
 	.dc.b -1,(x14804-jmpbase)/256,(x14804-jmpbase)&255
@@ -9746,6 +10009,7 @@ x148b3:
 x148b6:
 	.dc.b -4
 x148b7:
+yAFTER_args:
 	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 x148ba:
 	.dc.b -1,(x14825-jmpbase)/256,(x14825-jmpbase)&255
@@ -9904,7 +10168,7 @@ x14958:
 	.dc.b -3
 x14959:
 	.dc.b -4
-x1495a:
+yGOSUB_args:
 	.dc.b -2,(f15444-jmpbase)/256,(f15444-jmpbase)&255
 x1495d:
 	.dc.b -1,(x14962-jmpbase)/256,(x14962-jmpbase)&255
@@ -10202,7 +10466,7 @@ x14a64:
 	.dc.b 70
 x14a65:
 	.dc.b -4
-x14a66:
+yARRAYFILL_args:
 	.dc.b -1,(x143b2-jmpbase)/256,(x143b2-jmpbase)&255
 x14a69:
 	.dc.b 33
@@ -10222,7 +10486,7 @@ x14a76:
 	.dc.b 70
 x14a77:
 	.dc.b -4
-x14a78:
+yBITBLT_args:
 	.dc.b -1,(x143c6-jmpbase)/256,(x143c6-jmpbase)&255
 x14a7b:
 	.dc.b 33
@@ -10272,7 +10536,8 @@ x14aa7:
 	.dc.b -3
 x14aa8:
 	.dc.b -4
-x14aa9:
+yLOCAL_args:
+yCLR_args:
 	.dc.b -1,(x1434e-jmpbase)/256,(x1434e-jmpbase)&255
 x14aac:
 	.dc.b -1,(x14ab1-jmpbase)/256,(x14ab1-jmpbase)&255
@@ -10354,8 +10619,8 @@ yKEYDEF_args:
 	.dc.b -1,(x14139-jmpbase)/256,(x14139-jmpbase)&255
 	.dc.b -4
 
-x14ae1:
-	.dc.b -1,(x14afe-jmpbase)/256,(x14afe-jmpbase)&255
+yDEFTEXT_args:
+	.dc.b -1,(yDEFMARK_args-jmpbase)/256,(yDEFMARK_args-jmpbase)&255
 x14ae4:
 	.dc.b -3
 x14ae5:
@@ -10367,6 +10632,7 @@ x14ae9:
 x14aec:
 	.dc.b 33
 x14aed:
+yDEFLINE_args:
 	.dc.b -1,(x14b91-jmpbase)/256,(x14b91-jmpbase)&255
 x14af0:
 	.dc.b 33
@@ -10384,7 +10650,7 @@ x14afc:
 	.dc.b 70
 x14afd:
 	.dc.b -3
-x14afe:
+yDEFMARK_args:
 	.dc.b -1,(x14b91-jmpbase)/256,(x14b91-jmpbase)&255
 x14b01:
 	.dc.b 33
@@ -10432,7 +10698,8 @@ x14b1e:
 	.dc.b -1,(yBOUNDARY_args-jmpbase)/256,(yBOUNDARY_args-jmpbase)&255
 x14b21:
 	.dc.b -4
-x14b22:
+yBGET_args:
+yBPUT_args:
 	.dc.b -1,(x144f6-jmpbase)/256,(x144f6-jmpbase)&255
 x14b25:
 	.dc.b 33
@@ -10636,6 +10903,7 @@ x14bd0:
 	.dc.b -2,(f154c4-jmpbase)/256,(f154c4-jmpbase)&255
 	.dc.b -1,(x14962-jmpbase)/256,(x14962-jmpbase)&255
 	.dc.b -4
+	.even
 
 /* gbe: 5862c */
 f14bde:
@@ -10726,25 +10994,25 @@ x14c16:
 y140:
 	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 	.dc.b 33
-	.dc.b -1,(y8-jmpbase)/256,(y8-jmpbase)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 	.dc.b 33
-	.dc.b -1,(y8-jmpbase)/256,(y8-jmpbase)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 	.dc.b 33
-	.dc.b -1,(y8-jmpbase)/256,(y8-jmpbase)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 	.dc.b 32
 	.dc.b -4
 	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 	.dc.b 33
-	.dc.b -1,(y8-jmpbase)/256,(y8-jmpbase)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 	.dc.b 33
-	.dc.b -1,(y8-jmpbase)/256,(y8-jmpbase)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 	.dc.b 32
 	.dc.b -4
-	.dc.b -1,(y8-jmpbase)/256,(y8-jmpbase)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 	.dc.b 33
 	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 	.dc.b 33
-	.dc.b -1,(y8-jmpbase)/256,(y8-jmpbase)&255
+	.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 	.dc.b 32
 	.dc.b -4
 	.ENDC
@@ -10873,6 +11141,12 @@ x14d07:
 x14d08:
 	.dc.b -4
 x14d09:
+
+	.IFNE GBE
+x14d0e:
+x14d13:
+x14d23:
+	.ENDC
 
 	.IFEQ GBE
 	.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
@@ -14018,7 +14292,11 @@ x16534:
 		andi.b     #1,d1
 		bne.s      x16534_2
 		move.l     (a7)+,d1
+		.IFNE GBE /* YYY */
+		lea.l      x16782,a0
+		.ELSE
 		lea.l      x16782(pc),a0
+		.ENDC
 		move.l     d0,(a0)
 		move.l     d1,-(a7)
 		move.l     d0,-(a7)
@@ -14028,7 +14306,11 @@ x16534:
 		lea.l      12(a7),a7
 		tst.l      d0
 		bmi.s      x16534_3
+		.IFNE GBE /* YYY */
+		movea.l    x16782,a0
+		.ELSE
 		movea.l    x16782(pc),a0
+		.ENDC
 		move.w     #0x1FFF,d0
 x16534_1:
 		clr.l      (a0)+
@@ -14037,7 +14319,11 @@ x16534_1:
 x16534_2:
 		addq.l     #4,a7
 x16534_3:
+		.IFNE GBE /* YYY */
+		lea.l      x16782,a0
+		.ELSE
 		lea.l      x16782(pc),a0
+		.ENDC
 		clr.l      (a0)
 		rts
 
@@ -14058,11 +14344,16 @@ find_mtask1:
 find_mtask2:
 		moveq.l    #0,d0
 find_mtask3:
+		.IFNE GBE /* YYY */
+		lea.l      mtask,a0
+		.ELSE
 		lea.l      mtask(pc),a0
+		.ENDC
 		move.w     d0,(a0)
 		rts
 
 	.data
+
 newvar_msg:
 		.ascii "Neue Variable"
 		.dc.b 0
