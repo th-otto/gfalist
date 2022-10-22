@@ -32,9 +32,9 @@ tests: $(GEN)
 	(cd ..; make gfalist)
 
 
-inlinedatatest: SP_SEK_V.GFA
+inlinedatatest: sp_sek_v.gfa
 	../gfalist -i -o $<.lst $< 
 
 clean:
-	rm -f $(GEN) $(GB36_GFA) $(GB36_LST) SP_SEK_V.GFA.lst pss.inl
+	rm -f $(GEN) $(GB36_GFA) $(GB36_LST) sp_sek_v.gfa.lst pss.inl
 
