@@ -396,8 +396,8 @@ const char *const gfalct[] = {
 	/* 390 */ "SAVE ",
 	/* 391 */ "PSAVE ",
 	/* 392 */ "CHAIN ",
-	/* 393 */ "RUN",
-	/* 394 */ "RUN ",						/* todo */
+	/* 393 */ "RUN",						/* no arguments */
+	/* 394 */ "RUN ",						/* RUN f$ */
 	/* 395 */ "LOAD ",
 	/* 396 */ "SETDRAW ",
 	/* 397 */ "ARRAYFILL ",
@@ -427,10 +427,10 @@ const char *const gfalct[] = {
 	/* 421 */ "OUT% ",
 	/* 422 */ "CURVE ",
 	/* 423 */ "_DATA= ",
-	/* 424 */ "MAT ADD ",
-	/* 425 */ "MAT ADD ",					/* todo */
-	/* 426 */ "MAT SUB ",
-	/* 427 */ "MAT SUB ",					/* todo */
+	/* 424 */ "MAT ADD ",					/* MAT ADD a(),b() */
+	/* 425 */ "MAT ADD ",					/* MAT ADD A(),x */
+	/* 426 */ "MAT SUB ",					/* MAT SUB a(),b() */
+	/* 427 */ "MAT SUB ",					/* MAT SUB a(),x */
 	/* 428 */ "MAT CPY ",
 	/* 429 */ "MAT XCPY ",
 	/* 430 */ "MAT DET ",
@@ -447,22 +447,22 @@ const char *const gfalct[] = {
 	/* 441 */ "MAT QDET ",
 	/* 442 */ "MAT INPUT ",
 	/* 443 */ "MAT RANG ",
-	/* 444 */ "MAT MUL ",
-	/* 445 */ "MAT MUL ",					/* todo */
-	/* 446 */ "MAT MUL ",					/* todo */
-	/* 447 */ "MAT MUL ",					/* todo */
+	/* 444 */ "MAT MUL ",					/* MAT MUL a()=b()*c() */
+	/* 445 */ "MAT MUL ",					/* MAT MUL x=a()*b() */
+	/* 446 */ "MAT MUL ",					/* MAT MUL x=a()*b()*c() */
+	/* 447 */ "MAT MUL ",					/* MAT MUL a(),x */
 	/* 448 */ "MAT INV ",
 	/* 449 */ "> FUNCTION ",
 	/* 450 */ "DMASOUND ",
 	/* 451 */ "DMACONTROL ",
 	/* 452 */ "MW_OUT ",
-	/* 453 */ NULL,
-	/* 454 */ NULL,
-	/* 455 */ NULL,
-	/* 456 */ NULL,
-	/* 457 */ NULL,
-	/* 458 */ NULL,
-	/* 459 */ NULL,
+	/* 453 */ NULL,							/* unused */
+	/* 454 */ NULL,							/* unused */
+	/* 455 */ NULL,							/* unused */
+	/* 456 */ NULL,							/* unused */
+	/* 457 */ NULL,							/* unused */
+	/* 458 */ NULL,							/* unused */
+	/* 459 */ NULL,							/* unused */
 
 	/*
 	 * below are new in 3.7 (GBE)
@@ -476,7 +476,7 @@ const char *const gfalct[] = {
 	/* 465 */ "BEEP",
 	/* 466 */ "GHIDEM",
 	/* 467 */ "GSHOWM",
-	/* 468 */ "GMOUSE",
+	/* 468 */ "GMOUSE ",
 	/* 469 */ "VCURVE ",
 	/* 470 */ "VRC_COPY ",
 	/* 471 */ "VGET ",
@@ -489,7 +489,7 @@ const char *const gfalct[] = {
 	/* 478 */ "GSTICK ",
 	/* 479 */ "VSGET ",
 	/* 480 */ "VSPUT ",
-	/* 481 */ "VCLS ",
+	/* 481 */ "VCLS",
 	/* 482 */ "VPALGET ", /* was: PALGET in 3.70 */
 	/* 483 */ "VPALSET ", /* was: PALSET in 3.70 */
 	/* 484 */ "LOG_MSG ",
@@ -510,8 +510,8 @@ const char *const gfalct[] = {
 	/* 499 */ "MEMSWAP% ",
 	/* 500 */ "MEMFILL& ",
 	/* 501 */ "MEMFILL% ",
-	/* 502 */ "PALGET ",
-	/* 503 */ "PALSET ",
+	/* 502 */ "PALGET ", /* PALGET was token 482 in 3.70 */
+	/* 503 */ "PALSET ", /* PALSET was token 483 in 3.70 */
 	/* 504 */ "OB.STATE(",
 	/* 505 */ "OB.FLAGS(",
 	/* 506 */ "SBYTE{", /* was: OB_SELECTED( in 3.70 */
@@ -522,7 +522,7 @@ const char *const gfalct[] = {
 	/* 511 */ "OB_TEXT$(",
 	/* 512 */ "WARMBOOT", /* was: OB_SELECTABLE( in 3.70 */
 	/* 513 */ "JOYPAD ", /* was: OB_DEFAULT( in 3.70 */
-	/* 514 */ "SLEEP ", /* was: OB_EXIT( in 3.70 */
+	/* 514 */ "SLEEP", /* was: OB_EXIT( in 3.70 */
 	/* 515 */ "MEMZERO& ", /* was: OB_EDITABLE( in 3.70 */
 	/* 516 */ "MEMZERO% ", /* was: OB_RBUTTON( in 3.70 */
 	/* 517 */ "SET.SXYXY ", /* was: OB_LASTOB( in 3.70 */
