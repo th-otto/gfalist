@@ -1,5 +1,6 @@
 FOR_LIB = 0
 GBE = 0
+GBE_OLDCOMPAT = 0
 STRANGE_CHECK = 1
 
 
@@ -33,7 +34,7 @@ TOK_CMD_SELECT_STR         =  44
 TOK_CMD_EOF                =  45
 TOK_CMD_DO_WHILE           =  49
 TOK_CMD_LOOP_UNTIL         =  52
-TOK_CMD_PROCEDURE2         =  54
+TOK_CMD_FLAPPED_PROCEDURE  =  54
 TOK_CMD_EXITIF2            =  55
 TOK_CMD_CASE               =  56
 TOK_CMD_GOSUB_IMP          =  60
@@ -48,6 +49,7 @@ TOK_CMD_COMMENT            = 115
 TOK_CMD_SYNERR             = 116
 TOK_CMD_DATA               = 117
 TOK_CMD_END                = 124
+TOK_CMD_PRINT              = 147
 TOK_CMD_FORM_INPUT         = 153
 TOK_CMD_INC_FLOAT          = 160
 TOK_CMD_ADD_FLOAT          = 176
@@ -55,6 +57,7 @@ TOK_CMD_SUB_FLOAT          = 184
 TOK_CMD_MUL_FLOAT          = 192
 TOK_CMD_DIV_FLOAT          = 200
 TOK_CMD_DIV_BYTE_ARR       = 207
+TOK_CMD_SEEK               = 208
 TOK_CMD_ADDRIN             = 224
 TOK_CMD_ADDROUT            = 225
 TOK_CMD_CONTRL             = 228
@@ -70,6 +73,8 @@ TOK_CMD_DEFBIT             = 385
 TOK_CMD_DEFSTR             = 386
 TOK_CMD_DOLLAR             = 411
 TOK_CMD_INLINE             = 417
+TOK_CMD_OUT                = 420
+TOK_CMD_FLAPPED_FUNCTION   = 449
 
 
 TOK_AND                    =   0
@@ -3137,14 +3142,14 @@ x1160e_10:
 		bne.s      x1160e_12
 		move.b     #' ',850(a6)
 		jsr        x137d2.l
-		cmpi.w     #40,1364(a6)
+		cmpi.w     #TOK_CMD_FUNCTION*4,1364(a6)
 		bne.s      x1160e_11
-		move.w     #1796,1364(a6)
+		move.w     #TOK_CMD_FLAPPED_FUNCTION*4,1364(a6)
 		bra.s      x1160e_13
 x1160e_11:
-		cmpi.w     #24,1364(a6)
+		cmpi.w     #TOK_CMD_PROCEDURE*4,1364(a6)
 		bne.s      x1160e_13
-		move.w     #216,1364(a6)
+		move.w     #TOK_CMD_FLAPPED_PROCEDURE*4,1364(a6)
 		bra.s      x1160e_13
 x1160e_12:
 		jsr        x137d2.l
@@ -3806,9 +3811,11 @@ cmd_contrl:
 		.ascii "CHAR{"
 		.dc.b ((235*2)/256),((235*2)&255),(yCHAR_args-jmpbase)/256,(yCHAR_args-jmpbase)&255
 	.IFNE GBE
+	.IFNE GBE_OLDCOMPAT
 		.dc.b 4
 		.ascii "CHAR$"
 		.dc.b ((494*2)/256),((494*2)&255),(ySTRPOKE_args-jmpbase)/256,(ySTRPOKE_args-jmpbase)&255
+	.ENDC
 	.ENDC
 		.dc.b 4
 		.ascii "CLOSE"
@@ -5270,7 +5277,9 @@ func_a_table: /* 1297e */
 		.dc.b 11,'A','P','P','L','_','Y','I','E','L','D','(',')',TOK_SUBFUNC_209,86
 		.dc.b 3,'A','C','C','?',TOK_SUBFUNC_210,249
 		.dc.b 4,'A','U','T','O','?',TOK_SUBFUNC_210,250
+	.IFNE GBE_OLDCOMPAT
 		.dc.b 5,'A','L','I','G','N','(',TOK_SUBFUNC_210,9
+	.ENDC
 		.dc.b 2,'A','~','I',TOK_SUBFUNC_208,244
 		.dc.b 5,'A','L','E','R','T','(',TOK_SUBFUNC_209,250
 		.dc.b 7,'A','P','_','S','E','N','D','(',TOK_SUBFUNC_209,252
@@ -5361,7 +5370,9 @@ func_c_table: /* 12afd */
 		.dc.b 4,'C','A','R','D','{',TOK_SUBFUNC_208,115
 		.dc.b 4,'C','H','A','R','{',0,TOK_CHAR_REF
 	.IFNE GBE
+	.IFNE GBE_OLDCOMPAT
 		.dc.b 5,'C','H','A','R','$','(',0,TOK_CHAR
+	.ENDC
 	.ENDC
 		.dc.b 4,'C','I','N','T','(',TOK_SUBFUNC_208,103
 		.dc.b 6,'C','F','L','O','A','T','(',0,TOK_CFLOAT
@@ -6404,9 +6415,15 @@ func_other_table:
 		.dc.b 0,'/',0,TOK_DIVIDE
 		.dc.b -1
 x5701f:
-		.even
 
+	.IFNE GBE
 jmpbase:
+	.ENDC
+	.even
+	.IFEQ GBE
+jmpbase:
+	.ENDC
+
 f13696:
 		moveq.l    #9,d0
 		bra.s      f136a0
@@ -6510,7 +6527,12 @@ x136d0:
 		.dc.b (0<<4)+0   /* TOK_STRING,TOK_SUCC */
 		.dc.b (2<<4)+0   /* TOK_DIR,TOK_PRED */
 		.dc.b (1<<4)+0   /* TOK_DRAW,TOK_TRIM */
+	.IFNE GBE
+		.dc.b (9<<4)+9   /* TOK_CMDLINE,TOK_CURDIR */
+		.dc.b (0<<0)+0   /* TOK_LONGARG,TOK_WORDARG */
+	.ENDC
 x136d0_end:
+		.even
 
 cmd_index_table:
 		.dc.w cmd_a_table-jmpbase
@@ -6601,7 +6623,7 @@ x137b8: .dc.l 0
 x137bc: .dc.l 0
 
 /*
- * a2 = yLET_args/x1499f/yGOSUB_args
+ * a2 = yLET_args/LABEL_args/yGOSUB_args
  */
 x137c0:
 		lea.l      1364(a6),a1
@@ -6625,15 +6647,15 @@ x137d2:
 		move.l     a1,d0
 		bne.s      x137d2_1
 		lea.l      yLET_args(pc),a2
-		move.w     #152,d0
+		move.w     #TOK_CMD_ASSIGN_FLOAT*2,d0
 		bsr.s      x137c0
 		bne.s      x137d2_1
-		lea.l      x1499f(pc),a2
-		move.w     #126,d0
+		lea.l      LABEL_args(pc),a2
+		move.w     #TOK_CMD_LABEL*2,d0
 		bsr.s      x137c0
 		bne.s      x137d2_1
 		lea.l      yGOSUB_args(pc),a2
-		move.w     #120,d0
+		move.w     #TOK_CMD_GOSUB_IMP*2,d0
 		bsr.s      x137c0
 		beq.s      x137d2_5
 x137d2_1:
@@ -6778,8 +6800,15 @@ x1395a_1:
 		move.b     (a2)+,d0
 		cmpi.b     #240,d0
 		bhi.s      x1395a_5
+	.IFNE GBE
+		cmpi.b     #TOK_SUBFUNC_208,d0 /* secondary function table? */
+		bcs.s      x1395a_2
+		cmpi.b     #TOK_SUBFUNC_214,d0
+		bhi.s      x1395a_2
+	.ELSE
 		cmpi.b     #TOK_SUBFUNC_208,d0 /* secondary function table? */
 		bne.s      x1395a_2
+	.ENDC
 		asl.w      #8,d0
 		move.b     (a2)+,d0
 x1395a_2:
@@ -6935,7 +6964,11 @@ handle_function_10:
 		beq.s      handle_function_11
 		moveq.l    #8,d6
 		addq.l     #1,a0
+		.IFNE GBE
+		bra.s      find_function_7
+		.ELSE
 		bra.w      find_function_7
+		.ENDC
 handle_function_11:
 		movea.l    a0,a5
 		moveq.l    #-1,d6
@@ -6959,7 +6992,11 @@ find_function:
 		subi.w     #'A',d6
 		bmi.s      handle_function_9
 		cmpi.w     #25,d6
+	.IFNE GBE
+		bhi.s      handle_function_12
+	.ELSE
 		bcc.s      handle_function_12
+	.ENDC
 		lea.l      func_index_table(pc),a3
 		add.w      d6,d6
 		move.w     0(a3,d6.w),d6
@@ -7162,7 +7199,11 @@ x13c36_5:
 		subq.l     #1,a0
 		tst.w      d2
 		bmi.s      f13c9a_6
+		.IFNE GBE
+		jsr        FITOF.l
+		.ELSE
 		jsr        322(a6) /* -> FITOF */
+		.ENDC
 		move.l     a1,d3
 		lsr.b      #1,d3
 		bcc.s      f13c9a_4 /* odd address? */
@@ -7323,7 +7364,7 @@ handle_form_input_1:
 		rts
 
 f13de4:
-		move.w     #840,1364(a6)
+		move.w     #TOK_CMD_OUT*2,1364(a6)
 		moveq.l    #0,d7
 		move.b     (a0)+,d0
 		cmpi.b     #'&',d0
@@ -9334,6 +9375,7 @@ yON_args:
 		.dc.b -1,(x1480d-jmpbase)/256,(x1480d-jmpbase)&255
 		.dc.b -1,(x148ca-jmpbase)/256,(x148ca-jmpbase)&255
 		.dc.b -4
+
 yEVERY_args:
 yAFTER_args:
 		.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
@@ -9484,17 +9526,19 @@ x14982:
 		.dc.b -1,(x14982-jmpbase)/256,(x14982-jmpbase)&255
 		.dc.b -3
 		.dc.b -4
-x1499f:
+
+LABEL_args:
 		.dc.b -2,(f15448-jmpbase)/256,(f15448-jmpbase)&255
-		.dc.b 124
-		.dc.b 70
+		.dc.b TOK_LABEL
+		.dc.b TOK_LINE_COMMENT
 		.dc.b -4
+
 yRESTORE_args:
-		.dc.b 70
+		.dc.b TOK_LINE_COMMENT
 		.dc.b -3
 yGOTO_args:
 		.dc.b -2,(f15448-jmpbase)/256,(f15448-jmpbase)&255
-		.dc.b 70
+		.dc.b TOK_LINE_COMMENT
 		.dc.b -4
 
 ySWAP_args:
@@ -11606,7 +11650,7 @@ f152e6_2:
 		rts
 
 f15306:
-		cmpi.w     #294,1364(a6)
+		cmpi.w     #TOK_CMD_PRINT*2,1364(a6)
 		sne        d7
 		rts
 
@@ -12731,17 +12775,17 @@ x15c52_6:
 x15c52_7:
 		addq.l     #4,a1
 x15c52_8:
-		cmpi.w     #12,d6 /* TOK_CMD_PROCEDURE*2 */
+		cmpi.w     #TOK_CMD_PROCEDURE*2,d6
 		beq        x16338
-		cmpi.w     #108,d6 /* TOK_CMD_PROCEDURE2*2 */
+		cmpi.w     #TOK_CMD_FLAPPED_PROCEDURE*2,d6
 		beq        x16338
-		cmpi.w     #38,d6 /* TOK_CMD_FOR_FLOAT*2 */
+		cmpi.w     #TOK_CMD_FOR_FLOAT*2,d6
 		bcs.s      x15c52_13
-		cmpi.w     #120,d6 /* TOK_CMD_GOSUB_IMP*2 */
+		cmpi.w     #TOK_CMD_GOSUB_IMP*2,d6
 		beq.s      x15c52_9
-		cmpi.w     #122,d6 /* TOK_CMD_GOSUB*2 */
+		cmpi.w     #TOK_CMD_GOSUB*2,d6
 		beq.s      x15c52_9
-		cmpi.w     #124,d6 /* TOK_CMD_GOSUB_EXP*2 */
+		cmpi.w     #TOK_CMD_GOSUB_EXP*2,d6
 		bne.s      x15c52_10
 x15c52_9:
 		bra        x16338_1
@@ -13681,7 +13725,7 @@ bss_end: /* 1779c */
 542: decimal_digits
 850: linebuffer
 1106: general buffer
-1364: token buffer
+1364: token buffer gbe: 838
 2314: 
 2772: filetable, xx*6
 3372: offsets to func_table

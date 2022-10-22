@@ -43,7 +43,7 @@ extern struct gfaversinfo const gfarecl[71];
 #define TOK_CMD_EOF                 45
 #define TOK_CMD_DO_WHILE            49
 #define TOK_CMD_LOOP_UNTIL          52
-#define TOK_CMD_PROCEDURE2          54
+#define TOK_CMD_FLAPPED_PROCEDURE   54
 #define TOK_CMD_EXITIF2             55
 #define TOK_CMD_CASE                56
 #define TOK_CMD_GOSUB_IMP           60
@@ -58,6 +58,7 @@ extern struct gfaversinfo const gfarecl[71];
 #define TOK_CMD_SYNERR             116
 #define TOK_CMD_DATA               117
 #define TOK_CMD_END                124
+#define TOK_CMD_PRINT              147
 #define TOK_CMD_FORM_INPUT         153
 #define TOK_CMD_INC_FLOAT          160
 #define TOK_CMD_ADD_FLOAT          176
@@ -65,6 +66,7 @@ extern struct gfaversinfo const gfarecl[71];
 #define TOK_CMD_MUL_FLOAT          192
 #define TOK_CMD_DIV_FLOAT          200
 #define TOK_CMD_DIV_BYTE_ARR       207
+#define TOK_CMD_SEEK               208
 #define TOK_CMD_ADDROUT            225
 #define TOK_CMD_CONTRL             228
 #define TOK_CMD_DOUBLE_REF         237
@@ -79,6 +81,8 @@ extern struct gfaversinfo const gfarecl[71];
 #define TOK_CMD_DEFSTR             386
 #define TOK_CMD_DOLLAR             411
 #define TOK_CMD_INLINE             417
+#define TOK_CMD_OUT                420
+#define TOK_CMD_FLAPPED_FUNCTION   449
 
 /*
  * tokens in a line (function codes)

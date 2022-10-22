@@ -188,13 +188,13 @@ int main(void)
 	char name[100];
 
 	out = stdout;
-	fp = fopen("lst2gfa_orig.ttp", "rb");
+	fp = fopen("lst2gfa.ttp", "rb");
 	if (fp == NULL)
 		return 1;
 
 	first_char = 0;
-	offset = 0x1297e;
-	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
+	offset = 0x1325c;
+	fseek(fp, offset - 0x10000 + 28 + 228, SEEK_SET);
 	while (offset < 0x16584)
 	{
 		len = fgetc(fp);
@@ -231,8 +231,8 @@ int main(void)
 	fprintf(out, "\n");
 
 	first_char = 0;
-	offset = 0x11afa;
-	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
+	offset = 0x11b58;
+	fseek(fp, offset - 0x10000 + 28 + 228, SEEK_SET);
 	while (offset < 0x16584)
 	{
 		len = fgetc(fp);
@@ -304,6 +304,8 @@ int main(void)
 	fprintf(out, "offset = %05x\n", offset);
 	fprintf(out, "\n");
 
+	if (0)
+	{
 	/* mat cmd table */
 	offset = 0x13e02;
 	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
@@ -444,6 +446,7 @@ int main(void)
 	fprintf(out, "\n");
 	dump_table(fp, 0x14ee8, 0x152e4, 0);
 	fprintf(out, "\n");
+	}
 
 	return 0;
 }
