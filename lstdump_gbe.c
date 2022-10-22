@@ -150,7 +150,7 @@ static void dump_table(FILE *fp, int offset, int end, int diffbase)
 			c = (short)c;
 			dst = jmpbase + c;
 			if (functable[funcused[dst]])
-				fprintf(out, "\t\t.dc.b -2,(%s-jmpbase)/256,(%s-jmpbase)&255\n", functable[funcused[dst]], functable[funcused[dst]]);
+				fprintf(out, "\t\t.dc.b -2,(%s-jmpbase)/256,(%s-jmpbase)&255 /* %05x */\n", functable[funcused[dst]], functable[funcused[dst]], dst);
 			else
 				fprintf(out, "\t\t.dc.b -2,(f%d-jmpbase)/256,(f%d-jmpbase)&255\n", funcused[dst], funcused[dst]);
 			offset += 3;
@@ -161,7 +161,7 @@ static void dump_table(FILE *fp, int offset, int end, int diffbase)
 			c = c * 256 + c2;
 			c = (short)c;
 			dst = jmpbase + c;
-			fprintf(out, "\t\t.dc.b -1,(%s-jmpbase)/256,(%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
+			fprintf(out, "\t\t.dc.b -1,(%s-jmpbase)/256,(%s-jmpbase)&255 /* %05x */\n", used[dst]->name, used[dst]->name, dst);
 			offset += 3;
 			break;
 		case 240:
@@ -202,188 +202,6 @@ int main(void)
 	fp = fopen("gbe/gbe.prg", "rb");
 	if (fp == NULL)
 		return 1;
-
-	first_char = 0;
-	offset = 0x540f7;
-	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
-	while (offset < 0x70000)
-	{
-		len = fgetc(fp);
-		if (len == 255)
-			break;
-		for (i = 0; i <= len; i++)
-		{
-			c = fgetc(fp);
-			if (i == 0)
-			{
-				if (c != first_char)
-				{
-					if (c >= 'A' && c <= 'Z')
-					{
-						fprintf(out, "func_%c_table: /* %05x */\n", c - 'A' + 'a', offset);
-					} else if (c == '\\')
-					{
-						fprintf(out, "func_other_table:\n");
-					}
-					first_char = c;
-				}
-				fprintf(out, "\t\t.dc.b %d", len);
-			}
-			fprintf(out, ",'%c'", c);
-		}
-		c = getc(fp);
-		fprintf(out, ",%d", c);
-		c = getc(fp);
-		fprintf(out, ",%d\n", c);
-
-		offset += len + 6;
-	}
-	fprintf(out, "offset = %05x\n", offset);
-	fprintf(out, "\n");
-
-	first_char = 0;
-	offset = 0x5292c;
-	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
-	while (offset < 0x70000)
-	{
-		len = fgetc(fp);
-		if (len == 255)
-			break;
-		for (i = 0; i <= len; i++)
-		{
-			c = fgetc(fp);
-			if (i == 0)
-			{
-				if (c != first_char)
-				{
-					if (c >= 'A' && c <= 'Z')
-					{
-						fprintf(out, "cmd_%c_table: /* %05x */\n", c - 'A' + 'a', offset);
-					} else if (c == '_')
-					{
-						fprintf(out, "cmd_other_table:\n");
-					}
-					first_char = c;
-				}
-				fprintf(out, "\t\t.dc.b %d\n", len);
-				fprintf(out, "\t\t.ascii \"");
-			}
-			putc(c, out);
-			switch (c)
-			{
-			case ' ':
-			case '(':
-			case '{':
-			case '#':
-			case '?':
-			case '$':
-			case '.':
-				c = '_';
-				break;
-			}
-			name[i] = c;
-		}
-		name[len + 1] = '\0';
-		if (name[len] == '_')
-			name[len--] = '\0';
-		if (name[len] == '_')
-			name[len--] = '\0';
-		fprintf(out, "\"\n");
-		c = getc(fp);
-		c2 = getc(fp);
-		c = c * 256 + c2;
-		c /= 2;
-		fprintf(out, "\t\t.dc.b ((%d*2)/256),((%d*2)&255)", c, c);
-
-		c = getc(fp);
-		c2 = getc(fp);
-		c = c * 256 + c2;
-		c = (short)c;
-		dst = jmpbase + c;
-		{
-			struct label *l;
-			
-			strcat(name, "_args");
-			l = malloc(sizeof(struct label));
-			l->name = malloc(strlen(name) + 2);
-			sprintf(l->name, "y%s", name);
-			l->next = used[dst];
-			used[dst] = l;
-		}
-		fprintf(out, ",(%s-jmpbase)/256,(%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
-
-		offset += len + 6;
-	}
-	fprintf(out, "offset = %05x\n", offset);
-	fprintf(out, "\n");
-
-	/* mat cmd table */
-	offset = 0x57794;
-	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
-	for (;;)
-	{
-		c = getc(fp);
-		if (c == 0)
-			break;
-		strcpy(name, "mat_");
-		i = 4;
-		name[i++] = c;
-		fprintf(out, "\t\t.ascii \"%c", c);
-		for (;;)
-		{
-			c = getc(fp);
-			if (c == 0)
-				break;
-			putc(c, out);
-			switch (c)
-			{
-			case ' ':
-			case '(':
-			case '{':
-			case '#':
-			case '?':
-			case '$':
-			case '.':
-				c = '_';
-				break;
-			}
-			name[i++] = c;
-		}
-		name[i] = '\0';
-		fprintf(out, "\"\n\t\t.dc.b 0\n");
-		c = getc(fp);
-		c2 = getc(fp);
-		c = c * 256 + c2;
-		dst = jmpbase + c;
-		if (used[dst] == 0)
-		{
-			struct label *l;
-			
-			strcat(name, "_args");
-			l = malloc(sizeof(struct label));
-			l->name = malloc(strlen(name) + 2);
-			sprintf(l->name, "y%s", name);
-			l->next = NULL;
-			used[dst] = l;
-		}
-		fprintf(out, "\t\t.dc.b (%s-jmpbase)/256,(%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
-	}
-	fprintf(out, "\n");
-
-	offset = 0x586c4;
-	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
-	while (offset < 0x58798)
-	{
-		c = getc(fp);
-		c2 = getc(fp);
-		c = c * 256 + c2;
-		c = (short)c;
-		dst = jmpbase + c;
-		fprintf(out, "\t\t.dc.w x%05x-jmpbase\n", dst);
-		offset += 2;
-	}
-	fprintf(out, "offset = %05x\n", offset);
-	fprintf(out, "\n");
 
 	for (i = 0; i < (int)(sizeof(maptable) / sizeof(maptable[0])); i++)
 		maptable[i] = i;
@@ -632,6 +450,191 @@ int main(void)
 	scan_table(fp, 0x57f6e, 0x5862c);
 	scan_table(fp, 0x58798, 0x5883e);
 	scan_table(fp, 0x58d18, 0x592aa);
+
+	first_char = 0;
+	offset = 0x540f7;
+	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
+	while (offset < 0x70000)
+	{
+		len = fgetc(fp);
+		if (len == 255)
+			break;
+		for (i = 0; i <= len; i++)
+		{
+			c = fgetc(fp);
+			if (i == 0)
+			{
+				if (c != first_char)
+				{
+					if (c >= 'A' && c <= 'Z')
+					{
+						fprintf(out, "func_%c_table: /* %05x */\n", c - 'A' + 'a', offset);
+					} else if (c == '\\')
+					{
+						fprintf(out, "func_other_table:\n");
+					}
+					first_char = c;
+				}
+				fprintf(out, "\t\t.dc.b %d", len);
+			}
+			fprintf(out, ",'%c'", c);
+		}
+		c = getc(fp);
+		fprintf(out, ",%d", c);
+		c = getc(fp);
+		fprintf(out, ",%d\n", c);
+
+		offset += len + 6;
+	}
+	fprintf(out, "offset = %05x\n", offset);
+	fprintf(out, "\n");
+
+	first_char = 0;
+	offset = 0x5292c;
+	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
+	while (offset < 0x70000)
+	{
+		len = fgetc(fp);
+		if (len == 255)
+			break;
+		for (i = 0; i <= len; i++)
+		{
+			c = fgetc(fp);
+			if (i == 0)
+			{
+				if (c != first_char)
+				{
+					if (c >= 'A' && c <= 'Z')
+					{
+						fprintf(out, "cmd_%c_table: /* %05x */\n", c - 'A' + 'a', offset);
+					} else if (c == '_')
+					{
+						fprintf(out, "cmd_other_table:\n");
+					}
+					first_char = c;
+				}
+				fprintf(out, "\t\t.dc.b %d\n", len);
+				fprintf(out, "\t\t.ascii \"");
+			}
+			putc(c, out);
+			switch (c)
+			{
+			case ' ':
+			case '(':
+			case '{':
+			case '#':
+			case '?':
+			case '$':
+			case '.':
+				c = '_';
+				break;
+			}
+			name[i] = c;
+		}
+		name[len + 1] = '\0';
+		if (name[len] == '_')
+			name[len--] = '\0';
+		if (name[len] == '_')
+			name[len--] = '\0';
+		fprintf(out, "\"\n");
+		c = getc(fp);
+		c2 = getc(fp);
+		c = c * 256 + c2;
+		c /= 2;
+		fprintf(out, "\t\t.dc.b ((%d*2)/256),((%d*2)&255)", c, c);
+
+		c = getc(fp);
+		c2 = getc(fp);
+		c = c * 256 + c2;
+		c = (short)c;
+		dst = jmpbase + c;
+		{
+			struct label *l;
+			
+			strcat(name, "_args");
+			l = malloc(sizeof(struct label));
+			l->name = malloc(strlen(name) + 2);
+			sprintf(l->name, "y%s", name);
+			l->next = used[dst];
+			used[dst] = l;
+		}
+		fprintf(out, ",(%s-jmpbase)/256,(%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
+
+		offset += len + 6;
+	}
+	fprintf(out, "offset = %05x\n", offset);
+	fprintf(out, "\n");
+
+	/* mat cmd table */
+	offset = 0x57794;
+	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
+	for (;;)
+	{
+		c = getc(fp);
+		if (c == 0)
+			break;
+		strcpy(name, "mat_");
+		i = 4;
+		name[i++] = c;
+		fprintf(out, "\t\t.ascii \"%c", c);
+		for (;;)
+		{
+			c = getc(fp);
+			if (c == 0)
+				break;
+			putc(c, out);
+			switch (c)
+			{
+			case ' ':
+			case '(':
+			case '{':
+			case '#':
+			case '?':
+			case '$':
+			case '.':
+				c = '_';
+				break;
+			}
+			name[i++] = c;
+		}
+		name[i] = '\0';
+		fprintf(out, "\"\n\t\t.dc.b 0\n");
+		c = getc(fp);
+		c2 = getc(fp);
+		c = c * 256 + c2;
+		dst = jmpbase + c;
+		if (used[dst] == 0)
+		{
+			struct label *l;
+			
+			strcat(name, "_args");
+			l = malloc(sizeof(struct label));
+			l->name = malloc(strlen(name) + 2);
+			sprintf(l->name, "y%s", name);
+			l->next = NULL;
+			used[dst] = l;
+		}
+		fprintf(out, "\t\t.dc.b (%s-jmpbase)/256,(%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
+	}
+	fprintf(out, "\n");
+
+	offset = 0x586c4;
+	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
+	while (offset < 0x58798)
+	{
+		c = getc(fp);
+		c2 = getc(fp);
+		c = c * 256 + c2;
+		c = (short)c;
+		dst = jmpbase + c;
+		if (used[dst])
+			fprintf(out, "\t\t.dc.w %s-jmpbase\n", used[dst]->name);
+		else
+			fprintf(out, "\t\t.dc.w x%05x-jmpbase\n", dst);
+		offset += 2;
+	}
+	fprintf(out, "offset = %05x\n", offset);
+	fprintf(out, "\n");
 
 	dump_table(fp, 0x57864, 0x57a67, 0x43992);
 	fprintf(out, "\n");
