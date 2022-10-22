@@ -20,6 +20,7 @@
 #include "sky.h"
 #include "tables.h"
 
+/* Variablen-Suffix text (VST) */
 static const unsigned char gfavst[MAX_TYPES][3] = {
 	"#",
 	"$",
@@ -597,9 +598,6 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	unsigned int i;
 	int32_t num;
 
-	/* Variablen-Suffix text (VST) */
-	/* #,$,%,!,#(,$(,%(,!(,&,|,,,&(,|(,,$ */
-
 	assert(sizeof(uint64_t) == 8);
 
 	pop16b(lcp, src);
@@ -732,6 +730,8 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	case 354:							/* SOUND */
 	case 355:							/* WAVE */
 	case 398:							/* DUMP */
+	case 481:							/* VCLS */
+	case 514:							/* SLEEP */
 		if (src < srcend && *src != TOK_LINE_COMMENT)
 			putc(' ', gi->ost);
 		break;

@@ -3732,6 +3732,11 @@ cmd_b_table: /* 11bc6 */
 		.dc.b 4
 		.ascii "BZERO"
 		.dc.b ((462*2)/256),((462*2)&255),(yBZERO_args-jmpbase)/256,(yBZERO_args-jmpbase)&255
+	.IFNE GBE_OLDCOMPAT
+		.dc.b 5
+		.ascii "BCLEAR"
+		.dc.b ((462*2)/256),((462*2)&255),(yBZERO_args-jmpbase)/256,(yBZERO_args-jmpbase)&255
+	.ENDC
 		.dc.b 4
 		.ascii "BFILL"
 		.dc.b ((463*2)/256),((463*2)&255),(yBFILL_args-jmpbase)/256,(yBFILL_args-jmpbase)&255
@@ -4820,6 +4825,11 @@ cmd_t_table: /* 124bd */
 		.dc.b 6
 		.ascii "TBITBLT"
 		.dc.b ((490*2)/256),((490*2)&255),(yTBITBLT_args-jmpbase)/256,(yTBITBLT_args-jmpbase)&255
+	.IFNE GBE_OLDCOMPAT
+		.dc.b 6
+		.ascii "VBITBLT"
+		.dc.b ((490*2)/256),((490*2)&255),(yTBITBLT_args-jmpbase)/256,(yTBITBLT_args-jmpbase)&255
+	.ENDC
 		.dc.b 8
 		.ascii "TE_PTEXT("
 		.dc.b ((598*2)/256),((598*2)&255),(yTE_PTEXT_args-jmpbase)/256,(yTE_PTEXT_args-jmpbase)&255
