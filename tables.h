@@ -8,6 +8,7 @@ extern const char *const gfasft_208[256];
 extern const char *const gfasft_209[256];
 extern const char *const gfasft_210[256];
 extern const char *const gfasft_211[256];
+extern const char *const gfasft_212[256];
 struct gfaversinfo {
 	short len_magic;
 	short num_offsets;

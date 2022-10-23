@@ -202,7 +202,7 @@ int main(void)
 	char name[100];
 
 	out = stdout;
-	fp = fopen("gbe/gbe.prg", "rb");
+	fp = fopen("gbe/gbe372.prg", "rb");
 	if (fp == NULL)
 		return 1;
 
