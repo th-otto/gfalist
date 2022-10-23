@@ -12,7 +12,7 @@ int funcused[1048576];
 int label;
 int funclabel;
 
-#define jmpbase 0x5701f
+#define jmpbase 0x57e10
 
 static int maptable[500];
 static char *oldtable[500];
@@ -107,13 +107,12 @@ static void scan_table(FILE *fp, int offset, int end)
 }
 
 
-static void dump_table(FILE *fp, int offset, int end, int diffbase)
+static void dump_table(FILE *fp, int offset, int end)
 {
 	int c;
 	int c2;
 	int dst;
 
-	(void)diffbase;
 	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
 	while (offset < end)
 	{
@@ -449,7 +448,7 @@ int main(void)
 	functable[53] = "f152e6";
 	
 	first_char = 0;
-	offset = 0x548ae;
+	offset = 0x5478b;
 	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
 	while (offset < 0x80000)
 	{
@@ -481,7 +480,7 @@ int main(void)
 		c = getc(fp);
 		fprintf(out, ",%d\n", c);
 
-		offset += len + 6;
+		offset += len + 4;
 	}
 	fprintf(out, "offset = %05x\n", offset);
 	fprintf(out, "\n");
@@ -615,17 +614,17 @@ int main(void)
 	}
 	fprintf(out, "\n");
 
-	if (0)
+	if (1)
 	{
-	scan_table(fp, 0x57864, 0x57a67);
-	scan_table(fp, 0x57aa8, 0x57f20);
-	scan_table(fp, 0x57f6e, 0x5862c);
-	scan_table(fp, 0x58798, 0x5883e);
-	scan_table(fp, 0x58d18, 0x592aa);
+	scan_table(fp, 0x58654, 0x58857);
+	scan_table(fp, 0x58898, 0x58d0f);
+	scan_table(fp, 0x58d5e, 0x5944c);
+	scan_table(fp, 0x595be, 0x596bf);
+	scan_table(fp, 0x59bca, 0x5a18e);
 
-	offset = 0x586c4;
+	offset = 0x594e4;
 	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
-	while (offset < 0x58798)
+	while (offset < 0x595be)
 	{
 		c = getc(fp);
 		c2 = getc(fp);
@@ -640,23 +639,23 @@ int main(void)
 			used[dst] = malloc(sizeof(struct label));
 			used[dst]->name = malloc(30);
 			used[dst]->next = NULL;
-			sprintf(used[dst]->name, "x%05x", dst);
-			fprintf(out, "\t\t.dc.w x%05x-jmpbase\n", dst);
+			sprintf(used[dst]->name, "x%05x_373", dst);
+			fprintf(out, "\t\t.dc.w x%05x_373-jmpbase\n", dst);
 		}
 		offset += 2;
 	}
 	fprintf(out, "offset = %05x\n", offset);
 	fprintf(out, "\n");
 
-	dump_table(fp, 0x57864, 0x57a67, 0x43992);
+	dump_table(fp, 0x58654, 0x58857);
 	fprintf(out, "\n");
-	dump_table(fp, 0x57aa8, 0x57f20, 0x43992);
+	dump_table(fp, 0x58898, 0x58d0f);
 	fprintf(out, "\n");
-	dump_table(fp, 0x57f6e, 0x5862c, 0x439A8);
+	dump_table(fp, 0x58d5e, 0x5944c);
 	fprintf(out, "\n");
-	dump_table(fp, 0x58798, 0x58899, 0x43B0A);
+	dump_table(fp, 0x595be, 0x596bf);
 	fprintf(out, "\n");
-	dump_table(fp, 0x58d18, 0x592aa, 0x43E30);
+	dump_table(fp, 0x59bca, 0x5a18e);
 	fprintf(out, "\n");
 	fprintf(out, "\n");
 

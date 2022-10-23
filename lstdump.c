@@ -195,7 +195,7 @@ int main(void)
 	first_char = 0;
 	offset = 0x1325c;
 	fseek(fp, offset - 0x10000 + 28 + 228, SEEK_SET);
-	while (offset < 0x16584)
+	while (offset < 0x80000)
 	{
 		len = fgetc(fp);
 		if (len == 255)
@@ -225,7 +225,7 @@ int main(void)
 		c = getc(fp);
 		fprintf(out, ",%d\n", c);
 
-		offset += len + 6;
+		offset += len + 4;
 	}
 	fprintf(out, "offset = %05x\n", offset);
 	fprintf(out, "\n");
@@ -233,7 +233,7 @@ int main(void)
 	first_char = 0;
 	offset = 0x11b58;
 	fseek(fp, offset - 0x10000 + 28 + 228, SEEK_SET);
-	while (offset < 0x16584)
+	while (offset < 0x80000)
 	{
 		len = fgetc(fp);
 		if (len == 255)
