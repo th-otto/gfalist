@@ -1,3 +1,4 @@
+/* 51366 */
 FOR_LIB = 0
 GBE = 373
 GBE_OLDCOMPAT = 0
@@ -4382,7 +4383,7 @@ cmd_m_table: /* 120f4 */
 		.dc.b ((139*2)/256),((139*2)&255),(yMENU_args-jmpbase)/256,(yMENU_args-jmpbase)&255
 		.dc.b 4
 		.ascii "MID$("
-		.dc.b ((305*2)/256),((305*2)&255),(yMID_args-jmpbase)/256,(yMID_args-jmpbase)&255
+		.dc.b ((305*2)/256),((305*2)&255),(yMIDs_args-jmpbase)/256,(yMIDs_args-jmpbase)&255
 		.dc.b 4
 		.ascii "MKDIR"
 		.dc.b ((331*2)/256),((331*2)&255),(yMKDIR_args-jmpbase)/256,(yMKDIR_args-jmpbase)&255
@@ -4560,7 +4561,7 @@ cmd_o_table: /* 12165 */
 		.dc.b ((510*2)/256),((510*2)&255),(yOB_RADIO_args-jmpbase)/256,(yOB_RADIO_args-jmpbase)&255
 		.dc.b 8
 		.ascii "OB_TEXT$("
-		.dc.b ((511*2)/256),((511*2)&255),(yOB_TEXT_args-jmpbase)/256,(yOB_TEXT_args-jmpbase)&255
+		.dc.b ((511*2)/256),((511*2)&255),(yOB_TEXTs_args-jmpbase)/256,(yOB_TEXTs_args-jmpbase)&255
 		.dc.b 11
 		.ascii "OB_SELECTED("
 		.dc.b ((560*2)/256),((560*2)&255),(yOB_SELECTED_args-jmpbase)/256,(yOB_SELECTED_args-jmpbase)&255
@@ -4892,7 +4893,7 @@ cmd_s_table: /* 123c3 */
 		.dc.b ((660*2)/256),((660*2)&255),(ySTRUCT_args-jmpbase)/256,(ySTRUCT_args-jmpbase)&255
 		.dc.b 7
 		.ascii "STRUCT$("
-		.dc.b ((656*2)/256),((656*2)&255),(ySTRUCT_args-jmpbase)/256,(ySTRUCT_args-jmpbase)&255
+		.dc.b ((656*2)/256),((656*2)&255),(ySTRUCTs_args-jmpbase)/256,(ySTRUCTs_args-jmpbase)&255
 		.dc.b 4
 		.ascii "SUPER"
 		.dc.b ((639*2)/256),((639*2)&255),(ySUPER_args-jmpbase)/256,(ySUPER_args-jmpbase)&255
@@ -6664,10 +6665,7 @@ func_v_table: /* 136e4 */
 		.dc.b 12,'V','Q','_','M','A','X','_','C','O','L','O','R','(',TOK_SUBFUNC_211,83
 		.dc.b 15,'V','Q','_','W','E','I','G','H','T','_','C','O','L','O','R','(',TOK_SUBFUNC_211,84
 		.dc.b 8,'V','_','S','E','T','R','G','B','(',TOK_SUBFUNC_211,85
-		.dc.b 12,'V','Q','T','_','X','F'
-f56c1e: /* WTF? */
-f56c1e_373: /* WTF? */
-		.dc.b 'N','T','I','N','F','O','(',TOK_SUBFUNC_211,87
+		.dc.b 12,'V','Q','T','_','X','F','N','T','I','N','F','O','(',TOK_SUBFUNC_211,87
 		.dc.b 13,'V','_','C','O','L','O','R','2','V','A','L','U','E','(',TOK_SUBFUNC_210,211
 		.dc.b 13,'V','_','V','A','L','U','E','2','C','O','L','O','R','(',TOK_SUBFUNC_210,210
 		.dc.b 15,'V','_','C','O','L','O','R','2','N','E','A','R','E','S','T','(',TOK_SUBFUNC_210,209
@@ -8294,7 +8292,8 @@ x14147:
 		.dc.b -4
 
 	.IFNE GBE
-yOB_TEXT_args:
+ySTRUCTs_args:
+yOB_TEXTs_args:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 		.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 		.dc.b 32
@@ -9420,7 +9419,7 @@ REM_args:
 yDATA_args:
 		.dc.b -2,(f13bca-jmpbase)/256,(f13bca-jmpbase)&255
 		.dc.b -4
-yMID_args:
+yMIDs_args:
 		.dc.b -1,(x143ec-jmpbase)/256,(x143ec-jmpbase)&255
 		.dc.b -1,(x14695-jmpbase)/256,(x14695-jmpbase)&255
 		.dc.b -1,(x14b90-jmpbase)/256,(x14b90-jmpbase)&255
@@ -10496,7 +10495,7 @@ x14bd0:
 /* 373: 5944c */
 f14bde:
 		bsr        find_function
-		lea.l      x14d34(pc),a2
+		lea.l      offset_table_pf(pc),a2
 
 x14be6:
 		move.w     d6,d0
@@ -10517,31 +10516,31 @@ x14be6:
 		cmpi.w     #(TOK_SUBFUNC_214<<8)+255,d0
 		bhi        f13c9a_6
 x14be6_214:
-		lea.l      x58d18_372(pc),a2
+		lea.l      offset_table_sf214(pc),a2
 		move.b     #TOK_SUBFUNC_214,(a1)+ /* secondary function table */
 		bra.s      x14be6_subfunc
 x14be6_213:
-		lea.l      x58d18_372(pc),a2
+		lea.l      offset_table_sf213(pc),a2
 		move.b     #TOK_SUBFUNC_213,(a1)+ /* secondary function table */
 		bra.s      x14be6_subfunc
 x14be6_212:
 	.IF GBE>=373
-		lea.l      x59b84_373(pc),a2
+		lea.l      offset_table_sf212(pc),a2
 	.ELSE
-		lea.l      x58d18_372(pc),a2
+		lea.l      offset_table_sf214(pc),a2
 	.ENDC
 		move.b     #TOK_SUBFUNC_212,(a1)+ /* secondary function table */
 		bra.s      x14be6_subfunc
 x14be6_211:
-		lea.l      x58c5e_372(pc),a2
+		lea.l      offset_table_sf211(pc),a2
 		move.b     #TOK_SUBFUNC_211,(a1)+ /* secondary function table */
 		bra.s      x14be6_subfunc
 x14be6_210:
-		lea.l      x58b5e_372(pc),a2
+		lea.l      offset_table_sf210(pc),a2
 		move.b     #TOK_SUBFUNC_210,(a1)+ /* secondary function table */
 		bra.s      x14be6_subfunc
 x14be6_209:
-		lea.l      x58a5e_372(pc),a2
+		lea.l      offset_table_sf209(pc),a2
 		move.b     #TOK_SUBFUNC_209,(a1)+ /* secondary function table */
 		bra.s      x14be6_subfunc
 	.ELSE
@@ -10549,7 +10548,7 @@ x14be6_209:
 		bhi        f13c9a_6
 	.ENDC
 x14be6_208:
-		lea.l      x14df8(pc),a2
+		lea.l      offset_table_sf208(pc),a2
 		move.b     #TOK_SUBFUNC_208,(a1)+ /* secondary function table */
 x14be6_subfunc:
 		andi.w     #255,d0
@@ -11040,8 +11039,8 @@ x58860_372:
 x59686_373:
 		.dc.b -1,(x58835_372-jmpbase)/256,(x58835_372-jmpbase)&255
 		.dc.b -3
-		.dc.b 210
-		.dc.b -2,((f56c1e_373-jmpbase)>>8)&0xff,(f56c1e_373-jmpbase)&255
+		.dc.b 210,254 /* XXX */
+		.dc.b -5,255
 		.dc.b -1,(x14cfa-jmpbase)/256,(x14cfa-jmpbase)&255
 		.dc.b -4
 x5886c_372:
@@ -11103,1351 +11102,1346 @@ x14d2b:
 /* 372: 58899 */
 /* 373: 596bf */
 x14d34:
-		.dc.b 0x5a
-		.dc.b 0x5c
-		.dc.b 0x5e
-		.dc.b 0x62
-		.dc.b 0x60
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x4a
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x58
-		.dc.b 0x56
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x0c
-		.dc.b 0x00
-		.dc.b 0x0c
-		.dc.b 0x0c
-		.dc.b 0x0c
-		.dc.b 0x0c
-		.dc.b 0x0c
-		.dc.b 0x0c
-		.dc.b 0x0c
-		.dc.b 0x0c
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x0c
-		.dc.b 0x0c
-		.dc.b 0x0c
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x0e
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x10
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x0c
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x0c
-		.dc.b 0x10
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x0c
-		.dc.b 0x00
-		.dc.b 0x0c
-		.dc.b 0x10
-		.dc.b 0x0c
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x12
-		.dc.b 0x12
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x0c
-		.dc.b 0x0c
-		.dc.b 0x0e
-		.dc.b 0x0e
-		.dc.b 0x0e
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x0c
-		.dc.b 0x00
-		.dc.b 0x64
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x42
-		.dc.b 0x42
-		.dc.b 0x42
-		.dc.b 0x42
-		.dc.b 0x12
+offset_table_pf:
+		.dc.b 0x5a /* 0 */
+		.dc.b 0x5c /* 1 */
+		.dc.b 0x5e /* 2 */
+		.dc.b 0x62 /* 3 */
+		.dc.b 0x60 /* 4 */
+		.dc.b 0x00 /* 5 */
+		.dc.b 0x00 /* 6 */
+		.dc.b 0x4a /* 7 */
+		.dc.b 0x00 /* 8 */
+		.dc.b 0x00 /* 9 */
+		.dc.b 0x58 /* 10 */
+		.dc.b 0x56 /* 11 */
+		.dc.b 0x00 /* 12 */
+		.dc.b 0x00 /* 13 */
+		.dc.b 0x00 /* 14 */
+		.dc.b 0x00 /* 15 */
+		.dc.b 0x00 /* 16 */
+		.dc.b 0x00 /* 17 */
+		.dc.b 0x00 /* 18 */
+		.dc.b 0x00 /* 19 */
+		.dc.b 0x00 /* 20 */
+		.dc.b 0x00 /* 21 */
+		.dc.b 0x00 /* 22 */
+		.dc.b 0x00 /* 23 */
+		.dc.b 0x00 /* 24 */
+		.dc.b 0x00 /* 25 */
+		.dc.b 0x00 /* 26 */
+		.dc.b 0x00 /* 27 */
+		.dc.b 0x00 /* 28 */
+		.dc.b 0x00 /* 29 */
+		.dc.b 0x00 /* 30 */
+		.dc.b 0x00 /* 31 */
+		.dc.b 0x00 /* 32 */
+		.dc.b 0x00 /* 33 */
+		.dc.b 0x00 /* 34 */
+		.dc.b 0x0c /* 35 */
+		.dc.b 0x00 /* 36 */
+		.dc.b 0x0c /* 37 */
+		.dc.b 0x0c /* 38 */
+		.dc.b 0x0c /* 39 */
+		.dc.b 0x0c /* 40 */
+		.dc.b 0x0c /* 41 */
+		.dc.b 0x0c /* 42 */
+		.dc.b 0x0c /* 43 */
+		.dc.b 0x0c /* 44 */
+		.dc.b 0x00 /* 45 */
+		.dc.b 0x00 /* 46 */
+		.dc.b 0x0c /* 47 */
+		.dc.b 0x0c /* 48 */
+		.dc.b 0x0c /* 49 */
+		.dc.b 0x00 /* 50 */
+		.dc.b 0x00 /* 51 */
+		.dc.b 0x00 /* 52 */
+		.dc.b 0x0e /* 53 */
+		.dc.b 0x00 /* 54 */
+		.dc.b 0x00 /* 55 */
+		.dc.b 0x00 /* 56 */
+		.dc.b 0x10 /* 57 */
+		.dc.b 0x00 /* 58 */
+		.dc.b 0x00 /* 59 */
+		.dc.b 0x00 /* 60 */
+		.dc.b 0x00 /* 61 */
+		.dc.b 0x00 /* 62 */
+		.dc.b 0x00 /* 63 */
+		.dc.b 0x00 /* 64 */
+		.dc.b 0x0c /* 65 */
+		.dc.b 0x00 /* 66 */
+		.dc.b 0x00 /* 67 */
+		.dc.b 0x00 /* 68 */
+		.dc.b 0x00 /* 69 */
+		.dc.b 0x00 /* 70 */
+		.dc.b 0x00 /* 71 */
+		.dc.b 0x00 /* 72 */
+		.dc.b 0x00 /* 73 */
+		.dc.b 0x00 /* 74 */
+		.dc.b 0x00 /* 75 */
+		.dc.b 0x00 /* 76 */
+		.dc.b 0x00 /* 77 */
+		.dc.b 0x0c /* 78 */
+		.dc.b 0x10 /* 79 */
+		.dc.b 0x00 /* 80 */
+		.dc.b 0x00 /* 81 */
+		.dc.b 0x0c /* 82 */
+		.dc.b 0x00 /* 83 */
+		.dc.b 0x0c /* 84 */
+		.dc.b 0x10 /* 85 */
+		.dc.b 0x0c /* 86 */
+		.dc.b 0x00 /* 87 */
+		.dc.b 0x00 /* 88 */
+		.dc.b 0x00 /* 89 */
+		.dc.b 0x00 /* 90 */
+		.dc.b 0x00 /* 91 */
+		.dc.b 0x12 /* 92 */
+		.dc.b 0x12 /* 93 */
+		.dc.b 0x00 /* 94 */
+		.dc.b 0x00 /* 95 */
+		.dc.b 0x00 /* 96 */
+		.dc.b 0x00 /* 97 */
+		.dc.b 0x00 /* 98 */
+		.dc.b 0x00 /* 99 */
+		.dc.b 0x00 /* 100 */
+		.dc.b 0x00 /* 101 */
+		.dc.b 0x00 /* 102 */
+		.dc.b 0x0c /* 103 */
+		.dc.b 0x0c /* 104 */
+		.dc.b 0x0e /* 105 */
+		.dc.b 0x0e /* 106 */
+		.dc.b 0x0e /* 107 */
+		.dc.b 0x00 /* 108 */
+		.dc.b 0x00 /* 109 */
+		.dc.b 0x0c /* 110 */
+		.dc.b 0x00 /* 111 */
+		.dc.b 0x64 /* 112 */
+		.dc.b 0x00 /* 113 */
+		.dc.b 0x00 /* 114 */
+		.dc.b 0x00 /* 115 */
+		.dc.b 0x00 /* 116 */
+		.dc.b 0x42 /* 117 */
+		.dc.b 0x42 /* 118 */
+		.dc.b 0x42 /* 119 */
+		.dc.b 0x42 /* 120 */
+		.dc.b 0x12 /* 121 */
+		.dc.b 0x00 /* 122 */
+		.dc.b 0x0c /* 123 */
+		.dc.b 0x00 /* 124 */
+		.dc.b 0x0c /* 125 */
+		.dc.b 0x00 /* 126 */
+		.dc.b 0x00 /* 127 */
+		.dc.b 0x00 /* 128 */
+		.dc.b 0x00 /* 129 */
+		.dc.b 0x00 /* 130 */
+		.dc.b 0x00 /* 131 */
+		.dc.b 0x00 /* 132 */
+		.dc.b 0x00 /* 133 */
+		.dc.b 0x02 /* 134 */
+		.dc.b 0x00 /* 135 */
+		.dc.b 0x00 /* 136 */
+		.dc.b 0x00 /* 137 */
+		.dc.b 0x00 /* 138 */
+		.dc.b 0x00 /* 139 */
+		.dc.b 0x02 /* 140 */
+		.dc.b 0x04 /* 141 */
+	.IF GBE>=372
+		.dc.b 0x00 /* 142 */
+	.ELSE
+		.dc.b 0x0c /* 142 */
+	.ENDC
+		.dc.b 0x04 /* 143 */
+		.dc.b 0x00 /* 144 */
+		.dc.b 0x00 /* 145 */
+		.dc.b 0x00 /* 146 */
+		.dc.b 0x00 /* 147 */
+		.dc.b 0x00 /* 148 */
+		.dc.b 0x00 /* 149 */
+		.dc.b 0x00 /* 150 */
+		.dc.b 0x00 /* 151 */
+		.dc.b 0x00 /* 152 */
+		.dc.b 0x00 /* 153 */
+		.dc.b 0x00 /* 154 */
+		.dc.b 0x0c /* 155 */
+		.dc.b 0x00 /* 156 */
+		.dc.b 0x00 /* 157 */
+		.dc.b 0x00 /* 158 */
+		.dc.b 0x00 /* 159 */
+		.dc.b 0x00 /* 160 */
+		.dc.b 0x00 /* 161 */
+		.dc.b 0x00 /* 162 */
+		.dc.b 0x00 /* 163 */
+		.dc.b 0x00 /* 164 */
+		.dc.b 0x00 /* 165 */
+		.dc.b 0x00 /* 166 */
+		.dc.b 0x00 /* 167 */
+		.dc.b 0x00 /* 168 */
+	.IF GBE>=372
+		.dc.b 0x00 /* 169 */
+	.ELSE
+		.dc.b 0x10 /* 169 */
+	.ENDC
+		.dc.b 0x00 /* 170 */
+		.dc.b 0x00 /* 171 */
+		.dc.b 0x00 /* 172 */
+		.dc.b 0x00 /* 173 */
+		.dc.b 0x00 /* 174 */
+		.dc.b 0x00 /* 175 */
+		.dc.b 0x00 /* 176 */
+		.dc.b 0x00 /* 177 */
+		.dc.b 0x00 /* 178 */
+		.dc.b 0x00 /* 179 */
+		.dc.b 0x00 /* 180 */
+		.dc.b 0x00 /* 181 */
+		.dc.b 0x00 /* 182 */
+	.IF GBE>=372
+		.dc.b 0x10 /* 183 */
+	.ELSE
+		.dc.b 0x00 /* 183 */
+	.ENDC
+		.dc.b 0x00 /* 184 */
+		.dc.b 0x00 /* 185 */
+		.dc.b 0x00 /* 186 */
+		.dc.b 0x00 /* 187 */
+		.dc.b 0x10 /* 188 */
+		.dc.b 0x10 /* 189 */
+		.dc.b 0x00 /* 190 */
+		.dc.b 0x00 /* 191 */
+		.dc.b 0x00 /* 192 */
+		.dc.b 0x00 /* 193 */
+	.IF GBE>=372
+		.dc.b 0x00 /* 194 */
+	.ELSE
+		.dc.b 0x10 /* 194 */
+	.ENDC
+		.dc.b 0x00 /* 195 */
+	.IF GBE>=372
+		.dc.b 0x00 /* 196 */
+	.ENDC
 
-x14dae:
-		.dc.b 0x00
-		.dc.b 0x0c
-		.dc.b 0x00
-		.dc.b 0x0c
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x02
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x02
-		.dc.b 0x04
-	.IF GBE>=372
-		.dc.b 0x00
-	.ELSE
-		.dc.b 0x0c
-	.ENDC
-		.dc.b 0x04
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x0c
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-	.IF GBE>=372
-		.dc.b 0x00
-	.ELSE
-		.dc.b 0x10
-	.ENDC
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-	.IF GBE>=372
-		.dc.b 0x10
-	.ELSE
-		.dc.b 0x00
-	.ENDC
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-	.IF GBE>=372
-		.dc.b 0x00
-	.ELSE
-		.dc.b 0x10
-	.ENDC
-		.dc.b 0x00
-	.IF GBE>=372
-		.dc.b 0x00
-	.ENDC
-
-x14df8:
-x5895e_372:
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x04
-		.dc.b 0x10
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x0e
-		.dc.b 0x0e
-		.dc.b 0x40
-		.dc.b 0x40
-		.dc.b 0x40
-		.dc.b 0x54
-		.dc.b 0x04
-		.dc.b 0x0e
-		.dc.b 0x02
-		.dc.b 0x0e
-		.dc.b 0x0e
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x4c
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x0e
-		.dc.b 0x4e
-		.dc.b 0x4e
-		.dc.b 0x4e
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x50
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x0c
-		.dc.b 0x0c
-		.dc.b 0x0c
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x6e
-		.dc.b 0x10
-		.dc.b 0x6e
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x12
-		.dc.b 0x12
-		.dc.b 0x12
-		.dc.b 0x12
-		.dc.b 0x12
-		.dc.b 0x52
-		.dc.b 0x10
-		.dc.b 0x66
-		.dc.b 0x68
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x14
-		.dc.b 0x0e
-		.dc.b 0x10
-		.dc.b 0x3e
-		.dc.b 0x06
-		.dc.b 0x04
-		.dc.b 0x16
-		.dc.b 0x18
-		.dc.b 0x1a
-		.dc.b 0x1c
-		.dc.b 0x1e
-		.dc.b 0x20
-		.dc.b 0x10
-		.dc.b 0x06
-		.dc.b 0x06
-		.dc.b 0x0e
-		.dc.b 0x06
-		.dc.b 0x04
-		.dc.b 0x10
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x06
-		.dc.b 0x06
-		.dc.b 0x06
-		.dc.b 0x22
-		.dc.b 0x1c
-		.dc.b 0x06
-		.dc.b 0x04
-		.dc.b 0x24
-		.dc.b 0x0a
-		.dc.b 0x26
-		.dc.b 0x06
-		.dc.b 0x28
-		.dc.b 0x2a
-		.dc.b 0x04
-		.dc.b 0x2a
-		.dc.b 0x1c
-		.dc.b 0x02
-		.dc.b 0x2c
-		.dc.b 0x2e
-		.dc.b 0x32
-		.dc.b 0x34
-		.dc.b 0x36
-		.dc.b 0x36
-		.dc.b 0x08
-		.dc.b 0x08
-		.dc.b 0x38
-		.dc.b 0x04
-		.dc.b 0x38
-		.dc.b 0x1e
-		.dc.b 0x0e
-		.dc.b 0x6c
-		.dc.b 0x0a
-		.dc.b 0x0a
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x3a
-		.dc.b 0x34
-		.dc.b 0x04
-		.dc.b 0x02
-		.dc.b 0x3c
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x04
-		.dc.b 0x44
-		.dc.b 0x48
-		.dc.b 0x4a
-		.dc.b 0x02
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x46
-		.dc.b 0x2e
-		.dc.b 0x30
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x6a
-		.dc.b 0x6a
-		.dc.b 0x6a
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x1a
-		.dc.b 0x70
-		.dc.b 0x72
-		.dc.b 0x74
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x12
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x06
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
+offset_table_sf208:
+		.dc.b 0x04 /* 0 */
+		.dc.b 0x04 /* 1 */
+		.dc.b 0x04 /* 2 */
+		.dc.b 0x04 /* 3 */
+		.dc.b 0x04 /* 4 */
+		.dc.b 0x04 /* 5 */
+		.dc.b 0x04 /* 6 */
+		.dc.b 0x04 /* 7 */
+		.dc.b 0x04 /* 8 */
+		.dc.b 0x04 /* 9 */
+		.dc.b 0x04 /* 10 */
+		.dc.b 0x04 /* 11 */
+		.dc.b 0x04 /* 12 */
+		.dc.b 0x04 /* 13 */
+		.dc.b 0x02 /* 14 */
+		.dc.b 0x02 /* 15 */
+		.dc.b 0x02 /* 16 */
+		.dc.b 0x02 /* 17 */
+		.dc.b 0x02 /* 18 */
+		.dc.b 0x10 /* 19 */
+		.dc.b 0x02 /* 20 */
+		.dc.b 0x10 /* 21 */
+		.dc.b 0x02 /* 22 */
+		.dc.b 0x10 /* 23 */
+		.dc.b 0x02 /* 24 */
+		.dc.b 0x10 /* 25 */
+		.dc.b 0x02 /* 26 */
+		.dc.b 0x10 /* 27 */
+		.dc.b 0x02 /* 28 */
+		.dc.b 0x10 /* 29 */
+		.dc.b 0x10 /* 30 */
+		.dc.b 0x10 /* 31 */
+		.dc.b 0x02 /* 32 */
+		.dc.b 0x10 /* 33 */
+		.dc.b 0x02 /* 34 */
+		.dc.b 0x10 /* 35 */
+		.dc.b 0x02 /* 36 */
+		.dc.b 0x10 /* 37 */
+		.dc.b 0x02 /* 38 */
+		.dc.b 0x10 /* 39 */
+		.dc.b 0x10 /* 40 */
+		.dc.b 0x04 /* 41 */
+		.dc.b 0x10 /* 42 */
+		.dc.b 0x04 /* 43 */
+		.dc.b 0x04 /* 44 */
+		.dc.b 0x04 /* 45 */
+		.dc.b 0x04 /* 46 */
+		.dc.b 0x04 /* 47 */
+		.dc.b 0x04 /* 48 */
+		.dc.b 0x04 /* 49 */
+		.dc.b 0x04 /* 50 */
+		.dc.b 0x04 /* 51 */
+		.dc.b 0x04 /* 52 */
+		.dc.b 0x04 /* 53 */
+		.dc.b 0x04 /* 54 */
+		.dc.b 0x04 /* 55 */
+		.dc.b 0x10 /* 56 */
+		.dc.b 0x10 /* 57 */
+		.dc.b 0x10 /* 58 */
+		.dc.b 0x10 /* 59 */
+		.dc.b 0x10 /* 60 */
+		.dc.b 0x10 /* 61 */
+		.dc.b 0x10 /* 62 */
+		.dc.b 0x02 /* 63 */
+		.dc.b 0x02 /* 64 */
+		.dc.b 0x02 /* 65 */
+		.dc.b 0x0e /* 66 */
+		.dc.b 0x0e /* 67 */
+		.dc.b 0x40 /* 68 */
+		.dc.b 0x40 /* 69 */
+		.dc.b 0x40 /* 70 */
+		.dc.b 0x54 /* 71 */
+		.dc.b 0x04 /* 72 */
+		.dc.b 0x0e /* 73 */
+		.dc.b 0x02 /* 74 */
+		.dc.b 0x0e /* 75 */
+		.dc.b 0x0e /* 76 */
+		.dc.b 0x02 /* 77 */
+		.dc.b 0x02 /* 78 */
+		.dc.b 0x02 /* 79 */
+		.dc.b 0x02 /* 80 */
+		.dc.b 0x4c /* 81 */
+		.dc.b 0x02 /* 82 */
+		.dc.b 0x02 /* 83 */
+		.dc.b 0x0e /* 84 */
+		.dc.b 0x4e /* 85 */
+		.dc.b 0x4e /* 86 */
+		.dc.b 0x4e /* 87 */
+		.dc.b 0x10 /* 88 */
+		.dc.b 0x10 /* 89 */
+		.dc.b 0x02 /* 90 */
+		.dc.b 0x02 /* 91 */
+		.dc.b 0x02 /* 92 */
+		.dc.b 0x02 /* 93 */
+		.dc.b 0x02 /* 94 */
+		.dc.b 0x50 /* 95 */
+		.dc.b 0x02 /* 96 */
+		.dc.b 0x02 /* 97 */
+		.dc.b 0x02 /* 98 */
+		.dc.b 0x02 /* 99 */
+		.dc.b 0x0c /* 100 */
+		.dc.b 0x0c /* 101 */
+		.dc.b 0x0c /* 102 */
+		.dc.b 0x02 /* 103 */
+		.dc.b 0x10 /* 104 */
+		.dc.b 0x6e /* 105 */
+		.dc.b 0x10 /* 106 */
+		.dc.b 0x6e /* 107 */
+		.dc.b 0x10 /* 108 */
+		.dc.b 0x10 /* 109 */
+		.dc.b 0x02 /* 110 */
+		.dc.b 0x02 /* 111 */
+		.dc.b 0x12 /* 112 */
+		.dc.b 0x12 /* 113 */
+		.dc.b 0x12 /* 114 */
+		.dc.b 0x12 /* 115 */
+		.dc.b 0x12 /* 116 */
+		.dc.b 0x52 /* 117 */
+		.dc.b 0x10 /* 118 */
+		.dc.b 0x66 /* 119 */
+		.dc.b 0x68 /* 120 */
+		.dc.b 0x02 /* 121 */
+		.dc.b 0x02 /* 122 */
+		.dc.b 0x14 /* 123 */
+		.dc.b 0x0e /* 124 */
+		.dc.b 0x10 /* 125 */
+		.dc.b 0x3e /* 126 */
+		.dc.b 0x06 /* 127 */
+		.dc.b 0x04 /* 128 */
+		.dc.b 0x16 /* 129 */
+		.dc.b 0x18 /* 130 */
+		.dc.b 0x1a /* 131 */
+		.dc.b 0x1c /* 132 */
+		.dc.b 0x1e /* 133 */
+		.dc.b 0x20 /* 134 */
+		.dc.b 0x10 /* 135 */
+		.dc.b 0x06 /* 136 */
+		.dc.b 0x06 /* 137 */
+		.dc.b 0x0e /* 138 */
+		.dc.b 0x06 /* 139 */
+		.dc.b 0x04 /* 140 */
+		.dc.b 0x10 /* 141 */
+		.dc.b 0x04 /* 142 */
+		.dc.b 0x04 /* 143 */
+		.dc.b 0x06 /* 144 */
+		.dc.b 0x06 /* 145 */
+		.dc.b 0x06 /* 146 */
+		.dc.b 0x22 /* 147 */
+		.dc.b 0x1c /* 148 */
+		.dc.b 0x06 /* 149 */
+		.dc.b 0x04 /* 150 */
+		.dc.b 0x24 /* 151 */
+		.dc.b 0x0a /* 152 */
+		.dc.b 0x26 /* 153 */
+		.dc.b 0x06 /* 154 */
+		.dc.b 0x28 /* 155 */
+		.dc.b 0x2a /* 156 */
+		.dc.b 0x04 /* 157 */
+		.dc.b 0x2a /* 158 */
+		.dc.b 0x1c /* 159 */
+		.dc.b 0x02 /* 160 */
+		.dc.b 0x2c /* 161 */
+		.dc.b 0x2e /* 162 */
+		.dc.b 0x32 /* 163 */
+		.dc.b 0x34 /* 164 */
+		.dc.b 0x36 /* 165 */
+		.dc.b 0x36 /* 166 */
+		.dc.b 0x08 /* 167 */
+		.dc.b 0x08 /* 168 */
+		.dc.b 0x38 /* 169 */
+		.dc.b 0x04 /* 170 */
+		.dc.b 0x38 /* 171 */
+		.dc.b 0x1e /* 172 */
+		.dc.b 0x0e /* 173 */
+		.dc.b 0x6c /* 174 */
+		.dc.b 0x0a /* 175 */
+		.dc.b 0x0a /* 176 */
+		.dc.b 0x02 /* 177 */
+		.dc.b 0x02 /* 178 */
+		.dc.b 0x3a /* 179 */
+		.dc.b 0x34 /* 180 */
+		.dc.b 0x04 /* 181 */
+		.dc.b 0x02 /* 182 */
+		.dc.b 0x3c /* 183 */
+		.dc.b 0x02 /* 184 */
+		.dc.b 0x02 /* 185 */
+		.dc.b 0x04 /* 186 */
+		.dc.b 0x44 /* 187 */
+		.dc.b 0x48 /* 188 */
+		.dc.b 0x4a /* 189 */
+		.dc.b 0x02 /* 190 */
+		.dc.b 0x04 /* 191 */
+		.dc.b 0x04 /* 192 */
+		.dc.b 0x04 /* 193 */
+		.dc.b 0x04 /* 194 */
+		.dc.b 0x04 /* 195 */
+		.dc.b 0x04 /* 196 */
+		.dc.b 0x04 /* 197 */
+		.dc.b 0x04 /* 198 */
+		.dc.b 0x04 /* 199 */
+		.dc.b 0x04 /* 200 */
+		.dc.b 0x04 /* 201 */
+		.dc.b 0x04 /* 202 */
+		.dc.b 0x46 /* 203 */
+		.dc.b 0x2e /* 204 */
+		.dc.b 0x30 /* 205 */
+		.dc.b 0x02 /* 206 */
+		.dc.b 0x02 /* 207 */
+		.dc.b 0x02 /* 208 */
+		.dc.b 0x6a /* 209 */
+		.dc.b 0x6a /* 210 */
+		.dc.b 0x6a /* 211 */
+		.dc.b 0x10 /* 212 */
+		.dc.b 0x10 /* 213 */
+		.dc.b 0x10 /* 214 */
+		.dc.b 0x1a /* 215 */
+		.dc.b 0x70 /* 216 */
+		.dc.b 0x72 /* 217 */
+		.dc.b 0x74 /* 218 */
+		.dc.b 0x10 /* 219 */
+		.dc.b 0x02 /* 220 */
+		.dc.b 0x10 /* 221 */
+		.dc.b 0x12 /* 222 */
+		.dc.b 0x02 /* 223 */
+		.dc.b 0x02 /* 224 */
+		.dc.b 0x02 /* 225 */
+		.dc.b 0x02 /* 226 */
+		.dc.b 0x10 /* 227 */
+		.dc.b 0x02 /* 228 */
+		.dc.b 0x02 /* 229 */
+		.dc.b 0x02 /* 230 */
+		.dc.b 0x10 /* 231 */
+		.dc.b 0x10 /* 232 */
+		.dc.b 0x10 /* 233 */
+		.dc.b 0x10 /* 234 */
+		.dc.b 0x06 /* 235 */
+		.dc.b 0x10 /* 236 */
+		.dc.b 0x10 /* 237 */
+		.dc.b 0x10 /* 238 */
 	.IF GBE<372
-		.dc.b 0x08
+		.dc.b 0x08 /* 239 */
 	.ELSE
-		.dc.b 0x9a
-		.dc.b 0x9a
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x76
-		.dc.b 0x08
-		.dc.b 0x10
-		.dc.b 0x10
+		.dc.b 0x9a /* 239 */
+		.dc.b 0x9a /* 240 */
+		.dc.b 0x10 /* 241 */
+		.dc.b 0x10 /* 242 */
+		.dc.b 0x10 /* 243 */
+		.dc.b 0x10 /* 244 */
+		.dc.b 0x10 /* 245 */
+		.dc.b 0x10 /* 246 */
+		.dc.b 0x10 /* 247 */
+		.dc.b 0x10 /* 248 */
+		.dc.b 0x10 /* 249 */
+		.dc.b 0x02 /* 250 */
+		.dc.b 0x10 /* 251 */
+		.dc.b 0x76 /* 252 */
+		.dc.b 0x08 /* 253 */
+		.dc.b 0x10 /* 254 */
+		.dc.b 0x10 /* 255 */
 
-x58a5e_372:
-x59884_373:
-		.dc.b 0x78
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x06
-		.dc.b 0x0a
-		.dc.b 0x04
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x04
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x06
-		.dc.b 0x10
-		.dc.b 0x26
-		.dc.b 0x08
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x2c
-		.dc.b 0x2c
-		.dc.b 0x3e
-		.dc.b 0x2e
-		.dc.b 0x7a
-		.dc.b 0x06
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x04
-		.dc.b 0x06
-		.dc.b 0x02
-		.dc.b 0x04
-		.dc.b 0x02
-		.dc.b 0x04
-		.dc.b 0x02
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x0a
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x7c
-		.dc.b 0x8a
-		.dc.b 0x74
-		.dc.b 0x02
-		.dc.b 0x06
-		.dc.b 0x06
-		.dc.b 0x74
-		.dc.b 0x06
-		.dc.b 0x0e
-		.dc.b 0x02
-		.dc.b 0x06
-		.dc.b 0x06
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x7e
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x80
-		.dc.b 0x82
-		.dc.b 0xcc
-		.dc.b 0x06
-		.dc.b 0x1c
-		.dc.b 0x1a
-		.dc.b 0x74
-		.dc.b 0x86
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x26
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x04
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x06
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x06
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x1c
-		.dc.b 0x84
-		.dc.b 0x1c
-		.dc.b 0x1a
-		.dc.b 0x02
-		.dc.b 0x04
-		.dc.b 0x22
-		.dc.b 0x06
-		.dc.b 0x06
-		.dc.b 0x0e
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x0e
-		.dc.b 0x02
-		.dc.b 0x0e
-		.dc.b 0x0e
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0xb4
-		.dc.b 0x0e
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x88
-		.dc.b 0x10
-		.dc.b 0x06
-		.dc.b 0x74
-		.dc.b 0x86
-		.dc.b 0x04
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x0e
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x2c
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x04
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x94
-		.dc.b 0x82
-		.dc.b 0x8a
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x04
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x04
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x04
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x0a
-		.dc.b 0x06
-		.dc.b 0x08
-		.dc.b 0x08
-		.dc.b 0x08
-		.dc.b 0x04
-		.dc.b 0x0a
-		.dc.b 0x02
-		.dc.b 0x8e
-		.dc.b 0x32
-		.dc.b 0x0a
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x04
-		.dc.b 0x08
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x06
-		.dc.b 0x08
-		.dc.b 0x02
-		.dc.b 0x34
-		.dc.b 0x08
-		.dc.b 0x08
-		.dc.b 0x08
-		.dc.b 0x08
-		.dc.b 0x0a
-		.dc.b 0x06
-		.dc.b 0x34
-		.dc.b 0x34
-		.dc.b 0x08
-		.dc.b 0x0a
-		.dc.b 0x06
-		.dc.b 0x22
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x90
-		.dc.b 0x8c
-		.dc.b 0x94
-		.dc.b 0x04
-		.dc.b 0x06
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x04
-		.dc.b 0x34
-		.dc.b 0x04
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x08
-		.dc.b 0x02
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x24
-		.dc.b 0x24
-		.dc.b 0x2a
-		.dc.b 0x24
-		.dc.b 0x04
-		.dc.b 0x08
-		.dc.b 0x08
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x08
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x08
-		.dc.b 0x06
-		.dc.b 0x06
-		.dc.b 0x06
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x04
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x06
-		.dc.b 0x06
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x22
-		.dc.b 0x22
-		.dc.b 0x92
-		.dc.b 0x34
-		.dc.b 0x24
-		.dc.b 0x0e
-		.dc.b 0x74
-		.dc.b 0x04
+offset_table_sf209:
+		.dc.b 0x78 /* 0 */
+		.dc.b 0x10 /* 1 */
+		.dc.b 0x10 /* 2 */
+		.dc.b 0x10 /* 3 */
+		.dc.b 0x06 /* 4 */
+		.dc.b 0x0a /* 5 */
+		.dc.b 0x04 /* 6 */
+		.dc.b 0x10 /* 7 */
+		.dc.b 0x02 /* 8 */
+		.dc.b 0x04 /* 9 */
+		.dc.b 0x02 /* 10 */
+		.dc.b 0x10 /* 11 */
+		.dc.b 0x02 /* 12 */
+		.dc.b 0x06 /* 13 */
+		.dc.b 0x10 /* 14 */
+		.dc.b 0x26 /* 15 */
+		.dc.b 0x08 /* 16 */
+		.dc.b 0x02 /* 17 */
+		.dc.b 0x10 /* 18 */
+		.dc.b 0x10 /* 19 */
+		.dc.b 0x10 /* 20 */
+		.dc.b 0x2c /* 21 */
+		.dc.b 0x2c /* 22 */
+		.dc.b 0x3e /* 23 */
+		.dc.b 0x2e /* 24 */
+		.dc.b 0x7a /* 25 */
+		.dc.b 0x06 /* 26 */
+		.dc.b 0x10 /* 27 */
+		.dc.b 0x10 /* 28 */
+		.dc.b 0x04 /* 29 */
+		.dc.b 0x06 /* 30 */
+		.dc.b 0x02 /* 31 */
+		.dc.b 0x04 /* 32 */
+		.dc.b 0x02 /* 33 */
+		.dc.b 0x04 /* 34 */
+		.dc.b 0x02 /* 35 */
+		.dc.b 0x04 /* 36 */
+		.dc.b 0x04 /* 37 */
+		.dc.b 0x0a /* 38 */
+		.dc.b 0x02 /* 39 */
+		.dc.b 0x02 /* 40 */
+		.dc.b 0x7c /* 41 */
+		.dc.b 0x8a /* 42 */
+		.dc.b 0x74 /* 43 */
+		.dc.b 0x02 /* 44 */
+		.dc.b 0x06 /* 45 */
+		.dc.b 0x06 /* 46 */
+		.dc.b 0x74 /* 47 */
+		.dc.b 0x06 /* 48 */
+		.dc.b 0x0e /* 49 */
+		.dc.b 0x02 /* 50 */
+		.dc.b 0x06 /* 51 */
+		.dc.b 0x06 /* 52 */
+		.dc.b 0x02 /* 53 */
+		.dc.b 0x02 /* 54 */
+		.dc.b 0x02 /* 55 */
+		.dc.b 0x10 /* 56 */
+		.dc.b 0x10 /* 57 */
+		.dc.b 0x10 /* 58 */
+		.dc.b 0x7e /* 59 */
+		.dc.b 0x04 /* 60 */
+		.dc.b 0x04 /* 61 */
+		.dc.b 0x04 /* 62 */
+		.dc.b 0x80 /* 63 */
+		.dc.b 0x82 /* 64 */
+		.dc.b 0xcc /* 65 */
+		.dc.b 0x06 /* 66 */
+		.dc.b 0x1c /* 67 */
+		.dc.b 0x1a /* 68 */
+		.dc.b 0x74 /* 69 */
+		.dc.b 0x86 /* 70 */
+		.dc.b 0x04 /* 71 */
+		.dc.b 0x04 /* 72 */
+		.dc.b 0x26 /* 73 */
+		.dc.b 0x10 /* 74 */
+		.dc.b 0x10 /* 75 */
+		.dc.b 0x02 /* 76 */
+		.dc.b 0x04 /* 77 */
+		.dc.b 0x02 /* 78 */
+		.dc.b 0x10 /* 79 */
+		.dc.b 0x02 /* 80 */
+		.dc.b 0x06 /* 81 */
+		.dc.b 0x04 /* 82 */
+		.dc.b 0x04 /* 83 */
+		.dc.b 0x06 /* 84 */
+		.dc.b 0x10 /* 85 */
+		.dc.b 0x10 /* 86 */
+		.dc.b 0x10 /* 87 */
+		.dc.b 0x10 /* 88 */
+		.dc.b 0x1c /* 89 */
+		.dc.b 0x84 /* 90 */
+		.dc.b 0x1c /* 91 */
+		.dc.b 0x1a /* 92 */
+		.dc.b 0x02 /* 93 */
+		.dc.b 0x04 /* 94 */
+		.dc.b 0x22 /* 95 */
+		.dc.b 0x06 /* 96 */
+		.dc.b 0x06 /* 97 */
+		.dc.b 0x0e /* 98 */
+		.dc.b 0x02 /* 99 */
+		.dc.b 0x02 /* 100 */
+		.dc.b 0x0e /* 101 */
+		.dc.b 0x02 /* 102 */
+		.dc.b 0x0e /* 103 */
+		.dc.b 0x0e /* 104 */
+		.dc.b 0x02 /* 105 */
+		.dc.b 0x02 /* 106 */
+		.dc.b 0xb4 /* 107 */
+		.dc.b 0x0e /* 108 */
+		.dc.b 0x10 /* 109 */
+		.dc.b 0x02 /* 110 */
+		.dc.b 0x88 /* 111 */
+		.dc.b 0x10 /* 112 */
+		.dc.b 0x06 /* 113 */
+		.dc.b 0x74 /* 114 */
+		.dc.b 0x86 /* 115 */
+		.dc.b 0x04 /* 116 */
+		.dc.b 0x10 /* 117 */
+		.dc.b 0x10 /* 118 */
+		.dc.b 0x10 /* 119 */
+		.dc.b 0x10 /* 120 */
+		.dc.b 0x0e /* 121 */
+		.dc.b 0x02 /* 122 */
+		.dc.b 0x02 /* 123 */
+		.dc.b 0x02 /* 124 */
+		.dc.b 0x2c /* 125 */
+		.dc.b 0x02 /* 126 */
+		.dc.b 0x10 /* 127 */
+		.dc.b 0x10 /* 128 */
+		.dc.b 0x10 /* 129 */
+		.dc.b 0x10 /* 130 */
+		.dc.b 0x04 /* 131 */
+		.dc.b 0x02 /* 132 */
+		.dc.b 0x02 /* 133 */
+		.dc.b 0x94 /* 134 */
+		.dc.b 0x82 /* 135 */
+		.dc.b 0x8a /* 136 */
+		.dc.b 0x02 /* 137 */
+		.dc.b 0x02 /* 138 */
+		.dc.b 0x04 /* 139 */
+		.dc.b 0x02 /* 140 */
+		.dc.b 0x02 /* 141 */
+		.dc.b 0x02 /* 142 */
+		.dc.b 0x02 /* 143 */
+		.dc.b 0x02 /* 144 */
+		.dc.b 0x02 /* 145 */
+		.dc.b 0x02 /* 146 */
+		.dc.b 0x02 /* 147 */
+		.dc.b 0x02 /* 148 */
+		.dc.b 0x02 /* 149 */
+		.dc.b 0x02 /* 150 */
+		.dc.b 0x02 /* 151 */
+		.dc.b 0x04 /* 152 */
+		.dc.b 0x02 /* 153 */
+		.dc.b 0x02 /* 154 */
+		.dc.b 0x04 /* 155 */
+		.dc.b 0x10 /* 156 */
+		.dc.b 0x02 /* 157 */
+		.dc.b 0x02 /* 158 */
+		.dc.b 0x0a /* 159 */
+		.dc.b 0x06 /* 160 */
+		.dc.b 0x08 /* 161 */
+		.dc.b 0x08 /* 162 */
+		.dc.b 0x08 /* 163 */
+		.dc.b 0x04 /* 164 */
+		.dc.b 0x0a /* 165 */
+		.dc.b 0x02 /* 166 */
+		.dc.b 0x8e /* 167 */
+		.dc.b 0x32 /* 168 */
+		.dc.b 0x0a /* 169 */
+		.dc.b 0x10 /* 170 */
+		.dc.b 0x02 /* 171 */
+		.dc.b 0x04 /* 172 */
+		.dc.b 0x08 /* 173 */
+		.dc.b 0x10 /* 174 */
+		.dc.b 0x02 /* 175 */
+		.dc.b 0x02 /* 176 */
+		.dc.b 0x06 /* 177 */
+		.dc.b 0x08 /* 178 */
+		.dc.b 0x02 /* 179 */
+		.dc.b 0x34 /* 180 */
+		.dc.b 0x08 /* 181 */
+		.dc.b 0x08 /* 182 */
+		.dc.b 0x08 /* 183 */
+		.dc.b 0x08 /* 184 */
+		.dc.b 0x0a /* 185 */
+		.dc.b 0x06 /* 186 */
+		.dc.b 0x34 /* 187 */
+		.dc.b 0x34 /* 188 */
+		.dc.b 0x08 /* 189 */
+		.dc.b 0x0a /* 190 */
+		.dc.b 0x06 /* 191 */
+		.dc.b 0x22 /* 192 */
+		.dc.b 0x02 /* 193 */
+		.dc.b 0x02 /* 194 */
+		.dc.b 0x02 /* 195 */
+		.dc.b 0x90 /* 196 */
+		.dc.b 0x8c /* 197 */
+		.dc.b 0x94 /* 198 */
+		.dc.b 0x04 /* 199 */
+		.dc.b 0x06 /* 200 */
+		.dc.b 0x02 /* 201 */
+		.dc.b 0x02 /* 202 */
+		.dc.b 0x04 /* 203 */
+		.dc.b 0x34 /* 204 */
+		.dc.b 0x04 /* 205 */
+		.dc.b 0x02 /* 206 */
+		.dc.b 0x10 /* 207 */
+		.dc.b 0x08 /* 208 */
+		.dc.b 0x02 /* 209 */
+		.dc.b 0x04 /* 210 */
+		.dc.b 0x04 /* 211 */
+		.dc.b 0x04 /* 212 */
+		.dc.b 0x24 /* 213 */
+		.dc.b 0x24 /* 214 */
+		.dc.b 0x2a /* 215 */
+		.dc.b 0x24 /* 216 */
+		.dc.b 0x04 /* 217 */
+		.dc.b 0x08 /* 218 */
+		.dc.b 0x08 /* 219 */
+		.dc.b 0x02 /* 220 */
+		.dc.b 0x02 /* 221 */
+		.dc.b 0x10 /* 222 */
+		.dc.b 0x02 /* 223 */
+		.dc.b 0x02 /* 224 */
+		.dc.b 0x02 /* 225 */
+		.dc.b 0x08 /* 226 */
+		.dc.b 0x02 /* 227 */
+		.dc.b 0x02 /* 228 */
+		.dc.b 0x10 /* 229 */
+		.dc.b 0x02 /* 230 */
+		.dc.b 0x02 /* 231 */
+		.dc.b 0x02 /* 232 */
+		.dc.b 0x08 /* 233 */
+		.dc.b 0x06 /* 234 */
+		.dc.b 0x06 /* 235 */
+		.dc.b 0x06 /* 236 */
+		.dc.b 0x02 /* 237 */
+		.dc.b 0x10 /* 238 */
+		.dc.b 0x02 /* 239 */
+		.dc.b 0x02 /* 240 */
+		.dc.b 0x04 /* 241 */
+		.dc.b 0x02 /* 242 */
+		.dc.b 0x02 /* 243 */
+		.dc.b 0x06 /* 244 */
+		.dc.b 0x06 /* 245 */
+		.dc.b 0x04 /* 246 */
+		.dc.b 0x04 /* 247 */
+		.dc.b 0x22 /* 248 */
+		.dc.b 0x22 /* 249 */
+		.dc.b 0x92 /* 250 */
+		.dc.b 0x34 /* 251 */
+		.dc.b 0x24 /* 252 */
+		.dc.b 0x0e /* 253 */
+		.dc.b 0x74 /* 254 */
+		.dc.b 0x04 /* 255 */
 
-x58b5e_372:
-x59984_373:
-		.dc.b 0x96
-		.dc.b 0x98
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x06
-		.dc.b 0x0a
-		.dc.b 0x10
-		.dc.b 0x04
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x0e
-		.dc.b 0x06
-		.dc.b 0x06
-		.dc.b 0xbc
-		.dc.b 0xba
-		.dc.b 0x06
-		.dc.b 0x06
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x12
-		.dc.b 0x4c
-		.dc.b 0x04
-		.dc.b 0x4c
-		.dc.b 0x06
-		.dc.b 0x04
-		.dc.b 0x06
-		.dc.b 0x08
-		.dc.b 0x06
-		.dc.b 0x06
-		.dc.b 0x06
-		.dc.b 0x04
-		.dc.b 0x06
-		.dc.b 0x06
-		.dc.b 0x34
-		.dc.b 0x34
-		.dc.b 0x0a
-		.dc.b 0x0a
-		.dc.b 0x06
-		.dc.b 0x06
-		.dc.b 0x04
-		.dc.b 0x10
-		.dc.b 0x0e
-		.dc.b 0x74
-		.dc.b 0x02
-		.dc.b 0x1e
-		.dc.b 0x10
-		.dc.b 0xa2
-		.dc.b 0x00
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x00
-		.dc.b 0x02
-		.dc.b 0x0e
-		.dc.b 0x00
-		.dc.b 0x08
-		.dc.b 0x04
-		.dc.b 0x06
-		.dc.b 0x06
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x00
-		.dc.b 0x06
-		.dc.b 0x00
-		.dc.b 0x9c
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x02
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x10
-		.dc.b 0x0a
-		.dc.b 0x9e
-		.dc.b 0x9e
-		.dc.b 0x10
-		.dc.b 0x1c
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x04
-		.dc.b 0x00
-		.dc.b 0x00
+offset_table_sf210:
+		.dc.b 0x96 /* 0 */
+		.dc.b 0x98 /* 1 */
+		.dc.b 0x10 /* 2 */
+		.dc.b 0x02 /* 3 */
+		.dc.b 0x10 /* 4 */
+		.dc.b 0x10 /* 5 */
+		.dc.b 0x06 /* 6 */
+		.dc.b 0x0a /* 7 */
+		.dc.b 0x10 /* 8 */
+		.dc.b 0x04 /* 9 */
+		.dc.b 0x02 /* 10 */
+		.dc.b 0x02 /* 11 */
+		.dc.b 0x02 /* 12 */
+		.dc.b 0x02 /* 13 */
+		.dc.b 0x02 /* 14 */
+		.dc.b 0x10 /* 15 */
+		.dc.b 0x02 /* 16 */
+		.dc.b 0x02 /* 17 */
+		.dc.b 0x0e /* 18 */
+		.dc.b 0x06 /* 19 */
+		.dc.b 0x06 /* 20 */
+		.dc.b 0xbc /* 21 */
+		.dc.b 0xba /* 22 */
+		.dc.b 0x06 /* 23 */
+		.dc.b 0x06 /* 24 */
+		.dc.b 0x04 /* 25 */
+		.dc.b 0x04 /* 26 */
+		.dc.b 0x10 /* 27 */
+		.dc.b 0x02 /* 28 */
+		.dc.b 0x12 /* 29 */
+		.dc.b 0x4c /* 30 */
+		.dc.b 0x04 /* 31 */
+		.dc.b 0x4c /* 32 */
+		.dc.b 0x06 /* 33 */
+		.dc.b 0x04 /* 34 */
+		.dc.b 0x06 /* 35 */
+		.dc.b 0x08 /* 36 */
+		.dc.b 0x06 /* 37 */
+		.dc.b 0x06 /* 38 */
+		.dc.b 0x06 /* 39 */
+		.dc.b 0x04 /* 40 */
+		.dc.b 0x06 /* 41 */
+		.dc.b 0x06 /* 42 */
+		.dc.b 0x34 /* 43 */
+		.dc.b 0x34 /* 44 */
+		.dc.b 0x0a /* 45 */
+		.dc.b 0x0a /* 46 */
+		.dc.b 0x06 /* 47 */
+		.dc.b 0x06 /* 48 */
+		.dc.b 0x04 /* 49 */
+		.dc.b 0x10 /* 50 */
+		.dc.b 0x0e /* 51 */
+		.dc.b 0x74 /* 52 */
+		.dc.b 0x02 /* 53 */
+		.dc.b 0x1e /* 54 */
+		.dc.b 0x10 /* 55 */
+		.dc.b 0xa2 /* 56 */
+		.dc.b 0x00 /* 57 */
+		.dc.b 0x02 /* 58 */
+		.dc.b 0x02 /* 59 */
+		.dc.b 0x00 /* 60 */
+		.dc.b 0x02 /* 61 */
+		.dc.b 0x0e /* 62 */
+		.dc.b 0x00 /* 63 */
+		.dc.b 0x08 /* 64 */
+		.dc.b 0x04 /* 65 */
+		.dc.b 0x06 /* 66 */
+		.dc.b 0x06 /* 67 */
+		.dc.b 0x00 /* 68 */
+		.dc.b 0x00 /* 69 */
+		.dc.b 0x00 /* 70 */
+		.dc.b 0x00 /* 71 */
+		.dc.b 0x02 /* 72 */
+		.dc.b 0x02 /* 73 */
+		.dc.b 0x02 /* 74 */
+		.dc.b 0x00 /* 75 */
+		.dc.b 0x06 /* 76 */
+		.dc.b 0x00 /* 77 */
+		.dc.b 0x9c /* 78 */
+		.dc.b 0x00 /* 79 */
+		.dc.b 0x00 /* 80 */
+		.dc.b 0x00 /* 81 */
+		.dc.b 0x00 /* 82 */
+		.dc.b 0x02 /* 83 */
+		.dc.b 0x00 /* 84 */
+		.dc.b 0x00 /* 85 */
+		.dc.b 0x00 /* 86 */
+		.dc.b 0x00 /* 87 */
+		.dc.b 0x00 /* 88 */
+		.dc.b 0x10 /* 89 */
+		.dc.b 0x0a /* 90 */
+		.dc.b 0x9e /* 91 */
+		.dc.b 0x9e /* 92 */
+		.dc.b 0x10 /* 93 */
+		.dc.b 0x1c /* 94 */
+		.dc.b 0x00 /* 95 */
+		.dc.b 0x00 /* 96 */
+		.dc.b 0x04 /* 97 */
+		.dc.b 0x00 /* 98 */
+		.dc.b 0x00 /* 99 */
 	.IF GBE>=373
-		.dc.b 0x7e
+		.dc.b 0x7e /* 100 */
 	.ELSE
-		.dc.b 0x00
+		.dc.b 0x00 /* 100 */
 	.ENDC
-		.dc.b 0xa4
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x00
-		.dc.b 0x0e
-		.dc.b 0x04
-		.dc.b 0x00
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0xa4
-		.dc.b 0x00
+		.dc.b 0xa4 /* 101 */
+		.dc.b 0x02 /* 102 */
+		.dc.b 0x02 /* 103 */
+		.dc.b 0x00 /* 104 */
+		.dc.b 0x0e /* 105 */
+		.dc.b 0x04 /* 106 */
+		.dc.b 0x00 /* 107 */
+		.dc.b 0x10 /* 108 */
+		.dc.b 0x02 /* 109 */
+		.dc.b 0xa4 /* 110 */
+		.dc.b 0x00 /* 111 */
 	.IF GBE>=373
-		.dc.b 0x0e
-		.dc.b 0xa4
-		.dc.b 0x0e
+		.dc.b 0x0e /* 112 */
+		.dc.b 0xa4 /* 113 */
+		.dc.b 0x0e /* 114 */
 	.ELSE
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
+		.dc.b 0x00 /* 112 */
+		.dc.b 0x00 /* 113 */
+		.dc.b 0x00 /* 114 */
 	.ENDC
-		.dc.b 0x0e
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0xa0
-		.dc.b 0x02
-		.dc.b 0x04
-		.dc.b 0x9c
-		.dc.b 0x06
-		.dc.b 0x0e
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x06
-		.dc.b 0x06
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x04
-		.dc.b 0x06
-		.dc.b 0x06
-		.dc.b 0x02
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x86
-		.dc.b 0x02
-		.dc.b 0x04
-		.dc.b 0x10
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x06
-		.dc.b 0x10
-		.dc.b 0x7e
-		.dc.b 0x0e
-		.dc.b 0x0e
-		.dc.b 0x0e
-		.dc.b 0x0e
-		.dc.b 0x08
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x04
-		.dc.b 0x7e
-		.dc.b 0xa6
-		.dc.b 0x1a
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x74
-		.dc.b 0x06
-		.dc.b 0xa8
-		.dc.b 0xb2
-		.dc.b 0x06
-		.dc.b 0xaa
-		.dc.b 0x06
-		.dc.b 0x06
-		.dc.b 0x0e
-		.dc.b 0xac
-		.dc.b 0xae
-		.dc.b 0xb0
-		.dc.b 0x06
-		.dc.b 0x06
-		.dc.b 0x84
-		.dc.b 0x88
-		.dc.b 0x7e
-		.dc.b 0x16
-		.dc.b 0x04
-		.dc.b 0x10
-		.dc.b 0xb6
-		.dc.b 0x00
-		.dc.b 0x04
-		.dc.b 0xa6
-		.dc.b 0xb8
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x00
-		.dc.b 0x04
-		.dc.b 0x02
-		.dc.b 0x2e
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x04
-		.dc.b 0xca
-		.dc.b 0xc8
-		.dc.b 0x0a
-		.dc.b 0x0a
-		.dc.b 0x08
-		.dc.b 0x06
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x06
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x06
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0xbe
-		.dc.b 0xbe
+		.dc.b 0x0e /* 115 */
+		.dc.b 0x04 /* 116 */
+		.dc.b 0x04 /* 117 */
+		.dc.b 0x04 /* 118 */
+		.dc.b 0x02 /* 119 */
+		.dc.b 0x02 /* 120 */
+		.dc.b 0x10 /* 121 */
+		.dc.b 0xa0 /* 122 */
+		.dc.b 0x02 /* 123 */
+		.dc.b 0x04 /* 124 */
+		.dc.b 0x9c /* 125 */
+		.dc.b 0x06 /* 126 */
+		.dc.b 0x0e /* 127 */
+		.dc.b 0x10 /* 128 */
+		.dc.b 0x10 /* 129 */
+		.dc.b 0x02 /* 130 */
+		.dc.b 0x06 /* 131 */
+		.dc.b 0x06 /* 132 */
+		.dc.b 0x10 /* 133 */
+		.dc.b 0x02 /* 134 */
+		.dc.b 0x02 /* 135 */
+		.dc.b 0x04 /* 136 */
+		.dc.b 0x06 /* 137 */
+		.dc.b 0x06 /* 138 */
+		.dc.b 0x02 /* 139 */
+		.dc.b 0x04 /* 140 */
+		.dc.b 0x04 /* 141 */
+		.dc.b 0x04 /* 142 */
+		.dc.b 0x04 /* 143 */
+		.dc.b 0x86 /* 144 */
+		.dc.b 0x02 /* 145 */
+		.dc.b 0x04 /* 146 */
+		.dc.b 0x10 /* 147 */
+		.dc.b 0x04 /* 148 */
+		.dc.b 0x04 /* 149 */
+		.dc.b 0x06 /* 150 */
+		.dc.b 0x10 /* 151 */
+		.dc.b 0x7e /* 152 */
+		.dc.b 0x0e /* 153 */
+		.dc.b 0x0e /* 154 */
+		.dc.b 0x0e /* 155 */
+		.dc.b 0x0e /* 156 */
+		.dc.b 0x08 /* 157 */
+		.dc.b 0x04 /* 158 */
+		.dc.b 0x04 /* 159 */
+		.dc.b 0x02 /* 160 */
+		.dc.b 0x02 /* 161 */
+		.dc.b 0x04 /* 162 */
+		.dc.b 0x7e /* 163 */
+		.dc.b 0xa6 /* 164 */
+		.dc.b 0x1a /* 165 */
+		.dc.b 0x02 /* 166 */
+		.dc.b 0x02 /* 167 */
+		.dc.b 0x74 /* 168 */
+		.dc.b 0x06 /* 169 */
+		.dc.b 0xa8 /* 170 */
+		.dc.b 0xb2 /* 171 */
+		.dc.b 0x06 /* 172 */
+		.dc.b 0xaa /* 173 */
+		.dc.b 0x06 /* 174 */
+		.dc.b 0x06 /* 175 */
+		.dc.b 0x0e /* 176 */
+		.dc.b 0xac /* 177 */
+		.dc.b 0xae /* 178 */
+		.dc.b 0xb0 /* 179 */
+		.dc.b 0x06 /* 180 */
+		.dc.b 0x06 /* 181 */
+		.dc.b 0x84 /* 182 */
+		.dc.b 0x88 /* 183 */
+		.dc.b 0x7e /* 184 */
+		.dc.b 0x16 /* 185 */
+		.dc.b 0x04 /* 186 */
+		.dc.b 0x10 /* 187 */
+		.dc.b 0xb6 /* 188 */
+		.dc.b 0x00 /* 189 */
+		.dc.b 0x04 /* 190 */
+		.dc.b 0xa6 /* 191 */
+		.dc.b 0xb8 /* 192 */
+		.dc.b 0x02 /* 193 */
+		.dc.b 0x10 /* 194 */
+		.dc.b 0x02 /* 195 */
+		.dc.b 0x02 /* 196 */
+		.dc.b 0x02 /* 197 */
+		.dc.b 0x02 /* 198 */
+		.dc.b 0x00 /* 199 */
+		.dc.b 0x00 /* 200 */
+		.dc.b 0x00 /* 201 */
+		.dc.b 0x00 /* 202 */
+		.dc.b 0x04 /* 203 */
+		.dc.b 0x02 /* 204 */
+		.dc.b 0x2e /* 205 */
+		.dc.b 0x02 /* 206 */
+		.dc.b 0x02 /* 207 */
+		.dc.b 0x04 /* 208 */
+		.dc.b 0xca /* 209 */
+		.dc.b 0xc8 /* 210 */
+		.dc.b 0x0a /* 211 */
+		.dc.b 0x0a /* 212 */
+		.dc.b 0x08 /* 213 */
+		.dc.b 0x06 /* 214 */
+		.dc.b 0x02 /* 215 */
+		.dc.b 0x02 /* 216 */
+		.dc.b 0x02 /* 217 */
+		.dc.b 0x02 /* 218 */
+		.dc.b 0x02 /* 219 */
+		.dc.b 0x02 /* 220 */
+		.dc.b 0x06 /* 221 */
+		.dc.b 0x10 /* 222 */
+		.dc.b 0x10 /* 223 */
+		.dc.b 0x10 /* 224 */
+		.dc.b 0x10 /* 225 */
+		.dc.b 0x10 /* 226 */
+		.dc.b 0x10 /* 227 */
+		.dc.b 0x10 /* 228 */
+		.dc.b 0x10 /* 229 */
+		.dc.b 0x10 /* 230 */
+		.dc.b 0x10 /* 231 */
+		.dc.b 0x10 /* 232 */
+		.dc.b 0x10 /* 233 */
+		.dc.b 0x10 /* 234 */
+		.dc.b 0x10 /* 235 */
+		.dc.b 0x10 /* 236 */
+		.dc.b 0x10 /* 237 */
+		.dc.b 0x10 /* 238 */
+		.dc.b 0x10 /* 239 */
+		.dc.b 0x10 /* 240 */
+		.dc.b 0x10 /* 241 */
+		.dc.b 0x10 /* 242 */
+		.dc.b 0x10 /* 243 */
+		.dc.b 0x06 /* 244 */
+		.dc.b 0x10 /* 245 */
+		.dc.b 0x10 /* 246 */
+		.dc.b 0x10 /* 247 */
+		.dc.b 0x10 /* 248 */
+		.dc.b 0x10 /* 249 */
+		.dc.b 0x10 /* 250 */
+		.dc.b 0x10 /* 251 */
+		.dc.b 0x10 /* 252 */
+		.dc.b 0x10 /* 253 */
+		.dc.b 0xbe /* 254 */
+		.dc.b 0xbe /* 255 */
 
-x58c5e_372:
-x59a84_373:
-		.dc.b 0x02
-		.dc.b 0xc0
-		.dc.b 0xc0
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x08
-		.dc.b 0x08
-		.dc.b 0x08
-		.dc.b 0x08
-		.dc.b 0x08
-		.dc.b 0x34
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0xa2
-		.dc.b 0x04
-		.dc.b 0x86
-		.dc.b 0x06
-		.dc.b 0x06
-		.dc.b 0x74
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x06
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x08
-		.dc.b 0x08
-		.dc.b 0x10
-		.dc.b 0x04
-		.dc.b 0x08
-		.dc.b 0x06
-		.dc.b 0x04
-		.dc.b 0x02
-		.dc.b 0x04
-		.dc.b 0x02
-		.dc.b 0xc2
-		.dc.b 0x10
-		.dc.b 0x8e
-		.dc.b 0x34
-		.dc.b 0x08
-		.dc.b 0x10
-		.dc.b 0xc4
-		.dc.b 0xc4
-		.dc.b 0x0a
-		.dc.b 0x0a
-		.dc.b 0x0a
-		.dc.b 0x0a
-		.dc.b 0x0a
-		.dc.b 0xc6
-		.dc.b 0xc6
-		.dc.b 0xc6
-		.dc.b 0xc6
-		.dc.b 0xc6
-		.dc.b 0x0a
-		.dc.b 0x0a
-		.dc.b 0x0a
-		.dc.b 0x0a
-		.dc.b 0x0a
-		.dc.b 0xc6
-		.dc.b 0xc6
-		.dc.b 0xc6
-		.dc.b 0xc6
-		.dc.b 0xc6
-		.dc.b 0x0a
-		.dc.b 0x0a
-		.dc.b 0x0a
-		.dc.b 0x0a
-		.dc.b 0xc6
-		.dc.b 0xc6
-		.dc.b 0xc6
-		.dc.b 0xc6
-		.dc.b 0x08
-		.dc.b 0x02
-		.dc.b 0x08
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x00
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x00
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0xc8
-		.dc.b 0x04
-		.dc.b 0x10
-		.dc.b 0x34
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x1a
-		.dc.b 0x2c
-		.dc.b 0x10
-		.dc.b 0xce
-		.dc.b 0xcc
-		.dc.b 0xcc
-		.dc.b 0xcc
-		.dc.b 0x06
-		.dc.b 0xa6
-		.dc.b 0xd0
+offset_table_sf211:
+		.dc.b 0x02 /* 0 */
+		.dc.b 0xc0 /* 1 */
+		.dc.b 0xc0 /* 2 */
+		.dc.b 0x02 /* 3 */
+		.dc.b 0x02 /* 4 */
+		.dc.b 0x10 /* 5 */
+		.dc.b 0x02 /* 6 */
+		.dc.b 0x02 /* 7 */
+		.dc.b 0x10 /* 8 */
+		.dc.b 0x02 /* 9 */
+		.dc.b 0x02 /* 10 */
+		.dc.b 0x02 /* 11 */
+		.dc.b 0x08 /* 12 */
+		.dc.b 0x08 /* 13 */
+		.dc.b 0x08 /* 14 */
+		.dc.b 0x08 /* 15 */
+		.dc.b 0x08 /* 16 */
+		.dc.b 0x34 /* 17 */
+		.dc.b 0x02 /* 18 */
+		.dc.b 0x10 /* 19 */
+		.dc.b 0x10 /* 20 */
+		.dc.b 0x10 /* 21 */
+		.dc.b 0xa2 /* 22 */
+		.dc.b 0x04 /* 23 */
+		.dc.b 0x86 /* 24 */
+		.dc.b 0x06 /* 25 */
+		.dc.b 0x06 /* 26 */
+		.dc.b 0x74 /* 27 */
+		.dc.b 0x02 /* 28 */
+		.dc.b 0x10 /* 29 */
+		.dc.b 0x10 /* 30 */
+		.dc.b 0x10 /* 31 */
+		.dc.b 0x06 /* 32 */
+		.dc.b 0x02 /* 33 */
+		.dc.b 0x02 /* 34 */
+		.dc.b 0x02 /* 35 */
+		.dc.b 0x02 /* 36 */
+		.dc.b 0x10 /* 37 */
+		.dc.b 0x10 /* 38 */
+		.dc.b 0x08 /* 39 */
+		.dc.b 0x08 /* 40 */
+		.dc.b 0x10 /* 41 */
+		.dc.b 0x04 /* 42 */
+		.dc.b 0x08 /* 43 */
+		.dc.b 0x06 /* 44 */
+		.dc.b 0x04 /* 45 */
+		.dc.b 0x02 /* 46 */
+		.dc.b 0x04 /* 47 */
+		.dc.b 0x02 /* 48 */
+		.dc.b 0xc2 /* 49 */
+		.dc.b 0x10 /* 50 */
+		.dc.b 0x8e /* 51 */
+		.dc.b 0x34 /* 52 */
+		.dc.b 0x08 /* 53 */
+		.dc.b 0x10 /* 54 */
+		.dc.b 0xc4 /* 55 */
+		.dc.b 0xc4 /* 56 */
+		.dc.b 0x0a /* 57 */
+		.dc.b 0x0a /* 58 */
+		.dc.b 0x0a /* 59 */
+		.dc.b 0x0a /* 60 */
+		.dc.b 0x0a /* 61 */
+		.dc.b 0xc6 /* 62 */
+		.dc.b 0xc6 /* 63 */
+		.dc.b 0xc6 /* 64 */
+		.dc.b 0xc6 /* 65 */
+		.dc.b 0xc6 /* 66 */
+		.dc.b 0x0a /* 67 */
+		.dc.b 0x0a /* 68 */
+		.dc.b 0x0a /* 69 */
+		.dc.b 0x0a /* 70 */
+		.dc.b 0x0a /* 71 */
+		.dc.b 0xc6 /* 72 */
+		.dc.b 0xc6 /* 73 */
+		.dc.b 0xc6 /* 74 */
+		.dc.b 0xc6 /* 75 */
+		.dc.b 0xc6 /* 76 */
+		.dc.b 0x0a /* 77 */
+		.dc.b 0x0a /* 78 */
+		.dc.b 0x0a /* 79 */
+		.dc.b 0x0a /* 80 */
+		.dc.b 0xc6 /* 81 */
+		.dc.b 0xc6 /* 82 */
+		.dc.b 0xc6 /* 83 */
+		.dc.b 0xc6 /* 84 */
+		.dc.b 0x08 /* 85 */
+		.dc.b 0x02 /* 86 */
+		.dc.b 0x08 /* 87 */
+		.dc.b 0x04 /* 88 */
+		.dc.b 0x04 /* 89 */
+		.dc.b 0x04 /* 90 */
+		.dc.b 0x04 /* 91 */
+		.dc.b 0x04 /* 92 */
+		.dc.b 0x04 /* 93 */
+		.dc.b 0x04 /* 94 */
+		.dc.b 0x00 /* 95 */
+		.dc.b 0x04 /* 96 */
+		.dc.b 0x04 /* 97 */
+		.dc.b 0x04 /* 98 */
+		.dc.b 0x04 /* 99 */
+		.dc.b 0x04 /* 100 */
+		.dc.b 0x04 /* 101 */
+		.dc.b 0x04 /* 102 */
+		.dc.b 0x04 /* 103 */
+		.dc.b 0x04 /* 104 */
+		.dc.b 0x04 /* 105 */
+		.dc.b 0x04 /* 106 */
+		.dc.b 0x04 /* 107 */
+		.dc.b 0x00 /* 108 */
+		.dc.b 0x04 /* 109 */
+		.dc.b 0x04 /* 110 */
+		.dc.b 0x04 /* 111 */
+		.dc.b 0x04 /* 112 */
+		.dc.b 0x04 /* 113 */
+		.dc.b 0x04 /* 114 */
+		.dc.b 0x04 /* 115 */
+		.dc.b 0x04 /* 116 */
+		.dc.b 0x04 /* 117 */
+		.dc.b 0x04 /* 118 */
+		.dc.b 0x04 /* 119 */
+		.dc.b 0x04 /* 120 */
+		.dc.b 0x04 /* 121 */
+		.dc.b 0x04 /* 122 */
+		.dc.b 0x04 /* 123 */
+		.dc.b 0x04 /* 124 */
+		.dc.b 0x04 /* 125 */
+		.dc.b 0x04 /* 126 */
+		.dc.b 0x04 /* 127 */
+		.dc.b 0x04 /* 128 */
+		.dc.b 0x04 /* 129 */
+		.dc.b 0x04 /* 130 */
+		.dc.b 0x04 /* 131 */
+		.dc.b 0x04 /* 132 */
+		.dc.b 0x04 /* 133 */
+		.dc.b 0x04 /* 134 */
+		.dc.b 0x04 /* 135 */
+		.dc.b 0x04 /* 136 */
+		.dc.b 0x04 /* 137 */
+		.dc.b 0x04 /* 138 */
+		.dc.b 0x04 /* 139 */
+		.dc.b 0x04 /* 140 */
+		.dc.b 0x04 /* 141 */
+		.dc.b 0x04 /* 142 */
+		.dc.b 0x04 /* 143 */
+		.dc.b 0x04 /* 144 */
+		.dc.b 0x04 /* 145 */
+		.dc.b 0x04 /* 146 */
+		.dc.b 0x04 /* 147 */
+		.dc.b 0x04 /* 148 */
+		.dc.b 0x04 /* 149 */
+		.dc.b 0x04 /* 150 */
+		.dc.b 0x04 /* 151 */
+		.dc.b 0x04 /* 152 */
+		.dc.b 0x04 /* 153 */
+		.dc.b 0x04 /* 154 */
+		.dc.b 0x04 /* 155 */
+		.dc.b 0x04 /* 156 */
+		.dc.b 0x04 /* 157 */
+		.dc.b 0x04 /* 158 */
+		.dc.b 0x04 /* 159 */
+		.dc.b 0x04 /* 160 */
+		.dc.b 0x04 /* 161 */
+		.dc.b 0x04 /* 162 */
+		.dc.b 0x04 /* 163 */
+		.dc.b 0x04 /* 164 */
+		.dc.b 0x04 /* 165 */
+		.dc.b 0x02 /* 166 */
+		.dc.b 0x10 /* 167 */
+		.dc.b 0xc8 /* 168 */
+		.dc.b 0x04 /* 169 */
+		.dc.b 0x10 /* 170 */
+		.dc.b 0x34 /* 171 */
+		.dc.b 0x02 /* 172 */
+		.dc.b 0x10 /* 173 */
+		.dc.b 0x10 /* 174 */
+		.dc.b 0x1a /* 175 */
+		.dc.b 0x2c /* 176 */
+		.dc.b 0x10 /* 177 */
+		.dc.b 0xce /* 178 */
+		.dc.b 0xcc /* 179 */
+		.dc.b 0xcc /* 180 */
+		.dc.b 0xcc /* 181 */
+		.dc.b 0x06 /* 182 */
+		.dc.b 0xa6 /* 183 */
+		.dc.b 0xd0 /* 184 */
 	.IF GBE>=373
-		.dc.b 0xd2
-		.dc.b 0x1c
-		.dc.b 0x1a
-		.dc.b 0x10
-		.dc.b 0xd2
-		.dc.b 0xd2
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0xd4
-		.dc.b 0x36
-		.dc.b 0x3a
-		.dc.b 0xd2
-		.dc.b 0x02
-		.dc.b 0x7e
-		.dc.b 0x7e
-		.dc.b 0x10
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x08
-		.dc.b 0x08
-		.dc.b 0x08
-		.dc.b 0x08
-		.dc.b 0x08
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x06
-		.dc.b 0x08
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x06
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x04
-		.dc.b 0x06
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
+		.dc.b 0xd2 /* 185 */
+		.dc.b 0x1c /* 186 */
+		.dc.b 0x1a /* 187 */
+		.dc.b 0x10 /* 188 */
+		.dc.b 0xd2 /* 189 */
+		.dc.b 0xd2 /* 190 */
+		.dc.b 0x10 /* 191 */
+		.dc.b 0x10 /* 192 */
+		.dc.b 0xd4 /* 193 */
+		.dc.b 0x36 /* 194 */
+		.dc.b 0x3a /* 195 */
+		.dc.b 0xd2 /* 196 */
+		.dc.b 0x02 /* 197 */
+		.dc.b 0x7e /* 198 */
+		.dc.b 0x7e /* 199 */
+		.dc.b 0x10 /* 200 */
+		.dc.b 0x04 /* 201 */
+		.dc.b 0x04 /* 202 */
+		.dc.b 0x04 /* 203 */
+		.dc.b 0x04 /* 204 */
+		.dc.b 0x04 /* 205 */
+		.dc.b 0x08 /* 206 */
+		.dc.b 0x08 /* 207 */
+		.dc.b 0x08 /* 208 */
+		.dc.b 0x08 /* 209 */
+		.dc.b 0x08 /* 210 */
+		.dc.b 0x02 /* 211 */
+		.dc.b 0x02 /* 212 */
+		.dc.b 0x10 /* 213 */
+		.dc.b 0x10 /* 214 */
+		.dc.b 0x02 /* 215 */
+		.dc.b 0x10 /* 216 */
+		.dc.b 0x02 /* 217 */
+		.dc.b 0x10 /* 218 */
+		.dc.b 0x02 /* 219 */
+		.dc.b 0x10 /* 220 */
+		.dc.b 0x02 /* 221 */
+		.dc.b 0x10 /* 222 */
+		.dc.b 0x10 /* 223 */
+		.dc.b 0x02 /* 224 */
+		.dc.b 0x02 /* 225 */
+		.dc.b 0x02 /* 226 */
+		.dc.b 0x02 /* 227 */
+		.dc.b 0x10 /* 228 */
+		.dc.b 0x10 /* 229 */
+		.dc.b 0x02 /* 230 */
+		.dc.b 0x06 /* 231 */
+		.dc.b 0x08 /* 232 */
+		.dc.b 0x10 /* 233 */
+		.dc.b 0x02 /* 234 */
+		.dc.b 0x02 /* 235 */
+		.dc.b 0x06 /* 236 */
+		.dc.b 0x10 /* 237 */
+		.dc.b 0x10 /* 238 */
+		.dc.b 0x10 /* 239 */
+		.dc.b 0x04 /* 240 */
+		.dc.b 0x06 /* 241 */
+		.dc.b 0x10 /* 242 */
+		.dc.b 0x02 /* 243 */
+		.dc.b 0x10 /* 244 */
+		.dc.b 0x02 /* 245 */
+		.dc.b 0x04 /* 246 */
+		.dc.b 0x04 /* 247 */
+		.dc.b 0x04 /* 248 */
+		.dc.b 0x04 /* 249 */
+		.dc.b 0x04 /* 250 */
+		.dc.b 0x10 /* 251 */
+		.dc.b 0x10 /* 252 */
+		.dc.b 0x10 /* 253 */
+		.dc.b 0x10 /* 254 */
+		.dc.b 0x10 /* 255 */
 
-x59b84_373:
-		.dc.b 0x02
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x08
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x22
-		.dc.b 0x04
-		.dc.b 0x06
-		.dc.b 0x10
-		.dc.b 0xb2
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x1e
-		.dc.b 0x10
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x06
-		.dc.b 0xd6
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x04
-		.dc.b 0x10
-		.dc.b 0x02
-		.dc.b 0x06
-		.dc.b 0x06
-		.dc.b 0x0e
-		.dc.b 0xb2
-		.dc.b 0x04
-		.dc.b 0x9c
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x02
-		.dc.b 0x06
-		.dc.b 0xd4
-		.dc.b 0x04
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x10
-		.dc.b 0x04
+offset_table_sf212:
+		.dc.b 0x02 /* 0 */
+		.dc.b 0x04 /* 1 */
+		.dc.b 0x04 /* 2 */
+		.dc.b 0x08 /* 3 */
+		.dc.b 0x10 /* 4 */
+		.dc.b 0x02 /* 5 */
+		.dc.b 0x22 /* 6 */
+		.dc.b 0x04 /* 7 */
+		.dc.b 0x06 /* 8 */
+		.dc.b 0x10 /* 9 */
+		.dc.b 0xb2 /* 10 */
+		.dc.b 0x10 /* 11 */
+		.dc.b 0x02 /* 12 */
+		.dc.b 0x10 /* 13 */
+		.dc.b 0x02 /* 14 */
+		.dc.b 0x02 /* 15 */
+		.dc.b 0x02 /* 16 */
+		.dc.b 0x10 /* 17 */
+		.dc.b 0x10 /* 18 */
+		.dc.b 0x10 /* 19 */
+		.dc.b 0x10 /* 20 */
+		.dc.b 0x10 /* 21 */
+		.dc.b 0x10 /* 22 */
+		.dc.b 0x10 /* 23 */
+		.dc.b 0x1e /* 24 */
+		.dc.b 0x10 /* 25 */
+		.dc.b 0x04 /* 26 */
+		.dc.b 0x04 /* 27 */
+		.dc.b 0x04 /* 28 */
+		.dc.b 0x10 /* 29 */
+		.dc.b 0x02 /* 30 */
+		.dc.b 0x10 /* 31 */
+		.dc.b 0x02 /* 32 */
+		.dc.b 0x10 /* 33 */
+		.dc.b 0x02 /* 34 */
+		.dc.b 0x04 /* 35 */
+		.dc.b 0x04 /* 36 */
+		.dc.b 0x06 /* 37 */
+		.dc.b 0xd6 /* 38 */
+		.dc.b 0x04 /* 39 */
+		.dc.b 0x04 /* 40 */
+		.dc.b 0x04 /* 41 */
+		.dc.b 0x10 /* 42 */
+		.dc.b 0x02 /* 43 */
+		.dc.b 0x06 /* 44 */
+		.dc.b 0x06 /* 45 */
+		.dc.b 0x0e /* 46 */
+		.dc.b 0xb2 /* 47 */
+		.dc.b 0x04 /* 48 */
+		.dc.b 0x9c /* 49 */
+		.dc.b 0x02 /* 50 */
+		.dc.b 0x02 /* 51 */
+		.dc.b 0x02 /* 52 */
+		.dc.b 0x06 /* 53 */
+		.dc.b 0xd4 /* 54 */
+		.dc.b 0x04 /* 55 */
+		.dc.b 0x10 /* 56 */
+		.dc.b 0x10 /* 57 */
+		.dc.b 0x10 /* 58 */
+		.dc.b 0x10 /* 59 */
+		.dc.b 0x10 /* 60 */
+		.dc.b 0x10 /* 61 */
+		.dc.b 0x10 /* 62 */
+		.dc.b 0x10 /* 63 */
+		.dc.b 0x10 /* 64 */
+		.dc.b 0x10 /* 65 */
+		.dc.b 0x10 /* 66 */
+		.dc.b 0x10 /* 67 */
+		.dc.b 0x10 /* 68 */
+		.dc.b 0x04 /* 69 */
 	.ENDC
 
 	.ENDC
 
-x58d18_372:
-x59bca_373:
+offset_table_sf213:
+offset_table_sf214:
 		.even
 
 /* 372: 58d18 */
