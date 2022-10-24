@@ -1,5 +1,5 @@
 FOR_LIB = 0
-GBE = 0
+GBE = 373
 GBE_OLDCOMPAT = 0
 STRANGE_CHECK = 1
 
@@ -6666,6 +6666,7 @@ func_v_table: /* 136e4 */
 		.dc.b 8,'V','_','S','E','T','R','G','B','(',TOK_SUBFUNC_211,85
 		.dc.b 12,'V','Q','T','_','X','F'
 f56c1e: /* WTF? */
+f56c1e_373: /* WTF? */
 		.dc.b 'N','T','I','N','F','O','(',TOK_SUBFUNC_211,87
 		.dc.b 13,'V','_','C','O','L','O','R','2','V','A','L','U','E','(',TOK_SUBFUNC_210,211
 		.dc.b 13,'V','_','V','A','L','U','E','2','C','O','L','O','R','(',TOK_SUBFUNC_210,210
@@ -6814,6 +6815,7 @@ func_other_table:
 		.dc.b 0,'/',0,TOK_DIVIDE
 		.dc.b -1
 x5701f_372:
+x57e10_373:
 
 	.IFNE GBE
 jmpbase:
@@ -8878,7 +8880,7 @@ x14402:
 x1440d:
 		.dc.b -1,(x14342-jmpbase)/256,(x14342-jmpbase)&255
 		.dc.b 33
-y142:
+x14411:
 		.dc.b -1,(x14342-jmpbase)/256,(x14342-jmpbase)&255
 		.dc.b 33
 x14415:
@@ -9355,10 +9357,12 @@ yCLS_args:
 		.dc.b -4
 	.IFNE GBE
 x57fbe_372:
+x58dae_373:
 		.dc.b -1,(x57fc3_372-jmpbase)/256,(x57fc3_372-jmpbase)&255
 		.dc.b 32
 		.dc.b -4
 x57fc3_372:
+x58db3_373:
 		.dc.b -2,(f15444-jmpbase)/256,(f15444-jmpbase)&255
 		.dc.b -4
 	.ENDC
@@ -10151,17 +10155,21 @@ yKEYTEST_args:
 
 	.IFNE GBE
 x58478_372:
+x59268_373:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 		.dc.b -1,(x1433a-jmpbase)/256,(x1433a-jmpbase)&255
 		.dc.b 32
 		.dc.b -4
 x58480_372:
+x59270_373:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x58483_372:
+x59273_373:
 		.dc.b -1,(x14342-jmpbase)/256,(x14342-jmpbase)&255
 		.dc.b 32
 		.dc.b -4
 x58488_372:
+x59278_373:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 		.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 		.dc.b 33
@@ -10170,13 +10178,16 @@ x58488_372:
 		.dc.b 32
 		.dc.b -4
 x58497_372:
+x59287_373:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x584a3_372:
+x59293_373:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x584a6_372:
+x59296_373:
 		.dc.b -1,(x14342-jmpbase)/256,(x14342-jmpbase)&255
 		.dc.b 33
 		.dc.b -1,(x14342-jmpbase)/256,(x14342-jmpbase)&255
@@ -10554,13 +10565,125 @@ x14be6_1:
 /* 372: 586c4 */
 /* 373: 594e4 */
 x14c16:
-	.IF GBE==372
-		.dc.w x5701f_372-jmpbase
-		.dc.w x58835_372-jmpbase
+	.IF GBE==373
+		.dc.w 0
+		.dc.w x14d00-jmpbase
 		.dc.w x14cfd-jmpbase
-		.dc.w x5882f_372-jmpbase
-		.dc.w x5882c_372-jmpbase
-		.dc.w x58829_372-jmpbase
+		.dc.w x14cfa-jmpbase
+		.dc.w x14cf7-jmpbase
+		.dc.w x14cf4-jmpbase
+		.dc.w x5965f_373-jmpbase
+		.dc.w x59664_373-jmpbase
+		.dc.w x5965e_373-jmpbase
+		.dc.w x59669_373-jmpbase
+		.dc.w x14ee8-jmpbase
+		.dc.w x59cb2_373-jmpbase
+		.dc.w x59cb7_373-jmpbase
+		.dc.w x59cd5_373-jmpbase
+		.dc.w x59d4c_373-jmpbase
+		.dc.w x59cd8_373-jmpbase
+		.dc.w x59d54_373-jmpbase
+		.dc.w x59d49_373-jmpbase
+		.dc.w x59649_373-jmpbase
+		.dc.w x59d65_373-jmpbase
+		.dc.w x59d8e_373-jmpbase
+		.dc.w x59643_373-jmpbase
+		.dc.w x59da2_373-jmpbase
+		.dc.w x59d61_373-jmpbase
+		.dc.w x59d92_373-jmpbase
+		.dc.w x59d5d_373-jmpbase
+		.dc.w x5964c_373-jmpbase
+		.dc.w x59646_373-jmpbase
+		.dc.w x59c8c_373-jmpbase
+		.dc.w x59d9f_373-jmpbase
+		.dc.w x59d9b_373-jmpbase
+		.dc.w x59daa_373-jmpbase
+		.dc.w x59df0_373-jmpbase
+		.dc.w x596ae_373-jmpbase
+		.dc.w x59e1e_373-jmpbase
+		.dc.w x14fe1-jmpbase
+		.dc.w x59e27_373-jmpbase
+		.dc.w x59e35_373-jmpbase
+		.dc.w x59e30_373-jmpbase
+		.dc.w x59e3d_373-jmpbase
+		.dc.w x59e42_373-jmpbase
+		.dc.w x59e47_373-jmpbase
+		.dc.w x59e52_373-jmpbase
+		.dc.w x59604_373-jmpbase
+		.dc.w x5960d_373-jmpbase
+		.dc.w x59616_373-jmpbase
+		.dc.w x5961f_373-jmpbase
+		.dc.w x59628_373-jmpbase
+		.dc.w x59631_373-jmpbase
+		.dc.w x5963a_373-jmpbase
+		.dc.w x5969e_373-jmpbase
+		.dc.w x59c6e_373-jmpbase
+		.dc.w x59c76_373-jmpbase
+		.dc.w x59e07_373-jmpbase
+		.dc.w x59caa_373-jmpbase
+		.dc.w x595f2_373-jmpbase
+		.dc.w x59bdf_373-jmpbase
+		.dc.w x59bd6_373-jmpbase
+		.dc.w x595e9_373-jmpbase
+		.dc.w x59c0d_373-jmpbase
+		.dc.w x59c31_373-jmpbase
+		.dc.w x59c9d_373-jmpbase
+		.dc.w x59c34_373-jmpbase
+		.dc.w x59db8_373-jmpbase
+		.dc.w x59268_373-jmpbase
+		.dc.w x59270_373-jmpbase
+		.dc.w x59cd2_373-jmpbase
+		.dc.w x595cf_373-jmpbase
+		.dc.w x59db3_373-jmpbase
+		.dc.w x59c37_373-jmpbase
+		.dc.w x59273_373-jmpbase
+		.dc.w x59d75_373-jmpbase
+		.dc.w x59cf0_373-jmpbase
+		.dc.w x59278_373-jmpbase
+		.dc.w x59d6d_373-jmpbase
+		.dc.w x58dae_373-jmpbase
+		.dc.w x58db3_373-jmpbase
+		.dc.w x5966e_373-jmpbase
+		.dc.w y132-jmpbase
+		.dc.w x5967a_373-jmpbase
+		.dc.w x59dde_373-jmpbase
+		.dc.w x59dd5_373-jmpbase
+		.dc.w x59deb_373-jmpbase
+		.dc.w x59cc0_373-jmpbase
+		.dc.w x59bfc_373-jmpbase
+		.dc.w x59bff_373-jmpbase
+		.dc.w x5931c_373-jmpbase
+		.dc.w x59329_373-jmpbase
+		.dc.w x59339_373-jmpbase
+		.dc.w x595dc_373-jmpbase
+		.dc.w x59357_373-jmpbase
+		.dc.w x59d04_373-jmpbase
+		.dc.w x5935f_373-jmpbase
+		.dc.w x59d15_373-jmpbase
+		.dc.w x59348_373-jmpbase
+		.dc.w x59686_373-jmpbase
+		.dc.w x59692_373-jmpbase
+		.dc.w x59dd9_373-jmpbase
+		.dc.w x59d3d_373-jmpbase
+		.dc.w x59296_373-jmpbase
+		.dc.w x59293_373-jmpbase
+		.dc.w x59287_373-jmpbase
+		.dc.w x59c05_373-jmpbase
+		.dc.w x59bf0_373-jmpbase
+		.dc.w x59d2d_373-jmpbase
+		.dc.w x59d80_373-jmpbase
+		.dc.w x59be7_373-jmpbase
+		.dc.w x59c1f_373-jmpbase
+		.dc.w 0
+	.ENDC
+	
+	.IF GBE==372
+		.dc.w 0
+		.dc.w x14d00-jmpbase
+		.dc.w x14cfd-jmpbase
+		.dc.w x14cfa-jmpbase
+		.dc.w x14cf7-jmpbase
+		.dc.w x14cf4-jmpbase
 		.dc.w x58839_372-jmpbase
 		.dc.w x5883e_372-jmpbase
 		.dc.w x58838_372-jmpbase
@@ -10660,11 +10783,11 @@ x14c16:
 		.dc.w x58d4a_372-jmpbase
 		.dc.w x58d35_372-jmpbase
 		.dc.w x58e60_372-jmpbase
-		.dc.w x5701f_372-jmpbase
+		.dc.w 0
 	.ENDC
 	
 	.IF GBE==0
-		.dc.w f13696-jmpbase
+		.dc.w 0
 		.dc.w x14d00-jmpbase
 		.dc.w x14cfd-jmpbase
 		.dc.w x14cfa-jmpbase
@@ -10723,7 +10846,7 @@ x14c16:
 		.dc.w x14efd-jmpbase
 		.dc.w x14ef4-jmpbase
 		.dc.w x14c8e-jmpbase
-		.dc.w f13696-jmpbase
+		.dc.w 0
 	.ENDC
 
 /* 372: 58798 */
@@ -10740,6 +10863,7 @@ y132:
 		.dc.b 32
 		.dc.b -4
 x587a9_372:
+x595cf_373:
 		.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 		.dc.b 33
 		.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
@@ -10748,6 +10872,7 @@ x587a9_372:
 		.dc.b 32
 		.dc.b -4
 x587b6_372:
+x595dc_373:
 		.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 		.dc.b 33
 		.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
@@ -10757,6 +10882,7 @@ x587b6_372:
 		.dc.b -4
 	.ENDC
 x587c3_372:
+x595e9_373:
 x14c8e:
 		.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 		.dc.b 33
@@ -10767,6 +10893,7 @@ x14c92:
 		.dc.b 32
 		.dc.b -4
 x587cc_372:
+x595f2_373:
 x14c97:
 		.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 		.dc.b -1,(x14c9f-jmpbase)/256,(x14c9f-jmpbase)&255
@@ -10781,6 +10908,7 @@ x14c9f:
 		.dc.b -3
 		.dc.b -4
 x587de_372:
+x59604_373:
 x14ca9:
 		.dc.b -5,208
 		.dc.b 35
@@ -10788,6 +10916,7 @@ x14ca9:
 		.dc.b -1,(x14cfd-jmpbase)/256,(x14cfd-jmpbase)&255
 		.dc.b -4
 x587e7_372:
+x5960d_373:
 x14cb2:
 		.dc.b -5,208
 		.dc.b 35
@@ -10795,6 +10924,7 @@ x14cb2:
 		.dc.b -1,(x14cfd-jmpbase)/256,(x14cfd-jmpbase)&255
 		.dc.b -4
 x587f0_372:
+x59616_373:
 x14cbb:
 		.dc.b -5,208
 		.dc.b 35
@@ -10802,6 +10932,7 @@ x14cbb:
 		.dc.b -1,(x14cfd-jmpbase)/256,(x14cfd-jmpbase)&255
 		.dc.b -4
 x587f9_372:
+x5961f_373:
 x14cc4:
 		.dc.b -5,208
 		.dc.b 35
@@ -10809,6 +10940,7 @@ x14cc4:
 		.dc.b -1,(x14cfd-jmpbase)/256,(x14cfd-jmpbase)&255
 		.dc.b -4
 x58802_372:
+x59628_373:
 x14ccd:
 		.dc.b -5,208
 		.dc.b 35
@@ -10816,6 +10948,7 @@ x14ccd:
 		.dc.b -1,(x14cfd-jmpbase)/256,(x14cfd-jmpbase)&255
 		.dc.b -4
 x5880b_372:
+x59631_373:
 x14cd6:
 		.dc.b -5,208
 		.dc.b 35
@@ -10823,6 +10956,7 @@ x14cd6:
 		.dc.b -1,(x14cfd-jmpbase)/256,(x14cfd-jmpbase)&255
 		.dc.b -4
 x58814_372:
+x5963a_373:
 x14cdf:
 		.dc.b -5,208
 		.dc.b 35
@@ -10830,15 +10964,19 @@ x14cdf:
 		.dc.b -1,(x14cfd-jmpbase)/256,(x14cfd-jmpbase)&255
 		.dc.b -4
 x5881d_372:
+x59643_373:
 x14ce8:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x58820_372:
+x59646_373:
 x14ceb:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x58823_372:
+x59649_373:
 x14cee:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x58826_372:
+x5964c_373:
 x14cf1:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x58829_372:
@@ -10857,57 +10995,66 @@ x58835_372:
 x14d00:
 		.dc.b -1,(x14c92-jmpbase)/256,(x14c92-jmpbase)&255
 x58838_372:
+x5965e_373:
 x14d03:
 		.dc.b -4
 x58839_372:
+x5965f_373:
 x14d04:
 		.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 		.dc.b 32
 		.dc.b -4
 
 x5883e_372:
+x59664_373:
 x14d09:
 		.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 		.dc.b 32
 		.dc.b -4
 x58843_372:
+x59669_373:
 x14d0e:
 		.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 		.dc.b 88
 		.dc.b -4
 	.IFNE GBE
 x58848_372:
-		.dc.b -1,(x5882c_372-jmpbase)/256,(x5882c_372-jmpbase)&255
+x5966e_373:
+		.dc.b -1,(x14cf7-jmpbase)/256,(x14cf7-jmpbase)&255
 		.dc.b -3
 		.dc.b 208
 		.dc.b 239
 		.dc.b -5,240
-		.dc.b -1,(x58829_372-jmpbase)/256,(x58829_372-jmpbase)&255
+		.dc.b -1,(x14cf4-jmpbase)/256,(x14cf4-jmpbase)&255
 		.dc.b -4
 x58854_372:
+x5967a_373:
 		.dc.b -1,(x14cfd-jmpbase)/256,(x14cfd-jmpbase)&255
 		.dc.b -3
 		.dc.b 210
 		.dc.b 91
 		.dc.b -5,92
-		.dc.b -1,(x5882c_372-jmpbase)/256,(x5882c_372-jmpbase)&255
+		.dc.b -1,(x14cf7-jmpbase)/256,(x14cf7-jmpbase)&255
 		.dc.b -4
 x58860_372:
+x59686_373:
 		.dc.b -1,(x58835_372-jmpbase)/256,(x58835_372-jmpbase)&255
 		.dc.b -3
 		.dc.b 210
-		.dc.b -2,((f56c1e-jmpbase)>>8)&0xff,(f56c1e-jmpbase)&255
-		.dc.b -1,(x5882f_372-jmpbase)/256,(x5882f_372-jmpbase)&255
+		.dc.b -2,((f56c1e_373-jmpbase)>>8)&0xff,(f56c1e_373-jmpbase)&255
+		.dc.b -1,(x14cfa-jmpbase)/256,(x14cfa-jmpbase)&255
 		.dc.b -4
 x5886c_372:
+x59692_373:
 		.dc.b -1,(x14cfd-jmpbase)/256,(x14cfd-jmpbase)&255
 		.dc.b -3
 		.dc.b 211
 		.dc.b 1
 		.dc.b -5,2
-		.dc.b -1,(x5882c_372-jmpbase)/256,(x5882c_372-jmpbase)&255
+		.dc.b -1,(x14cf7-jmpbase)/256,(x14cf7-jmpbase)&255
 		.dc.b -4
 x58878_372:
+x5969e_373:
 		.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 		.dc.b 32
 		.dc.b -3
@@ -10918,6 +11065,7 @@ x58878_372:
 		.dc.b -1,(x14c92-jmpbase)/256,(x14c92-jmpbase)&255
 		.dc.b -4
 x58888_372:
+x596ae_373:
 		.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 		.dc.b -1,(x58890-jmpbase)/256,(x58890-jmpbase)&255
 		.dc.b 32
@@ -10955,130 +11103,223 @@ x14d2b:
 /* 372: 58899 */
 /* 373: 596bf */
 x14d34:
-		.dc.b 0x5a,0x5c
-		.dc.b 0x5e,0x62
-		.dc.b 0x60,0x00
-		.dc.b 0x00,0x4a
-		.dc.b 0x00,0x00
-		.dc.b 0x58,0x56
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x0c
-		.dc.b 0x00,0x0c
-		.dc.b 0x0c,0x0c
-		.dc.b 0x0c,0x0c
-		.dc.b 0x0c,0x0c
-		.dc.b 0x0c,0x00
-		.dc.b 0x00,0x0c
-		.dc.b 0x0c,0x0c
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x0e
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x10
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x0c
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x0c,0x10
-		.dc.b 0x00,0x00
-		.dc.b 0x0c,0x00
-		.dc.b 0x0c,0x10
-		.dc.b 0x0c,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x12,0x12
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x0c
-		.dc.b 0x0c,0x0e
-		.dc.b 0x0e,0x0e
-		.dc.b 0x00,0x00
-		.dc.b 0x0c,0x00
-		.dc.b 0x64,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x42
-		.dc.b 0x42,0x42
-		.dc.b 0x42,0x12
+		.dc.b 0x5a
+		.dc.b 0x5c
+		.dc.b 0x5e
+		.dc.b 0x62
+		.dc.b 0x60
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x4a
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x58
+		.dc.b 0x56
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x0c
+		.dc.b 0x00
+		.dc.b 0x0c
+		.dc.b 0x0c
+		.dc.b 0x0c
+		.dc.b 0x0c
+		.dc.b 0x0c
+		.dc.b 0x0c
+		.dc.b 0x0c
+		.dc.b 0x0c
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x0c
+		.dc.b 0x0c
+		.dc.b 0x0c
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x0e
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x10
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x0c
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x0c
+		.dc.b 0x10
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x0c
+		.dc.b 0x00
+		.dc.b 0x0c
+		.dc.b 0x10
+		.dc.b 0x0c
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x12
+		.dc.b 0x12
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x0c
+		.dc.b 0x0c
+		.dc.b 0x0e
+		.dc.b 0x0e
+		.dc.b 0x0e
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x0c
+		.dc.b 0x00
+		.dc.b 0x64
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x42
+		.dc.b 0x42
+		.dc.b 0x42
+		.dc.b 0x42
+		.dc.b 0x12
 
 x14dae:
-		.dc.b 0x00,0x0c
-		.dc.b 0x00,0x0c
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x02,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x02,0x04
-		.IF GBE>=372
 		.dc.b 0x00
-		.ELSE
 		.dc.b 0x0c
-		.ENDC
+		.dc.b 0x00
+		.dc.b 0x0c
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x02
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x02
 		.dc.b 0x04
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x0c
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
+	.IF GBE>=372
 		.dc.b 0x00
-		.IF GBE>=372
+	.ELSE
+		.dc.b 0x0c
+	.ENDC
+		.dc.b 0x04
 		.dc.b 0x00
-		.ELSE
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x0c
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+	.IF GBE>=372
+		.dc.b 0x00
+	.ELSE
 		.dc.b 0x10
-		.ENDC
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
+	.ENDC
 		.dc.b 0x00
-		.IF GBE>=372
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+	.IF GBE>=372
 		.dc.b 0x10
-		.ELSE
+	.ELSE
 		.dc.b 0x00
-		.ENDC
+	.ENDC
 		.dc.b 0x00
 		.dc.b 0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x10,0x10
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.IF GBE>=372
 		.dc.b 0x00
-		.ELSE
+		.dc.b 0x00
 		.dc.b 0x10
-		.ENDC
+		.dc.b 0x10
 		.dc.b 0x00
-		.IF GBE>=372
 		.dc.b 0x00
-		.ENDC
+		.dc.b 0x00
+		.dc.b 0x00
+	.IF GBE>=372
+		.dc.b 0x00
+	.ELSE
+		.dc.b 0x10
+	.ENDC
+		.dc.b 0x00
+	.IF GBE>=372
+		.dc.b 0x00
+	.ENDC
 
 x14df8:
 x5895e_372:
@@ -11321,451 +11562,886 @@ x5895e_372:
 		.dc.b 0x10
 		.dc.b 0x10
 		.dc.b 0x10
-
 	.IF GBE<372
 		.dc.b 0x08
 	.ELSE
 		.dc.b 0x9a
-		.dc.b 0x9a,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x02,0x10
-		.dc.b 0x76,0x08
-		.dc.b 0x10,0x10
+		.dc.b 0x9a
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x76
+		.dc.b 0x08
+		.dc.b 0x10
+		.dc.b 0x10
 
 x58a5e_372:
 x59884_373:
-		.dc.b 0x78,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x06,0x0a
-		.dc.b 0x04,0x10
-		.dc.b 0x02,0x04
-		.dc.b 0x02,0x10
-		.dc.b 0x02,0x06
-		.dc.b 0x10,0x26
-		.dc.b 0x08,0x02
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x2c
-		.dc.b 0x2c,0x3e
-		.dc.b 0x2e,0x7a
-		.dc.b 0x06,0x10
-		.dc.b 0x10,0x04
-		.dc.b 0x06,0x02
-		.dc.b 0x04,0x02
-		.dc.b 0x04,0x02
-		.dc.b 0x04,0x04
-		.dc.b 0x0a,0x02
-		.dc.b 0x02,0x7c
-		.dc.b 0x8a,0x74
-		.dc.b 0x02,0x06
-		.dc.b 0x06,0x74
-		.dc.b 0x06,0x0e
-		.dc.b 0x02,0x06
-		.dc.b 0x06,0x02
-		.dc.b 0x02,0x02
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x7e
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x80
-		.dc.b 0x82,0xcc
-		.dc.b 0x06,0x1c
-		.dc.b 0x1a,0x74
-		.dc.b 0x86,0x04
-		.dc.b 0x04,0x26
-		.dc.b 0x10,0x10
-		.dc.b 0x02,0x04
-		.dc.b 0x02,0x10
-		.dc.b 0x02,0x06
-		.dc.b 0x04,0x04
-		.dc.b 0x06,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x1c
-		.dc.b 0x84,0x1c
-		.dc.b 0x1a,0x02
-		.dc.b 0x04,0x22
-		.dc.b 0x06,0x06
-		.dc.b 0x0e,0x02
-		.dc.b 0x02,0x0e
-		.dc.b 0x02,0x0e
-		.dc.b 0x0e,0x02
-		.dc.b 0x02,0xb4
-		.dc.b 0x0e,0x10
-		.dc.b 0x02,0x88
-		.dc.b 0x10,0x06
-		.dc.b 0x74,0x86
-		.dc.b 0x04,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x0e
-		.dc.b 0x02,0x02
-		.dc.b 0x02,0x2c
-		.dc.b 0x02,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x04
-		.dc.b 0x02,0x02
-		.dc.b 0x94,0x82
-		.dc.b 0x8a,0x02
-		.dc.b 0x02,0x04
-		.dc.b 0x02,0x02
-		.dc.b 0x02,0x02
-		.dc.b 0x02,0x02
-		.dc.b 0x02,0x02
-		.dc.b 0x02,0x02
-		.dc.b 0x02,0x02
-		.dc.b 0x04,0x02
-		.dc.b 0x02,0x04
-		.dc.b 0x10,0x02
-		.dc.b 0x02,0x0a
-		.dc.b 0x06,0x08
-		.dc.b 0x08,0x08
-		.dc.b 0x04,0x0a
-		.dc.b 0x02,0x8e
-		.dc.b 0x32,0x0a
-		.dc.b 0x10,0x02
-		.dc.b 0x04,0x08
-		.dc.b 0x10,0x02
-		.dc.b 0x02,0x06
-		.dc.b 0x08,0x02
-		.dc.b 0x34,0x08
-		.dc.b 0x08,0x08
-		.dc.b 0x08,0x0a
-		.dc.b 0x06,0x34
-		.dc.b 0x34,0x08
-		.dc.b 0x0a,0x06
-		.dc.b 0x22,0x02
-		.dc.b 0x02,0x02
-		.dc.b 0x90,0x8c
-		.dc.b 0x94,0x04
-		.dc.b 0x06,0x02
-		.dc.b 0x02,0x04
-		.dc.b 0x34,0x04
-		.dc.b 0x02,0x10
-		.dc.b 0x08,0x02
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x24
-		.dc.b 0x24,0x2a
-		.dc.b 0x24,0x04
-		.dc.b 0x08,0x08
-		.dc.b 0x02,0x02
-		.dc.b 0x10,0x02
-		.dc.b 0x02,0x02
-		.dc.b 0x08,0x02
-		.dc.b 0x02,0x10
-		.dc.b 0x02,0x02
-		.dc.b 0x02,0x08
-		.dc.b 0x06,0x06
-		.dc.b 0x06,0x02
-		.dc.b 0x10,0x02
-		.dc.b 0x02,0x04
-		.dc.b 0x02,0x02
-		.dc.b 0x06,0x06
-		.dc.b 0x04,0x04
-		.dc.b 0x22,0x22
-		.dc.b 0x92,0x34
-		.dc.b 0x24,0x0e
-		.dc.b 0x74,0x04
+		.dc.b 0x78
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x06
+		.dc.b 0x0a
+		.dc.b 0x04
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x04
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x06
+		.dc.b 0x10
+		.dc.b 0x26
+		.dc.b 0x08
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x2c
+		.dc.b 0x2c
+		.dc.b 0x3e
+		.dc.b 0x2e
+		.dc.b 0x7a
+		.dc.b 0x06
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x04
+		.dc.b 0x06
+		.dc.b 0x02
+		.dc.b 0x04
+		.dc.b 0x02
+		.dc.b 0x04
+		.dc.b 0x02
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x0a
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x7c
+		.dc.b 0x8a
+		.dc.b 0x74
+		.dc.b 0x02
+		.dc.b 0x06
+		.dc.b 0x06
+		.dc.b 0x74
+		.dc.b 0x06
+		.dc.b 0x0e
+		.dc.b 0x02
+		.dc.b 0x06
+		.dc.b 0x06
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x7e
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x80
+		.dc.b 0x82
+		.dc.b 0xcc
+		.dc.b 0x06
+		.dc.b 0x1c
+		.dc.b 0x1a
+		.dc.b 0x74
+		.dc.b 0x86
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x26
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x04
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x06
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x06
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x1c
+		.dc.b 0x84
+		.dc.b 0x1c
+		.dc.b 0x1a
+		.dc.b 0x02
+		.dc.b 0x04
+		.dc.b 0x22
+		.dc.b 0x06
+		.dc.b 0x06
+		.dc.b 0x0e
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x0e
+		.dc.b 0x02
+		.dc.b 0x0e
+		.dc.b 0x0e
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0xb4
+		.dc.b 0x0e
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x88
+		.dc.b 0x10
+		.dc.b 0x06
+		.dc.b 0x74
+		.dc.b 0x86
+		.dc.b 0x04
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x0e
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x2c
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x04
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x94
+		.dc.b 0x82
+		.dc.b 0x8a
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x04
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x04
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x04
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x0a
+		.dc.b 0x06
+		.dc.b 0x08
+		.dc.b 0x08
+		.dc.b 0x08
+		.dc.b 0x04
+		.dc.b 0x0a
+		.dc.b 0x02
+		.dc.b 0x8e
+		.dc.b 0x32
+		.dc.b 0x0a
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x04
+		.dc.b 0x08
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x06
+		.dc.b 0x08
+		.dc.b 0x02
+		.dc.b 0x34
+		.dc.b 0x08
+		.dc.b 0x08
+		.dc.b 0x08
+		.dc.b 0x08
+		.dc.b 0x0a
+		.dc.b 0x06
+		.dc.b 0x34
+		.dc.b 0x34
+		.dc.b 0x08
+		.dc.b 0x0a
+		.dc.b 0x06
+		.dc.b 0x22
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x90
+		.dc.b 0x8c
+		.dc.b 0x94
+		.dc.b 0x04
+		.dc.b 0x06
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x04
+		.dc.b 0x34
+		.dc.b 0x04
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x08
+		.dc.b 0x02
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x24
+		.dc.b 0x24
+		.dc.b 0x2a
+		.dc.b 0x24
+		.dc.b 0x04
+		.dc.b 0x08
+		.dc.b 0x08
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x08
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x08
+		.dc.b 0x06
+		.dc.b 0x06
+		.dc.b 0x06
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x04
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x06
+		.dc.b 0x06
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x22
+		.dc.b 0x22
+		.dc.b 0x92
+		.dc.b 0x34
+		.dc.b 0x24
+		.dc.b 0x0e
+		.dc.b 0x74
+		.dc.b 0x04
 
 x58b5e_372:
 x59984_373:
-		.dc.b 0x96,0x98
-		.dc.b 0x10,0x02
-		.dc.b 0x10,0x10
-		.dc.b 0x06,0x0a
-		.dc.b 0x10,0x04
-		.dc.b 0x02,0x02
-		.dc.b 0x02,0x02
-		.dc.b 0x02,0x10
-		.dc.b 0x02,0x02
-		.dc.b 0x0e,0x06
-		.dc.b 0x06,0xbc
-		.dc.b 0xba,0x06
-		.dc.b 0x06,0x04
-		.dc.b 0x04,0x10
-		.dc.b 0x02,0x12
-		.dc.b 0x4c,0x04
-		.dc.b 0x4c,0x06
-		.dc.b 0x04,0x06
-		.dc.b 0x08,0x06
-		.dc.b 0x06,0x06
-		.dc.b 0x04,0x06
-		.dc.b 0x06,0x34
-		.dc.b 0x34,0x0a
-		.dc.b 0x0a,0x06
-		.dc.b 0x06,0x04
-		.dc.b 0x10,0x0e
-		.dc.b 0x74,0x02
-		.dc.b 0x1e,0x10
-		.dc.b 0xa2,0x00
-		.dc.b 0x02,0x02
-		.dc.b 0x00,0x02
-		.dc.b 0x0e,0x00
-		.dc.b 0x08,0x04
-		.dc.b 0x06,0x06
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x02,0x02
-		.dc.b 0x02,0x00
-		.dc.b 0x06,0x00
-		.dc.b 0x9c,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x02
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x10
-		.dc.b 0x0a,0x9e
-		.dc.b 0x9e,0x10
-		.dc.b 0x1c,0x00
-		.dc.b 0x00,0x04
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0xa4
-		.dc.b 0x02,0x02
-		.dc.b 0x00,0x0e
-		.dc.b 0x04,0x00
-		.dc.b 0x10,0x02
-		.dc.b 0xa4,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x0e
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x02
-		.dc.b 0x02,0x10
-		.dc.b 0xa0,0x02
-		.dc.b 0x04,0x9c
-		.dc.b 0x06,0x0e
-		.dc.b 0x10,0x10
-		.dc.b 0x02,0x06
-		.dc.b 0x06,0x10
-		.dc.b 0x02,0x02
-		.dc.b 0x04,0x06
-		.dc.b 0x06,0x02
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x86,0x02
-		.dc.b 0x04,0x10
-		.dc.b 0x04,0x04
-		.dc.b 0x06,0x10
-		.dc.b 0x7e,0x0e
-		.dc.b 0x0e,0x0e
-		.dc.b 0x0e,0x08
-		.dc.b 0x04,0x04
-		.dc.b 0x02,0x02
-		.dc.b 0x04,0x7e
-		.dc.b 0xa6,0x1a
-		.dc.b 0x02,0x02
-		.dc.b 0x74,0x06
-		.dc.b 0xa8,0xb2
-		.dc.b 0x06,0xaa
-		.dc.b 0x06,0x06
-		.dc.b 0x0e,0xac
-		.dc.b 0xae,0xb0
-		.dc.b 0x06,0x06
-		.dc.b 0x84,0x88
-		.dc.b 0x7e,0x16
-		.dc.b 0x04,0x10
-		.dc.b 0xb6,0x00
-		.dc.b 0x04,0xa6
-		.dc.b 0xb8,0x02
-		.dc.b 0x10,0x02
-		.dc.b 0x02,0x02
-		.dc.b 0x02,0x00
-		.dc.b 0x00,0x00
-		.dc.b 0x00,0x04
-		.dc.b 0x02,0x2e
-		.dc.b 0x02,0x02
-		.dc.b 0x04,0xca
-		.dc.b 0xc8,0x0a
-		.dc.b 0x0a,0x08
-		.dc.b 0x06,0x02
-		.dc.b 0x02,0x02
-		.dc.b 0x02,0x02
-		.dc.b 0x02,0x06
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x06,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0xbe,0xbe
+		.dc.b 0x96
+		.dc.b 0x98
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x06
+		.dc.b 0x0a
+		.dc.b 0x10
+		.dc.b 0x04
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x0e
+		.dc.b 0x06
+		.dc.b 0x06
+		.dc.b 0xbc
+		.dc.b 0xba
+		.dc.b 0x06
+		.dc.b 0x06
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x12
+		.dc.b 0x4c
+		.dc.b 0x04
+		.dc.b 0x4c
+		.dc.b 0x06
+		.dc.b 0x04
+		.dc.b 0x06
+		.dc.b 0x08
+		.dc.b 0x06
+		.dc.b 0x06
+		.dc.b 0x06
+		.dc.b 0x04
+		.dc.b 0x06
+		.dc.b 0x06
+		.dc.b 0x34
+		.dc.b 0x34
+		.dc.b 0x0a
+		.dc.b 0x0a
+		.dc.b 0x06
+		.dc.b 0x06
+		.dc.b 0x04
+		.dc.b 0x10
+		.dc.b 0x0e
+		.dc.b 0x74
+		.dc.b 0x02
+		.dc.b 0x1e
+		.dc.b 0x10
+		.dc.b 0xa2
+		.dc.b 0x00
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x00
+		.dc.b 0x02
+		.dc.b 0x0e
+		.dc.b 0x00
+		.dc.b 0x08
+		.dc.b 0x04
+		.dc.b 0x06
+		.dc.b 0x06
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x00
+		.dc.b 0x06
+		.dc.b 0x00
+		.dc.b 0x9c
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x02
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x10
+		.dc.b 0x0a
+		.dc.b 0x9e
+		.dc.b 0x9e
+		.dc.b 0x10
+		.dc.b 0x1c
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x04
+		.dc.b 0x00
+		.dc.b 0x00
+	.IF GBE>=373
+		.dc.b 0x7e
+	.ELSE
+		.dc.b 0x00
+	.ENDC
+		.dc.b 0xa4
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x00
+		.dc.b 0x0e
+		.dc.b 0x04
+		.dc.b 0x00
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0xa4
+		.dc.b 0x00
+	.IF GBE>=373
+		.dc.b 0x0e
+		.dc.b 0xa4
+		.dc.b 0x0e
+	.ELSE
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+	.ENDC
+		.dc.b 0x0e
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0xa0
+		.dc.b 0x02
+		.dc.b 0x04
+		.dc.b 0x9c
+		.dc.b 0x06
+		.dc.b 0x0e
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x06
+		.dc.b 0x06
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x04
+		.dc.b 0x06
+		.dc.b 0x06
+		.dc.b 0x02
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x86
+		.dc.b 0x02
+		.dc.b 0x04
+		.dc.b 0x10
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x06
+		.dc.b 0x10
+		.dc.b 0x7e
+		.dc.b 0x0e
+		.dc.b 0x0e
+		.dc.b 0x0e
+		.dc.b 0x0e
+		.dc.b 0x08
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x04
+		.dc.b 0x7e
+		.dc.b 0xa6
+		.dc.b 0x1a
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x74
+		.dc.b 0x06
+		.dc.b 0xa8
+		.dc.b 0xb2
+		.dc.b 0x06
+		.dc.b 0xaa
+		.dc.b 0x06
+		.dc.b 0x06
+		.dc.b 0x0e
+		.dc.b 0xac
+		.dc.b 0xae
+		.dc.b 0xb0
+		.dc.b 0x06
+		.dc.b 0x06
+		.dc.b 0x84
+		.dc.b 0x88
+		.dc.b 0x7e
+		.dc.b 0x16
+		.dc.b 0x04
+		.dc.b 0x10
+		.dc.b 0xb6
+		.dc.b 0x00
+		.dc.b 0x04
+		.dc.b 0xa6
+		.dc.b 0xb8
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x00
+		.dc.b 0x04
+		.dc.b 0x02
+		.dc.b 0x2e
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x04
+		.dc.b 0xca
+		.dc.b 0xc8
+		.dc.b 0x0a
+		.dc.b 0x0a
+		.dc.b 0x08
+		.dc.b 0x06
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x06
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x06
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0xbe
+		.dc.b 0xbe
 
 x58c5e_372:
 x59a84_373:
-		.dc.b 0x02,0xc0
-		.dc.b 0xc0,0x02
-		.dc.b 0x02,0x10
-		.dc.b 0x02,0x02
-		.dc.b 0x10,0x02
-		.dc.b 0x02,0x02
-		.dc.b 0x08,0x08
-		.dc.b 0x08,0x08
-		.dc.b 0x08,0x34
-		.dc.b 0x02,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0xa2,0x04
-		.dc.b 0x86,0x06
-		.dc.b 0x06,0x74
-		.dc.b 0x02,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x06,0x02
-		.dc.b 0x02,0x02
-		.dc.b 0x02,0x10
-		.dc.b 0x10,0x08
-		.dc.b 0x08,0x10
-		.dc.b 0x04,0x08
-		.dc.b 0x06,0x04
-		.dc.b 0x02,0x04
-		.dc.b 0x02,0xc2
-		.dc.b 0x10,0x8e
-		.dc.b 0x34,0x08
-		.dc.b 0x10,0xc4
-		.dc.b 0xc4,0x0a
-		.dc.b 0x0a,0x0a
-		.dc.b 0x0a,0x0a
-		.dc.b 0xc6,0xc6
-		.dc.b 0xc6,0xc6
-		.dc.b 0xc6,0x0a
-		.dc.b 0x0a,0x0a
-		.dc.b 0x0a,0x0a
-		.dc.b 0xc6,0xc6
-		.dc.b 0xc6,0xc6
-		.dc.b 0xc6,0x0a
-		.dc.b 0x0a,0x0a
-		.dc.b 0x0a,0xc6
-		.dc.b 0xc6,0xc6
-		.dc.b 0xc6,0x08
-		.dc.b 0x02,0x08
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x00
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x00,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x02,0x10
-		.dc.b 0xc8,0x04
-		.dc.b 0x10,0x34
-		.dc.b 0x02,0x10
-		.dc.b 0x10,0x1a
-		.dc.b 0x2c,0x10
-		.dc.b 0xce,0xcc
-		.dc.b 0xcc,0xcc
-		.dc.b 0x06,0xa6
+		.dc.b 0x02
+		.dc.b 0xc0
+		.dc.b 0xc0
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x08
+		.dc.b 0x08
+		.dc.b 0x08
+		.dc.b 0x08
+		.dc.b 0x08
+		.dc.b 0x34
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0xa2
+		.dc.b 0x04
+		.dc.b 0x86
+		.dc.b 0x06
+		.dc.b 0x06
+		.dc.b 0x74
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x06
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x08
+		.dc.b 0x08
+		.dc.b 0x10
+		.dc.b 0x04
+		.dc.b 0x08
+		.dc.b 0x06
+		.dc.b 0x04
+		.dc.b 0x02
+		.dc.b 0x04
+		.dc.b 0x02
+		.dc.b 0xc2
+		.dc.b 0x10
+		.dc.b 0x8e
+		.dc.b 0x34
+		.dc.b 0x08
+		.dc.b 0x10
+		.dc.b 0xc4
+		.dc.b 0xc4
+		.dc.b 0x0a
+		.dc.b 0x0a
+		.dc.b 0x0a
+		.dc.b 0x0a
+		.dc.b 0x0a
+		.dc.b 0xc6
+		.dc.b 0xc6
+		.dc.b 0xc6
+		.dc.b 0xc6
+		.dc.b 0xc6
+		.dc.b 0x0a
+		.dc.b 0x0a
+		.dc.b 0x0a
+		.dc.b 0x0a
+		.dc.b 0x0a
+		.dc.b 0xc6
+		.dc.b 0xc6
+		.dc.b 0xc6
+		.dc.b 0xc6
+		.dc.b 0xc6
+		.dc.b 0x0a
+		.dc.b 0x0a
+		.dc.b 0x0a
+		.dc.b 0x0a
+		.dc.b 0xc6
+		.dc.b 0xc6
+		.dc.b 0xc6
+		.dc.b 0xc6
+		.dc.b 0x08
+		.dc.b 0x02
+		.dc.b 0x08
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x00
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x00
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0xc8
+		.dc.b 0x04
+		.dc.b 0x10
+		.dc.b 0x34
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x1a
+		.dc.b 0x2c
+		.dc.b 0x10
+		.dc.b 0xce
+		.dc.b 0xcc
+		.dc.b 0xcc
+		.dc.b 0xcc
+		.dc.b 0x06
+		.dc.b 0xa6
 		.dc.b 0xd0
 	.IF GBE>=373
 		.dc.b 0xd2
-		.dc.b 0x1c,0x1a
-		.dc.b 0x10,0xd2
-		.dc.b 0xd2,0x10
-		.dc.b 0x10,0xd4
-		.dc.b 0x36,0x3a
-		.dc.b 0xd2,0x02
-		.dc.b 0x7e,0x7e
-		.dc.b 0x10,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x08,0x08
-		.dc.b 0x08,0x08
-		.dc.b 0x08,0x02
-		.dc.b 0x02,0x10
-		.dc.b 0x10,0x02
-		.dc.b 0x10,0x02
-		.dc.b 0x10,0x02
-		.dc.b 0x10,0x02
-		.dc.b 0x10,0x10
-		.dc.b 0x02,0x02
-		.dc.b 0x02,0x02
-		.dc.b 0x10,0x10
-		.dc.b 0x02,0x06
-		.dc.b 0x08,0x10
-		.dc.b 0x02,0x02
-		.dc.b 0x06,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x04,0x06
-		.dc.b 0x10,0x02
-		.dc.b 0x10,0x02
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x10
+		.dc.b 0x1c
+		.dc.b 0x1a
+		.dc.b 0x10
+		.dc.b 0xd2
+		.dc.b 0xd2
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0xd4
+		.dc.b 0x36
+		.dc.b 0x3a
+		.dc.b 0xd2
+		.dc.b 0x02
+		.dc.b 0x7e
+		.dc.b 0x7e
+		.dc.b 0x10
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x08
+		.dc.b 0x08
+		.dc.b 0x08
+		.dc.b 0x08
+		.dc.b 0x08
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x06
+		.dc.b 0x08
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x06
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x04
+		.dc.b 0x06
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
 
 x59b84_373:
-		.dc.b 0x02,0x04
-		.dc.b 0x04,0x08
-		.dc.b 0x10,0x02
-		.dc.b 0x22,0x04
-		.dc.b 0x06,0x10
-		.dc.b 0xb2,0x10
-		.dc.b 0x02,0x10
-		.dc.b 0x02,0x02
-		.dc.b 0x02,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x1e,0x10
-		.dc.b 0x04,0x04
-		.dc.b 0x04,0x10
-		.dc.b 0x02,0x10
-		.dc.b 0x02,0x10
-		.dc.b 0x02,0x04
-		.dc.b 0x04,0x06
-		.dc.b 0xd6,0x04
-		.dc.b 0x04,0x04
-		.dc.b 0x10,0x02
-		.dc.b 0x06,0x06
-		.dc.b 0x0e,0xb2
-		.dc.b 0x04,0x9c
-		.dc.b 0x02,0x02
-		.dc.b 0x02,0x06
-		.dc.b 0xd4,0x04
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x10
-		.dc.b 0x10,0x04
+		.dc.b 0x02
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x08
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x22
+		.dc.b 0x04
+		.dc.b 0x06
+		.dc.b 0x10
+		.dc.b 0xb2
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x1e
+		.dc.b 0x10
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x06
+		.dc.b 0xd6
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x04
+		.dc.b 0x10
+		.dc.b 0x02
+		.dc.b 0x06
+		.dc.b 0x06
+		.dc.b 0x0e
+		.dc.b 0xb2
+		.dc.b 0x04
+		.dc.b 0x9c
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x02
+		.dc.b 0x06
+		.dc.b 0xd4
+		.dc.b 0x04
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x10
+		.dc.b 0x04
 	.ENDC
 
 	.ENDC
@@ -11784,6 +12460,7 @@ x14ee8:
 		.dc.b 32
 		.dc.b -4
 x58d24_372:
+x59bd6_373:
 x14ef4:
 		.dc.b -1,(x15039-jmpbase)/256,(x15039-jmpbase)&255
 		.dc.b 33
@@ -11791,6 +12468,7 @@ x14ef4:
 		.dc.b 32
 		.dc.b -4
 x58d2d_372:
+x59bdf_373:
 x14efd:
 		.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 		.dc.b -1,(x14f15-jmpbase)/256,(x14f15-jmpbase)&255
@@ -11798,7 +12476,16 @@ x14efd:
 		.dc.b -4
 
 	.IFNE GBE
+	.IF GBE>=373
+x59be7_373:
+		.dc.b -1,(x1433e-jmpbase)/256,(x1433e-jmpbase)&255
+		.dc.b 33
+		.dc.b -1,(x1433e-jmpbase)/256,(x1433e-jmpbase)&255
+		.dc.b 32
+		.dc.b -4
+	.ENDC
 x58d35_372:
+x59bf0_373:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 		.dc.b -1,(x14346-jmpbase)/256,(x14346-jmpbase)&255
 		.dc.b 33
@@ -11806,34 +12493,52 @@ x58d35_372:
 		.dc.b 32
 		.dc.b -4
 x58d41_372:
+x59bfc_373:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x58d44_372:
+x59bff_373:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x58d4a_372:
+x59c05_373:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 		.dc.b -1,(x14346-jmpbase)/256,(x14346-jmpbase)&255
 		.dc.b 32
 		.dc.b -4
 x58d52_372:
+x59c0d_373:
 		.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
-		.dc.b -1,(y140-jmpbase)/256,(y140-jmpbase)&255
+		.dc.b -1,(x58d5a_372-jmpbase)/256,(x58d5a_372-jmpbase)&255
 		.dc.b 32
 		.dc.b -4
-y140:
+x58d5a_372:
 		.dc.b 33
-		.dc.b -1,(y141-jmpbase)/256,(y141-jmpbase)&255
+		.dc.b -1,(x58d60_372-jmpbase)/256,(x58d60_372-jmpbase)&255
 		.dc.b -3
 		.dc.b -4
-y141:
+x58d60_372:
 		.dc.b -1,(x14346-jmpbase)/256,(x14346-jmpbase)&255
 		.dc.b -4
+	.IF GBE>=373
+x59c1f_373:
+		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
+		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
+		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
+		.dc.b -1,(x14346-jmpbase)/256,(x14346-jmpbase)&255
+		.dc.b 33
+		.dc.b -1,(x14346-jmpbase)/256,(x14346-jmpbase)&255
+		.dc.b 32
+		.dc.b -4
+	.ENDC
 x58d64_372:
+x59c31_373:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x58d67_372:
+x59c34_373:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x58d6a_372:
-		.dc.b -1,(y142-jmpbase)/256,(y142-jmpbase)&255
+x59c37_373:
+		.dc.b -1,(x14411-jmpbase)/256,(x14411-jmpbase)&255
 		.dc.b 32
 		.dc.b -4
 yRGB_args:
@@ -11863,12 +12568,14 @@ yAVERAGE_RGB_args:
 	.ENDC
 
 x58da1_372:
+x59c6e_373:
 x14f05:
 		.dc.b -1,(x1503c-jmpbase)/256,(x1503c-jmpbase)&255
 		.dc.b -1,(x14f1d-jmpbase)/256,(x14f1d-jmpbase)&255
 		.dc.b 32
 		.dc.b -4
 x58da9_372:
+x59c76_373:
 x14f0d:
 		.dc.b -1,(x15036-jmpbase)/256,(x15036-jmpbase)&255
 		.dc.b -1,(x14f1d-jmpbase)/256,(x14f1d-jmpbase)&255
@@ -11887,6 +12594,7 @@ x14f1e:
 		.dc.b -3
 		.dc.b -4
 x58dbf_372:
+x59c8c_373:
 x14f23:
 		.dc.b -1,(x14f1e-jmpbase)/256,(x14f1e-jmpbase)&255
 		.dc.b 32
@@ -11906,6 +12614,7 @@ x14f2e:
 
 	.IFNE GBE
 x58dd0_372:
+x59c9d_373:
 		.dc.b -1,(x1439e-jmpbase)/256,(x1439e-jmpbase)&255
 		.dc.b 33
 		.dc.b -1,(x14342-jmpbase)/256,(x14342-jmpbase)&255
@@ -11916,17 +12625,20 @@ x58dd0_372:
 	.ENDC
 
 x58ddd_372:
+x59caa_373:
 x14f34:
 		.dc.b -1,(x1439e-jmpbase)/256,(x1439e-jmpbase)&255
 		.dc.b -1,(x14f2e-jmpbase)/256,(x14f2e-jmpbase)&255
 		.dc.b 32
 		.dc.b -4
 x58de5_372:
+x59cb2_373:
 x14f3c:
 		.dc.b -1,(x1439e-jmpbase)/256,(x1439e-jmpbase)&255
 		.dc.b 32
 		.dc.b -4
 x58dea_372:
+x59cb7_373:
 x14f41:
 		.dc.b -1,(x1503c-jmpbase)/256,(x1503c-jmpbase)&255
 		.dc.b 33
@@ -11935,6 +12647,7 @@ x14f41:
 		.dc.b -4
 	.IFNE GBE
 x58df3_372:
+x59cc0_373:
 		.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 		.dc.b 33
 	.ELSE
@@ -11955,10 +12668,13 @@ yTPUT_args:
 		.dc.b 70
 		.dc.b -4
 x58e05_372:
+x59cd2_373:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x58e08_372:
+x59cd5_373:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x58e0b_372:
+x59cd8_373:
 		.dc.b -1,(x143ec-jmpbase)/256,(x143ec-jmpbase)&255
 		.dc.b 32
 		.dc.b -4
@@ -11976,6 +12692,7 @@ yBCRYPT_args:
 		.dc.b 70
 		.dc.b -4
 x58e23_372:
+x59cf0_373:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 		.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
@@ -11985,6 +12702,7 @@ x58e23_372:
 		.dc.b -1,(x14c92-jmpbase)/256,(x14c92-jmpbase)&255
 		.dc.b -4
 x58e37_372:
+x59d04_373:
 		.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 		.dc.b 33
 		.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
@@ -11995,6 +12713,7 @@ x58e37_372:
 		.dc.b 32
 		.dc.b -4
 x58e48_372:
+x59d15_373:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 		.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 		.dc.b 33
@@ -12008,6 +12727,7 @@ x58e48_372:
 		.dc.b 32
 		.dc.b -4
 x58e60_372:
+x59d2d_373:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 		.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 		.dc.b 33
@@ -12017,6 +12737,7 @@ x58e60_372:
 		.dc.b 32
 		.dc.b -4
 x58e70_372:
+x59d3d_373:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 		.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 		.dc.b 33
@@ -12026,15 +12747,18 @@ x58e70_372:
 	.ENDC
 
 x58e7c_372:
+x59d49_373:
 x14f52:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x58e7f_372:
+x59d4c_373:
 x14f55:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 		.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 		.dc.b 32
 		.dc.b -4
 x58e87_372:
+x59d54_373:
 x14f5d:
 		.dc.b -1,(x14346-jmpbase)/256,(x14346-jmpbase)&255
 		.dc.b 33
@@ -12042,14 +12766,17 @@ x14f5d:
 		.dc.b 32
 		.dc.b -4
 x58e90_372:
+x59d5d_373:
 x14f66:
 		.dc.b -1,(x15039-jmpbase)/256,(x15039-jmpbase)&255
 		.dc.b 33
 x58e94_372:
+x59d61_373:
 x14f6a:
 		.dc.b -1,(x1503f-jmpbase)/256,(x1503f-jmpbase)&255
 		.dc.b 33
 x58e98_372:
+x59d65_373:
 x14f6e:
 		.dc.b -1,(x1503f-jmpbase)/256,(x1503f-jmpbase)&255
 		.dc.b -1,(x14f28-jmpbase)/256,(x14f28-jmpbase)&255
@@ -12057,22 +12784,38 @@ x14f6e:
 		.dc.b -4
 	.IFNE GBE
 x58ea0_372:
+x59d6d_373:
 		.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 		.dc.b -1,(x14f28-jmpbase)/256,(x14f28-jmpbase)&255
 		.dc.b 32
 		.dc.b -4
 x58ea8_372:
+x59d75_373:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 		.dc.b -1,(x143ec-jmpbase)/256,(x143ec-jmpbase)&255
 		.dc.b -1,(x14f28-jmpbase)/256,(x14f28-jmpbase)&255
 		.dc.b 32
 		.dc.b -4
 	.ENDC
+	.IF GBE>=373
+x59d80_373:
+		.dc.b -1,(x15039-jmpbase)/256,(x15039-jmpbase)&255
+		.dc.b -1,(x59d88_373-jmpbase)/256,(x59d88_373-jmpbase)&255
+		.dc.b 32
+		.dc.b -4
+x59d88_373:
+		.dc.b 33
+		.dc.b -1,(x14411-jmpbase)/256,(x14411-jmpbase)&255
+		.dc.b -3
+		.dc.b -4
+	.ENDC
 x58eb3_372:
+x59d8e_373:
 x14f76:
 		.dc.b -1,(x1503f-jmpbase)/256,(x1503f-jmpbase)&255
 		.dc.b 33
 x58eb7_372:
+x59d92_373:
 x14f7a:
 		.dc.b -1,(x1503c-jmpbase)/256,(x1503c-jmpbase)&255
 		.dc.b 33
@@ -12080,19 +12823,23 @@ x14f7a:
 		.dc.b 32
 		.dc.b -4
 x58ec0_372:
+x59d9b_373:
 x14f83:
 		.dc.b -1,(x15039-jmpbase)/256,(x15039-jmpbase)&255
 		.dc.b 33
 x58ec4_372:
+x59d9f_373:
 x14f87:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x58ec7_372:
+x59da2_373:
 x14f8a:
 		.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
 		.dc.b -1,(x14f1d-jmpbase)/256,(x14f1d-jmpbase)&255
 		.dc.b 32
 		.dc.b -4
 x58ecf_372:
+x59daa_373:
 x14f92:
 		.dc.b -1,(x1503f-jmpbase)/256,(x1503f-jmpbase)&255
 		.dc.b 33
@@ -12101,10 +12848,12 @@ x14f92:
 		.dc.b -4
 	.IFNE GBE
 x58ed8_372:
+x59db3_373:
 		.dc.b -1,(x14fa3-jmpbase)/256,(x14fa3-jmpbase)&255
 		.dc.b 32
 		.dc.b -4
 x58edd_372:
+x59db8_373:
 		.dc.b -1,(x14fa6-jmpbase)/256,(x14fa6-jmpbase)&255
 		.dc.b 32
 		.dc.b -4
@@ -12131,13 +12880,16 @@ ySCALL_args:
 		.dc.b 70
 		.dc.b -4
 x58efa_372:
+x59dd5_373:
 		.dc.b -1,(x14346-jmpbase)/256,(x14346-jmpbase)&255
 		.dc.b 33
 x58efe_372:
+x59dd9_373:
 		.dc.b -1,(x14346-jmpbase)/256,(x14346-jmpbase)&255
 		.dc.b 32
 		.dc.b -4
 x58f03_372:
+x59dde_373:
 		.dc.b -1,(x14f9b-jmpbase)/256,(x14f9b-jmpbase)&255
 		.dc.b 33
 		.dc.b -1,(x14346-jmpbase)/256,(x14346-jmpbase)&255
@@ -12146,12 +12898,14 @@ x58f03_372:
 		.dc.b 32
 		.dc.b -4
 x58f10_372:
+x59deb_373:
 		.dc.b -1,(x14f9b-jmpbase)/256,(x14f9b-jmpbase)&255
 		.dc.b 32
 		.dc.b -4
 	.ENDC
 
 x58f15_372:
+x59df0_373:
 x14fae:
 		.dc.b -1,(x14fa6-jmpbase)/256,(x14fa6-jmpbase)&255
 		.dc.b 32
@@ -12170,6 +12924,7 @@ x14fae:
 		.dc.b -4
 
 x58f2c_372:
+x59e07_373:
 x14fc5:
 		.dc.b -1,(x14fa6-jmpbase)/256,(x14fa6-jmpbase)&255
 		.dc.b 32
@@ -12187,6 +12942,7 @@ x14fc5:
 		.dc.b 32
 		.dc.b -4
 x58f43_372:
+x59e1e_373:
 x14fdc:
 		.dc.b -1,(x14fe1-jmpbase)/256,(x14fe1-jmpbase)&255
 		.dc.b 32
@@ -12195,6 +12951,7 @@ x14fe1:
 		.dc.b -1,(x14336-jmpbase)/256,(x14336-jmpbase)&255
 		.dc.b -4
 x58f4c_372:
+x59e27_373:
 x14fe5:
 		.dc.b -1,(x14fe9-jmpbase)/256,(x14fe9-jmpbase)&255
 		.dc.b -4
@@ -12203,27 +12960,32 @@ x14fe9:
 		.dc.b 32
 		.dc.b -3
 x58f55_372:
+x59e30_373:
 x14fee:
 		.dc.b -1,(x143ad-jmpbase)/256,(x143ad-jmpbase)&255
 		.dc.b 32
 		.dc.b -4
 x58f5a_372:
+x59e35_373:
 x14ff3:
 		.dc.b -5,208
 		.dc.b 249,189
 		.dc.b -1,(x1501f-jmpbase)/256,(x1501f-jmpbase)&255
 		.dc.b -4
 x58f62_372:
+x59e3d_373:
 x14ffb:
 		.dc.b -1,(x15046-jmpbase)/256,(x15046-jmpbase)&255
 		.dc.b 32
 		.dc.b -4
 x58f67_372:
+x59e42_373:
 x15000:
 		.dc.b -1,(x144dd-jmpbase)/256,(x144dd-jmpbase)&255
 		.dc.b 32
 		.dc.b -4
 x58f6c_372:
+x59e47_373:
 x15005:
 		.dc.b -2,(f154aa-jmpbase)/256,(f154aa-jmpbase)&255
 		.dc.b 35
@@ -12232,6 +12994,7 @@ x15005:
 		.dc.b 32
 		.dc.b -4
 x58f77_372:
+x59e52_373:
 x15010:
 		.dc.b -1,(x14b91-jmpbase)/256,(x14b91-jmpbase)&255
 		.dc.b 32
@@ -12409,10 +13172,20 @@ x1506f:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 		.dc.b -1,(x14c92-jmpbase)/256,(x14c92-jmpbase)&255
 		.dc.b -3
+	.IF GBE>=373
+		.dc.b 181
+	.ELSE
+		.dc.b 169
+	.ENDC
+		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
+		.dc.b -1,(x14c92-jmpbase)/256,(x14c92-jmpbase)&255
+		.dc.b -3
+	.IF GBE>=373
 		.dc.b 169
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 		.dc.b -1,(x14c92-jmpbase)/256,(x14c92-jmpbase)&255
 		.dc.b -3
+	.ENDC
 		.dc.b 178
 		.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 		.dc.b 33
@@ -14317,7 +15090,11 @@ x1607a_3:
 		bra.s      x1607a_2
 x1607a_4:
 		lea.l      4300(a6),a0
+	.IF GBE>=373
+		lea.l      cmd_table,a1
+	.ELSE
 		lea.l      cmd_table(pc),a1
+	.ENDIF
 		moveq.l    #0,d0
 x1607a_5:
 		move.b     (a1),d0
