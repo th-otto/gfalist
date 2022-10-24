@@ -141,7 +141,7 @@ static void dump_table(FILE *fp, int offset, int end, int diffbase)
 			c = c * 256 + c2;
 			c = (short)c;
 			dst = jmpbase + c;
-			fprintf(out, "\t.dc.b -2,(f%d-jmpbase)/256,(f%d-jmpbase)&255\n", funcused[dst], funcused[dst]);
+			fprintf(out, "\t.dc.b -2,((f%d-jmpbase)>>8)&255,(f%d-jmpbase)&255\n", funcused[dst], funcused[dst]);
 			offset += 3;
 			break;
 		case 255:
@@ -150,7 +150,7 @@ static void dump_table(FILE *fp, int offset, int end, int diffbase)
 			c = c * 256 + c2;
 			c = (short)c;
 			dst = jmpbase + c;
-			fprintf(out, "\t.dc.b -1,(y%s-jmpbase)/256,(y%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
+			fprintf(out, "\t.dc.b -1,((y%s-jmpbase)>>8)&255,(y%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
 			offset += 3;
 			break;
 		case 240:
@@ -281,7 +281,7 @@ int main(void)
 		c2 = getc(fp);
 		c = c * 256 + c2;
 		c /= 2;
-		fprintf(out, "\t\t.dc.b ((%d*2)/256),((%d*2)&255)", c, c);
+		fprintf(out, "\t\t.dc.b ((%d*2)>>8)&255,((%d*2)&255)", c, c);
 
 		c = getc(fp);
 		c2 = getc(fp);
@@ -297,7 +297,7 @@ int main(void)
 			l->next = used[dst];
 			used[dst] = l;
 		}
-		fprintf(out, ",(y%s-jmpbase)/256,(y%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
+		fprintf(out, ",((y%s-jmpbase)>>8)&255,(y%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
 
 		offset += len + 6;
 	}
@@ -349,7 +349,7 @@ int main(void)
 			used[dst]->name = strdup(name);
 			used[dst]->next = NULL;
 		}
-		fprintf(out, "\t\t.dc.b (y%s-jmpbase)/256,(y%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
+		fprintf(out, "\t\t.dc.b ((y%s-jmpbase)>>8)&255,(y%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
 	}
 	fprintf(out, "\n");
 
