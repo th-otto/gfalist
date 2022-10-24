@@ -551,12 +551,12 @@ const char *const gfalct[] = {
 	/* 541 */ "SET.MENU ",
 	/* 542 */ "WAITVBL",
 	/* 543 */ "COLDBOOT",
-	/* 544 */ "BMIRROR ",
-	/* 545 */ "MEMMIRROR& ",
-	/* 546 */ "MEMMIRROR% ",
-	/* 547 */ "MEMMIRROR3 ",
-	/* 548 */ "MEMEXG& ",
-	/* 549 */ "MEMEXG% ",
+	/* 544 */ "BMIRROR ", /* was: BFOBSPEC( in 3.71 */
+	/* 545 */ "MEMMIRROR& ", /* was: BITBLK( in 3.71 */
+	/* 546 */ "MEMMIRROR% ", /* was: TEDINFO( in 3.71 */
+	/* 547 */ "MEMMIRROR3 ", /* was: ICONBLK( in 3.71 */
+	/* 548 */ "MEMEXG& ", /* was: CICONBLK( in 3.71 */
+	/* 549 */ "MEMEXG% ", /* was: USERBLK( in 3.71 */
 	/* 550 */ "_0=",
 	/* 551 */ "_1=",
 	/* 552 */ "_2=",
@@ -567,6 +567,10 @@ const char *const gfalct[] = {
 	/* 557 */ "_7=",
 	/* 558 */ "_8=",
 	/* 559 */ "_9=",
+	
+	/*
+	 * below are new in 3.72
+	 */
 	/* 560 */ "OB_SELECTED(",
 	/* 561 */ "OB_CROSSED(",
 	/* 562 */ "OB_CHECKED(",
@@ -1690,12 +1694,12 @@ const char *const gfasft_210[256] = {
 	/*  203 */ "SETCOOKIE(",
 	/*  204 */ "DELCOOKIE(",
 	/*  205 */ "FORM.KEYBD(",
-	/*  206 */ "V_CTAB_VDI2IDX(",
-	/*  207 */ "V_CTAB_IDX2VALUE(",
-	/*  208 */ "VQ_DFLT_CTAB(",
-	/*  209 */ "V_COLOR2NEAREST(",
-	/*  210 */ "V_VALUE2COLOR(",
-	/*  211 */ "V_COLOR2VALUE(",
+	/*  206 */ "V_CTAB_VDI2IDX(", /* was: BFOBSPEC( in 3.71 */
+	/*  207 */ "V_CTAB_IDX2VALUE(", /* was: BITBLK( in 3.71 */
+	/*  208 */ "VQ_DFLT_CTAB(", /* was: TEDINFO( in 3.71 */
+	/*  209 */ "V_COLOR2NEAREST(", /* was: ICONBLK( in 3.71 */
+	/*  210 */ "V_VALUE2COLOR(", /* was: CICONBLK( in 3.71 */
+	/*  211 */ "V_COLOR2VALUE(", /* was: USERBLK( in 3.71 */
 	/*  212 */ "NEAREST_RGB(",
 	/*  213 */ "GRAYSCALE(",
 	/*  214 */ "DATE(",

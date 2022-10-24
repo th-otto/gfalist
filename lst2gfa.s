@@ -1,4 +1,3 @@
-/* 51366 */
 FOR_LIB = 0
 GBE = 373
 GBE_OLDCOMPAT = 0
@@ -3650,6 +3649,7 @@ x11ae8:
 x11af6: .dc.l 0
 
 /* gfa: 0002111e */
+/* 371: 527fe */
 /* 372: 5292c */
 /* 373: 52ebe */
 cmd_table: /* 11afa */
@@ -3783,12 +3783,22 @@ cmd_b_table: /* 11bc6 */
 		.ascii "BLOAD"
 		.dc.b ((405*2)/256),((405*2)&255),(yBLOAD_args-jmpbase)/256,(yBLOAD_args-jmpbase)&255
 	.IFNE GBE
+	.IF GBE==371
+		.dc.b 6
+		.ascii "BITBLK("
+		.dc.b ((545*2)/256),((545*2)&255),(yBITBLK_args-jmpbase)/256,(yBITBLK_args-jmpbase)&255
+		.dc.b 8
+		.ascii "BFOBSPEC("
+		.dc.b ((544*2)/256),((544*2)&255),(yBFOBSPEC_args-jmpbase)/256,(yBFOBSPEC_args-jmpbase)&255
+	.ENDC
+	.IF GBE>=372
 		.dc.b 3
 		.ascii "BEXG"
 		.dc.b ((638*2)/256),((638*2)&255),(yBEXG_args-jmpbase)/256,(yBEXG_args-jmpbase)&255
 		.dc.b 6
 		.ascii "BMIRROR"
 		.dc.b ((544*2)/256),((544*2)&255),(yBMIRROR_args-jmpbase)/256,(yBMIRROR_args-jmpbase)&255
+	.ENDC
 		.dc.b 4
 		.ascii "BZERO"
 		.dc.b ((462*2)/256),((462*2)&255),(yBZERO_args-jmpbase)/256,(yBZERO_args-jmpbase)&255
@@ -3813,6 +3823,7 @@ cmd_b_table: /* 11bc6 */
 		.ascii "BREPLACE"
 		.dc.b ((535*2)/256),((535*2)&255),(yBREPLACE_args-jmpbase)/256,(yBREPLACE_args-jmpbase)&255
 		.dc.b 9
+	.IF GBE>=372
 		.ascii "BF_OBSPEC("
 		.dc.b ((582*2)/256),((582*2)&255),(yBF_OBSPEC_args-jmpbase)/256,(yBF_OBSPEC_args-jmpbase)&255
 		.dc.b 12
@@ -3854,6 +3865,7 @@ cmd_b_table: /* 11bc6 */
 		.dc.b 8
 		.ascii "BI_COLOR("
 		.dc.b ((595*2)/256),((595*2)&255),(yBI_COLOR_args-jmpbase)/256,(yBI_COLOR_args-jmpbase)&255
+	.ENDC
 	.IF GBE>=373
 		.dc.b 2
 		.ascii "BAR"
@@ -3921,9 +3933,16 @@ cmd_contrl:
 		.ascii "CURVE"
 		.dc.b ((422*2)/256),((422*2)&255),(yCURVE_args-jmpbase)/256,(yCURVE_args-jmpbase)&255
 	.IFNE GBE
+	.IF GBE==371
+		.dc.b 8
+		.ascii "CICONBLK("
+		.dc.b ((548*2)/256),((548*2)&255),(yCICONBLK_args-jmpbase)/256,(yCICONBLK_args-jmpbase)&255
+	.ENDC
+	.IF GBE>=372
 		.dc.b 2
 		.ascii "C2P"
 		.dc.b ((507*2)/256),((507*2)&255),(yC2P_args-jmpbase)/256,(yC2P_args-jmpbase)&255
+	.ENDC
 	.IF GBE>=373
 		.dc.b 6
 		.ascii "CRASTER"
@@ -3935,6 +3954,7 @@ cmd_contrl:
 		.dc.b 7
 		.ascii "COLDBOOT"
 		.dc.b ((543*2)/256),((543*2)&255),(yCOLDBOOT_args-jmpbase)/256,(yCOLDBOOT_args-jmpbase)&255
+	.IF GBE>=372
 		.dc.b 11
 		.ascii "CI_MAINLIST("
 		.dc.b ((631*2)/256),((631*2)&255),(yCI_MAINLIST_args-jmpbase)/256,(yCI_MAINLIST_args-jmpbase)&255
@@ -3956,6 +3976,7 @@ cmd_contrl:
 		.dc.b 11
 		.ascii "CI_NEXT_RES("
 		.dc.b ((637*2)/256),((637*2)&255),(yCI_NEXT_RES_args-jmpbase)/256,(yCI_NEXT_RES_args-jmpbase)&255
+	.ENDC
 	.ENDC
 cmd_d_table: /* 11cc7 */
 		.dc.b 3
@@ -4237,6 +4258,12 @@ cmd_i_table: /* 11fcd */
 		.ascii "IKBD"
 		.dc.b ((668*2)/256),((668*2)&255),(yIKBD_args-jmpbase)/256,(yIKBD_args-jmpbase)&255
 	.ENDC
+	.IF GBE==371
+		.dc.b 7
+		.ascii "ICONBLK("
+		.dc.b ((547*2)/256),((547*2)&255),(yICONBLK_args-jmpbase)/256,(yICONBLK_args-jmpbase)&255
+	.ENDC
+	.IF GBE==371
 		.dc.b 8
 		.ascii "IB_PMASK("
 		.dc.b ((614*2)/256),((614*2)&255),(yIB_PMASK_args-jmpbase)/256,(yIB_PMASK_args-jmpbase)&255
@@ -4288,6 +4315,7 @@ cmd_i_table: /* 11fcd */
 		.dc.b 9
 		.ascii "IB_LETTER("
 		.dc.b ((630*2)/256),((630*2)&255),(yIB_LETTER_args-jmpbase)/256,(yIB_LETTER_args-jmpbase)&255
+	.ENDC
 	.ENDC
 cmd_j_table: /* 12032 */
 	.IFNE GBE
@@ -4397,12 +4425,14 @@ cmd_m_table: /* 120f4 */
 		.ascii "MW_OUT"
 		.dc.b ((452*2)/256),((452*2)&255),(yMW_OUT_args-jmpbase)/256,(yMW_OUT_args-jmpbase)&255
 	.IFNE GBE
+	.IF GBE>=372
 		.dc.b 6
 		.ascii "MEMEXG&"
 		.dc.b ((548*2)/256),((548*2)&255),(yMEMEXG_args-jmpbase)/256,(yMEMEXG_args-jmpbase)&255
 		.dc.b 6
 		.ascii "MEMEXG%"
 		.dc.b ((549*2)/256),((549*2)&255),(yMEMEXG_args-jmpbase)/256,(yMEMEXG_args-jmpbase)&255
+	.ENDC
 		.dc.b 7
 		.ascii "MEMBSET|"
 		.dc.b ((525*2)/256),((525*2)&255),(yMEMBSET_args-jmpbase)/256,(yMEMBSET_args-jmpbase)&255
@@ -4463,6 +4493,7 @@ cmd_m_table: /* 120f4 */
 		.dc.b 10
 		.ascii "MEMREPLACE%"
 		.dc.b ((540*2)/256),((540*2)&255),(yMEMREPLACE_args-jmpbase)/256,(yMEMREPLACE_args-jmpbase)&255
+	.IF GBE>=372
 		.dc.b 9
 		.ascii "MEMMIRROR&"
 		.dc.b ((545*2)/256),((545*2)&255),(yMEMMIRROR_args-jmpbase)/256,(yMEMMIRROR_args-jmpbase)&255
@@ -4472,6 +4503,7 @@ cmd_m_table: /* 120f4 */
 		.dc.b 9
 		.ascii "MEMMIRROR3"
 		.dc.b ((547*2)/256),((547*2)&255),(yMEMMIRROR3_args-jmpbase)/256,(yMEMMIRROR3_args-jmpbase)&255
+	.ENDC
 	.IF GBE>=373
 		.dc.b 5
 		.ascii "MDPOKE"
@@ -4562,6 +4594,7 @@ cmd_o_table: /* 12165 */
 		.dc.b 8
 		.ascii "OB_TEXT$("
 		.dc.b ((511*2)/256),((511*2)&255),(yOB_TEXTs_args-jmpbase)/256,(yOB_TEXTs_args-jmpbase)&255
+	.IF GBE>=372
 		.dc.b 11
 		.ascii "OB_SELECTED("
 		.dc.b ((560*2)/256),((560*2)&255),(yOB_SELECTED_args-jmpbase)/256,(yOB_SELECTED_args-jmpbase)&255
@@ -4622,6 +4655,7 @@ cmd_o_table: /* 12165 */
 		.dc.b 10
 		.ascii "OB_FL3DBAK("
 		.dc.b ((581*2)/256),((581*2)&255),(yOB_FL3DBAK_args-jmpbase)/256,(yOB_FL3DBAK_args-jmpbase)&255
+	.ENDC
 	.ENDC
 cmd_p_table: /* 1222d */
 		.dc.b 4
@@ -4922,6 +4956,7 @@ cmd_s_table: /* 123c3 */
 		.dc.b 7
 		.ascii "SET.MENU"
 		.dc.b ((541*2)/256),((541*2)&255),(ySET_MENU_args-jmpbase)/256,(ySET_MENU_args-jmpbase)&255
+	.IF GBE>=372
 		.dc.b 8
 		.ascii "SET.SXYXY"
 		.dc.b ((517*2)/256),((517*2)&255),(ySET_SXYXY_args-jmpbase)/256,(ySET_SXYXY_args-jmpbase)&255
@@ -4934,18 +4969,23 @@ cmd_s_table: /* 123c3 */
 		.dc.b 8
 		.ascii "SET.DXYWH"
 		.dc.b ((509*2)/256),((509*2)&255),(ySET_DXYWH_args-jmpbase)/256,(ySET_DXYWH_args-jmpbase)&255
+	.ENDC
 		.dc.b 8
 		.ascii "SET.PXYWH"
 		.dc.b ((461*2)/256),((461*2)&255),(ySET_PXYWH_args-jmpbase)/256,(ySET_PXYWH_args-jmpbase)&255
+	.IF GBE>=372
 		.dc.b 8
 		.ascii "SET.RXYWH"
 		.dc.b ((519*2)/256),((519*2)&255),(ySET_RXYWH_args-jmpbase)/256,(ySET_RXYWH_args-jmpbase)&255
+	.ENDC
 		.dc.b 8
 		.ascii "SET.PXYXY"
 		.dc.b ((488*2)/256),((488*2)&255),(ySET_PXYXY_args-jmpbase)/256,(ySET_PXYXY_args-jmpbase)&255
+	.IF GBE>=372
 		.dc.b 11
 		.ascii "SET.GCBITMAP"
 		.dc.b ((521*2)/256),((521*2)&255),(ySET_GCBITMAP_args-jmpbase)/256,(ySET_GCBITMAP_args-jmpbase)&255
+	.ENDC
 		.dc.b 14
 		.ascii "SET.SOCKADDR_IN"
 		.dc.b ((495*2)/256),((495*2)&255),(ySET_SOCKADDR_IN_args-jmpbase)/256,(ySET_SOCKADDR_IN_args-jmpbase)&255
@@ -4976,6 +5016,11 @@ cmd_t_table: /* 124bd */
 		.ascii "TIME$="
 		.dc.b ((407*2)/256),((407*2)&255),(yCHDIR_args-jmpbase)/256,(yCHDIR_args-jmpbase)&255
 	.IFNE GBE
+	.IF GBE==371
+		.dc.b 7
+		.ascii "TEDINFO("
+		.dc.b ((546*2)/256),((546*2)&255),(yTEDINFO_args-jmpbase)/256,(yTEDINFO_args-jmpbase)&255
+	.ENDC
 		.dc.b 3
 		.ascii "TPUT"
 		.dc.b ((496*2)/256),((496*2)&255),(yTPUT_args-jmpbase)/256,(yTPUT_args-jmpbase)&255
@@ -4987,6 +5032,7 @@ cmd_t_table: /* 124bd */
 		.ascii "VBITBLT"
 		.dc.b ((490*2)/256),((490*2)&255),(yTBITBLT_args-jmpbase)/256,(yTBITBLT_args-jmpbase)&255
 	.ENDC
+	.IF GBE>=372
 		.dc.b 8
 		.ascii "TE_PTEXT("
 		.dc.b ((598*2)/256),((598*2)&255),(yTE_PTEXT_args-jmpbase)/256,(yTE_PTEXT_args-jmpbase)&255
@@ -5035,6 +5081,7 @@ cmd_t_table: /* 124bd */
 		.dc.b 14
 		.ascii "TE_INTERIORCOL("
 		.dc.b ((613*2)/256),((613*2)&255),(yTE_INTERIORCOL_args-jmpbase)/256,(yTE_INTERIORCOL_args-jmpbase)&255
+	.ENDC
 	.IF GBE>=373
 		.dc.b 5
 		.ascii "TMOUSE"
@@ -5046,12 +5093,19 @@ cmd_u_table: /* 12502 */
 		.ascii "UNTIL"
 		.dc.b ((3*2)/256),((3*2)&255),(yUNTIL_args-jmpbase)/256,(yUNTIL_args-jmpbase)&255
 	.IFNE GBE
+	.IF GBE==371
+		.dc.b 7
+		.ascii "USERBLK("
+		.dc.b ((549*2)/256),((549*2)&255),(yUSERBLK_args-jmpbase)/256,(yUSERBLK_args-jmpbase)&255
+	.ENDC
+	.IF GBE>=372
 		.dc.b 7
 		.ascii "UB_CODE("
 		.dc.b ((596*2)/256),((596*2)&255),(yUB_CODE_args-jmpbase)/256,(yUB_CODE_args-jmpbase)&255
 		.dc.b 7
 		.ascii "UB_PARM("
 		.dc.b ((597*2)/256),((597*2)&255),(yUB_PARM_args-jmpbase)/256,(yUB_PARM_args-jmpbase)&255
+	.ENDC
 	.IF GBE>=373
 		.dc.b 8
 		.ascii "USERDEF!("
@@ -5391,6 +5445,7 @@ cmd_other_table:
 		.dc.b ((448*2)/256),((448*2)&255),(yMAT_args-jmpbase)/256,(yMAT_args-jmpbase)&255
 		.dc.b -1
 /* gfa: 21edb */
+/* 371: 539fb */
 /* 372: 54030 */
 /* 373: 5478b */
 
@@ -5442,6 +5497,7 @@ func_misc_table:
 		.dc.b 1,']','=',0,TOK_RES_68
 		.dc.b 0,')',0,TOK_RPAREN2
 
+/* 371: 53ac2 */
 /* 372: 540f7 */
 /* 373: 54852 */
 func_table:
@@ -5526,6 +5582,10 @@ func_b_table: /* 12a82 */
 		.dc.b 4,'B','Y','T','E','{',TOK_SUBFUNC_208,116
 	.IFNE GBE
 		.dc.b 7,'B','M','P','S','I','Z','E','(',TOK_SUBFUNC_210,244
+	.IF GBE==371
+		.dc.b 8,'B','F','O','B','S','P','E','C','(',TOK_SUBFUNC_210,206
+		.dc.b 6,'B','I','T','B','L','K','(',TOK_SUBFUNC_210,207
+	.ENDC
 		.dc.b 5,'B','F','I','N','D','(',TOK_SUBFUNC_209,96
 		.dc.b 6,'B','F','I','N','D','&','(',TOK_SUBFUNC_210,174
 		.dc.b 6,'B','F','I','N','D','%','(',TOK_SUBFUNC_210,175
@@ -5550,6 +5610,7 @@ func_b_table: /* 12a82 */
 		.dc.b 9,'B','C','O','M','P','A','R','E','&','(',TOK_SUBFUNC_210,180
 		.dc.b 9,'B','C','O','M','P','A','R','E','%','(',TOK_SUBFUNC_210,181
 		.dc.b 9,'B','F','_','O','B','S','P','E','C','(',TOK_SUBFUNC_211,110
+	.IF GBE>=372
 		.dc.b 12,'B','F','_','C','H','A','R','A','C','T','E','R','(',TOK_SUBFUNC_211,111
 		.dc.b 12,'B','F','_','F','R','A','M','E','S','I','Z','E','(',TOK_SUBFUNC_211,112
 		.dc.b 11,'B','F','_','F','R','A','M','E','C','O','L','(',TOK_SUBFUNC_211,113
@@ -5563,6 +5624,7 @@ func_b_table: /* 12a82 */
 		.dc.b 4,'B','I','_','X','(',TOK_SUBFUNC_211,121
 		.dc.b 4,'B','I','_','Y','(',TOK_SUBFUNC_211,122
 		.dc.b 8,'B','I','_','C','O','L','O','R','(',TOK_SUBFUNC_211,123
+	.ENDC
 	.ENDC
 func_c_table: /* 12afd */
 		.dc.b 3,'C','O','S','(',0,TOK_COS
@@ -5616,6 +5678,9 @@ func_c_table: /* 12afd */
 		.dc.b 6,'C','_','V','D','I','(','#',TOK_SUBFUNC_210,25
 		.dc.b 8,'C','_','X','B','I','O','S','(','#',TOK_SUBFUNC_210,26
 		.dc.b 6,'C','A','L','L','O','C','(',TOK_SUBFUNC_210,31
+	.IF GBE==371
+		.dc.b 8,'C','I','C','O','N','B','L','K','(',TOK_SUBFUNC_210,210
+	.ENDC
 		.dc.b 6,'C','R','Y','P','T','$','(',0,TOK_CRYPT
 		.dc.b 6,'C','U','R','D','I','R','$',0,TOK_CURDIR
 		.dc.b 7,'C','M','D','L','I','N','E','$',0,TOK_CMDLINE
@@ -5633,6 +5698,7 @@ func_c_table: /* 12afd */
 		.dc.b 12,'C','T','6','0','_','V','M','A','L','L','O','C','(',TOK_SUBFUNC_209,82
 		.dc.b 8,'C','O','M','P','I','L','E','D','?',TOK_SUBFUNC_210,225
 		.dc.b 6,'C','P','U','0','2','0','?',TOK_SUBFUNC_210,252
+	.IF GBE>=372
 		.dc.b 11,'C','I','_','M','A','I','N','L','I','S','T','(',TOK_SUBFUNC_211,159
 		.dc.b 13,'C','I','_','N','U','M','_','P','L','A','N','E','S','(',TOK_SUBFUNC_211,160
 		.dc.b 11,'C','I','_','C','O','L','_','D','A','T','A','(',TOK_SUBFUNC_211,161
@@ -5640,6 +5706,7 @@ func_c_table: /* 12afd */
 		.dc.b 11,'C','I','_','S','E','L','_','D','A','T','A','(',TOK_SUBFUNC_211,163
 		.dc.b 11,'C','I','_','S','E','L','_','M','A','S','K','(',TOK_SUBFUNC_211,164
 		.dc.b 11,'C','I','_','N','E','X','T','_','R','E','S','(',TOK_SUBFUNC_211,165
+	.ENDC
 	.ENDC
 func_d_table: /* 12bc4 */
 		.dc.b 2,'D','I','V',0,TOK_DIV
@@ -5694,6 +5761,7 @@ func_d_table: /* 12bc4 */
 		.dc.b 8,'D','R','E','A','D','D','I','R','(',TOK_SUBFUNC_210,169
 		.dc.b 9,'D','X','R','E','A','D','D','I','R','(',TOK_SUBFUNC_210,170
 		.dc.b 6,'D','M','A','S','N','D','?',TOK_SUBFUNC_210,253
+	.IF GBE>=372
 		.dc.b 11,'D','S','P','_','D','O','B','L','O','C','K','(',TOK_SUBFUNC_211,12
 		.dc.b 16,'D','S','P','_','B','L','K','H','A','N','D','S','H','A','K','E','(',TOK_SUBFUNC_211,13
 		.dc.b 15,'D','S','P','_','B','L','K','U','N','P','A','C','K','E','D','(',TOK_SUBFUNC_211,14
@@ -5726,6 +5794,7 @@ func_d_table: /* 12bc4 */
 		.dc.b 10,'D','S','P','_','H','S','T','A','T','(',')',TOK_SUBFUNC_211,41
 		.dc.b 14,'D','S','P','_','S','E','T','V','E','C','T','O','R','S','(',TOK_SUBFUNC_211,42
 		.dc.b 14,'D','S','P','_','M','U','L','T','B','L','O','C','K','S','(',TOK_SUBFUNC_211,43
+	.ENDC
 	.ENDC
 func_e_table: /* 12c33 */
 		.dc.b 4,'E','O','F','(','#',TOK_SUBFUNC_208,78
@@ -5875,7 +5944,9 @@ func_f_table: /* 12d0e */
 		.dc.b 11,'F','O','N','T','_','S','E','L','E','C','T','(',TOK_SUBFUNC_210,90
 		.dc.b 9,'F','R','E','E','F','I','L','E','(',')',TOK_SUBFUNC_210,5
 		.dc.b 9,'F','M','I','D','I','P','I','P','E','(',TOK_SUBFUNC_210,137
+	.IF GBE>=372
 		.dc.b 9,'F','R','E','A','D','L','I','N','K','(',TOK_SUBFUNC_211,183
+	.ENDC
 		.dc.b 3,'F','P','U','?',TOK_SUBFUNC_210,251
 	.ENDC
 func_g_table: /* 12e0d */
@@ -5945,7 +6016,9 @@ func_i_table: /* 12f5e */
 		.dc.b 6,'I','N','P','U','T','$','(',0,TOK_INPUT1
 	.IFNE GBE
 		.dc.b 8,'I','N','P','U','T','B','O','X','(',TOK_SUBFUNC_210,22
+	.IFNE GBE>=372
 		.dc.b 10,'I','N','P','U','T','R','A','D','I','O','(',TOK_SUBFUNC_211,184
+	.ENDC
 	.ENDC
 		.dc.b 4,'I','N','P','(','#',TOK_SUBFUNC_208,77
 		.dc.b 3,'I','N','P','(',TOK_SUBFUNC_208,74
@@ -5967,7 +6040,12 @@ func_i_table: /* 12f5e */
 		.dc.b 6,'I','N','P','M','I','D','$',0,TOK_INPMID
 	.IFNE GBE
 		.dc.b 10,'I','N','D','E','X','C','O','U','N','T','(',TOK_SUBFUNC_210,30
+	.IF GBE==371
+		.dc.b 7,'I','C','O','N','B','L','K','(',TOK_SUBFUNC_210,209
+	.ENDC
+	.IF GBE>=372
 		.dc.b 8,'I','N','I','T','M','O','U','S','(',TOK_SUBFUNC_211,182
+	.ENDC
 		.dc.b 5,'I','O','R','E','C','(',TOK_SUBFUNC_209,209
 		.dc.b 6,'I','K','B','D','W','S','(',TOK_SUBFUNC_209,210
 		.dc.b 7,'I','S','A','S','C','I','I','(',TOK_SUBFUNC_209,98
@@ -5975,6 +6053,7 @@ func_i_table: /* 12f5e */
 		.dc.b 7,'I','S','C','N','T','R','L','(',TOK_SUBFUNC_210,154
 		.dc.b 7,'I','S','P','R','I','N','T','(',TOK_SUBFUNC_210,155
 		.dc.b 7,'I','S','S','P','A','C','E','(',TOK_SUBFUNC_210,156
+	.IF GBE>=372
 		.dc.b 8,'I','B','_','P','M','A','S','K','(',TOK_SUBFUNC_211,142
 		.dc.b 8,'I','B','_','P','D','A','T','A','(',TOK_SUBFUNC_211,143
 		.dc.b 8,'I','B','_','P','T','E','X','T','(',TOK_SUBFUNC_211,144
@@ -5993,12 +6072,14 @@ func_i_table: /* 12f5e */
 		.dc.b 9,'I','B','_','B','C','O','L','O','R','(',TOK_SUBFUNC_211,157
 		.dc.b 9,'I','B','_','L','E','T','T','E','R','(',TOK_SUBFUNC_211,158
 	.ENDC
+	.ENDC
 func_j_table: /* 13048 */
 	.IFNE GBE
 		.dc.b 4,'J','O','I','N','(',TOK_SUBFUNC_210,178
 		.dc.b 6,'J','O','Y','P','A','D','(',TOK_SUBFUNC_209,93
 		.dc.b 7,'J','D','I','S','I','N','T','(',TOK_SUBFUNC_209,224
 		.dc.b 8,'J','E','N','A','B','I','N','T','(',TOK_SUBFUNC_209,225
+	.IF GBE>=372
 		.dc.b 11,'J','P','E','G','D','_','I','N','I','T','(',')',TOK_SUBFUNC_211,5
 		.dc.b 16,'J','P','E','G','D','_','O','P','E','N','D','R','I','V','E','R','(',TOK_SUBFUNC_211,6
 		.dc.b 17,'J','P','E','G','D','_','C','L','O','S','E','D','R','I','V','E','R','(',TOK_SUBFUNC_211,7
@@ -6006,6 +6087,7 @@ func_j_table: /* 13048 */
 		.dc.b 18,'J','P','E','G','D','_','G','E','T','I','M','A','G','E','I','N','F','O','(',TOK_SUBFUNC_211,9
 		.dc.b 18,'J','P','E','G','D','_','G','E','T','I','M','A','G','E','S','I','Z','E','(',TOK_SUBFUNC_211,10
 		.dc.b 17,'J','P','E','G','D','_','D','E','C','O','D','E','I','M','A','G','E','(',TOK_SUBFUNC_211,11
+	.ENDC
 	.ENDC
 func_k_table: /* 13048 */
 	.IFNE GBE
@@ -6172,6 +6254,7 @@ func_o_table: /* 1322b */
 		.dc.b 8,'O','B','_','R','A','D','I','O','(',TOK_SUBFUNC_210,33
 		.dc.b 8,'O','B','_','T','E','X','T','$','(',0,TOK_OB_TEXT
 		.dc.b 7,'O','N','G','I','B','I','T','(',TOK_SUBFUNC_209,220
+	.IF GBE>=372
 		.dc.b 11,'O','B','_','S','E','L','E','C','T','E','D','(',TOK_SUBFUNC_211,88
 		.dc.b 10,'O','B','_','C','R','O','S','S','E','D','(',TOK_SUBFUNC_211,89
 		.dc.b 10,'O','B','_','C','H','E','C','K','E','D','(',TOK_SUBFUNC_211,90
@@ -6192,6 +6275,7 @@ func_o_table: /* 1322b */
 		.dc.b 10,'O','B','_','F','L','3','D','A','C','T','(',TOK_SUBFUNC_211,106
 		.dc.b 10,'O','B','_','S','U','B','M','E','N','U','(',TOK_SUBFUNC_211,107
 		.dc.b 10,'O','B','_','F','L','3','D','B','A','K','(',TOK_SUBFUNC_211,109
+	.ENDC
 	.IF GBE>=373
 		.dc.b 7,'O','B','_','X','Y','W','H','(',TOK_SUBFUNC_211,195
 	.ENDC
@@ -6375,7 +6459,9 @@ func_s_table: /* 134f3 */
 		.dc.b 7,'S','T','R','U','C','T','$','(',0,181
 		.dc.b 5,'S','U','P','E','R','?',TOK_SUBFUNC_211,188
 	.ENDC
+	.IF GBE>=372
 		.dc.b 11,'S','U','P','E','R','S','C','A','L','A','R','(',TOK_SUBFUNC_211,86
+	.ENDC
 		.dc.b 6,'S','E','C','O','N','D','(',TOK_SUBFUNC_210,220
 		.dc.b 6,'S','E','T','S','T','R','(',TOK_SUBFUNC_210,21
 		.dc.b 5,'S','B','Y','T','E','(',TOK_SUBFUNC_210,28
@@ -6465,11 +6551,15 @@ func_t_table: /* 1365c */
 		.dc.b 6,'T','A','L','A','R','M','(',TOK_SUBFUNC_211,226
 		.dc.b 7,'T','M','A','L','A','R','M','(',TOK_SUBFUNC_211,227
 	.ENDC
+	.IF GBE==371
+		.dc.b 7,'T','E','D','I','N','F','O','(',TOK_SUBFUNC_210,208
+	.ENDC
 		.dc.b 9,'T','G','E','T','D','A','T','E','(',')',TOK_SUBFUNC_209,19
 		.dc.b 9,'T','G','E','T','T','I','M','E','(',')',TOK_SUBFUNC_209,20
 		.dc.b 8,'T','S','E','T','D','A','T','E','(',TOK_SUBFUNC_209,105
 		.dc.b 8,'T','S','E','T','T','I','M','E','(',TOK_SUBFUNC_209,106
 		.dc.b 8,'T','I','C','K','C','A','L','(',')',TOK_SUBFUNC_209,156
+	.IF GBE>=372
 		.dc.b 8,'T','E','_','P','T','E','X','T','(',TOK_SUBFUNC_211,126
 		.dc.b 9,'T','E','_','P','T','M','P','L','T','(',TOK_SUBFUNC_211,127
 		.dc.b 9,'T','E','_','P','V','A','L','I','D','(',TOK_SUBFUNC_211,128
@@ -6486,6 +6576,7 @@ func_t_table: /* 1365c */
 		.dc.b 11,'T','E','_','T','E','X','T','M','O','D','E','(',TOK_SUBFUNC_211,139
 		.dc.b 14,'T','E','_','F','I','L','L','P','A','T','T','E','R','N','(',TOK_SUBFUNC_211,140
 		.dc.b 14,'T','E','_','I','N','T','E','R','I','O','R','C','O','L','(',TOK_SUBFUNC_211,141
+	.ENDC
 	.ENDC
 func_u_table: /* 136ce */
 		.dc.b 6,'U','P','P','E','R','$','(',0,TOK_UPPER
@@ -6504,8 +6595,10 @@ func_u_table: /* 136ce */
 		.dc.b 6,'U','C','A','S','E','$','(',0,TOK_RCASE
 		.dc.b 10,'U','N','L','O','C','K','S','N','D','(',')',TOK_SUBFUNC_209,28
 		.dc.b 6,'U','N','P','A','C','K','(',TOK_SUBFUNC_209,94
+	.IF GBE>=372
 		.dc.b 7,'U','B','_','C','O','D','E','(',TOK_SUBFUNC_211,124
 		.dc.b 7,'U','B','_','P','A','R','M','(',TOK_SUBFUNC_211,125
+	.ENDC
 	.ENDC
 func_v_table: /* 136e4 */
 		.dc.b 3,'V','A','L','(',0,TOK_VAL
@@ -6548,7 +6641,9 @@ func_v_table: /* 136e4 */
 		.dc.b 9,'V','_','B','E','Z','_','O','N','(',')',TOK_SUBFUNC_211,191
 		.dc.b 10,'V','_','B','E','Z','_','O','F','F','(',')',TOK_SUBFUNC_211,192
 	.ENDC
+	.IF GBE>=372
 		.dc.b 11,'V','_','H','A','R','D','C','O','P','Y','(',')',TOK_SUBFUNC_211,54
+	.ENDC
 		.dc.b 9,'V','Q','_','V','G','D','O','S','(',')',TOK_SUBFUNC_209,14
 		.dc.b 7,'V','_','O','P','N','B','M','(',TOK_SUBFUNC_209,6
 		.dc.b 8,'V','Q','_','C','O','L','O','R','(',TOK_SUBFUNC_209,0
@@ -6624,6 +6719,7 @@ func_v_table: /* 136e4 */
 		.dc.b 10,'V','_','B','E','Z','_','F','I','L','L','(',TOK_SUBFUNC_209,198
 		.dc.b 8,'V','A','_','S','T','A','R','T','(',TOK_SUBFUNC_210,115
 		.dc.b 6,'V','S','Y','N','C','(',')',TOK_SUBFUNC_210,151
+	.IF GBE>=372
 		.dc.b 16,'V','R','_','T','R','A','N','S','F','E','R','_','B','I','T','S','(',TOK_SUBFUNC_211,44
 		.dc.b 13,'V','_','C','R','E','A','T','E','_','C','T','A','B','(',TOK_SUBFUNC_211,45
 		.dc.b 13,'V','_','D','E','L','E','T','E','_','C','T','A','B','(',TOK_SUBFUNC_211,46
@@ -6688,6 +6784,7 @@ func_v_table: /* 136e4 */
 		.dc.b 8,'V','E','X','_','B','U','T','V','(',TOK_SUBFUNC_211,179
 		.dc.b 8,'V','E','X','_','M','O','T','V','(',TOK_SUBFUNC_211,180
 		.dc.b 8,'V','E','X','_','C','U','R','V','(',TOK_SUBFUNC_211,181
+	.ENDC
 	.ENDC
 func_w_table: /* 137ce */
 		.dc.b 1,'W',':',0,TOK_WORDARG
@@ -7782,6 +7879,7 @@ f13de4_1:
 f13de4_2:
 		rts
 
+/* 371: 5667c */
 /* 372: 57794 */
 /* 373: 58584 */
 x13e02:
@@ -7897,6 +7995,7 @@ f13e8c_4:
  * 0xfe,-2: two bytes offset to function follow
  * 0xff,-1: two bytes offset to subtable follow
  */
+/* 371: 5674c */
 /* 372: 57864 */
 /* 373: 58654 */
 yMAT_args:
@@ -8253,6 +8352,7 @@ f140fa_1:
 		movem.l    a0-a2,4(a7)
 		rts
 
+/* 371: 56690 */
 /* 372: 57aa8 */
 /* 373: 58898 */
 yDELETE_args:
@@ -8302,6 +8402,12 @@ yOB_TEXTs_args:
 		.dc.b -5,57
 		.dc.b -1,(yCHDIR_args-jmpbase)/256,(yCHDIR_args-jmpbase)&255
 		.dc.b -4
+yUSERBLK_args:
+yTEDINFO_args:
+yICONBLK_args:
+yCICONBLK_args:
+yBFOBSPEC_args:
+yBITBLK_args:
 yOB_RADIO_args:
 yOB_dot_FLAGS_args:
 yOB_dot_STATE_args:
@@ -9268,6 +9374,7 @@ x14570:
 		.dc.b -4
 		.even
 
+/* 371: 56e06 */
 /* 372: 57f20 */
 /* 373: 58d10 */
 f14578:
@@ -9308,6 +9415,7 @@ f14578_6:
 		moveq.l    #-1,d7
 		rts
 
+/* 371: 56e56 */
 /* 372: 57f6e */
 /* 373: 58d5e */
 ySETTIME_args:
@@ -10477,6 +10585,7 @@ x14bd0:
 		.dc.b -4
 	.even
 
+/* 371: 574f4 */
 /* 372: 5862c */
 /* 373: 5944c */
 f14bde:
@@ -10547,6 +10656,7 @@ x14be6_1:
 		addq.l     #4,a7
 		bra        x1395a_1
 
+/* 371: 5758c */
 /* 372: 586c4 */
 /* 373: 594e4 */
 x14c16:
@@ -10672,6 +10782,7 @@ x14c16:
 	.ENDC
 		.dc.w 0
 
+/* 371: 5764e */
 /* 372: 58798 */
 /* 373: 595be */
 	.IFNE GBE
@@ -10774,19 +10885,14 @@ x14cee:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x14cf1:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
-x58829_372:
 x14cf4:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
-x5882c_372:
 x14cf7:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
-x5882f_372:
 x14cfa:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
-x58832:
 x14cfd:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
-x58835_372:
 x14d00:
 		.dc.b -1,(x14c92-jmpbase)/256,(x14c92-jmpbase)&255
 x14d03:
@@ -10800,7 +10906,6 @@ x14d09:
 		.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 		.dc.b 32
 		.dc.b -4
-x58843_372:
 x59669_373:
 x14d0e:
 		.dc.b -1,(x14b96-jmpbase)/256,(x14b96-jmpbase)&255
@@ -10810,23 +10915,21 @@ x14d0e:
 x58848_372:
 		.dc.b -1,(x14cf7-jmpbase)/256,(x14cf7-jmpbase)&255
 		.dc.b -3
-		.dc.b 208
-		.dc.b 239
+		.dc.b 208,239
 		.dc.b -5,240
 		.dc.b -1,(x14cf4-jmpbase)/256,(x14cf4-jmpbase)&255
 		.dc.b -4
 x58854_372:
 		.dc.b -1,(x14cfd-jmpbase)/256,(x14cfd-jmpbase)&255
 		.dc.b -3
-		.dc.b 210
-		.dc.b 91
+		.dc.b 210,91
 		.dc.b -5,92
 		.dc.b -1,(x14cf7-jmpbase)/256,(x14cf7-jmpbase)&255
 		.dc.b -4
 x58860_372:
-		.dc.b -1,(x58835_372-jmpbase)/256,(x58835_372-jmpbase)&255
+		.dc.b -1,(x14d00-jmpbase)/256,(x14d00-jmpbase)&255
 		.dc.b -3
-		.dc.b 210,254 /* XXX */
+		.dc.b 210,254
 		.dc.b -5,255
 		.dc.b -1,(x14cfa-jmpbase)/256,(x14cfa-jmpbase)&255
 		.dc.b -4
@@ -10861,6 +10964,7 @@ x14d2b:
 		.dc.b -3
 		.dc.b -4
 
+/* 371: 57751 */
 /* 372: 58899 */
 /* 373: 596bf */
 x14d34:
@@ -12202,10 +12306,18 @@ offset_table_sf212:
 
 	.ENDC
 
+	.IF GBE<372
+offset_table_sf209:
+offset_table_sf210:
+offset_table_sf211:
+offset_table_sf212:
+	.ENDC
+
 offset_table_sf213:
 offset_table_sf214:
 		.even
 
+/* 371: 57b1c */
 /* 372: 58d18 */
 /* 373: 59bca */
 x14ee8:
@@ -12376,7 +12488,7 @@ x14f41:
 		.dc.b -1,(x14fa6-jmpbase)/256,(x14fa6-jmpbase)&255
 		.dc.b 32
 		.dc.b -4
-	.IFNE GBE
+	.IF GBE>=372
 x58df3_372:
 		.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 		.dc.b 33
@@ -12598,14 +12710,12 @@ x14fae:
 		.dc.b -1,(x14fa6-jmpbase)/256,(x14fa6-jmpbase)&255
 		.dc.b 32
 		.dc.b -3
-		.dc.b 208
-		.dc.b 68
+		.dc.b 208,68
 		.dc.b -5,69
 		.dc.b -1,(x14fa3-jmpbase)/256,(x14fa3-jmpbase)&255
 		.dc.b 32
 		.dc.b -3
-		.dc.b 208
-		.dc.b 68
+		.dc.b 208,68
 		.dc.b -5,70
 		.dc.b -1,(x14f9b-jmpbase)/256,(x14f9b-jmpbase)&255
 		.dc.b 32
@@ -12615,14 +12725,12 @@ x14fc5:
 		.dc.b -1,(x14fa6-jmpbase)/256,(x14fa6-jmpbase)&255
 		.dc.b 32
 		.dc.b -3
-		.dc.b 208
-		.dc.b 209
+		.dc.b 208,209
 		.dc.b -5,210
 		.dc.b -1,(x14fa3-jmpbase)/256,(x14fa3-jmpbase)&255
 		.dc.b 32
 		.dc.b -3
-		.dc.b 208
-		.dc.b 209
+		.dc.b 208,209
 		.dc.b -5,211
 		.dc.b -1,(x14f9b-jmpbase)/256,(x14f9b-jmpbase)&255
 		.dc.b 32
@@ -12888,15 +12996,13 @@ x150de:
 		.dc.b -2,(f154da-jmpbase)/256,(f154da-jmpbase)&255
 		.dc.b -1,(x14962-jmpbase)/256,(x14962-jmpbase)&255
 		.dc.b -3
-		.dc.b 208
-		.dc.b 96
+		.dc.b 208,96
 		.dc.b -6
 		.dc.b -5,131
 		.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 		.dc.b 32
 		.dc.b -3
-		.dc.b 208
-		.dc.b 97
+		.dc.b 208,97
 		.dc.b -6
 		.dc.b -5,133
 		.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
@@ -13200,6 +13306,7 @@ x152dc:
 		.dc.b -4
 	.even
 
+/* 371: 5807e */
 /* 372: 592a8 */
 /* 373: 5a18e */
 f152e6:

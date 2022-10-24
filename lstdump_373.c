@@ -86,6 +86,12 @@ static void scan_table(FILE *fp, int offset, int end)
 			}
 			offset += 3;
 			break;
+		case 208:
+		case 209:
+		case 210:
+		case 212:
+		case 213:
+		case 214:
 		case 240:
 		case 241:
 		case 242:
@@ -145,7 +151,6 @@ static void dump_table(FILE *fp, int offset, int end)
 		case 254:
 			c = getc(fp);
 			c2 = getc(fp);
-			fprintf(out, " /* %d %d */\n", c, c2);
 			c = c * 256 + c2;
 			c = (short)c;
 			dst = jmpbase + c;
@@ -167,6 +172,12 @@ static void dump_table(FILE *fp, int offset, int end)
 				fprintf(out, "\t\t.dc.b -1,(x%05x-jmpbase)/256,(x%05x-jmpbase)&255\n", dst, dst);
 			offset += 3;
 			break;
+		case 208:
+		case 209:
+		case 210:
+		case 212:
+		case 213:
+		case 214:
 		case 240:
 		case 241:
 		case 242:
@@ -343,13 +354,13 @@ int main(void)
 	oldtable[130] = "x1517e";
 	oldtable[131] = "x15160";
 	oldtable[132] = "y132";
-	oldtable[133] = "x14d00";
+	oldtable[133] = "x14c9f";
 	oldtable[134] = "x14cfd";
 	oldtable[135] = "x14cf7";
 	oldtable[136] = "x14cf4";
 	oldtable[137] = "x14d00";
 	oldtable[138] = "x14cfa";
-	oldtable[139] = "x58890";
+	oldtable[139] = "x14d2b";
 	oldtable[140] = "x14ee8";
 	oldtable[141] = "x1502d";
 	oldtable[142] = "x14f19";
@@ -448,13 +459,12 @@ int main(void)
 	functable[45] = "f13c9a";
 	functable[46] = "f1369a";
 	functable[47] = "f14bde";
-	functable[48] = "f56c1e_373";
-	functable[49] = "f154aa";
-	functable[50] = "f13696";
-	functable[51] = "f1369e";
-	functable[52] = "f15306";
-	functable[53] = "f15310";
-	functable[54] = "f152e6";
+	functable[48] = "f154aa";
+	functable[49] = "f13696";
+	functable[50] = "f1369e";
+	functable[51] = "f15306";
+	functable[52] = "f15310";
+	functable[53] = "f152e6";
 	}
 
 	first_char = 0;
@@ -687,5 +697,6 @@ int main(void)
 	}
 
 	fprintf(stderr, "label: %d\n", label);
+	fprintf(stderr, "funcs: %d\n", funclabel);
 	return 0;
 }
