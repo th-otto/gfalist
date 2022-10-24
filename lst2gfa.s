@@ -10172,16 +10172,13 @@ x58488_372:
 		.dc.b 32
 		.dc.b -4
 x58497_372:
-x59287_373:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x584a3_372:
-x59293_373:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x584a6_372:
-x59296_373:
 		.dc.b -1,(x14342-jmpbase)/256,(x14342-jmpbase)&255
 		.dc.b 33
 		.dc.b -1,(x14342-jmpbase)/256,(x14342-jmpbase)&255
@@ -10553,7 +10550,6 @@ x14be6_1:
 /* 372: 586c4 */
 /* 373: 594e4 */
 x14c16:
-	.IF GBE==373
 		.dc.w 0
 		.dc.w x14d00-jmpbase
 		.dc.w x14cfd-jmpbase
@@ -10567,121 +10563,17 @@ x14c16:
 		.dc.w x14ee8-jmpbase
 		.dc.w x14f3c-jmpbase
 		.dc.w x14f41-jmpbase
+	.IF GBE>=372
 		.dc.w x58e08_372-jmpbase
-		.dc.w x14f55-jmpbase
-		.dc.w x58e0b_372-jmpbase
-		.dc.w x14f5d-jmpbase
-		.dc.w x14f52-jmpbase
-		.dc.w x14cee-jmpbase
-		.dc.w x14f6e-jmpbase
-		.dc.w x14f76-jmpbase
-		.dc.w x14ce8-jmpbase
-		.dc.w x14f8a-jmpbase
-		.dc.w x14f6a-jmpbase
-		.dc.w x14f7a-jmpbase
-		.dc.w x14f66-jmpbase
-		.dc.w x14cf1-jmpbase
-		.dc.w x14ceb-jmpbase
-		.dc.w x14f23-jmpbase
-		.dc.w x14f87-jmpbase
-		.dc.w x14f83-jmpbase
-		.dc.w x14f92-jmpbase
-		.dc.w x14fae-jmpbase
-		.dc.w x58888_372-jmpbase
-		.dc.w x14fdc-jmpbase
-		.dc.w x14fe1-jmpbase
-		.dc.w x14fe5-jmpbase
-		.dc.w x14ff3-jmpbase
-		.dc.w x14fee-jmpbase
-		.dc.w x14ffb-jmpbase
-		.dc.w x15000-jmpbase
-		.dc.w x15005-jmpbase
-		.dc.w x15010-jmpbase
-		.dc.w x14ca9-jmpbase
-		.dc.w x14cb2-jmpbase
-		.dc.w x14cbb-jmpbase
-		.dc.w x14cc4-jmpbase
-		.dc.w x14ccd-jmpbase
-		.dc.w x14cd6-jmpbase
-		.dc.w x14cdf-jmpbase
-		.dc.w x58878_372-jmpbase
-		.dc.w x14f05-jmpbase
-		.dc.w x14f0d-jmpbase
-		.dc.w x14fc5-jmpbase
-		.dc.w x14f34-jmpbase
-		.dc.w x14c97-jmpbase
-		.dc.w x14efd-jmpbase
-		.dc.w x14ef4-jmpbase
-		.dc.w x14c8e-jmpbase
-		.dc.w x58d52_372-jmpbase
-		.dc.w x58d64_372-jmpbase
-		.dc.w x58dd0_372-jmpbase
-		.dc.w x58d67_372-jmpbase
-		.dc.w x58edd_372-jmpbase
-		.dc.w x58478_372-jmpbase
-		.dc.w x58480_372-jmpbase
-		.dc.w x58e05_372-jmpbase
-		.dc.w x587a9_372-jmpbase
-		.dc.w x58ed8_372-jmpbase
-		.dc.w x58d6a_372-jmpbase
-		.dc.w x58483_372-jmpbase
-		.dc.w x58ea8_372-jmpbase
-		.dc.w x58e23_372-jmpbase
-		.dc.w x58488_372-jmpbase
-		.dc.w x58ea0_372-jmpbase
-		.dc.w x57fbe_372-jmpbase
-		.dc.w x57fc3_372-jmpbase
-		.dc.w x58848_372-jmpbase
-		.dc.w y132-jmpbase
-		.dc.w x58854_372-jmpbase
-		.dc.w x58f03_372-jmpbase
-		.dc.w x58efa_372-jmpbase
-		.dc.w x58f10_372-jmpbase
-		.dc.w x58df3_372-jmpbase
-		.dc.w x58d41_372-jmpbase
-		.dc.w x58d44_372-jmpbase
-		.dc.w x58524_372-jmpbase
-		.dc.w x58531_372-jmpbase
-		.dc.w x58541_372-jmpbase
-		.dc.w x587b6_372-jmpbase
-		.dc.w x5855f_372-jmpbase
-		.dc.w x58e37_372-jmpbase
-		.dc.w x58567_372-jmpbase
-		.dc.w x58e48_372-jmpbase
-		.dc.w x58550_372-jmpbase
-		.dc.w x58860_372-jmpbase
-		.dc.w x5886c_372-jmpbase
-		.dc.w x58efe_372-jmpbase
-		.dc.w x59d3d_373-jmpbase
-		.dc.w x59296_373-jmpbase
-		.dc.w x59293_373-jmpbase
-		.dc.w x59287_373-jmpbase
-		.dc.w x59c05_373-jmpbase
-		.dc.w x59bf0_373-jmpbase
-		.dc.w x59d2d_373-jmpbase
-		.dc.w x59d80_373-jmpbase
-		.dc.w x59be7_373-jmpbase
-		.dc.w x59c1f_373-jmpbase
-		.dc.w 0
+	.ELSE
+		.dc.w x14f4a-jmpbase
 	.ENDC
-	
-	.IF GBE==372
-		.dc.w 0
-		.dc.w x14d00-jmpbase
-		.dc.w x14cfd-jmpbase
-		.dc.w x14cfa-jmpbase
-		.dc.w x14cf7-jmpbase
-		.dc.w x14cf4-jmpbase
-		.dc.w x14d04-jmpbase
-		.dc.w x14d09-jmpbase
-		.dc.w x14d03-jmpbase
-		.dc.w x14d0e-jmpbase
-		.dc.w x14ee8-jmpbase
-		.dc.w x14f3c-jmpbase
-		.dc.w x14f41-jmpbase
-		.dc.w x58e08_372-jmpbase
 		.dc.w x14f55-jmpbase
+	.IF GBE>=372
 		.dc.w x58e0b_372-jmpbase
+	.ELSE
+		.dc.w x14f4d-jmpbase
+	.ENDC
 		.dc.w x14f5d-jmpbase
 		.dc.w x14f52-jmpbase
 		.dc.w x14cee-jmpbase
@@ -10699,7 +10591,7 @@ x14c16:
 		.dc.w x14f83-jmpbase
 		.dc.w x14f92-jmpbase
 		.dc.w x14fae-jmpbase
-		.dc.w x58888_372-jmpbase
+		.dc.w x14d23-jmpbase
 		.dc.w x14fdc-jmpbase
 		.dc.w x14fe1-jmpbase
 		.dc.w x14fe5-jmpbase
@@ -10716,7 +10608,7 @@ x14c16:
 		.dc.w x14ccd-jmpbase
 		.dc.w x14cd6-jmpbase
 		.dc.w x14cdf-jmpbase
-		.dc.w x58878_372-jmpbase
+		.dc.w x14d13-jmpbase
 		.dc.w x14f05-jmpbase
 		.dc.w x14f0d-jmpbase
 		.dc.w x14fc5-jmpbase
@@ -10725,6 +10617,7 @@ x14c16:
 		.dc.w x14efd-jmpbase
 		.dc.w x14ef4-jmpbase
 		.dc.w x14c8e-jmpbase
+	.IF GBE>=372
 		.dc.w x58d52_372-jmpbase
 		.dc.w x58d64_372-jmpbase
 		.dc.w x58dd0_372-jmpbase
@@ -10771,71 +10664,13 @@ x14c16:
 		.dc.w x58d4a_372-jmpbase
 		.dc.w x58d35_372-jmpbase
 		.dc.w x58e60_372-jmpbase
-		.dc.w 0
 	.ENDC
-	
-	.IF GBE==0
-		.dc.w 0
-		.dc.w x14d00-jmpbase
-		.dc.w x14cfd-jmpbase
-		.dc.w x14cfa-jmpbase
-		.dc.w x14cf7-jmpbase
-		.dc.w x14cf4-jmpbase
-		.dc.w x14d04-jmpbase
-		.dc.w x14d09-jmpbase
-		.dc.w x14d03-jmpbase
-		.dc.w x14d0e-jmpbase
-		.dc.w x14ee8-jmpbase
-		.dc.w x14f3c-jmpbase
-		.dc.w x14f41-jmpbase
-		.dc.w x14f4a-jmpbase
-		.dc.w x14f55-jmpbase
-		.dc.w x14f4d-jmpbase
-		.dc.w x14f5d-jmpbase
-		.dc.w x14f52-jmpbase
-		.dc.w x14cee-jmpbase
-		.dc.w x14f6e-jmpbase
-		.dc.w x14f76-jmpbase
-		.dc.w x14ce8-jmpbase
-		.dc.w x14f8a-jmpbase
-		.dc.w x14f6a-jmpbase
-		.dc.w x14f7a-jmpbase
-		.dc.w x14f66-jmpbase
-		.dc.w x14cf1-jmpbase
-		.dc.w x14ceb-jmpbase
-		.dc.w x14f23-jmpbase
-		.dc.w x14f87-jmpbase
-		.dc.w x14f83-jmpbase
-		.dc.w x14f92-jmpbase
-		.dc.w x14fae-jmpbase
-		.dc.w x14d23-jmpbase
-		.dc.w x14fdc-jmpbase
-		.dc.w x14fe1-jmpbase
-		.dc.w x14fe5-jmpbase
-		.dc.w x14ff3-jmpbase
-		.dc.w x14fee-jmpbase
-		.dc.w x14ffb-jmpbase
-		.dc.w x15000-jmpbase
-		.dc.w x15005-jmpbase
-		.dc.w x15010-jmpbase
-		.dc.w x14ca9-jmpbase
-		.dc.w x14cb2-jmpbase
-		.dc.w x14cbb-jmpbase
-		.dc.w x14cc4-jmpbase
-		.dc.w x14ccd-jmpbase
-		.dc.w x14cd6-jmpbase
-		.dc.w x14cdf-jmpbase
-		.dc.w x14d13-jmpbase
-		.dc.w x14f05-jmpbase
-		.dc.w x14f0d-jmpbase
-		.dc.w x14fc5-jmpbase
-		.dc.w x14f34-jmpbase
-		.dc.w x14c97-jmpbase
-		.dc.w x14efd-jmpbase
-		.dc.w x14ef4-jmpbase
-		.dc.w x14c8e-jmpbase
-		.dc.w 0
+	.IF GBE>=373
+		.dc.w x59d80_373-jmpbase
+		.dc.w x59be7_373-jmpbase
+		.dc.w x59c1f_373-jmpbase
 	.ENDC
+		.dc.w 0
 
 /* 372: 58798 */
 /* 373: 595be */
@@ -11003,28 +10838,7 @@ x5886c_372:
 		.dc.b -5,2
 		.dc.b -1,(x14cf7-jmpbase)/256,(x14cf7-jmpbase)&255
 		.dc.b -4
-x58878_372:
-		.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
-		.dc.b 32
-		.dc.b -3
-		.dc.b 112
-		.dc.b -5,113
-		.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
-		.dc.b 33
-		.dc.b -1,(x14c92-jmpbase)/256,(x14c92-jmpbase)&255
-		.dc.b -4
-x58888_372:
-		.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
-		.dc.b -1,(x58890-jmpbase)/256,(x58890-jmpbase)&255
-		.dc.b 32
-		.dc.b -4
-x58890:
-		.dc.b 33
-		.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
-		.dc.b -1,(x58890-jmpbase)/256,(x58890-jmpbase)&255
-		.dc.b -3
-		.dc.b -4
-	.ELSE
+	.ENDC
 x14d13:
 		.dc.b -1,(x14b9a-jmpbase)/256,(x14b9a-jmpbase)&255
 		.dc.b 32
@@ -11046,7 +10860,6 @@ x14d2b:
 		.dc.b -1,(x14d2b-jmpbase)/256,(x14d2b-jmpbase)&255
 		.dc.b -3
 		.dc.b -4
-	.ENDC
 
 /* 372: 58899 */
 /* 373: 596bf */
@@ -12424,7 +12237,6 @@ x59be7_373:
 		.dc.b -4
 	.ENDC
 x58d35_372:
-x59bf0_373:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 		.dc.b -1,(x14346-jmpbase)/256,(x14346-jmpbase)&255
 		.dc.b 33
@@ -12437,7 +12249,6 @@ x58d44_372:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 x58d4a_372:
-x59c05_373:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 		.dc.b -1,(x14346-jmpbase)/256,(x14346-jmpbase)&255
 		.dc.b 32
@@ -12640,7 +12451,6 @@ x58e48_372:
 		.dc.b 32
 		.dc.b -4
 x58e60_372:
-x59d2d_373:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 		.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 		.dc.b 33
@@ -12650,7 +12460,6 @@ x59d2d_373:
 		.dc.b 32
 		.dc.b -4
 x58e70_372:
-x59d3d_373:
 		.dc.b -1,(x14475-jmpbase)/256,(x14475-jmpbase)&255
 		.dc.b -1,(x15068-jmpbase)/256,(x15068-jmpbase)&255
 		.dc.b 33
