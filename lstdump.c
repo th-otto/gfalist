@@ -78,6 +78,13 @@ static void scan_table(FILE *fp, int offset, int end)
 			}
 			offset += 3;
 			break;
+		case 208:
+		case 209:
+		case 210:
+		case 211:
+		case 212:
+		case 213:
+		case 214:
 		case 240:
 		case 241:
 		case 242:
@@ -153,6 +160,13 @@ static void dump_table(FILE *fp, int offset, int end, int diffbase)
 			fprintf(out, "\t.dc.b -1,((y%s-jmpbase)>>8)&255,(y%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
 			offset += 3;
 			break;
+		case 208:
+		case 209:
+		case 210:
+		case 211:
+		case 212:
+		case 213:
+		case 214:
 		case 240:
 		case 241:
 		case 242:

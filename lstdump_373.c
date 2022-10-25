@@ -89,6 +89,7 @@ static void scan_table(FILE *fp, int offset, int end)
 		case 208:
 		case 209:
 		case 210:
+		case 211:
 		case 212:
 		case 213:
 		case 214:
@@ -173,11 +174,40 @@ static void dump_table(FILE *fp, int offset, int end)
 			offset += 3;
 			break;
 		case 208:
+			c2 = getc(fp);
+			fprintf(out, "\t\t.dc.b TOK_SUBFUNC_208,%d\n", c2);
+			offset += 2;
+			break;
 		case 209:
+			c2 = getc(fp);
+			fprintf(out, "\t\t.dc.b TOK_SUBFUNC_209,%d\n", c2);
+			offset += 2;
+			break;
 		case 210:
+			c2 = getc(fp);
+			fprintf(out, "\t\t.dc.b TOK_SUBFUNC_210,%d\n", c2);
+			offset += 2;
+			break;
+		case 211:
+			c2 = getc(fp);
+			fprintf(out, "\t\t.dc.b TOK_SUBFUNC_211,%d\n", c2);
+			offset += 2;
+			break;
 		case 212:
+			c2 = getc(fp);
+			fprintf(out, "\t\t.dc.b TOK_SUBFUNC_212,%d\n", c2);
+			offset += 2;
+			break;
 		case 213:
+			c2 = getc(fp);
+			fprintf(out, "\t\t.dc.b TOK_SUBFUNC_213,%d\n", c2);
+			offset += 2;
+			break;
 		case 214:
+			c2 = getc(fp);
+			fprintf(out, "\t\t.dc.b TOK_SUBFUNC_214,%d\n", c2);
+			offset += 2;
+			break;
 		case 240:
 		case 241:
 		case 242:
@@ -413,19 +443,19 @@ int main(void)
 	oldtable[189] = "x152d3";
 	
 	functable[1] = "f13e8c";
-	functable[2] = "f15474";
+	functable[2] = "expect_float_arr";
 	functable[3] = "f13d64";
-	functable[4] = "f15464";
-	functable[5] = "f15478";
-	functable[6] = "f1547c";
-	functable[7] = "f1548c";
-	functable[8] = "f15490";
+	functable[4] = "expect_float";
+	functable[5] = "expect_string_arr";
+	functable[6] = "expect_int_arr";
+	functable[7] = "expect_word_arr";
+	functable[8] = "expect_byte_arr";
 	functable[9] = "f140e2";
 	functable[10] = "f140d6";
 	functable[11] = "f140ee";
 	functable[12] = "f140fa";
 	functable[13] = "f13da6";
-	functable[14] = "f15468";
+	functable[14] = "expect_string";
 	functable[15] = "f13b62";
 	functable[16] = "f13d82";
 	functable[17] = "f13b68";
@@ -435,13 +465,13 @@ int main(void)
 	functable[21] = "f15976";
 	functable[22] = "f1596e";
 	functable[23] = "f1595a";
-	functable[24] = "f1546c";
-	functable[25] = "f15484";
+	functable[24] = "expect_int";
+	functable[25] = "expect_word";
 	functable[26] = "f15488";
 	functable[27] = "f13d8e";
 	functable[28] = "f13d9a";
-	functable[29] = "f15470";
-	functable[30] = "f15480";
+	functable[29] = "expect_bool";
+	functable[30] = "expect_bool_arr";
 	functable[31] = "f13d22";
 	functable[32] = "f158f8";
 	functable[33] = "f13d6a";

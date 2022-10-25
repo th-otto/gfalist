@@ -89,6 +89,7 @@ static void scan_table(FILE *fp, int offset, int end)
 		case 208:
 		case 209:
 		case 210:
+		case 211:
 		case 212:
 		case 213:
 		case 214:
@@ -176,6 +177,7 @@ static void dump_table(FILE *fp, int offset, int end, int diffbase)
 		case 208:
 		case 209:
 		case 210:
+		case 211:
 		case 212:
 		case 213:
 		case 214:
