@@ -21,7 +21,7 @@
 #include "tables.h"
 
 /* Variablen-Suffix text (VST) */
-static const unsigned char gfavst[MAX_TYPES][3] = {
+static const char gfavst[MAX_TYPES][3] = {
 	"#",
 	"$",
 	"%",
@@ -41,7 +41,7 @@ static const unsigned char gfavst[MAX_TYPES][3] = {
 };
 
 static int (*gf4tp_output)(const char *format, ...) __attribute__((format(printf, 1, 2)));
-static unsigned char *(*gf4tp_resvar)(struct gfainf *gi, unsigned short type, unsigned short var);
+static char *(*gf4tp_resvar)(struct gfainf *gi, unsigned short type, unsigned short var);
 
 
 /* GFA-BASIC files come from M68K platform and use 8 bits per byte */
@@ -131,7 +131,7 @@ static void gfa_putc(struct gfainf *gi, unsigned char c)
 #define LOWCASE(c) do { if ((c) >= 'A' && (c) <= 'Z') c += 'a' - 'A'; } while (0)
 #define UPCASE(c)  do { if ((c) >= 'a' && (c) <= 'z') c -= 'a' - 'A'; } while (0)
 
-static void printname(struct gfainf *gi, const unsigned char *str, int uppercase)
+static void printname(struct gfainf *gi, const char *str, int uppercase)
 {
 	unsigned char c;
 
@@ -167,14 +167,14 @@ static void printname(struct gfainf *gi, const unsigned char *str, int uppercase
 
 static void pushvar(struct gfainf *gi, unsigned int type, unsigned int v)
 {
-	const unsigned char *mrk = gi->hdr.type & TP_PSAVE ? gf4tp_resvar(gi, type, v) : gi->ident[type][v];
+	const char *str = gi->hdr.type & TP_PSAVE ? gf4tp_resvar(gi, type, v) : gi->ident[type][v];
 
-	printname(gi, mrk, FALSE);
+	printname(gi, str, FALSE);
 	if ((type != TYPE_FLOAT && type != TYPE_FLOAT_ARR) || !(gi->flags & TP_DEFLIST_POSTFIX))
 	{
-		mrk = gfavst[type];
-		while (*mrk != '\0')
-			gfa_putc(gi, *mrk++);
+		str = gfavst[type];
+		while (*str != '\0')
+			gfa_putc(gi, *str++);
 	}
 }
 
@@ -217,7 +217,8 @@ static int bsave(const char *name, const void *adr, size_t len)
 	return close(fdis);
 }
 
-void gf4tp_init(int (*output)(const char *format, ...), unsigned char *(*resvar)(struct gfainf *gi, unsigned short type, unsigned short var))
+
+void gf4tp_init(int (*output)(const char *format, ...), char *(*resvar)(struct gfainf *gi, unsigned short type, unsigned short var))
 {
 	gf4tp_output = output;
 	gf4tp_resvar = resvar;
@@ -563,16 +564,30 @@ static void indent(struct gfainf *gi, int depth)
 }
 
 
-static void subfunc_table(struct gfainf *gi, struct gfalin *gl, unsigned short pft, const unsigned char *src, const char *const *table)
+static int subfunc_table(struct gfainf *gi, struct gfalin *gl, unsigned short pft, const unsigned char *src, const struct nameversion *table)
 {
 	unsigned short sft = *src;
-	const unsigned char *mrk = (const unsigned char *)table[sft];
-	if (mrk == NULL)
+	const char *str = table[sft].name;
+
+	if (table[sft].old_ver > 0)
+	{
+		if (gi->gbe_ver <= table[sft].old_ver)
+		{
+			if (gi->gbe_ver > 0 && table[sft].old_name != NULL)
+				str = table[sft].old_name;
+			else
+				gl->needs_check = TRUE;
+		}
+	}
+
+	if (str == NULL)
 	{
 		gf4tp_output("Error at line %lu:%lu: %u/%u is an unknown sft code to me\n", gl->lineno, (unsigned long)(src - gl->line), pft, sft);
+		return FALSE;
 	} else
 	{
-		printname(gi, mrk, TRUE);
+		printname(gi, str, TRUE);
+		return TRUE;
 	}
 }
 
@@ -582,6 +597,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	/* Current source, marker, top and bottom pointers */
 	const unsigned char *src = gl->line;
 	const unsigned char *mrk;
+	const char *str;
 	const unsigned char *srcend = gl->line + gl->size;
 
 	/* line command pointer, line command token, primary function token,
@@ -594,11 +610,13 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	uint32_t ul;
 	char inline_filename[256];
 	char strbuf[80];
+	int retcode = TRUE;
 
 	unsigned int i;
 	int32_t num;
 
 	assert(sizeof(uint64_t) == 8);
+	gl->needs_check = FALSE;
 
 	pop16b(lcp, src);
 	lct = lcp / 4;
@@ -676,15 +694,30 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	 * output statement
 	 */
 	if (lct < size_lct)
-		mrk = (const unsigned char *)gfalct[lct];
+		str = gfalct[lct].name;
 	else
-		mrk = NULL;
-	if (mrk == NULL)
+		str = NULL;
+
+	/*
+	 * GBE version specific handling
+	 */
+	if (lct < size_lct && gfalct[lct].old_ver > 0)
+	{
+		if (gi->gbe_ver <= gfalct[lct].old_ver)
+		{
+			if (gi->gbe_ver > TARGET_VER36 && gfalct[lct].old_name != NULL)
+				str = gfalct[lct].old_name;
+			else
+				gl->needs_check = TRUE;
+		}
+	}
+
+	if (str == NULL)
 	{
 		gf4tp_output("Error at line %lu:%lu: %u is an unknown control code to me\n", gl->lineno, (unsigned long)(src - 2 - gl->line), lcp);
 	} else
 	{
-		printname(gi, mrk, TRUE);
+		printname(gi, str, TRUE);
 	}	
 
 	inline_filename[0] = '\0';
@@ -709,7 +742,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 		src += (src - gl->line) & 0x01;
 		break;
 	case TOK_CMD_EOF:					/* End of program */
-		return FALSE;
+		return TRUE;
 	case 48:							/* MONITOR */
 	case 59:							/* RESTORE */
 	case 105:							/* RESUME */
@@ -1030,7 +1063,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 					gfa_putnl(gi);
 					fprintf(gi->ost, "' %ld  Bytes.", (long) (mrk - src));
 					gfa_putnl(gi);
-					return 1;
+					return TRUE;
 				}
 				src = srcend;
 			}
@@ -1092,27 +1125,27 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 			break;
 
 		case TOK_SUBFUNC_208:
-			subfunc_table(gi, gl, pft, src, gfasft_208);
+			retcode &= subfunc_table(gi, gl, pft, src, gfasft_208);
 			src++;
 			break;
 
 		case TOK_SUBFUNC_209:
-			subfunc_table(gi, gl, pft, src, gfasft_209);
+			retcode &= subfunc_table(gi, gl, pft, src, gfasft_209);
 			src++;
 			break;
 
 		case TOK_SUBFUNC_210:
-			subfunc_table(gi, gl, pft, src, gfasft_210);
+			retcode &= subfunc_table(gi, gl, pft, src, gfasft_210);
 			src++;
 			break;
 
 		case TOK_SUBFUNC_211:
-			subfunc_table(gi, gl, pft, src, gfasft_211);
+			retcode &= subfunc_table(gi, gl, pft, src, gfasft_211);
 			src++;
 			break;
 
 		case TOK_SUBFUNC_212:
-			subfunc_table(gi, gl, pft, src, gfasft_212);
+			retcode &= subfunc_table(gi, gl, pft, src, gfasft_212);
 			src++;
 			break;
 
@@ -1199,10 +1232,10 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 				char *p;
 
 				/* save variable name for INLINE */
-				mrk = gi->hdr.type & TP_PSAVE ? gf4tp_resvar(gi, i, v) : gi->ident[i][v];
+				str = gi->hdr.type & TP_PSAVE ? gf4tp_resvar(gi, i, v) : gi->ident[i][v];
 				p = inline_filename;
-				while (*mrk != '\0')
-					*p++ = *mrk++;
+				while (*str != '\0')
+					*p++ = *str++;
 				*p = '\0';
 			}
 			pushvar(gi, i, v);
@@ -1243,16 +1276,21 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 			break;
 
 		default:
-			mrk = (const unsigned char *)gfapft[pft];
-			assert(mrk != NULL);
-			printname(gi, mrk, TRUE);
+			assert(gfapft[pft].name != NULL);
+			printname(gi, gfapft[pft].name, TRUE);
 			break;
 		}
 	}
 	
 	gfa_putnl(gi);
 
-	return TRUE;
+	if (gl->needs_check)
+	{
+		fprintf(gi->ost, "==> above line needs checking");
+		gfa_putnl(gi);
+	}
+
+	return retcode;
 }
 
 
@@ -1307,10 +1345,10 @@ void gf4tp_getii(struct gfainf *gi)
 	unsigned int i;
 	unsigned int j;
 	unsigned int cnt;
-	unsigned char *top;
-	unsigned char *dst;
-	unsigned char *src = gi->pool;
-	unsigned char **ptr = gi->fld;
+	char *top;
+	char *dst;
+	char *src = gi->pool;
+	char **ptr = gi->fld;
 	
 	if ((gi->hdr.type & TP_PSAVE) || gi->pool == NULL)
 		return;

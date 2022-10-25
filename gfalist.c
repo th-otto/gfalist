@@ -12,6 +12,8 @@
 #include "tables.h"
 #include "version.h"
 
+static char const program_name[] = "gfalist";
+
 
 __attribute__((format(printf, 1, 2)))
 static int output(const char *format, ...)
@@ -28,87 +30,18 @@ static int output(const char *format, ...)
 
 
 /* Simple variable resolver */
-static unsigned char *rvsimp(struct gfainf *gi, unsigned short type, unsigned short var)
+static char *rvsimp(struct gfainf *gi, unsigned short type, unsigned short var)
 {
-	static unsigned char vbuf[11];		/* vffff_ffff\0 */
-	unsigned char *dst = vbuf;
-	char *src = (char *)vbuf;
+	static char vbuf[11];		/* vffff_ffff\0 */
 
 	(void)gi;
-	sprintf(src, "v%x_%x", type, var);
-	while (*src != '\0')
-	{
-		switch (*src++)
-		{
-		case '0':
-			*dst++ = 0x30;
-			break;
-		case '1':
-			*dst++ = 0x31;
-			break;
-		case '2':
-			*dst++ = 0x32;
-			break;
-		case '3':
-			*dst++ = 0x33;
-			break;
-		case '4':
-			*dst++ = 0x34;
-			break;
-		case '5':
-			*dst++ = 0x35;
-			break;
-		case '6':
-			*dst++ = 0x36;
-			break;
-		case '7':
-			*dst++ = 0x37;
-			break;
-		case '8':
-			*dst++ = 0x38;
-			break;
-		case '9':
-			*dst++ = 0x39;
-			break;
-		case 'a':
-			*dst++ = 0x41;
-			break;
-		case 'b':
-			*dst++ = 0x42;
-			break;
-		case 'c':
-			*dst++ = 0x43;
-			break;
-		case 'd':
-			*dst++ = 0x44;
-			break;
-		case 'e':
-			*dst++ = 0x45;
-			break;
-		case 'f':
-			*dst++ = 0x46;
-			break;
-		case 'v':
-			*dst++ = 0x76;
-			break;
-		case '_':
-			*dst++ = 0x5F;
-			break;
-		default:
-			*dst++ = 0x3F;
-			break;
-		}
-	}
-
-	*dst = 0x00;
-
+	sprintf(vbuf, "v%x_%x", type, var);
 	return vbuf;
 }
 
 
-static int process(const char *program_name, FILE *ost, const char *filename, unsigned int flags)
+static int process(struct gfainf *gi)
 {
-	struct gfainf gi;
 	struct gfalin gl;
 	unsigned char libuf[2];				/* Line info block buffer */
 	unsigned char gibuf[2];				/* General info block buffer */
@@ -120,41 +53,36 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 	int retcode = TRUE;
 	unsigned short maxlinesize;
 
-	memset(&gi, 0, sizeof(gi));
-
-	gi.ost = ost;
-	gi.filename = filename;
-	gi.flags = flags;
 	gl.depth = 0;						/* Start with zero depth */
 
-	if (filename == NULL)
+	if (gi->filename == NULL)
 	{
 		ist = stdin;
-	} else if ((ist = fopen(filename, "rb")) == NULL)
+	} else if ((ist = fopen(gi->filename, "rb")) == NULL)
 	{
-		output("%s: %s: %s\n", program_name, filename, strerror(errno));
+		output("%s: %s: %s\n", program_name, gi->filename, strerror(errno));
 		return FALSE;
 	}
 
-	if ((flags & TP_VERB) != 0x00)
-		output("Scanning header (%i)\n", (int)sizeof(gi.hdr));
+	if ((gi->flags & TP_VERB) != 0x00)
+		output("Scanning header (%i)\n", (int)sizeof(gi->hdr));
 
 	/* Read one general info block */
 
 	fread(gibuf, 2, 1, ist);
 
-	if ((flags & TP_VERB) != 0x00)
+	if ((gi->flags & TP_VERB) != 0x00)
 		output("  Processing GI-Block\n");
 
-	gf4tp_getgi(&gi, gibuf);
+	gf4tp_getgi(gi, gibuf);
 
 	/* Cannot process files older than version 4 yet. */
-	switch (gi.hdr.vers)
+	switch (gi->hdr.vers)
 	{
 	case 1:
 	case 2:
 	case 70:
-		output("Version %d files not supported yet.\n", gi.hdr.vers);
+		output("Version %d files not supported yet.\n", gi->hdr.vers);
 		if (ist != stdin)
 			fclose(ist);
 		return FALSE;
@@ -162,32 +90,32 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 	case 4:
 		break;
 	default:
-		output("Unknown version %d in header.\n", gi.hdr.vers);
+		output("Unknown version %d in header.\n", gi->hdr.vers);
 		if (ist != stdin)
 			fclose(ist);
 		return FALSE;
 	}
 
-	fread(dibuf, gfarecl[gi.hdr.vers].num_offsets * 4 + gfarecl[gi.hdr.vers].len_magic, 1, ist);
+	fread(dibuf, gfarecl[gi->hdr.vers].num_offsets * 4 + gfarecl[gi->hdr.vers].len_magic, 1, ist);
 
-	gf4tp_getdi(&gi, dibuf);
+	gf4tp_getdi(gi, dibuf);
 
-	if (flags & TP_VERB)
-		output("  Processing DI-Block (%d, %s)\n", gi.hdr.vers, gi.hdr.mag);
+	if (gi->flags & TP_VERB)
+		output("  Processing DI-Block (%d, %s)\n", gi->hdr.vers, gi->hdr.mag);
 
-	if (gi.hdr.sep[OFF_TYPE_FIRST + MAX_TYPES] < gi.hdr.sep[OFF_TYPE_FIRST])
+	if (gi->hdr.sep[OFF_TYPE_FIRST + MAX_TYPES] < gi->hdr.sep[OFF_TYPE_FIRST])
 	{
-		output("invalid offsets: %lu < %lu\n", (unsigned long)gi.hdr.sep[OFF_TYPE_FIRST + MAX_TYPES], (unsigned long)gi.hdr.sep[OFF_TYPE_FIRST]);
+		output("invalid offsets: %lu < %lu\n", (unsigned long)gi->hdr.sep[OFF_TYPE_FIRST + MAX_TYPES], (unsigned long)gi->hdr.sep[OFF_TYPE_FIRST]);
 		retcode = FALSE;
 	} else
 	{
-		gi.poolsize = gi.hdr.sep[OFF_TYPE_FIRST + MAX_TYPES] - gi.hdr.sep[OFF_TYPE_FIRST];
+		gi->poolsize = gi->hdr.sep[OFF_TYPE_FIRST + MAX_TYPES] - gi->hdr.sep[OFF_TYPE_FIRST];
 	}
 
-	if (gi.poolsize > 0)
+	if (gi->poolsize > 0)
 	{
-		gi.pool = malloc(gi.poolsize);
-		if (gi.pool == NULL)
+		gi->pool = malloc(gi->poolsize);
+		if (gi->pool == NULL)
 		{
 			output("out of memory\n");
 			retcode = FALSE;
@@ -196,26 +124,26 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 
 	if (retcode)
 	{
-		if ((flags & TP_VERB) != 0x00)
-			output("  Reading identifiers (%lu Bytes)\n", (unsigned long)gi.poolsize);
+		if ((gi->flags & TP_VERB) != 0x00)
+			output("  Reading identifiers (%lu Bytes)\n", (unsigned long)gi->poolsize);
 	
 		/* Read identifier information block consisting of cnt characters */
-		fread(gi.pool, 1, gi.poolsize, ist);
+		fread(gi->pool, 1, gi->poolsize, ist);
 	
-		if (gi.hdr.sep[OFF_PTR_FIRST + MAX_TYPES] < gi.hdr.sep[OFF_PTR_FIRST])
+		if (gi->hdr.sep[OFF_PTR_FIRST + MAX_TYPES] < gi->hdr.sep[OFF_PTR_FIRST])
 		{
-			output("invalid offsets: %lu < %lu\n", (unsigned long)gi.hdr.sep[OFF_PTR_FIRST + MAX_TYPES], (unsigned long)gi.hdr.sep[OFF_PTR_FIRST]);
+			output("invalid offsets: %lu < %lu\n", (unsigned long)gi->hdr.sep[OFF_PTR_FIRST + MAX_TYPES], (unsigned long)gi->hdr.sep[OFF_PTR_FIRST]);
 			retcode = FALSE;
 			fldsize = 0;
 		} else
 		{
-			fldsize = gi.hdr.sep[OFF_PTR_FIRST + MAX_TYPES] - gi.hdr.sep[OFF_PTR_FIRST];
+			fldsize = gi->hdr.sep[OFF_PTR_FIRST + MAX_TYPES] - gi->hdr.sep[OFF_PTR_FIRST];
 		}
 
 		if (fldsize > 0)
 		{
-			gi.fld = malloc((fldsize / 4) * sizeof(char *));
-			if (gi.fld == NULL)
+			gi->fld = malloc((fldsize / 4) * sizeof(gi->fld[0]));
+			if (gi->fld == NULL)
 			{
 				output("out of memory\n");
 				retcode = FALSE;
@@ -225,26 +153,26 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 	
 	if (retcode)
 	{
-		if ((flags & TP_VERB) != 0x00)
+		if ((gi->flags & TP_VERB) != 0x00)
 			output("  Processing II-Block\n");
 	
-		gf4tp_getii(&gi);
+		gf4tp_getii(gi);
 	
 		/* gf4tp_output("Searching lines\n");
-		 * fseek(ist, gfarecl[gi.hdr.vers].num_offsets * 4 + gfarecl[gi.hdr.vers].len_magic + 
-		 *            gi.hdr.sep[16] + 2, SEEK_SET);
+		 * fseek(ist, gfarecl[gi->hdr.vers].num_offsets * 4 + gfarecl[gi->hdr.vers].len_magic + 
+		 *            gi->hdr.sep[16] + 2, SEEK_SET);
 		 */
-		if (gi.hdr.sep[OFF_PROGRAMSTART + 3] < gi.hdr.sep[OFF_PROGRAMSTART])
+		if (gi->hdr.sep[OFF_PROGRAMSTART + 3] < gi->hdr.sep[OFF_PROGRAMSTART])
 		{
-			output("invalid offsets: %lu < %lu\n", (unsigned long)gi.hdr.sep[OFF_PROGRAMSTART + 3], (unsigned long)gi.hdr.sep[OFF_PROGRAMSTART]);
+			output("invalid offsets: %lu < %lu\n", (unsigned long)gi->hdr.sep[OFF_PROGRAMSTART + 3], (unsigned long)gi->hdr.sep[OFF_PROGRAMSTART]);
 			retcode = FALSE;
 			tokensize = 0;
 		} else
 		{
-			tokensize = gi.hdr.sep[OFF_PROGRAMSTART + 3] - gi.hdr.sep[OFF_PROGRAMSTART];
+			tokensize = gi->hdr.sep[OFF_PROGRAMSTART + 3] - gi->hdr.sep[OFF_PROGRAMSTART];
 		}
 
-		if ((flags & TP_VERB) != 0x00)
+		if ((gi->flags & TP_VERB) != 0x00)
 			output("Analyzing listing (%i)\n", tokensize);
 
 		gl.line = slb;
@@ -296,7 +224,7 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 	
 			fread(gl.line, 1, gl.size, ist);
 	
-			gf4tp_tp(&gi, &gl);
+			retcode &= gf4tp_tp(gi, &gl);
 	
 			if (gl.size > 256)
 			{
@@ -304,16 +232,18 @@ static int process(const char *program_name, FILE *ost, const char *filename, un
 				gl.line = slb;
 			}
 			gl.lineno++;
-			if ((flags & TP_VERB) && gl.lineno % 0x100 == 0)
+			if ((gi->flags & TP_VERB) && gl.lineno % 0x100 == 0)
 				output("Reached line %lu\n", gl.lineno);
 		}
 
-		if (flags & TP_VERB)
+		if (gi->flags & TP_VERB)
 			output("Maximum line size: %u\n", maxlinesize);
 	}
 	
-	free(gi.pool);
-	free(gi.fld);
+	free(gi->pool);
+	gi->pool = NULL;
+	free(gi->fld);
+	gi->fld = NULL;
 
 	if (ist != stdin)
 		fclose(ist);
@@ -346,6 +276,7 @@ static void usage(FILE *fp)
 	fprintf(fp, "      --c-comments          print comments with /*\n");
 	fprintf(fp, "      --c++-comments        print comments with //\n");
 	fprintf(fp, "      --varnames            list variables names\n");
+	fprintf(fp, "      --gbe <version>       specify version in case of ambiguities\n");
 	fprintf(fp, "  -h, --help                print this help and exit\n");
 }
 
@@ -363,6 +294,7 @@ enum {
 	OPT_C_COMMENTS,
 	OPT_CPP_COMMENTS,
 	OPT_VARNAMES,
+	OPT_GBEVERSION,
 };
 
 static struct option const longopts[] = {
@@ -373,6 +305,7 @@ static struct option const longopts[] = {
 	{ "capitals", no_argument, NULL, OPT_CAPITALS },
 	{ "postfix", no_argument, NULL, OPT_POSTFIX },
 	{ "varnames", no_argument, NULL, OPT_VARNAMES },
+	{ "gbe", required_argument, NULL, OPT_GBEVERSION },
 	{ "help", no_argument, NULL, OPT_HELP },
 	{ "version", no_argument, NULL, OPT_VERSION },
 };
@@ -381,12 +314,12 @@ static struct option const longopts[] = {
 int main(int argc, char *argv[])
 {
 	const char *outfile = NULL;
-	unsigned int flags = 0;
 	int opt;
-	FILE *ost;							/* Input and output stream */
 	int exitcode = EXIT_SUCCESS;
+	struct gfainf gi;
 	
 	gf4tp_init(output, rvsimp);
+	memset(&gi, 0, sizeof(gi));
 
 	while ((opt = getopt_long(argc, argv, "o:vcVih", longopts, NULL)) != -1)
 	{
@@ -402,35 +335,39 @@ int main(int argc, char *argv[])
 			break;
 
 		case OPT_VERBOSE:				/* Verbose */
-			flags |= TP_VERB;
+			gi.flags |= TP_VERB;
 			break;
 
 		case OPT_CONVERT:				/* Conversion */
-			flags |= TP_CONV;
+			gi.flags |= TP_CONV;
 			break;
 
 		case OPT_INLINES:				/* save INLINE data into .inl files */
-			flags |= TP_SAVEINLINE;
+			gi.flags |= TP_SAVEINLINE;
 			break;
 
 		case OPT_CAPITALS:
-			flags |= TP_DEFLIST_CAPITALS;
+			gi.flags |= TP_DEFLIST_CAPITALS;
 			break;
 		
 		case OPT_POSTFIX:
-			flags |= TP_DEFLIST_POSTFIX;
+			gi.flags |= TP_DEFLIST_POSTFIX;
 			break;
 		
 		case OPT_C_COMMENTS:
-			flags |= TP_DEFLIST_C_COMMENTS;
+			gi.flags |= TP_DEFLIST_C_COMMENTS;
 			break;
 		
 		case OPT_CPP_COMMENTS:
-			flags |= TP_DEFLIST_CPP_COMMENTS;
+			gi.flags |= TP_DEFLIST_CPP_COMMENTS;
 			break;
 		
 		case OPT_VARNAMES:
-			flags |= TP_VARNAMES;
+			gi.flags |= TP_VARNAMES;
+			break;
+		
+		case OPT_GBEVERSION:
+			gi.gbe_ver = (int)strtol(optarg, NULL, 0);
 			break;
 		
 		case OPT_HELP:					/* display short help and exit */
@@ -455,11 +392,11 @@ int main(int argc, char *argv[])
 
 	if (outfile == NULL || (outfile[0] == '-' && outfile[1] == '\0'))
 	{
-		if (flags & TP_CONV)
-			ost = stdout;
+		if (gi.flags & TP_CONV)
+			gi.ost = stdout;
 		else
-			ost = freopen(NULL, "wb", stdout);
-	} else if ((ost = fopen(outfile, flags & TP_CONV ? "w" : "wb")) == NULL)
+			gi.ost = freopen(NULL, "wb", stdout);
+	} else if ((gi.ost = fopen(outfile, gi.flags & TP_CONV ? "w" : "wb")) == NULL)
 	{
 		output("%s: cannot open %s for output\n", argv[0], outfile);
 		return EXIT_FAILURE;
@@ -467,18 +404,21 @@ int main(int argc, char *argv[])
 
 	if (optind >= argc)
 	{
-		if (!process(argv[0], ost, NULL, flags))
+		if (!process(&gi))
 			exitcode = EXIT_FAILURE;
 	} else
 	{
 		for (; optind < argc; optind++)
-			if (!process(argv[0], ost, argv[optind], flags))
+		{
+			gi.filename = argv[optind];
+			if (!process(&gi))
 				exitcode = EXIT_FAILURE;
+		}
 	}
 
-	fflush(ost);
-	if (ost != stdout)
-		fclose(ost);
+	fflush(gi.ost);
+	if (gi.ost != stdout)
+		fclose(gi.ost);
 
 	return exitcode;
 }
