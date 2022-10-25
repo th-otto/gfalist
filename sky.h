@@ -114,13 +114,14 @@ struct gfahdr {
 
 struct gfainf {
 	struct gfahdr hdr;                          /* Header */
-	unsigned char **ident[16];                  /* Identifier list; pointers to variable names per type */
-	unsigned char **fld;                        /* Pointer field */
-	unsigned char *pool;                        /* Memory pool; holds all variable names */
+	char **ident[16];                           /* Identifier list; pointers to variable names per type */
+	char **fld;                                 /* Pointer field */
+	char *pool;                                 /* Memory pool; holds all variable names */
 	const char *filename;
 	FILE *ost;
 	unsigned int flags;
 	uint32_t poolsize;
+	int gbe_ver;
 };
 
 struct gfalin {
@@ -128,13 +129,14 @@ struct gfalin {
 	short depth;                                /* Indent depth */
 	unsigned char *line;                        /* Pointer to line buffer */
 	unsigned long lineno;
+	int needs_check;
 };
 
 int gf4tp_tp(struct gfainf *gi, struct gfalin *gl);
 void gf4tp_getgi(struct gfainf *gi, unsigned char *src);
 void gf4tp_getdi(struct gfainf *gi, unsigned char *src);
 void gf4tp_getii(struct gfainf *gi);
-void gf4tp_init(int (*output)(const char *format, ...), unsigned char *(*resvar)(struct gfainf *gi, unsigned short type, unsigned short var));
+void gf4tp_init(int (*output)(const char *format, ...), char *(*resvar)(struct gfainf *gi, unsigned short type, unsigned short var));
 
 /* GFA-BASIC files come from M68K platform and use 8 bits per byte */
 

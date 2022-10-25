@@ -1,14 +1,26 @@
 #ifndef TABLES_H
 #define TABLES_H
 
-extern const char *const gfalct[];
+#define TARGET_VER36    0
+#define TARGET_VER370   370
+#define TARGET_VER371   371
+#define TARGET_VER372   372
+#define TARGET_VER373   373
+
+struct nameversion {
+	const char *name;
+	int old_ver;
+	const char *old_name;
+};
+
+extern struct nameversion const gfalct[];
 extern unsigned int const size_lct;
-extern const char *const gfapft[256];
-extern const char *const gfasft_208[256];
-extern const char *const gfasft_209[256];
-extern const char *const gfasft_210[256];
-extern const char *const gfasft_211[256];
-extern const char *const gfasft_212[256];
+extern struct nameversion const gfapft[256];
+extern struct nameversion const gfasft_208[256];
+extern struct nameversion const gfasft_209[256];
+extern struct nameversion const gfasft_210[256];
+extern struct nameversion const gfasft_211[256];
+extern struct nameversion const gfasft_212[256];
 struct gfaversinfo {
 	short len_magic;
 	short num_offsets;
