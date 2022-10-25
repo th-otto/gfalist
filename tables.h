@@ -50,7 +50,13 @@ extern struct gfaversinfo const gfarecl[71];
 #define TOK_CMD_RETURN              17
 #define TOK_CMD_RETURN_STR          18
 #define TOK_CMD_FOR_FLOAT           19
+#define TOK_CMD_FOR_INT             22
+#define TOK_CMD_FOR_WORD            25
+#define TOK_CMD_FOR_BYTE            28
 #define TOK_CMD_NEXT_FLOAT          31
+#define TOK_CMD_NEXT_INT            34
+#define TOK_CMD_NEXT_WORD           37
+#define TOK_CMD_NEXT_BYTE           40
 #define TOK_CMD_EXITIF              43
 #define TOK_CMD_SELECT_STR          44
 #define TOK_CMD_EOF                 45

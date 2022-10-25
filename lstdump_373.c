@@ -142,11 +142,11 @@ static void dump_table(FILE *fp, int offset, int end)
 			offset += 2;
 			break;
 		case 252:
-			fprintf(out, "\t\t.dc.b -4\n");
+			fprintf(out, "\t\t.dc.b ARG_END\n");
 			offset += 1;
 			break;
 		case 253:
-			fprintf(out, "\t\t.dc.b -3\n");
+			fprintf(out, "\t\t.dc.b ARG_POP\n");
 			offset += 1;
 			break;
 		case 254:
@@ -156,9 +156,9 @@ static void dump_table(FILE *fp, int offset, int end)
 			c = (short)c;
 			dst = jmpbase + c;
 			if (functable[funcused[dst]])
-				fprintf(out, "\t\t.dc.b -2,((%s-jmpbase)>>8)&255,(%s-jmpbase)&255\n", functable[funcused[dst]], functable[funcused[dst]]);
+				fprintf(out, "\t\t.dc.b ARG_CALL_FUNC,((%s-jmpbase)>>8)&255,(%s-jmpbase)&255\n", functable[funcused[dst]], functable[funcused[dst]]);
 			else
-				fprintf(out, "\t\t.dc.b -2,((f%d-jmpbase)>>8)&255,(f%d-jmpbase)&255\n", funcused[dst], funcused[dst]);
+				fprintf(out, "\t\t.dc.b ARG_CALL_FUNC,((f%d-jmpbase)>>8)&255,(f%d-jmpbase)&255\n", funcused[dst], funcused[dst]);
 			offset += 3;
 			break;
 		case 255:
@@ -168,9 +168,9 @@ static void dump_table(FILE *fp, int offset, int end)
 			c = (short)c;
 			dst = jmpbase + c;
 			if (used[dst])
-				fprintf(out, "\t\t.dc.b -1,((%s-jmpbase)>>8)&255,(%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
+				fprintf(out, "\t\t.dc.b ARG_PUSH,((%s-jmpbase)>>8)&255,(%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
 			else
-				fprintf(out, "\t\t.dc.b -1,((x%05x-jmpbase)>>8)&255,(x%05x-jmpbase)&255\n", dst, dst);
+				fprintf(out, "\t\t.dc.b ARG_PUSH,((x%05x-jmpbase)>>8)&255,(x%05x-jmpbase)&255\n", dst, dst);
 			offset += 3;
 			break;
 		case 208:
@@ -221,6 +221,10 @@ static void dump_table(FILE *fp, int offset, int end)
 			c2 = getc(fp);
 			fprintf(out, "\t\t.dc.b %d,%d\n", c, c2);
 			offset += 2;
+			break;
+		case 70:
+			fprintf(out, "\t\t.dc.b TOK_LINE_COMMENT\n");
+			offset += 1;
 			break;
 		default:
 			fprintf(out, "\t\t.dc.b %d\n", c);
