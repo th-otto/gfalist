@@ -792,7 +792,7 @@ struct nameversion const gfapft[256] = {
 	/*   84 */ { "RND(", 0, NULL }, /* 1 argument */
 	/*   85 */ { "RND", 0, NULL }, /* no arguments */
 	/*   86 */ { "RANDOM(", 0, NULL },
-	/*   87 */ { "'", 0, NULL }, /* in print statemtent */
+	/*   87 */ { "'", 0, NULL }, /* in print statement */
 	/*   88 */ { "}", 0, NULL },
 	/*   89 */ { "AT(", 0, NULL },
 	/*   90 */ { "IF", 0, NULL },
