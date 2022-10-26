@@ -122,6 +122,7 @@ struct gfainf {
 	unsigned int flags;
 	uint32_t poolsize;
 	int gbe_ver;
+	char inline_filename[256];
 };
 
 struct gfalin {

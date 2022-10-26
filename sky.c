@@ -8,6 +8,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <math.h>
+#include <limits.h>
 #include "charset.h"
 
 #ifndef O_BINARY
@@ -592,6 +593,16 @@ static int subfunc_table(struct gfainf *gi, struct gfalin *gl, unsigned short pf
 }
 
 
+static const char *xbasename(const char *filename)
+{
+	char *p1 = strrchr(filename, '/');
+	char *p2 = strrchr(filename, '\\');
+	if (p1 == NULL || p2 > p1)
+		p1 = p2;
+	return p1 ? p1 + 1 : filename;
+}
+
+
 int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 {
 	/* Current source, marker, top and bottom pointers */
@@ -608,7 +619,6 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	unsigned short pft;
 	unsigned short v;
 	uint32_t ul;
-	char inline_filename[256];
 	char strbuf[80];
 	int retcode = TRUE;
 
@@ -720,22 +730,43 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 		printname(gi, str, TRUE);
 	}	
 
-	inline_filename[0] = '\0';
-
 	/*
 	 * special statement handling
 	 */
 	switch (lct)
 	{
-	case 114:							/* REM */
-	case 115:							/* ' */
-	case 116:							/* ==> */
-	case 117:							/* DATA */
+	case TOK_CMD_REM:					/* REM */
+		mrk = src;
+		while (mrk < srcend && *mrk == ' ')
+			mrk++;
+		if (mrk + 4 < srcend && mrk[0] == '#' && mrk[1] == 'I' && mrk[2] == 'N' && mrk[3] == 'L')
+		{
+			mrk += 4;
+			while (mrk < srcend && *mrk == ' ')
+				mrk++;
+			while (mrk < srcend && *mrk != 0x0D && *mrk != ',')
+				mrk++;
+			if (mrk < srcend && *mrk == ',')
+			{
+				char *p = gi->inline_filename;
+
+				mrk++;
+				while (mrk < srcend && *mrk == ' ')
+					mrk++;
+				while (mrk < srcend && *mrk != 0x0D)
+					*p++ = *mrk++;
+				*p = '\0';
+			}
+		}
+		/* FALLTROUGH */
+	case TOK_CMD_COMMENT:				/* ' */
+	case TOK_CMD_SYNERR:				/* ==> */
+	case TOK_CMD_DATA:					/* DATA */
 		if (src < srcend && *src != 0x0D)
 			putc(' ', gi->ost);
 		/* FALLTROUGH */
-	case 411:							/* $ */
-	case 254:							/* . */
+	case TOK_CMD_DOLLAR:				/* $ */
+	case TOK_CMD_DOT:					/* . */
 		while (src < srcend && *src != 0x0D)
 			gfa_putc(gi, *src++);
 		src++;
@@ -1040,12 +1071,27 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 				/* treat INLINE data... */
 				if (gi->flags & TP_SAVEINLINE)
 				{
-					if (inline_filename[0] == '\0')
-						sprintf(inline_filename, "l%5lu", gl->lineno);
-					strcat(inline_filename, ".inl");
-					bsave(inline_filename, src, (size_t) (srcend - src));
-					gf4tp_output("Saved INLINE data into file --> %s (%ld bytes.)\n", inline_filename, (long)(srcend - src));
-					inline_filename[0] = '\0';
+					char filename[PATH_MAX];
+					
+					if (gi->inline_filename[0] == '\0')
+						sprintf(gi->inline_filename, "l%5lu", gl->lineno);
+					if (strrchr(gi->inline_filename, '.') == NULL)
+						strcat(gi->inline_filename, ".inl");
+					/*
+					 * save inlines in the directory of the project file
+					 */
+					if (gi->filename != NULL)
+					{
+						size_t len = xbasename(gi->filename) - gi->filename;
+						memcpy(filename, gi->filename, len);
+						strcpy(&filename[len], gi->inline_filename);
+					} else
+					{
+						strcpy(filename, gi->inline_filename);
+					}
+					bsave(filename, src, (size_t) (srcend - src));
+					gf4tp_output("Saved INLINE data into file --> %s (%ld bytes.)\n", filename, (long)(srcend - src));
+					gi->inline_filename[0] = '\0';
 				} else
 				{
 					gfa_putnl(gi);
@@ -1229,14 +1275,12 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 			v = *src++;
 			if (lct == TOK_CMD_INLINE)
 			{
-				char *p;
-
-				/* save variable name for INLINE */
-				str = gi->hdr.type & TP_PSAVE ? gf4tp_resvar(gi, i, v) : gi->ident[i][v];
-				p = inline_filename;
-				while (*str != '\0')
-					*p++ = *str++;
-				*p = '\0';
+				if (gi->inline_filename[0] == '\0')
+				{
+					/* save variable name for INLINE */
+					str = gi->hdr.type & TP_PSAVE ? gf4tp_resvar(gi, i, v) : gi->ident[i][v];
+					strcpy(gi->inline_filename, str);
+				}
 			}
 			pushvar(gi, i, v);
 			break;
