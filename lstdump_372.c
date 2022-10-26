@@ -235,7 +235,7 @@ int main(void)
 	oldtable[10] = "x13f96";
 	oldtable[11] = "x13fab";
 	oldtable[12] = "x13faa";
-	oldtable[13] = "x15252";
+	oldtable[13] = "print_channel_args";
 	oldtable[14] = "x13fbe";
 	oldtable[15] = "x13fe4";
 	oldtable[16] = "x1402b";
@@ -396,7 +396,7 @@ int main(void)
 	oldtable[171] = "x151eb";
 	oldtable[172] = "x151ee";
 	oldtable[173] = "x151f6";
-	oldtable[174] = "x1524c";
+	oldtable[174] = "write_channel_args";
 	oldtable[175] = "x15214";
 	oldtable[176] = "x1521b";
 	oldtable[177] = "x15228";

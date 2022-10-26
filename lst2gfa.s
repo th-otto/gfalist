@@ -359,75 +359,107 @@ TYPE_FUNCTION      = 14
 TYPE_FUNCTION_STR  = 15
 
 
+	.IF GBE==0
+MAX_FUNCS     = 464 /* 224 primary + 240 secondary */
+MAX_CMDS      = 512
+	.ENDC
+	.IF GBE==370
+MAX_FUNCS     = 1024 /* 256 primary + 3 * 256 secondary */
+MAX_CMDS      = 1024
+	.ENDC
+	.IF GBE==371
+MAX_FUNCS     = 2048 /* 256 primary + 7 * 256 secondary */
+MAX_CMDS      = 600
+	.ENDC
+	.IF GBE==372
+MAX_FUNCS     = 2048 /* 256 primary + 7 * 256 secondary */
+MAX_CMDS      = 644
+	.ENDC
+	.IF GBE==373
+MAX_FUNCS     = 2048 /* 256 primary + 7 * 256 secondary */
+MAX_CMDS      = 688
+	.ENDC
+
+
 /*
  * storage area
  */
 
 	.IF GBE==0
 		.offset 0
-error_jmp:          ds.b 8    /*    0 */
-file_buffer:        ds.l 1    /*    8 */
-file_buffer_size:   ds.l 1    /*   12 */
-ptr_table:          ds.l 38   /*   16 */
-                    ds.l 1    /*  168 */
-                    ds.l 1    /*  172 */
-                    ds.l 1    /*  176 */
-                    ds.l 1    /*  180 */
-                    ds.l 1    /*  184 */
-                    ds.l 1    /*  188 */
-                    ds.l 1    /*  192 */
-                    ds.l 1    /*  196 */
-                    ds.l 1    /*  200 */
-baspag:             ds.l 1    /*  204 */
-pgmsize:            ds.l 1    /*  208 */
-                    ds.w 1    /*  212 */
-extjmp_table:       ds.b 26*6 /*  214 */
-                    ds.b 40   /*  370 */
-                    ds.l 10   /*  410 */
-                    ds.l 1    /*  450 */
-                    ds.l 1    /*  454 */
-                    ds.l 1    /*  458 */
-                    ds.w 1    /*  462 */
-                    ds.b 26   /*  464 */
-fstr_tmpbuf:        ds.b 22   /*  490 */
-fstr_outbuf:        ds.b 30   /*  512 */
-decimal_digits:     ds.w 1    /*  542 */
+error_jmp:          ds.b 8         /*    0 */
+file_buffer:        ds.l 1         /*    8 */
+file_buffer_size:   ds.l 1         /*   12 */
+ptr_table:          ds.l 38        /*   16 */
+                    ds.l 1         /*  168 */
+strdesc_start:      ds.l 1         /*  172 */
+strdesc_end:        ds.l 1         /*  176 */
+                    ds.l 1         /*  180 */
+                    ds.l 1         /*  184 */
+                    ds.l 1         /*  188 */
+                    ds.l 1         /*  192 */
+                    ds.l 1         /*  196 */
+                    ds.l 1         /*  200 */
+baspag:             ds.l 1         /*  204 */
+pgmsize:            ds.l 1         /*  208 */
+                    ds.w 1         /*  212 */
+extjmp_table:       ds.b 26*6      /*  214 */
+                    ds.b 40        /*  370 */
+                    ds.l 10        /*  410 */
+                    ds.l 1         /*  450 */
+                    ds.l 1         /*  454 */
+                    ds.l 1         /*  458 */
+                    ds.w 1         /*  462 */
+                    ds.b 26        /*  464 */
+fstr_tmpbuf:        ds.b 22        /*  490 */
+fstr_outbuf:        ds.b 30        /*  512 */
+decimal_digits:     ds.w 1         /*  542 */
                     ds.b 306
-o850:               ds.b 256  /*  850 */
-o1106:              ds.b 256  /* 1106 */
-o1362:              ds.w 1    /* 1362 */
-o1364:              ds.b 478  /* 1364 */
-o1842:                        /* 1842 */
+o850:               ds.b 256       /*  850 */
+o1106:              ds.b 256       /* 1106 */
+o1362:              ds.w 1         /* 1362 */
+o1364:              ds.b 478       /* 1364 */
+o1842:              ds.b 472       /* 1842 */
+o2314:              ds.b 458       /* 2314 */
+o2772:              ds.b 100*6     /* 2772 */
+func_table_offsets: ds.w MAX_FUNCS /* 3372 */
+cmd_table_offsets:  ds.w MAX_CMDS  /* 4300 */
+                                   /* 5324 */
 	.ENDC
 
 	.IF GBE!=0
 		.offset 0
-error_jmp:          ds.b 8    /*    0 */
-file_buffer:        ds.l 1    /*    8 */
-file_buffer_size:   ds.l 1    /*   12 */
-ptr_table:          ds.l 38   /*   16 */
-                    ds.l 1    /*  168 */
-                    ds.l 1    /*  172 */
-                    ds.l 1    /*  176 */
-                    ds.l 1    /*  180 */
-                    ds.l 1    /*  184 */
-                    ds.l 1    /*  188 */
-                    ds.l 1    /*  192 */
-                    ds.l 1    /*  196 */
-                    ds.l 1    /*  200 */
-                    ds.b 66   /*      */
-fstr_tmpbuf:        ds.b 22   /*  270 */
-fstr_outbuf:        ds.b 30   /*  292 */
-decimal_digits:     ds.w 1    /*  322 */
-o850:               ds.b 256  /*  324 */
-o1106:              ds.b 256  /*  580 */
-o1362:              ds.w 1    /*  836 */
-o1364:              ds.b 478  /*  838 */
-o1842:                        /* 1316 */
-
-extjmp_table:       ds.b 26*6 /*      */
-baspag:             ds.l 1    /*      */
-pgmsize:            ds.l 1    /*      */
+error_jmp:          ds.b 8         /*    0 */
+file_buffer:        ds.l 1         /*    8 */
+file_buffer_size:   ds.l 1         /*   12 */
+ptr_table:          ds.l 38        /*   16 */
+                    ds.l 1         /*  168 */
+strdesc_start:      ds.l 1         /*  172 */
+strdesc_end:        ds.l 1         /*  176 */
+                    ds.l 1         /*  180 */
+                    ds.l 1         /*  184 */
+                    ds.l 1         /*  188 */
+                    ds.l 1         /*  192 */
+                    ds.l 1         /*  196 */
+                    ds.l 1         /*  200 */
+                    ds.b 66        /*      */
+fstr_tmpbuf:        ds.b 22        /*  270 */
+fstr_outbuf:        ds.b 30        /*  292 */
+decimal_digits:     ds.w 1         /*  322 */
+o850:               ds.b 182       /*  324 */
+o2314:              ds.b 74        /*  506 */
+o1106:              ds.b 256       /*  580 */
+o1362:              ds.w 1         /*  836 */
+o1364:              ds.b 26        /*  838 */
+o2772:              ds.b 214       /*  964 */
+func_table_offsets: ds.w MAX_FUNCS /* 1178 */
+cmd_table_offsets:  ds.w MAX_CMDS  /* 5274 */
+                                   /* 6650 */
+                                   
+extjmp_table:       ds.b 26*6      /*      */
+baspag:             ds.l 1         /*      */
+pgmsize:            ds.l 1         /*      */
+o1842:              ds.b 472       /*      */
 	.ENDC
 
 
@@ -530,7 +562,7 @@ x1007a_1:
 		movea.l    (a0),a0
 		bra.s      x1007a_3
 x1007a_2:
-		movea.l    172(a6),a0
+		movea.l    strdesc_start(a6),a0
 x1007a_3:
 		move.l     6(a0),d0
 		bsr        print_decimal
@@ -2304,16 +2336,16 @@ ALLOT:
 		move.l     d0,d3
 		movea.l    168(a6),a0
 		lea.l      0(a0,d0.l),a1
-		cmpa.l     172(a6),a1
+		cmpa.l     strdesc_start(a6),a1
 		bcs.s      ALLOT_1
 		bsr        GarColl
-		cmpa.l     172(a6),a1
+		cmpa.l     strdesc_start(a6),a1
 		bcc.s      ALLOT_2
 ALLOT_1:
 		move.l     a0,d0
 		sub.l      d2,d0
 		bsr.s      Lddre
-		lea.l      172(a6),a0
+		lea.l      strdesc_start(a6),a0
 ALLOT_3:
 		add.l      d3,(a2)+
 		cmpa.l     a0,a2
@@ -2454,7 +2486,7 @@ Screat:
 		ext.l      d1
 		move.l     d1,(a1)
 Screat_1:
-		movea.l    172(a6),a1
+		movea.l    strdesc_start(a6),a1
 		moveq.l    #0,d1
 		move.w     d0,d1
 		beq.s      Screat_3
@@ -2467,7 +2499,7 @@ STcreat_4:
 		move.l     a1,(a0)
 		move.w     d0,4(a0)
 		move.l     a0,-4(a1,d1.l)
-		move.l     a1,172(a6)
+		move.l     a1,strdesc_start(a6)
 Screat_2:
 		rts
 Screat_3:
@@ -2476,7 +2508,7 @@ Screat_3:
 
 STcreat:
 		bsr.s      GarColl
-		movea.l    172(a6),a1
+		movea.l    strdesc_start(a6),a1
 		suba.l     d1,a1
 		cmpa.l     168(a6),a1
 		bcc.s      STcreat_4
@@ -2489,8 +2521,8 @@ STcreat:
 
 GarColl:
 		movem.l    d0/a0-a3,-(a7)
-		movea.l    176(a6),a0
-		movea.l    172(a6),a2
+		movea.l    strdesc_end(a6),a0
+		movea.l    strdesc_start(a6),a2
 GarColl_3:
 		movea.l    a0,a1
 		cmpa.l     a0,a2
@@ -2538,7 +2570,7 @@ GarColl_8:
 GarColl_10:
 		bne.s      GarColl_13
 GarColl_4:
-		move.l     a1,172(a6)
+		move.l     a1,strdesc_start(a6)
 GarColl_1:
 		movem.l    (a7)+,d0/a0-a3
 		rts
@@ -2888,7 +2920,7 @@ x113e0:
 		moveq.l    #0,d7
 		tst.w      d0
 		bmi.s      x113e0_1
-		lea.l      2314(a6),a1
+		lea.l      o2314(a6),a1
 		cmpa.l     a1,a0
 		bcs.s      x113e0_2
 		mulu.w     #6,d0
@@ -3401,8 +3433,8 @@ x1185c_2:
 x1185c_3:
 		move.l     a0,(a1)+
 		dbf        d0,x1185c_3
-		move.l     d1,(a1)+ /* 172(a6) */
-		move.l     d1,(a1)+ /* 176(a6) */
+		move.l     d1,(a1)+ /* strdesc_start(a6) */
+		move.l     d1,(a1)+ /* strdesc_end(a6) */
 		move.l     d1,x10cae
 		move.l     d1,(a1)+ /* 180(a6) */
 		clr.l      (a1)+ /* 184(a6) */
@@ -3430,7 +3462,7 @@ x118e2:
 x118e2_1:
 		clr.w      698(a6)
 		bsr        x119be
-		move.l     176(a6),172(a6)
+		move.l     strdesc_end(a6),strdesc_start(a6)
 		movea.l    ptr_table+35*4(a6),a0
 		move.l     ptr_table+36*4(a6),d0
 		sub.l      a0,d0
@@ -3539,8 +3571,8 @@ x119be_1:
 		movea.l    x10cae.l,a1
 		suba.l     d1,a1
 		subq.l     #8,a1
-		move.l     a1,176(a6)
-		move.l     a1,172(a6)
+		move.l     a1,strdesc_end(a6)
+		move.l     a1,strdesc_start(a6)
 		lsr.l      #1,d1
 		movea.l    ptr_table+16*4(a6),a0
 		move.w     #0x8000,d4
@@ -3650,7 +3682,7 @@ x11ae6:    .dc.w 0
 
 x11ae8:
 		movea.l    ptr_table+17*4(a6),a1
-		movea.l    176(a6),a2
+		movea.l    strdesc_end(a6),a2
 		move.l     a1,ptr_table+18*4(a6)
 		rts
 
@@ -7395,7 +7427,7 @@ x1395a_9:
 		pea.l      (a0)
 		lea.l      jmpbase(pc),a2
 		jsr        0(a2,d0.w)
-		tst.b      d7
+		tst.b      d7 /* does not come back here in call to f14bde */
 		beq.s      x1395a_3
 /* error */
 x1395a_10:
@@ -8125,6 +8157,7 @@ x13f6b:
 		.dc.b ARG_PUSH,((x13f77-jmpbase)>>8)&255,(x13f77-jmpbase)&255
 		.dc.b TOK_LINE_COMMENT
 		.dc.b ARG_END
+
 x13f77:
 		.dc.b ARG_PUSH,((x1503f-jmpbase)>>8)&255,(x1503f-jmpbase)&255
 		.dc.b 32
@@ -8171,7 +8204,7 @@ x13fab:
 
 ymat_PRINT_args:
 		.dc.b ARG_REPLACE,102
-		.dc.b ARG_PUSH,((x15252-jmpbase)>>8)&255,(x15252-jmpbase)&255
+		.dc.b ARG_PUSH,((print_channel_args-jmpbase)>>8)&255,(print_channel_args-jmpbase)&255
 		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
 		.dc.b 32
 		.dc.b ARG_PUSH,((x13fbe-jmpbase)>>8)&255,(x13fbe-jmpbase)&255
@@ -8188,7 +8221,7 @@ x13fbe:
 
 ymat_INPUT_args:
 		.dc.b ARG_REPLACE,116
-		.dc.b ARG_PUSH,((x15252-jmpbase)>>8)&255,(x15252-jmpbase)&255
+		.dc.b ARG_PUSH,((print_channel_args-jmpbase)>>8)&255,(print_channel_args-jmpbase)&255
 		.dc.b ARG_PUSH,((x13fd3-jmpbase)>>8)&255,(x13fd3-jmpbase)&255
 		.dc.b ARG_END
 
@@ -8270,12 +8303,14 @@ x1402b:
 		.dc.b 185
 		.dc.b TOK_LINE_COMMENT
 		.dc.b ARG_END
+
 ySSORT_args:
 yQSORT_args:
 		.dc.b ARG_PUSH,((x14039-jmpbase)>>8)&255,(x14039-jmpbase)&255
 		.dc.b ARG_PUSH,((x14066-jmpbase)>>8)&255,(x14066-jmpbase)&255
 		.dc.b TOK_LINE_COMMENT
 		.dc.b ARG_END
+
 x14039:
 		.dc.b ARG_CALL_FUNC,((expect_string_arr-jmpbase)>>8)&255,(expect_string_arr-jmpbase)&255
 		.dc.b ARG_PUSH,((x14076-jmpbase)>>8)&255,(x14076-jmpbase)&255
@@ -8285,17 +8320,20 @@ x14039:
 		.dc.b ARG_PUSH,((x1436a-jmpbase)>>8)&255,(x1436a-jmpbase)&255
 		.dc.b ARG_PUSH,((x14076-jmpbase)>>8)&255,(x14076-jmpbase)&255
 		.dc.b ARG_END
+
 x1404d:
 		.dc.b 114
 		.dc.b ARG_PUSH,((x1405a-jmpbase)>>8)&255,(x1405a-jmpbase)&255
 		.dc.b 32
 		.dc.b ARG_POP
 		.dc.b ARG_END
+
 x14054:
 		.dc.b 109
 		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
 		.dc.b ARG_POP
 		.dc.b ARG_END
+
 x1405a:
 		.dc.b ARG_CALL_FUNC,((expect_int_arr-jmpbase)>>8)&255,(expect_int_arr-jmpbase)&255
 		.dc.b ARG_POP
@@ -9080,7 +9118,7 @@ yLINE_args:
 		.dc.b -6
 		.dc.b 249,52
 		.dc.b ARG_PUSH,((x14213-jmpbase)>>8)&255,(x14213-jmpbase)&255
-		.dc.b ARG_PUSH,((x15252-jmpbase)>>8)&255,(x15252-jmpbase)&255
+		.dc.b ARG_PUSH,((print_channel_args-jmpbase)>>8)&255,(print_channel_args-jmpbase)&255
 		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
 		.dc.b ARG_PUSH,((x1442e-jmpbase)>>8)&255,(x1442e-jmpbase)&255
 		.dc.b TOK_LINE_COMMENT
@@ -9335,16 +9373,18 @@ x144f6:
 		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
 		.dc.b ARG_END
 x144ff:
-		.dc.b 77
+		.dc.b TOK_CHANNEL
 		.dc.b -6
 		.dc.b ARG_POP
 		.dc.b ARG_END
+
 x14503:
-		.dc.b 77
+		.dc.b TOK_CHANNEL
 		.dc.b ARG_PUSH,((x14570-jmpbase)>>8)&255,(x14570-jmpbase)&255
 		.dc.b 33
 		.dc.b ARG_POP
 		.dc.b ARG_END
+
 yFILESELECT_args:
 yFILES_args:
 		.dc.b ARG_CALL_FUNC,((f13d6a-jmpbase)>>8)&255,(f13d6a-jmpbase)&255
@@ -9546,7 +9586,7 @@ yTRON_args:
 		.dc.b TOK_LINE_COMMENT
 		.dc.b ARG_POP
 		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b 77
+		.dc.b TOK_CHANNEL
 		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
 		.dc.b ARG_POP
 		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
@@ -9554,7 +9594,7 @@ yTRON_args:
 		.dc.b TOK_LINE_COMMENT
 		.dc.b ARG_END
 x14628:
-		.dc.b 77
+		.dc.b TOK_CHANNEL
 		.dc.b -6
 		.dc.b ARG_REPLACE,28
 		.dc.b ARG_POP
@@ -9567,24 +9607,28 @@ yCLEAR_args:
 		.dc.b ARG_PUSH,((x1463c-jmpbase)>>8)&255,(x1463c-jmpbase)&255
 		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
 		.dc.b ARG_END
+
 x1463c:
-		.dc.b 77
+		.dc.b TOK_CHANNEL
 		.dc.b -6
 		.dc.b ARG_REPLACE,34
 		.dc.b ARG_POP
 		.dc.b ARG_REPLACE,32
 		.dc.b ARG_END
+
 yFULLW_args:
 		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
 		.dc.b ARG_POP
-		.dc.b 77
+		.dc.b TOK_CHANNEL
 		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
 		.dc.b ARG_END
+
 yTOUCH_args:
 yTOPW_args:
 		.dc.b ARG_PUSH,((x144ff-jmpbase)>>8)&255,(x144ff-jmpbase)&255
 		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
 		.dc.b ARG_END
+
 yTITLEW_args:
 ySTRPOKE_args:
 yINFOW_args:
@@ -9763,12 +9807,13 @@ yDEFFILL_args:
 		.dc.b 33
 		.dc.b ARG_PUSH,((yCHDIR_args-jmpbase)>>8)&255,(yCHDIR_args-jmpbase)&255
 		.dc.b ARG_END
+
 yCLIP_args:
-		.dc.b 175
+		.dc.b TOK_OFF
 		.dc.b TOK_LINE_COMMENT
 		.dc.b ARG_POP
 		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b 77
+		.dc.b TOK_CHANNEL
 		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
 		.dc.b ARG_PUSH,((x14aa3-jmpbase)>>8)&255,(x14aa3-jmpbase)&255
 		.dc.b TOK_LINE_COMMENT
@@ -9798,7 +9843,7 @@ yDMASOUND_args:
 ySOUND_args:
 		.dc.b ARG_PUSH,((x1503f-jmpbase)>>8)&255,(x1503f-jmpbase)&255
 		.dc.b ARG_PUSH,((x144eb-jmpbase)>>8)&255,(x144eb-jmpbase)&255
-		.dc.b 77
+		.dc.b TOK_CHANNEL
 		.dc.b ARG_PUSH,((x147b9-jmpbase)>>8)&255,(x147b9-jmpbase)&255
 		.dc.b ARG_POP
 
@@ -9816,18 +9861,20 @@ x147b9:
 		.dc.b ARG_POP
 		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
 		.dc.b ARG_END
+
 yOUT_args:
 		.dc.b ARG_PUSH,((x147d8-jmpbase)>>8)&255,(x147d8-jmpbase)&255
 		.dc.b ARG_POP
 		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b 77
+		.dc.b TOK_CHANNEL
 		.dc.b ARG_PUSH,((x147d8-jmpbase)>>8)&255,(x147d8-jmpbase)&255
 		.dc.b ARG_POP
 		.dc.b ARG_CALL_FUNC,((f13de4-jmpbase)>>8)&255,(f13de4-jmpbase)&255
-		.dc.b 77
+		.dc.b TOK_CHANNEL
 		.dc.b ARG_PUSH,((x147d8-jmpbase)>>8)&255,(x147d8-jmpbase)&255
 		.dc.b ARG_POP
 		.dc.b ARG_CALL_FUNC,((f13de4-jmpbase)>>8)&255,(f13de4-jmpbase)&255
+
 x147d8:
 		.dc.b ARG_PUSH,((x1503f-jmpbase)>>8)&255,(x1503f-jmpbase)&255
 		.dc.b ARG_PUSH,((x147e0-jmpbase)>>8)&255,(x147e0-jmpbase)&255
@@ -10239,6 +10286,7 @@ ySWAP_args:
 		.dc.b ARG_PUSH,((x143ad-jmpbase)>>8)&255,(x143ad-jmpbase)&255
 		.dc.b TOK_LINE_COMMENT
 		.dc.b ARG_END
+
 yMENU_args:
 yMENU_KILL_args:
 yMENU_OFF_args:
@@ -10247,12 +10295,12 @@ yMENU_OFF_args:
 		.dc.b TOK_LINE_COMMENT
 		.dc.b ARG_POP
 		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b 175
+		.dc.b TOK_OFF
 		.dc.b -6
 		.dc.b TOK_LINE_COMMENT
 		.dc.b ARG_POP
 		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b 176
+		.dc.b TOK_KILL
 		.dc.b -6
 		.dc.b TOK_LINE_COMMENT
 		.dc.b ARG_POP
@@ -10558,10 +10606,12 @@ x14b49:
 		.dc.b ARG_PUSH,((x14b4f-jmpbase)>>8)&255,(x14b4f-jmpbase)&255
 		.dc.b ARG_POP
 		.dc.b ARG_END
+
 x14b4f:
 		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
 		.dc.b ARG_PUSH,((x14b56-jmpbase)>>8)&255,(x14b56-jmpbase)&255
 		.dc.b ARG_END
+
 x14b56:
 		.dc.b 71
 		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
@@ -10617,7 +10667,6 @@ x14b91:
 x14b96:
 		.dc.b ARG_CALL_FUNC,((f158f8-jmpbase)>>8)&255,(f158f8-jmpbase)&255
 		.dc.b ARG_POP
-
 x14b9a:
 x585e8:
 		.dc.b ARG_PUSH,((x14ba8-jmpbase)>>8)&255,(x14ba8-jmpbase)&255
@@ -10626,6 +10675,7 @@ x585e8:
 		.dc.b ARG_PUSH,((x14bb2-jmpbase)>>8)&255,(x14bb2-jmpbase)&255
 		.dc.b ARG_PUSH,((x14bc8-jmpbase)>>8)&255,(x14bc8-jmpbase)&255
 		.dc.b ARG_END
+
 x14ba8:
 		.dc.b 6
 		.dc.b ARG_REPLACE,29
@@ -10635,6 +10685,7 @@ x14ba8:
 		.dc.b ARG_POP
 		.dc.b 31
 		.dc.b ARG_END
+
 x14bb2:
 		.dc.b ARG_CALL_FUNC,((f13c9a-jmpbase)>>8)&255,(f13c9a-jmpbase)&255
 		.dc.b ARG_POP
@@ -10646,11 +10697,13 @@ x14bb2:
 		.dc.b ARG_POP
 		.dc.b ARG_PUSH,((x1433a-jmpbase)>>8)&255,(x1433a-jmpbase)&255
 		.dc.b ARG_END
+
 x14bc8:
 		.dc.b ARG_CALL_FUNC,((f1369a-jmpbase)>>8)&255,(f1369a-jmpbase)&255
 		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
 		.dc.b ARG_POP
 		.dc.b ARG_END
+
 x14bd0:
 		.dc.b ARG_CALL_FUNC,((f14bde-jmpbase)>>8)&255,(f14bde-jmpbase)&255
 		.dc.b ARG_POP
@@ -10666,63 +10719,61 @@ x14bd0:
 f14bde:
 		bsr        find_function
 		lea.l      offset_table_pf(pc),a2
-
-x14be6:
 		move.w     d6,d0
-		bpl.s      x14be6_1
+		bpl.s      f14bde_1
 	.IFNE GBE
 		cmpi.w     #(TOK_SUBFUNC_208<<8)+255,d0
-		bls.s      x14be6_208
+		bls.s      f14bde_208
 		cmpi.w     #(TOK_SUBFUNC_209<<8)+255,d0
-		bls.s      x14be6_209
+		bls.s      f14bde_209
 		cmpi.w     #(TOK_SUBFUNC_210<<8)+255,d0
-		bls.s      x14be6_210
+		bls.s      f14bde_210
 		cmpi.w     #(TOK_SUBFUNC_211<<8)+255,d0
-		bls.s      x14be6_211
+		bls.s      f14bde_211
 		cmpi.w     #(TOK_SUBFUNC_212<<8)+255,d0
-		bls.s      x14be6_212
+		bls.s      f14bde_212
 		cmpi.w     #(TOK_SUBFUNC_213<<8)+255,d0
-		bls.s      x14be6_213
+		bls.s      f14bde_213
 		cmpi.w     #(TOK_SUBFUNC_214<<8)+255,d0
 		bhi        f13c9a_6
-x14be6_214:
+f14bde_214:
 		lea.l      offset_table_sf214(pc),a2
 		move.b     #TOK_SUBFUNC_214,(a1)+ /* secondary function table */
-		bra.s      x14be6_subfunc
-x14be6_213:
+		bra.s      f14bde_subfunc
+f14bde_213:
 		lea.l      offset_table_sf213(pc),a2
 		move.b     #TOK_SUBFUNC_213,(a1)+ /* secondary function table */
-		bra.s      x14be6_subfunc
-x14be6_212:
+		bra.s      f14bde_subfunc
+f14bde_212:
 	.IF GBE>=373
 		lea.l      offset_table_sf212(pc),a2
 	.ELSE
 		lea.l      offset_table_sf214(pc),a2
 	.ENDC
 		move.b     #TOK_SUBFUNC_212,(a1)+ /* secondary function table */
-		bra.s      x14be6_subfunc
-x14be6_211:
+		bra.s      f14bde_subfunc
+f14bde_211:
 		lea.l      offset_table_sf211(pc),a2
 		move.b     #TOK_SUBFUNC_211,(a1)+ /* secondary function table */
-		bra.s      x14be6_subfunc
-x14be6_210:
+		bra.s      f14bde_subfunc
+f14bde_210:
 		lea.l      offset_table_sf210(pc),a2
 		move.b     #TOK_SUBFUNC_210,(a1)+ /* secondary function table */
-		bra.s      x14be6_subfunc
-x14be6_209:
+		bra.s      f14bde_subfunc
+f14bde_209:
 		lea.l      offset_table_sf209(pc),a2
 		move.b     #TOK_SUBFUNC_209,(a1)+ /* secondary function table */
-		bra.s      x14be6_subfunc
+		bra.s      f14bde_subfunc
 	.ELSE
 		cmpi.w     #(TOK_SUBFUNC_208<<8)+255,d0 /* token in range? */
 		bhi        f13c9a_6
 	.ENDC
-x14be6_208:
+f14bde_208:
 		lea.l      offset_table_sf208(pc),a2
 		move.b     #TOK_SUBFUNC_208,(a1)+ /* secondary function table */
-x14be6_subfunc:
+f14bde_subfunc:
 		andi.w     #255,d0
-x14be6_1:
+f14bde_1:
 		move.b     d0,(a1)+
 		move.b     0(a2,d0.w),d0
 		beq        f13c9a_6
@@ -10897,6 +10948,7 @@ x14c92:
 		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
 		.dc.b 32
 		.dc.b ARG_END
+
 x14c97:
 		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
 		.dc.b ARG_PUSH,((x14c9f-jmpbase)>>8)&255,(x14c9f-jmpbase)&255
@@ -10952,6 +11004,7 @@ x14cdf:
 		.dc.b ARG_REPLACE,9
 		.dc.b ARG_PUSH,((x14cfd-jmpbase)>>8)&255,(x14cfd-jmpbase)&255
 		.dc.b ARG_END
+
 x14ce8:
 		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
 x14ceb:
@@ -10972,6 +11025,7 @@ x14d00:
 		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
 x14d03:
 		.dc.b ARG_END
+
 x14d04:
 		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
 		.dc.b 32
@@ -11043,1339 +11097,1339 @@ x14d2b:
 /* 373: 596bf */
 x14d34:
 offset_table_pf:
-		.dc.b 0x5a /* 0 */
-		.dc.b 0x5c /* 1 */
-		.dc.b 0x5e /* 2 */
-		.dc.b 0x62 /* 3 */
-		.dc.b 0x60 /* 4 */
-		.dc.b 0x00 /* 5 */
-		.dc.b 0x00 /* 6 */
-		.dc.b 0x4a /* 7 */
-		.dc.b 0x00 /* 8 */
-		.dc.b 0x00 /* 9 */
-		.dc.b 0x58 /* 10 */
-		.dc.b 0x56 /* 11 */
-		.dc.b 0x00 /* 12 */
-		.dc.b 0x00 /* 13 */
-		.dc.b 0x00 /* 14 */
-		.dc.b 0x00 /* 15 */
-		.dc.b 0x00 /* 16 */
-		.dc.b 0x00 /* 17 */
-		.dc.b 0x00 /* 18 */
-		.dc.b 0x00 /* 19 */
-		.dc.b 0x00 /* 20 */
-		.dc.b 0x00 /* 21 */
-		.dc.b 0x00 /* 22 */
-		.dc.b 0x00 /* 23 */
-		.dc.b 0x00 /* 24 */
-		.dc.b 0x00 /* 25 */
-		.dc.b 0x00 /* 26 */
-		.dc.b 0x00 /* 27 */
-		.dc.b 0x00 /* 28 */
-		.dc.b 0x00 /* 29 */
-		.dc.b 0x00 /* 30 */
-		.dc.b 0x00 /* 31 */
-		.dc.b 0x00 /* 32 */
-		.dc.b 0x00 /* 33 */
-		.dc.b 0x00 /* 34 */
-		.dc.b 0x0c /* 35 */
-		.dc.b 0x00 /* 36 */
-		.dc.b 0x0c /* 37 */
-		.dc.b 0x0c /* 38 */
-		.dc.b 0x0c /* 39 */
-		.dc.b 0x0c /* 40 */
-		.dc.b 0x0c /* 41 */
-		.dc.b 0x0c /* 42 */
-		.dc.b 0x0c /* 43 */
-		.dc.b 0x0c /* 44 */
-		.dc.b 0x00 /* 45 */
-		.dc.b 0x00 /* 46 */
-		.dc.b 0x0c /* 47 */
-		.dc.b 0x0c /* 48 */
-		.dc.b 0x0c /* 49 */
-		.dc.b 0x00 /* 50 */
-		.dc.b 0x00 /* 51 */
-		.dc.b 0x00 /* 52 */
-		.dc.b 0x0e /* 53 */
-		.dc.b 0x00 /* 54 */
-		.dc.b 0x00 /* 55 */
-		.dc.b 0x00 /* 56 */
-		.dc.b 0x10 /* 57 */
-		.dc.b 0x00 /* 58 */
-		.dc.b 0x00 /* 59 */
-		.dc.b 0x00 /* 60 */
-		.dc.b 0x00 /* 61 */
-		.dc.b 0x00 /* 62 */
-		.dc.b 0x00 /* 63 */
-		.dc.b 0x00 /* 64 */
-		.dc.b 0x0c /* 65 */
-		.dc.b 0x00 /* 66 */
-		.dc.b 0x00 /* 67 */
-		.dc.b 0x00 /* 68 */
-		.dc.b 0x00 /* 69 */
-		.dc.b 0x00 /* 70 */
-		.dc.b 0x00 /* 71 */
-		.dc.b 0x00 /* 72 */
-		.dc.b 0x00 /* 73 */
-		.dc.b 0x00 /* 74 */
-		.dc.b 0x00 /* 75 */
-		.dc.b 0x00 /* 76 */
-		.dc.b 0x00 /* 77 */
-		.dc.b 0x0c /* 78 */
-		.dc.b 0x10 /* 79 */
-		.dc.b 0x00 /* 80 */
-		.dc.b 0x00 /* 81 */
-		.dc.b 0x0c /* 82 */
-		.dc.b 0x00 /* 83 */
-		.dc.b 0x0c /* 84 */
-		.dc.b 0x10 /* 85 */
-		.dc.b 0x0c /* 86 */
-		.dc.b 0x00 /* 87 */
-		.dc.b 0x00 /* 88 */
-		.dc.b 0x00 /* 89 */
-		.dc.b 0x00 /* 90 */
-		.dc.b 0x00 /* 91 */
-		.dc.b 0x12 /* 92 */
-		.dc.b 0x12 /* 93 */
-		.dc.b 0x00 /* 94 */
-		.dc.b 0x00 /* 95 */
-		.dc.b 0x00 /* 96 */
-		.dc.b 0x00 /* 97 */
-		.dc.b 0x00 /* 98 */
-		.dc.b 0x00 /* 99 */
-		.dc.b 0x00 /* 100 */
-		.dc.b 0x00 /* 101 */
-		.dc.b 0x00 /* 102 */
-		.dc.b 0x0c /* 103 */
-		.dc.b 0x0c /* 104 */
-		.dc.b 0x0e /* 105 */
-		.dc.b 0x0e /* 106 */
-		.dc.b 0x0e /* 107 */
-		.dc.b 0x00 /* 108 */
-		.dc.b 0x00 /* 109 */
-		.dc.b 0x0c /* 110 */
-		.dc.b 0x00 /* 111 */
-		.dc.b 0x64 /* 112 */
-		.dc.b 0x00 /* 113 */
-		.dc.b 0x00 /* 114 */
-		.dc.b 0x00 /* 115 */
-		.dc.b 0x00 /* 116 */
-		.dc.b 0x42 /* 117 */
-		.dc.b 0x42 /* 118 */
-		.dc.b 0x42 /* 119 */
-		.dc.b 0x42 /* 120 */
-		.dc.b 0x12 /* 121 */
-		.dc.b 0x00 /* 122 */
-		.dc.b 0x0c /* 123 */
-		.dc.b 0x00 /* 124 */
-		.dc.b 0x0c /* 125 */
-		.dc.b 0x00 /* 126 */
-		.dc.b 0x00 /* 127 */
-		.dc.b 0x00 /* 128 */
-		.dc.b 0x00 /* 129 */
-		.dc.b 0x00 /* 130 */
-		.dc.b 0x00 /* 131 */
-		.dc.b 0x00 /* 132 */
-		.dc.b 0x00 /* 133 */
-		.dc.b 0x02 /* 134 */
-		.dc.b 0x00 /* 135 */
-		.dc.b 0x00 /* 136 */
-		.dc.b 0x00 /* 137 */
-		.dc.b 0x00 /* 138 */
-		.dc.b 0x00 /* 139 */
-		.dc.b 0x02 /* 140 */
-		.dc.b 0x04 /* 141 */
+		.dc.b 0x5a /*   0  AND  */
+		.dc.b 0x5c /*   1  OR  */
+		.dc.b 0x5e /*   2  XOR  */
+		.dc.b 0x62 /*   3  IMP  */
+		.dc.b 0x60 /*   4  EQV  */
+		.dc.b 0    /*   5 - */
+		.dc.b 0    /*   6 + */
+		.dc.b 0x4a /*   7 * */
+		.dc.b 0    /*   8 / */
+		.dc.b 0    /*   9 ^ */
+		.dc.b 0x58 /*  10  MOD  */
+		.dc.b 0x56 /*  11  DIV  */
+		.dc.b 0    /*  12 <> */
+		.dc.b 0    /*  13 <= */
+		.dc.b 0    /*  14 =< */
+		.dc.b 0    /*  15 >= */
+		.dc.b 0    /*  16 => */
+		.dc.b 0    /*  17 < */
+		.dc.b 0    /*  18 > */
+		.dc.b 0    /*  19 = */
+		.dc.b 0    /*  20 <> */
+		.dc.b 0    /*  21 <= */
+		.dc.b 0    /*  22 =< */
+		.dc.b 0    /*  23 >= */
+		.dc.b 0    /*  24 => */
+		.dc.b 0    /*  25 < */
+		.dc.b 0    /*  26 > */
+		.dc.b 0    /*  27 = */
+		.dc.b 0    /*  28 + */
+		.dc.b 0    /*  29 + */
+		.dc.b 0    /*  30 - */
+		.dc.b 0    /*  31 NOT  */
+		.dc.b 0    /*  32 ) */
+		.dc.b 0    /*  33 , */
+		.dc.b 0    /*  34 ; */
+		.dc.b 0x0c /*  35 ( */
+		.dc.b 0    /*  36 ERR$( */
+		.dc.b 0x0c /*  37 INT( */
+		.dc.b 0x0c /*  38 TRUNC( */
+		.dc.b 0x0c /*  39 FRAC( */
+		.dc.b 0x0c /*  40 ABS( */
+		.dc.b 0x0c /*  41 SIN( */
+		.dc.b 0x0c /*  42 COS( */
+		.dc.b 0x0c /*  43 TAN( */
+		.dc.b 0x0c /*  44 ATN( */
+		.dc.b 0    /*  45 == */
+		.dc.b 0    /*  46 ( */
+		.dc.b 0x0c /*  47 EXP( */
+		.dc.b 0x0c /*  48 LOG( */
+		.dc.b 0x0c /*  49 LOG10( */
+		.dc.b 0    /*  50 VAR  */
+		.dc.b 0    /*  51 ) */
+		.dc.b 0    /*  52 INPAUX$ */
+		.dc.b 0x0e /*  53 VAL( */
+		.dc.b 0    /*  54 INPMID$ */
+		.dc.b 0    /*  55  */
+		.dc.b 0    /*  56 TIME$ */
+		.dc.b 0x10 /*  57 )= */
+		.dc.b 0    /*  58 LEFT$( */
+		.dc.b 0    /*  59 LEFT$( */
+		.dc.b 0    /*  60 RIGHT$( */
+		.dc.b 0    /*  61 RIGHT$( */
+		.dc.b 0    /*  62 MID$( */
+		.dc.b 0    /*  63 MID$( */
+		.dc.b 0    /*  64 , */
+		.dc.b 0x0c /*  65 ASIN( */
+		.dc.b 0    /*  66 CHR$( */
+		.dc.b 0    /*  67 }= */
+		.dc.b 0    /*  68 ]= */
+		.dc.b 0    /*  69 = */
+		.dc.b 0    /*  70 */
+		.dc.b 0    /*  71  TO  */
+		.dc.b 0    /*  72  STEP  */
+		.dc.b 0    /*  73  DOWNTO  */
+		.dc.b 0    /*  74  THEN */
+		.dc.b 0    /*  75  GOTO  */
+		.dc.b 0    /*  76  GOSUB  */
+		.dc.b 0    /*  77 # */
+		.dc.b 0x0c /*  78 SQR( */
+		.dc.b 0x10 /*  79 PI */
+		.dc.b 0    /*  80 [ */
+		.dc.b 0    /*  81 ] */
+		.dc.b 0x0c /*  82 ACOS( */
+		.dc.b 0    /*  83 INKEY$ */
+		.dc.b 0x0c /*  84 RND( */
+		.dc.b 0x10 /*  85 RND */
+		.dc.b 0x0c /*  86 RANDOM( */
+		.dc.b 0    /*  87 ' */
+		.dc.b 0    /*  88 } */
+		.dc.b 0    /*  89 AT( */
+		.dc.b 0    /*  90 IF */
+		.dc.b 0    /*  91 \\ */
+		.dc.b 0x12 /*  92 FLOAT{ */
+		.dc.b 0x12 /*  93 DOUBLE{ */
+		.dc.b 0    /*  94 INPUT$( */
+		.dc.b 0    /*  95 INPUT$( */
+		.dc.b 0    /*  96 INPUT */
+		.dc.b 0    /*  97 CHAR{ */
+		.dc.b 0    /*  98 MKI$( */
+		.dc.b 0    /*  99 MKL$( */
+		.dc.b 0    /* 100 MKS$( */
+		.dc.b 0    /* 101 MKF$( */
+		.dc.b 0    /* 102 MKD$( */
+		.dc.b 0x0c /* 103 DEG( */
+		.dc.b 0x0c /* 104 RAD( */
+		.dc.b 0x0e /* 105 CVS( */
+		.dc.b 0x0e /* 106 CVF( */
+		.dc.b 0x0e /* 107 CVD( */
+		.dc.b 0    /* 108  AS  */
+		.dc.b 0    /* 109  OFFSET  */
+		.dc.b 0x0c /* 110 CFLOAT( */
+		.dc.b 0    /* 111 TRACE$ */
+		.dc.b 0x64 /* 112 ROUND( */
+		.dc.b 0    /* 113 ROUND( */
+		.dc.b 0    /* 114  WITH  */
+		.dc.b 0    /* 115 BIN$( */
+		.dc.b 0    /* 116 BIN$( */
+		.dc.b 0x42 /* 117 MIN( */
+		.dc.b 0x42 /* 118 MIN( */
+		.dc.b 0x42 /* 119 MAX( */
+		.dc.b 0x42 /* 120 MAX( */
+		.dc.b 0x12 /* 121 SINGLE{ */
+		.dc.b 0    /* 122  AT( */
+		.dc.b 0x0c /* 123 SINQ( */
+		.dc.b 0    /* 124 : */
+		.dc.b 0x0c /* 125 COSQ( */
+		.dc.b 0    /* 126 DATE$ */
+		.dc.b 0    /* 127 UPPER$( */
+		.dc.b 0    /* 128 SPACE$( */
+		.dc.b 0    /* 129 STRING$( */
+		.dc.b 0    /* 130 STRING$( */
+		.dc.b 0    /* 131 SUCC( */
+		.dc.b 0    /* 132 DIR$( */
+		.dc.b 0    /* 133 PRED( */
+		.dc.b 0x02 /* 134 DRAW( */
+		.dc.b 0    /* 135 TRIM$( */
+		.dc.b 0    /* 136 CMDLINE$ */
+		.dc.b 0    /* 137 CURDIR$ */
+		.dc.b 0    /* 138 L: */
+		.dc.b 0    /* 139 W: */
+		.dc.b 0x02 /* 140 FACT( */
+		.dc.b 0x04 /* 141 COMBIN( */
 	.IF GBE>=372
-		.dc.b 0x00 /* 142 */
+		.dc.b 0    /* 142 ENVIRON$( */
 	.ELSE
-		.dc.b 0x0c /* 142 */
+		.dc.b 0x0c /* 142 ENVIRON$(*/
 	.ENDC
-		.dc.b 0x04 /* 143 */
-		.dc.b 0x00 /* 144 */
-		.dc.b 0x00 /* 145 */
-		.dc.b 0x00 /* 146 */
-		.dc.b 0x00 /* 147 */
-		.dc.b 0x00 /* 148 */
-		.dc.b 0x00 /* 149 */
-		.dc.b 0x00 /* 150 */
-		.dc.b 0x00 /* 151 */
-		.dc.b 0x00 /* 152 */
-		.dc.b 0x00 /* 153 */
-		.dc.b 0x00 /* 154 */
-		.dc.b 0x0c /* 155 */
-		.dc.b 0x00 /* 156 */
-		.dc.b 0x00 /* 157 */
-		.dc.b 0x00 /* 158 */
-		.dc.b 0x00 /* 159 */
-		.dc.b 0x00 /* 160 */
-		.dc.b 0x00 /* 161 */
-		.dc.b 0x00 /* 162 */
-		.dc.b 0x00 /* 163 */
-		.dc.b 0x00 /* 164 */
-		.dc.b 0x00 /* 165 */
-		.dc.b 0x00 /* 166 */
-		.dc.b 0x00 /* 167 */
-		.dc.b 0x00 /* 168 */
+		.dc.b 0x04 /* 143 VARIAT( */
+		.dc.b 0    /* 144 LTRIM$( */
+		.dc.b 0    /* 145 RTRIM$( */
+		.dc.b 0    /* 146 LCASE$( */
+		.dc.b 0    /* 147 UCASE$( */
+		.dc.b 0    /* 148 LOWER$( */
+		.dc.b 0    /* 149 OB_TEXT$( */
+		.dc.b 0    /* 150 ZTRIM$( */
+		.dc.b 0    /* 151 ERROR */
+		.dc.b 0    /* 152 STOP */
+		.dc.b 0    /* 153 BREAK */
+		.dc.b 0    /* 154  CONT */
+		.dc.b 0x0c /* 155 FIX( */
+		.dc.b 0    /* 156 , */
+		.dc.b 0    /* 157 ( */
+		.dc.b 0    /* 158 FN  */
+		.dc.b 0    /* 159 @ */
+		.dc.b 0    /* 160 MIRROR$( */
+		.dc.b 0    /* 161 TAB( */
+		.dc.b 0    /* 162 SPC( */
+		.dc.b 0    /* 163 USING  */
+		.dc.b 0    /* 164 CHAR$( */
+		.dc.b 0    /* 165 TIME$( */
+		.dc.b 0    /* 166 TIMESTAMP$( */
+		.dc.b 0    /* 167 MENU */
+		.dc.b 0    /* 168 NEXT */
 	.IF GBE>=372
-		.dc.b 0x00 /* 169 */
+		.dc.b 0    /* 169 STRPEEK$( */
 	.ELSE
-		.dc.b 0x10 /* 169 */
+		.dc.b 0x10 /* 169 STRPEEK$( */
 	.ENDC
-		.dc.b 0x00 /* 170 */
-		.dc.b 0x00 /* 171 */
-		.dc.b 0x00 /* 172 */
-		.dc.b 0x00 /* 173 */
-		.dc.b 0x00 /* 174 */
-		.dc.b 0x00 /* 175 */
-		.dc.b 0x00 /* 176 */
-		.dc.b 0x00 /* 177 */
-		.dc.b 0x00 /* 178 */
-		.dc.b 0x00 /* 179 */
-		.dc.b 0x00 /* 180 */
-		.dc.b 0x00 /* 181 */
-		.dc.b 0x00 /* 182 */
+		.dc.b 0    /* 170 KEY */
+		.dc.b 0    /* 171 BUTTON */
+		.dc.b 0    /* 172 IBOX */
+		.dc.b 0    /* 173 OBOX */
+		.dc.b 0    /* 174 MESSAGE */
+		.dc.b 0    /* 175 OFF */
+		.dc.b 0    /* 176 KILL */
+		.dc.b 0    /* 177 DIGITAL$( */
+		.dc.b 0    /* 178 REPLACE$( */
+		.dc.b 0    /* 179 CRYPT$( */
+		.dc.b 0    /* 180 XLATE$( */
+		.dc.b 0    /* 181 STRUCT$( */
+		.dc.b 0    /* 182 BASE  */
 	.IF GBE>=372
-		.dc.b 0x10 /* 183 */
+		.dc.b 0x10 /* 183 NULL */
 	.ELSE
-		.dc.b 0x00 /* 183 */
+		.dc.b 0    /* 183 NULL */
 	.ENDC
-		.dc.b 0x00 /* 184 */
-		.dc.b 0x00 /* 185 */
-		.dc.b 0x00 /* 186 */
-		.dc.b 0x00 /* 187 */
-		.dc.b 0x10 /* 188 */
-		.dc.b 0x10 /* 189 */
-		.dc.b 0x00 /* 190 */
-		.dc.b 0x00 /* 191 */
-		.dc.b 0x00 /* 192 */
-		.dc.b 0x00 /* 193 */
+		.dc.b 0    /* 184 0 */
+		.dc.b 0    /* 185 1 */
+		.dc.b 0    /* 186 2 */
+		.dc.b 0    /* 187 3 */
+		.dc.b 0x10 /* 188 TRUE */
+		.dc.b 0x10 /* 189 FALSE */
+		.dc.b 0    /* 190 STR$( */
+		.dc.b 0    /* 191 STR$( */
+		.dc.b 0    /* 192 STR$( */
+		.dc.b 0    /* 193 HEX$( */
 	.IF GBE>=372
-		.dc.b 0x00 /* 194 */
+		.dc.b 0    /* 194 HEX$( */
 	.ELSE
-		.dc.b 0x10 /* 194 */
+		.dc.b 0x10 /* 194 HEX$(*/
 	.ENDC
-		.dc.b 0x00 /* 195 */
+		.dc.b 0    /* 195 OCT$( */
 	.IF GBE>=372
-		.dc.b 0x00 /* 196 */
+		.dc.b 0    /* 196 OCT$(*/
 	.ENDC
 
 offset_table_sf208:
-		.dc.b 0x04 /* 0 */
-		.dc.b 0x04 /* 1 */
-		.dc.b 0x04 /* 2 */
-		.dc.b 0x04 /* 3 */
-		.dc.b 0x04 /* 4 */
-		.dc.b 0x04 /* 5 */
-		.dc.b 0x04 /* 6 */
-		.dc.b 0x04 /* 7 */
-		.dc.b 0x04 /* 8 */
-		.dc.b 0x04 /* 9 */
-		.dc.b 0x04 /* 10 */
-		.dc.b 0x04 /* 11 */
-		.dc.b 0x04 /* 12 */
-		.dc.b 0x04 /* 13 */
-		.dc.b 0x02 /* 14 */
-		.dc.b 0x02 /* 15 */
-		.dc.b 0x02 /* 16 */
-		.dc.b 0x02 /* 17 */
-		.dc.b 0x02 /* 18 */
-		.dc.b 0x10 /* 19 */
-		.dc.b 0x02 /* 20 */
-		.dc.b 0x10 /* 21 */
-		.dc.b 0x02 /* 22 */
-		.dc.b 0x10 /* 23 */
-		.dc.b 0x02 /* 24 */
-		.dc.b 0x10 /* 25 */
-		.dc.b 0x02 /* 26 */
-		.dc.b 0x10 /* 27 */
-		.dc.b 0x02 /* 28 */
-		.dc.b 0x10 /* 29 */
-		.dc.b 0x10 /* 30 */
-		.dc.b 0x10 /* 31 */
-		.dc.b 0x02 /* 32 */
-		.dc.b 0x10 /* 33 */
-		.dc.b 0x02 /* 34 */
-		.dc.b 0x10 /* 35 */
-		.dc.b 0x02 /* 36 */
-		.dc.b 0x10 /* 37 */
-		.dc.b 0x02 /* 38 */
-		.dc.b 0x10 /* 39 */
-		.dc.b 0x10 /* 40 */
-		.dc.b 0x04 /* 41 */
-		.dc.b 0x10 /* 42 */
-		.dc.b 0x04 /* 43 */
-		.dc.b 0x04 /* 44 */
-		.dc.b 0x04 /* 45 */
-		.dc.b 0x04 /* 46 */
-		.dc.b 0x04 /* 47 */
-		.dc.b 0x04 /* 48 */
-		.dc.b 0x04 /* 49 */
-		.dc.b 0x04 /* 50 */
-		.dc.b 0x04 /* 51 */
-		.dc.b 0x04 /* 52 */
-		.dc.b 0x04 /* 53 */
-		.dc.b 0x04 /* 54 */
-		.dc.b 0x04 /* 55 */
-		.dc.b 0x10 /* 56 */
-		.dc.b 0x10 /* 57 */
-		.dc.b 0x10 /* 58 */
-		.dc.b 0x10 /* 59 */
-		.dc.b 0x10 /* 60 */
-		.dc.b 0x10 /* 61 */
-		.dc.b 0x10 /* 62 */
-		.dc.b 0x02 /* 63 */
-		.dc.b 0x02 /* 64 */
-		.dc.b 0x02 /* 65 */
-		.dc.b 0x0e /* 66 */
-		.dc.b 0x0e /* 67 */
-		.dc.b 0x40 /* 68 */
-		.dc.b 0x40 /* 69 */
-		.dc.b 0x40 /* 70 */
-		.dc.b 0x54 /* 71 */
-		.dc.b 0x04 /* 72 */
-		.dc.b 0x0e /* 73 */
-		.dc.b 0x02 /* 74 */
-		.dc.b 0x0e /* 75 */
-		.dc.b 0x0e /* 76 */
-		.dc.b 0x02 /* 77 */
-		.dc.b 0x02 /* 78 */
-		.dc.b 0x02 /* 79 */
-		.dc.b 0x02 /* 80 */
-		.dc.b 0x4c /* 81 */
-		.dc.b 0x02 /* 82 */
-		.dc.b 0x02 /* 83 */
-		.dc.b 0x0e /* 84 */
-		.dc.b 0x4e /* 85 */
-		.dc.b 0x4e /* 86 */
-		.dc.b 0x4e /* 87 */
-		.dc.b 0x10 /* 88 */
-		.dc.b 0x10 /* 89 */
-		.dc.b 0x02 /* 90 */
-		.dc.b 0x02 /* 91 */
-		.dc.b 0x02 /* 92 */
-		.dc.b 0x02 /* 93 */
-		.dc.b 0x02 /* 94 */
-		.dc.b 0x50 /* 95 */
-		.dc.b 0x02 /* 96 */
-		.dc.b 0x02 /* 97 */
-		.dc.b 0x02 /* 98 */
-		.dc.b 0x02 /* 99 */
-		.dc.b 0x0c /* 100 */
-		.dc.b 0x0c /* 101 */
-		.dc.b 0x0c /* 102 */
-		.dc.b 0x02 /* 103 */
-		.dc.b 0x10 /* 104 */
-		.dc.b 0x6e /* 105 */
-		.dc.b 0x10 /* 106 */
-		.dc.b 0x6e /* 107 */
-		.dc.b 0x10 /* 108 */
-		.dc.b 0x10 /* 109 */
-		.dc.b 0x02 /* 110 */
-		.dc.b 0x02 /* 111 */
-		.dc.b 0x12 /* 112 */
-		.dc.b 0x12 /* 113 */
-		.dc.b 0x12 /* 114 */
-		.dc.b 0x12 /* 115 */
-		.dc.b 0x12 /* 116 */
-		.dc.b 0x52 /* 117 */
-		.dc.b 0x10 /* 118 */
-		.dc.b 0x66 /* 119 */
-		.dc.b 0x68 /* 120 */
-		.dc.b 0x02 /* 121 */
-		.dc.b 0x02 /* 122 */
-		.dc.b 0x14 /* 123 */
-		.dc.b 0x0e /* 124 */
-		.dc.b 0x10 /* 125 */
-		.dc.b 0x3e /* 126 */
-		.dc.b 0x06 /* 127 */
-		.dc.b 0x04 /* 128 */
-		.dc.b 0x16 /* 129 */
-		.dc.b 0x18 /* 130 */
-		.dc.b 0x1a /* 131 */
-		.dc.b 0x1c /* 132 */
-		.dc.b 0x1e /* 133 */
-		.dc.b 0x20 /* 134 */
-		.dc.b 0x10 /* 135 */
-		.dc.b 0x06 /* 136 */
-		.dc.b 0x06 /* 137 */
-		.dc.b 0x0e /* 138 */
-		.dc.b 0x06 /* 139 */
-		.dc.b 0x04 /* 140 */
-		.dc.b 0x10 /* 141 */
-		.dc.b 0x04 /* 142 */
-		.dc.b 0x04 /* 143 */
-		.dc.b 0x06 /* 144 */
-		.dc.b 0x06 /* 145 */
-		.dc.b 0x06 /* 146 */
-		.dc.b 0x22 /* 147 */
-		.dc.b 0x1c /* 148 */
-		.dc.b 0x06 /* 149 */
-		.dc.b 0x04 /* 150 */
-		.dc.b 0x24 /* 151 */
-		.dc.b 0x0a /* 152 */
-		.dc.b 0x26 /* 153 */
-		.dc.b 0x06 /* 154 */
-		.dc.b 0x28 /* 155 */
-		.dc.b 0x2a /* 156 */
-		.dc.b 0x04 /* 157 */
-		.dc.b 0x2a /* 158 */
-		.dc.b 0x1c /* 159 */
-		.dc.b 0x02 /* 160 */
-		.dc.b 0x2c /* 161 */
-		.dc.b 0x2e /* 162 */
-		.dc.b 0x32 /* 163 */
-		.dc.b 0x34 /* 164 */
-		.dc.b 0x36 /* 165 */
-		.dc.b 0x36 /* 166 */
-		.dc.b 0x08 /* 167 */
-		.dc.b 0x08 /* 168 */
-		.dc.b 0x38 /* 169 */
-		.dc.b 0x04 /* 170 */
-		.dc.b 0x38 /* 171 */
-		.dc.b 0x1e /* 172 */
-		.dc.b 0x0e /* 173 */
-		.dc.b 0x6c /* 174 */
-		.dc.b 0x0a /* 175 */
-		.dc.b 0x0a /* 176 */
-		.dc.b 0x02 /* 177 */
-		.dc.b 0x02 /* 178 */
-		.dc.b 0x3a /* 179 */
-		.dc.b 0x34 /* 180 */
-		.dc.b 0x04 /* 181 */
-		.dc.b 0x02 /* 182 */
-		.dc.b 0x3c /* 183 */
-		.dc.b 0x02 /* 184 */
-		.dc.b 0x02 /* 185 */
-		.dc.b 0x04 /* 186 */
-		.dc.b 0x44 /* 187 */
-		.dc.b 0x48 /* 188 */
-		.dc.b 0x4a /* 189 */
-		.dc.b 0x02 /* 190 */
-		.dc.b 0x04 /* 191 */
-		.dc.b 0x04 /* 192 */
-		.dc.b 0x04 /* 193 */
-		.dc.b 0x04 /* 194 */
-		.dc.b 0x04 /* 195 */
-		.dc.b 0x04 /* 196 */
-		.dc.b 0x04 /* 197 */
-		.dc.b 0x04 /* 198 */
-		.dc.b 0x04 /* 199 */
-		.dc.b 0x04 /* 200 */
-		.dc.b 0x04 /* 201 */
-		.dc.b 0x04 /* 202 */
-		.dc.b 0x46 /* 203 */
-		.dc.b 0x2e /* 204 */
-		.dc.b 0x30 /* 205 */
-		.dc.b 0x02 /* 206 */
-		.dc.b 0x02 /* 207 */
-		.dc.b 0x02 /* 208 */
-		.dc.b 0x6a /* 209 */
-		.dc.b 0x6a /* 210 */
-		.dc.b 0x6a /* 211 */
-		.dc.b 0x10 /* 212 */
-		.dc.b 0x10 /* 213 */
-		.dc.b 0x10 /* 214 */
-		.dc.b 0x1a /* 215 */
-		.dc.b 0x70 /* 216 */
-		.dc.b 0x72 /* 217 */
-		.dc.b 0x74 /* 218 */
-		.dc.b 0x10 /* 219 */
-		.dc.b 0x02 /* 220 */
-		.dc.b 0x10 /* 221 */
-		.dc.b 0x12 /* 222 */
-		.dc.b 0x02 /* 223 */
-		.dc.b 0x02 /* 224 */
-		.dc.b 0x02 /* 225 */
-		.dc.b 0x02 /* 226 */
-		.dc.b 0x10 /* 227 */
-		.dc.b 0x02 /* 228 */
-		.dc.b 0x02 /* 229 */
-		.dc.b 0x02 /* 230 */
-		.dc.b 0x10 /* 231 */
-		.dc.b 0x10 /* 232 */
-		.dc.b 0x10 /* 233 */
-		.dc.b 0x10 /* 234 */
-		.dc.b 0x06 /* 235 */
-		.dc.b 0x10 /* 236 */
-		.dc.b 0x10 /* 237 */
-		.dc.b 0x10 /* 238 */
+		.dc.b 0x04 /*   0 MUL( */
+		.dc.b 0x04 /*   1 DIV( */
+		.dc.b 0x04 /*   2 ADD( */
+		.dc.b 0x04 /*   3 SUB( */
+		.dc.b 0x04 /*   4 MOD( */
+		.dc.b 0x04 /*   5 AND( */
+		.dc.b 0x04 /*   6 OR( */
+		.dc.b 0x04 /*   7 XOR( */
+		.dc.b 0x04 /*   8 EQV( */
+		.dc.b 0x04 /*   9 IMP( */
+		.dc.b 0x04 /*  10 SHL( */
+		.dc.b 0x04 /*  11 SHR( */
+		.dc.b 0x04 /*  12 ROL( */
+		.dc.b 0x04 /*  13 ROR( */
+		.dc.b 0x02 /*  14 WORD( */
+		.dc.b 0x02 /*  15 CARD( */
+		.dc.b 0x02 /*  16 BYTE( */
+		.dc.b 0x02 /*  17 SWAP( */
+		.dc.b 0x02 /*  18 ADDRIN( */
+		.dc.b 0x10 /*  19 ADDRIN */
+		.dc.b 0x02 /*  20 ADDROUT( */
+		.dc.b 0x10 /*  21 ADDROUT */
+		.dc.b 0x02 /*  22 CONTRL( */
+		.dc.b 0x10 /*  23 CONTRL */
+		.dc.b 0x02 /*  24 GCONTRL( */
+		.dc.b 0x10 /*  25 GCONTRL */
+		.dc.b 0x02 /*  26 GINTIN( */
+		.dc.b 0x10 /*  27 GINTIN */
+		.dc.b 0x02 /*  28 GINTOUT( */
+		.dc.b 0x10 /*  29 GINTOUT */
+		.dc.b 0x10 /*  30 HIMEM */
+		.dc.b 0x10 /*  31 BASEPAGE */
+		.dc.b 0x02 /*  32 INTIN( */
+		.dc.b 0x10 /*  33 INTIN */
+		.dc.b 0x02 /*  34 INTOUT( */
+		.dc.b 0x10 /*  35 INTOUT */
+		.dc.b 0x02 /*  36 PTSIN( */
+		.dc.b 0x10 /*  37 PTSIN */
+		.dc.b 0x02 /*  38 PTSOUT( */
+		.dc.b 0x10 /*  39 PTSOUT */
+		.dc.b 0x10 /*  40 VDIBASE */
+		.dc.b 0x04 /*  41 WINDTAB( */
+		.dc.b 0x10 /*  42 WINDTAB */
+		.dc.b 0x04 /*  43 PTST( */
+		.dc.b 0x04 /*  44 BTST( */
+		.dc.b 0x04 /*  45 BSET( */
+		.dc.b 0x04 /*  46 BCLR( */
+		.dc.b 0x04 /*  47 BCHG( */
+		.dc.b 0x04 /*  48 SHL&( */
+		.dc.b 0x04 /*  49 SHR&( */
+		.dc.b 0x04 /*  50 ROL&( */
+		.dc.b 0x04 /*  51 ROR&( */
+		.dc.b 0x04 /*  52 SHL|( */
+		.dc.b 0x04 /*  53 SHR|( */
+		.dc.b 0x04 /*  54 ROL|( */
+		.dc.b 0x04 /*  55 ROR|( */
+		.dc.b 0x10 /*  56 CRSLIN */
+		.dc.b 0x10 /*  57 CRSCOL */
+		.dc.b 0x10 /*  58 MOUSEX */
+		.dc.b 0x10 /*  59 MOUSEY */
+		.dc.b 0x10 /*  60 MOUSEK */
+		.dc.b 0x10 /*  61 GB */
+		.dc.b 0x10 /*  62 TIMER */
+		.dc.b 0x02 /*  63 PEEK( */
+		.dc.b 0x02 /*  64 DPEEK( */
+		.dc.b 0x02 /*  65 LPEEK( */
+		.dc.b 0x0e /*  66 LEN( */
+		.dc.b 0x0e /*  67 ASC( */
+		.dc.b 0x40 /*  68 INSTR( */
+		.dc.b 0x40 /*  69 INSTR( */
+		.dc.b 0x40 /*  70 INSTR( */
+		.dc.b 0x54 /*  71 FRE( */
+		.dc.b 0x04 /*  72 POINT( */
+		.dc.b 0x0e /*  73 VAL?( */
+		.dc.b 0x02 /*  74 INP( */
+		.dc.b 0x0e /*  75 CVI( */
+		.dc.b 0x0e /*  76 CVL( */
+		.dc.b 0x02 /*  77 INP(# */
+		.dc.b 0x02 /*  78 EOF(# */
+		.dc.b 0x02 /*  79 LOF(# */
+		.dc.b 0x02 /*  80 LOC(# */
+		.dc.b 0x4c /*  81 DIM?( */
+		.dc.b 0x02 /*  82 RAND( */
+		.dc.b 0x02 /*  83 DFREE( */
+		.dc.b 0x0e /*  84 EXIST( */
+		.dc.b 0x4e /*  85 BIOS( */
+		.dc.b 0x4e /*  86 XBIOS( */
+		.dc.b 0x4e /*  87 GEMDOS( */
+		.dc.b 0x10 /*  88 ERR */
+		.dc.b 0x10 /*  89 FATAL */
+		.dc.b 0x02 /*  90 POS( */
+		.dc.b 0x02 /*  91 LPOS( */
+		.dc.b 0x02 /*  92 MENU( */
+		.dc.b 0x02 /*  93 INP?( */
+		.dc.b 0x02 /*  94 OUT?( */
+		.dc.b 0x50 /*  95 EXEC( */
+		.dc.b 0x02 /*  96 SUCC( */
+		.dc.b 0x02 /*  97 PRED( */
+		.dc.b 0x02 /*  98 W_HAND(# */
+		.dc.b 0x02 /*  99 W_INDEX(# */
+		.dc.b 0x0c /* 100 SGN( */
+		.dc.b 0x0c /* 101 EVEN( */
+		.dc.b 0x0c /* 102 ODD( */
+		.dc.b 0x02 /* 103 CINT( */
+		.dc.b 0x10 /* 104 GDOS? */
+		.dc.b 0x6e /* 105 V_OPNWK( */
+		.dc.b 0x10 /* 106 V_CLSWK() */
+		.dc.b 0x6e /* 107 V_OPNVWK( */
+		.dc.b 0x10 /* 108 V_CLSVWK() */
+		.dc.b 0x10 /* 109 V_UPDWK() */
+		.dc.b 0x02 /* 110 VST_LOAD_FONTS( */
+		.dc.b 0x02 /* 111 VST_UNLOAD_FONTS( */
+		.dc.b 0x12 /* 112 { */
+		.dc.b 0x12 /* 113 LONG{ */
+		.dc.b 0x12 /* 114 INT{ */
+		.dc.b 0x12 /* 115 CARD{ */
+		.dc.b 0x12 /* 116 BYTE{ */
+		.dc.b 0x52 /* 117 C: */
+		.dc.b 0x10 /* 118 EVNT_KEYBD() */
+		.dc.b 0x66 /* 119 EVNT_BUTTON( */
+		.dc.b 0x68 /* 120 EVNT_MOUSE( */
+		.dc.b 0x02 /* 121 EVNT_MESAG( */
+		.dc.b 0x02 /* 122 EVNT_TIMER( */
+		.dc.b 0x14 /* 123 EVNT_MULTI( */
+		.dc.b 0x0e /* 124 RSRC_LOAD( */
+		.dc.b 0x10 /* 125 RSRC_FREE() */
+		.dc.b 0x3e /* 126 RSRC_GADDR( */
+		.dc.b 0x06 /* 127 RSRC_SADDR( */
+		.dc.b 0x04 /* 128 RSRC_OBFIX( */
+		.dc.b 0x16 /* 129 SHEL_READ( */
+		.dc.b 0x18 /* 130 SHEL_WRITE( */
+		.dc.b 0x1a /* 131 SHEL_GET( */
+		.dc.b 0x1c /* 132 SHEL_PUT( */
+		.dc.b 0x1e /* 133 SHEL_FIND( */
+		.dc.b 0x20 /* 134 SHEL_ENVRN( */
+		.dc.b 0x10 /* 135 APPL_INIT() */
+		.dc.b 0x06 /* 136 APPL_READ( */
+		.dc.b 0x06 /* 137 APPL_WRITE( */
+		.dc.b 0x0e /* 138 APPL_FIND( */
+		.dc.b 0x06 /* 139 APPL_TPLAY( */
+		.dc.b 0x04 /* 140 APPL_TRECORD( */
+		.dc.b 0x10 /* 141 APPL_EXIT() */
+		.dc.b 0x04 /* 142 EVNT_DCLICK( */
+		.dc.b 0x04 /* 143 MENU_BAR( */
+		.dc.b 0x06 /* 144 MENU_ICHECK( */
+		.dc.b 0x06 /* 145 MENU_IENABLE( */
+		.dc.b 0x06 /* 146 MENU_TNORMAL( */
+		.dc.b 0x22 /* 147 MENU_TEXT( */
+		.dc.b 0x1c /* 148 MENU_REGISTER( */
+		.dc.b 0x06 /* 149 OBJC_ADD( */
+		.dc.b 0x04 /* 150 OBJC_DELETE( */
+		.dc.b 0x24 /* 151 OBJC_DRAW( */
+		.dc.b 0x0a /* 152 OBJC_FIND( */
+		.dc.b 0x26 /* 153 OBJC_OFFSET( */
+		.dc.b 0x06 /* 154 OBJC_ORDER( */
+		.dc.b 0x28 /* 155 OBJC_EDIT( */
+		.dc.b 0x2a /* 156 OBJC_CHANGE( */
+		.dc.b 0x04 /* 157 FORM_DO( */
+		.dc.b 0x2a /* 158 FORM_DIAL( */
+		.dc.b 0x1c /* 159 FORM_ALERT( */
+		.dc.b 0x02 /* 160 FORM_ERROR( */
+		.dc.b 0x2c /* 161 FORM_CENTER( */
+		.dc.b 0x2e /* 162 GRAF_RUBBERBOX( */
+		.dc.b 0x32 /* 163 GRAF_DRAGBOX( */
+		.dc.b 0x34 /* 164 GRAF_MOVEBOX( */
+		.dc.b 0x36 /* 165 GRAF_GROWBOX( */
+		.dc.b 0x36 /* 166 GRAF_SHRINKBOX( */
+		.dc.b 0x08 /* 167 GRAF_WATCHBOX( */
+		.dc.b 0x08 /* 168 GRAF_SLIDEBOX( */
+		.dc.b 0x38 /* 169 GRAF_HANDLE( */
+		.dc.b 0x04 /* 170 GRAF_MOUSE( */
+		.dc.b 0x38 /* 171 GRAF_MKSTATE( */
+		.dc.b 0x1e /* 172 SCRP_READ( */
+		.dc.b 0x0e /* 173 SCRP_WRITE( */
+		.dc.b 0x6c /* 174 FSEL_INPUT( */
+		.dc.b 0x0a /* 175 WIND_CREATE( */
+		.dc.b 0x0a /* 176 WIND_OPEN( */
+		.dc.b 0x02 /* 177 WIND_CLOSE( */
+		.dc.b 0x02 /* 178 WIND_DELETE( */
+		.dc.b 0x3a /* 179 WIND_GET( */
+		.dc.b 0x34 /* 180 WIND_SET( */
+		.dc.b 0x04 /* 181 WIND_FIND( */
+		.dc.b 0x02 /* 182 WIND_UPDATE( */
+		.dc.b 0x3c /* 183 WIND_CALC( */
+		.dc.b 0x02 /* 184 MALLOC( */
+		.dc.b 0x02 /* 185 MFREE( */
+		.dc.b 0x04 /* 186 MSHRINK( */
+		.dc.b 0x44 /* 187 VARPTR( */
+		.dc.b 0x48 /* 188 ARRPTR( */
+		.dc.b 0x4a /* 189 * */
+		.dc.b 0x02 /* 190 TYPE( */
+		.dc.b 0x04 /* 191 OB_ADR( */
+		.dc.b 0x04 /* 192 OB_NEXT( */
+		.dc.b 0x04 /* 193 OB_HEAD( */
+		.dc.b 0x04 /* 194 OB_TAIL( */
+		.dc.b 0x04 /* 195 OB_TYPE( */
+		.dc.b 0x04 /* 196 OB_FLAGS( */
+		.dc.b 0x04 /* 197 OB_STATE( */
+		.dc.b 0x04 /* 198 OB_SPEC( */
+		.dc.b 0x04 /* 199 OB_X( */
+		.dc.b 0x04 /* 200 OB_Y( */
+		.dc.b 0x04 /* 201 OB_W( */
+		.dc.b 0x04 /* 202 OB_H( */
+		.dc.b 0x46 /* 203 V: */
+		.dc.b 0x2e /* 204 FORM_KEYBD( */
+		.dc.b 0x30 /* 205 FORM_BUTTON( */
+		.dc.b 0x02 /* 206 STICK( */
+		.dc.b 0x02 /* 207 STRIG( */
+		.dc.b 0x02 /* 208 WORK_OUT( */
+		.dc.b 0x6a /* 209 RINSTR( */
+		.dc.b 0x6a /* 210 RINSTR( */
+		.dc.b 0x6a /* 211 RINSTR( */
+		.dc.b 0x10 /* 212 L~A */
+		.dc.b 0x10 /* 213 V~H */
+		.dc.b 0x10 /* 214 V_CLRWK() */
+		.dc.b 0x1a /* 215 VQT_NAME( */
+		.dc.b 0x70 /* 216 VQT_EXTENT( */
+		.dc.b 0x72 /* 217 RC_INTERSECT( */
+		.dc.b 0x74 /* 218 FSFIRST( */
+		.dc.b 0x10 /* 219 FSNEXT() */
+		.dc.b 0x02 /* 220 FSETDTA( */
+		.dc.b 0x10 /* 221 FGETDTA() */
+		.dc.b 0x12 /* 222 WORD{ */
+		.dc.b 0x02 /* 223 INP&( */
+		.dc.b 0x02 /* 224 INP&(# */
+		.dc.b 0x02 /* 225 INP%( */
+		.dc.b 0x02 /* 226 INP%(# */
+		.dc.b 0x10 /* 227 _DATA */
+		.dc.b 0x02 /* 228 PADX( */
+		.dc.b 0x02 /* 229 PADY( */
+		.dc.b 0x02 /* 230 PADT( */
+		.dc.b 0x10 /* 231 LPENX */
+		.dc.b 0x10 /* 232 LPENY */
+		.dc.b 0x10 /* 233 STE? */
+		.dc.b 0x10 /* 234 TT? */
+		.dc.b 0x06 /* 235 SCALE( */
+		.dc.b 0x10 /* 236 _X */
+		.dc.b 0x10 /* 237 _Y */
+		.dc.b 0x10 /* 238 _C */
 	.IF GBE<372
-		.dc.b 0x08 /* 239 */
+		.dc.b 0x08 /* 239 GETSIZE( */
 	.ELSE
-		.dc.b 0x9a /* 239 */
-		.dc.b 0x9a /* 240 */
-		.dc.b 0x10 /* 241 */
-		.dc.b 0x10 /* 242 */
-		.dc.b 0x10 /* 243 */
-		.dc.b 0x10 /* 244 */
-		.dc.b 0x10 /* 245 */
-		.dc.b 0x10 /* 246 */
-		.dc.b 0x10 /* 247 */
-		.dc.b 0x10 /* 248 */
-		.dc.b 0x10 /* 249 */
-		.dc.b 0x02 /* 250 */
-		.dc.b 0x10 /* 251 */
-		.dc.b 0x76 /* 252 */
-		.dc.b 0x08 /* 253 */
-		.dc.b 0x10 /* 254 */
-		.dc.b 0x10 /* 255 */
+		.dc.b 0x9a /* 239  GETSIZE( */
+		.dc.b 0x9a /* 240  GETSIZE( */
+		.dc.b 0x10 /* 241 _B */
+		.dc.b 0x10 /* 242 _AES */
+		.dc.b 0x10 /* 243 _TOS */
+		.dc.b 0x10 /* 244 A~I */
+		.dc.b 0x10 /* 245 CPU020() */
+		.dc.b 0x10 /* 246 FPU882() */
+		.dc.b 0x10 /* 247 GMOUSEK */
+		.dc.b 0x10 /* 248 GMOUSEX */
+		.dc.b 0x10 /* 249 GMOUSEY */
+		.dc.b 0x02 /* 250 GLOBAL( */
+		.dc.b 0x10 /* 251 GLOBAL */
+		.dc.b 0x76 /* 252 GETCOOKIE( */
+		.dc.b 0x08 /* 253 VS_COLOR( */
+		.dc.b 0x10 /* 254 EJP? */
+		.dc.b 0x10 /* 255 _P */
 
 offset_table_sf209:
-		.dc.b 0x78 /* 0 */
-		.dc.b 0x10 /* 1 */
-		.dc.b 0x10 /* 2 */
-		.dc.b 0x10 /* 3 */
-		.dc.b 0x06 /* 4 */
-		.dc.b 0x0a /* 5 */
-		.dc.b 0x04 /* 6 */
-		.dc.b 0x10 /* 7 */
-		.dc.b 0x02 /* 8 */
-		.dc.b 0x04 /* 9 */
-		.dc.b 0x02 /* 10 */
-		.dc.b 0x10 /* 11 */
-		.dc.b 0x02 /* 12 */
-		.dc.b 0x06 /* 13 */
-		.dc.b 0x10 /* 14 */
-		.dc.b 0x26 /* 15 */
-		.dc.b 0x08 /* 16 */
-		.dc.b 0x02 /* 17 */
-		.dc.b 0x10 /* 18 */
-		.dc.b 0x10 /* 19 */
-		.dc.b 0x10 /* 20 */
-		.dc.b 0x2c /* 21 */
-		.dc.b 0x2c /* 22 */
-		.dc.b 0x3e /* 23 */
-		.dc.b 0x2e /* 24 */
-		.dc.b 0x7a /* 25 */
-		.dc.b 0x06 /* 26 */
-		.dc.b 0x10 /* 27 */
-		.dc.b 0x10 /* 28 */
-		.dc.b 0x04 /* 29 */
-		.dc.b 0x06 /* 30 */
-		.dc.b 0x02 /* 31 */
-		.dc.b 0x04 /* 32 */
-		.dc.b 0x02 /* 33 */
-		.dc.b 0x04 /* 34 */
-		.dc.b 0x02 /* 35 */
-		.dc.b 0x04 /* 36 */
-		.dc.b 0x04 /* 37 */
-		.dc.b 0x0a /* 38 */
-		.dc.b 0x02 /* 39 */
-		.dc.b 0x02 /* 40 */
-		.dc.b 0x7c /* 41 */
-		.dc.b 0x8a /* 42 */
-		.dc.b 0x74 /* 43 */
-		.dc.b 0x02 /* 44 */
-		.dc.b 0x06 /* 45 */
-		.dc.b 0x06 /* 46 */
-		.dc.b 0x74 /* 47 */
-		.dc.b 0x06 /* 48 */
-		.dc.b 0x0e /* 49 */
-		.dc.b 0x02 /* 50 */
-		.dc.b 0x06 /* 51 */
-		.dc.b 0x06 /* 52 */
-		.dc.b 0x02 /* 53 */
-		.dc.b 0x02 /* 54 */
-		.dc.b 0x02 /* 55 */
-		.dc.b 0x10 /* 56 */
-		.dc.b 0x10 /* 57 */
-		.dc.b 0x10 /* 58 */
-		.dc.b 0x7e /* 59 */
-		.dc.b 0x04 /* 60 */
-		.dc.b 0x04 /* 61 */
-		.dc.b 0x04 /* 62 */
-		.dc.b 0x80 /* 63 */
-		.dc.b 0x82 /* 64 */
-		.dc.b 0xcc /* 65 */
-		.dc.b 0x06 /* 66 */
-		.dc.b 0x1c /* 67 */
-		.dc.b 0x1a /* 68 */
-		.dc.b 0x74 /* 69 */
-		.dc.b 0x86 /* 70 */
-		.dc.b 0x04 /* 71 */
-		.dc.b 0x04 /* 72 */
-		.dc.b 0x26 /* 73 */
-		.dc.b 0x10 /* 74 */
-		.dc.b 0x10 /* 75 */
-		.dc.b 0x02 /* 76 */
-		.dc.b 0x04 /* 77 */
-		.dc.b 0x02 /* 78 */
-		.dc.b 0x10 /* 79 */
-		.dc.b 0x02 /* 80 */
-		.dc.b 0x06 /* 81 */
-		.dc.b 0x04 /* 82 */
-		.dc.b 0x04 /* 83 */
-		.dc.b 0x06 /* 84 */
-		.dc.b 0x10 /* 85 */
-		.dc.b 0x10 /* 86 */
-		.dc.b 0x10 /* 87 */
-		.dc.b 0x10 /* 88 */
-		.dc.b 0x1c /* 89 */
-		.dc.b 0x84 /* 90 */
-		.dc.b 0x1c /* 91 */
-		.dc.b 0x1a /* 92 */
-		.dc.b 0x02 /* 93 */
-		.dc.b 0x04 /* 94 */
-		.dc.b 0x22 /* 95 */
-		.dc.b 0x06 /* 96 */
-		.dc.b 0x06 /* 97 */
-		.dc.b 0x0e /* 98 */
-		.dc.b 0x02 /* 99 */
-		.dc.b 0x02 /* 100 */
-		.dc.b 0x0e /* 101 */
-		.dc.b 0x02 /* 102 */
-		.dc.b 0x0e /* 103 */
-		.dc.b 0x0e /* 104 */
-		.dc.b 0x02 /* 105 */
-		.dc.b 0x02 /* 106 */
-		.dc.b 0xb4 /* 107 */
-		.dc.b 0x0e /* 108 */
-		.dc.b 0x10 /* 109 */
-		.dc.b 0x02 /* 110 */
-		.dc.b 0x88 /* 111 */
-		.dc.b 0x10 /* 112 */
-		.dc.b 0x06 /* 113 */
-		.dc.b 0x74 /* 114 */
-		.dc.b 0x86 /* 115 */
-		.dc.b 0x04 /* 116 */
-		.dc.b 0x10 /* 117 */
-		.dc.b 0x10 /* 118 */
-		.dc.b 0x10 /* 119 */
-		.dc.b 0x10 /* 120 */
-		.dc.b 0x0e /* 121 */
-		.dc.b 0x02 /* 122 */
-		.dc.b 0x02 /* 123 */
-		.dc.b 0x02 /* 124 */
-		.dc.b 0x2c /* 125 */
-		.dc.b 0x02 /* 126 */
-		.dc.b 0x10 /* 127 */
-		.dc.b 0x10 /* 128 */
-		.dc.b 0x10 /* 129 */
-		.dc.b 0x10 /* 130 */
-		.dc.b 0x04 /* 131 */
-		.dc.b 0x02 /* 132 */
-		.dc.b 0x02 /* 133 */
-		.dc.b 0x94 /* 134 */
-		.dc.b 0x82 /* 135 */
-		.dc.b 0x8a /* 136 */
-		.dc.b 0x02 /* 137 */
-		.dc.b 0x02 /* 138 */
-		.dc.b 0x04 /* 139 */
-		.dc.b 0x02 /* 140 */
-		.dc.b 0x02 /* 141 */
-		.dc.b 0x02 /* 142 */
-		.dc.b 0x02 /* 143 */
-		.dc.b 0x02 /* 144 */
-		.dc.b 0x02 /* 145 */
-		.dc.b 0x02 /* 146 */
-		.dc.b 0x02 /* 147 */
-		.dc.b 0x02 /* 148 */
-		.dc.b 0x02 /* 149 */
-		.dc.b 0x02 /* 150 */
-		.dc.b 0x02 /* 151 */
-		.dc.b 0x04 /* 152 */
-		.dc.b 0x02 /* 153 */
-		.dc.b 0x02 /* 154 */
-		.dc.b 0x04 /* 155 */
-		.dc.b 0x10 /* 156 */
-		.dc.b 0x02 /* 157 */
-		.dc.b 0x02 /* 158 */
-		.dc.b 0x0a /* 159 */
-		.dc.b 0x06 /* 160 */
-		.dc.b 0x08 /* 161 */
-		.dc.b 0x08 /* 162 */
-		.dc.b 0x08 /* 163 */
-		.dc.b 0x04 /* 164 */
-		.dc.b 0x0a /* 165 */
-		.dc.b 0x02 /* 166 */
-		.dc.b 0x8e /* 167 */
-		.dc.b 0x32 /* 168 */
-		.dc.b 0x0a /* 169 */
-		.dc.b 0x10 /* 170 */
-		.dc.b 0x02 /* 171 */
-		.dc.b 0x04 /* 172 */
-		.dc.b 0x08 /* 173 */
-		.dc.b 0x10 /* 174 */
-		.dc.b 0x02 /* 175 */
-		.dc.b 0x02 /* 176 */
-		.dc.b 0x06 /* 177 */
-		.dc.b 0x08 /* 178 */
-		.dc.b 0x02 /* 179 */
-		.dc.b 0x34 /* 180 */
-		.dc.b 0x08 /* 181 */
-		.dc.b 0x08 /* 182 */
-		.dc.b 0x08 /* 183 */
-		.dc.b 0x08 /* 184 */
-		.dc.b 0x0a /* 185 */
-		.dc.b 0x06 /* 186 */
-		.dc.b 0x34 /* 187 */
-		.dc.b 0x34 /* 188 */
-		.dc.b 0x08 /* 189 */
-		.dc.b 0x0a /* 190 */
-		.dc.b 0x06 /* 191 */
-		.dc.b 0x22 /* 192 */
-		.dc.b 0x02 /* 193 */
-		.dc.b 0x02 /* 194 */
-		.dc.b 0x02 /* 195 */
-		.dc.b 0x90 /* 196 */
-		.dc.b 0x8c /* 197 */
-		.dc.b 0x94 /* 198 */
-		.dc.b 0x04 /* 199 */
-		.dc.b 0x06 /* 200 */
-		.dc.b 0x02 /* 201 */
-		.dc.b 0x02 /* 202 */
-		.dc.b 0x04 /* 203 */
-		.dc.b 0x34 /* 204 */
-		.dc.b 0x04 /* 205 */
-		.dc.b 0x02 /* 206 */
-		.dc.b 0x10 /* 207 */
-		.dc.b 0x08 /* 208 */
-		.dc.b 0x02 /* 209 */
-		.dc.b 0x04 /* 210 */
-		.dc.b 0x04 /* 211 */
-		.dc.b 0x04 /* 212 */
-		.dc.b 0x24 /* 213 */
-		.dc.b 0x24 /* 214 */
-		.dc.b 0x2a /* 215 */
-		.dc.b 0x24 /* 216 */
-		.dc.b 0x04 /* 217 */
-		.dc.b 0x08 /* 218 */
-		.dc.b 0x08 /* 219 */
-		.dc.b 0x02 /* 220 */
-		.dc.b 0x02 /* 221 */
-		.dc.b 0x10 /* 222 */
-		.dc.b 0x02 /* 223 */
-		.dc.b 0x02 /* 224 */
-		.dc.b 0x02 /* 225 */
-		.dc.b 0x08 /* 226 */
-		.dc.b 0x02 /* 227 */
-		.dc.b 0x02 /* 228 */
-		.dc.b 0x10 /* 229 */
-		.dc.b 0x02 /* 230 */
-		.dc.b 0x02 /* 231 */
-		.dc.b 0x02 /* 232 */
-		.dc.b 0x08 /* 233 */
-		.dc.b 0x06 /* 234 */
-		.dc.b 0x06 /* 235 */
-		.dc.b 0x06 /* 236 */
-		.dc.b 0x02 /* 237 */
-		.dc.b 0x10 /* 238 */
-		.dc.b 0x02 /* 239 */
-		.dc.b 0x02 /* 240 */
-		.dc.b 0x04 /* 241 */
-		.dc.b 0x02 /* 242 */
-		.dc.b 0x02 /* 243 */
-		.dc.b 0x06 /* 244 */
-		.dc.b 0x06 /* 245 */
-		.dc.b 0x04 /* 246 */
-		.dc.b 0x04 /* 247 */
-		.dc.b 0x22 /* 248 */
-		.dc.b 0x22 /* 249 */
-		.dc.b 0x92 /* 250 */
-		.dc.b 0x34 /* 251 */
-		.dc.b 0x24 /* 252 */
-		.dc.b 0x0e /* 253 */
-		.dc.b 0x74 /* 254 */
-		.dc.b 0x04 /* 255 */
+		.dc.b 0x78 /*   0 VQ_COLOR( */
+		.dc.b 0x10 /*   1 _MINT */
+		.dc.b 0x10 /*   2 _SW */
+		.dc.b 0x10 /*   3 _SH */
+		.dc.b 0x06 /*   4 VRO_CPYFM( */
+		.dc.b 0x0a /*   5 VRT_CPYFM( */
+		.dc.b 0x04 /*   6 V_OPNBM( */
+		.dc.b 0x10 /*   7 V_CLSBM( */
+		.dc.b 0x02 /*   8 DOSOUND( */
+		.dc.b 0x04 /*   9 MXALLOC( */
+		.dc.b 0x02 /*  10 KBSHIFT( */
+		.dc.b 0x10 /*  11 DGETDRV( */
+		.dc.b 0x02 /*  12 SYSCONF( */
+		.dc.b 0x06 /*  13 SSYSTEM( */
+		.dc.b 0x10 /*  14 VQ_VGDOS() */
+		.dc.b 0x26 /*  15 VST_ALIGNMENT( */
+		.dc.b 0x08 /*  16 PEXEC( */
+		.dc.b 0x02 /*  17 PDOMAIN( */
+		.dc.b 0x10 /*  18 _GEMDOS */
+		.dc.b 0x10 /*  19 TGETDATE() */
+		.dc.b 0x10 /*  20 TGETTIME() */
+		.dc.b 0x2c /*  21 VST_POINT( */
+		.dc.b 0x2c /*  22 APPL_GETINFO( */
+		.dc.b 0x3e /*  23 APPL_CONTROL( */
+		.dc.b 0x2e /*  24 OBJC_SYSVAR( */
+		.dc.b 0x7a /*  25 FSEL_EXINPUT( */
+		.dc.b 0x06 /*  26 KEYTBL( */
+		.dc.b 0x10 /*  27 LOCKSND() */
+		.dc.b 0x10 /*  28 UNLOCKSND() */
+		.dc.b 0x04 /*  29 SOUNDCMD( */
+		.dc.b 0x06 /*  30 SETBUFFER( */
+		.dc.b 0x02 /*  31 SETMODE( */
+		.dc.b 0x04 /*  32 SETTRACKS( */
+		.dc.b 0x02 /*  33 SETMONTRACKS( */
+		.dc.b 0x04 /*  34 SETINTERRUPT( */
+		.dc.b 0x02 /*  35 BUFFOPER( */
+		.dc.b 0x04 /*  36 DSPTRISTATE( */
+		.dc.b 0x04 /*  37 GPIO( */
+		.dc.b 0x0a /*  38 DEVCONNECT( */
+		.dc.b 0x02 /*  39 SNDSTATUS( */
+		.dc.b 0x02 /*  40 BUFFPTR( */
+		.dc.b 0x7c /*  41 VQT_WIDTH( */
+		.dc.b 0x8a /*  42 VQT_FONTINFO( */
+		.dc.b 0x74 /*  43 FOPEN( */
+		.dc.b 0x02 /*  44 FCLOSE( */
+		.dc.b 0x06 /*  45 FREAD( */
+		.dc.b 0x06 /*  46 FWRITE( */
+		.dc.b 0x74 /*  47 FCREATE( */
+		.dc.b 0x06 /*  48 FSEEK( */
+		.dc.b 0x0e /*  49 FDELETE( */
+		.dc.b 0x02 /*  50 SUPER( */
+		.dc.b 0x06 /*  51 F_BGET( */
+		.dc.b 0x06 /*  52 F_BPUT( */
+		.dc.b 0x02 /*  53 F_EOF( */
+		.dc.b 0x02 /*  54 F_LOC( */
+		.dc.b 0x02 /*  55 F_LOF( */
+		.dc.b 0x10 /*  56 DTA */
+		.dc.b 0x10 /*  57 _CPU */
+		.dc.b 0x10 /*  58 SND? */
+		.dc.b 0x7e /*  59 F_OPEN( */
+		.dc.b 0x04 /*  60 F_OUT( */
+		.dc.b 0x04 /*  61 F_OUT&( */
+		.dc.b 0x04 /*  62 F_OUT%( */
+		.dc.b 0x80 /*  63 F_INP( */
+		.dc.b 0x82 /*  64 F_INP&( */
+		.dc.b 0xcc /*  65 F_INP%( */
+		.dc.b 0x06 /*  66 ALLOC( */
+		.dc.b 0x1c /*  67 F_LINE_OUTPUT( */
+		.dc.b 0x1a /*  68 F_LINE_INPUT( */
+		.dc.b 0x74 /*  69 F_BLOAD( */
+		.dc.b 0x86 /*  70 F_BSAVE( */
+		.dc.b 0x04 /*  71 F_SEEK( */
+		.dc.b 0x04 /*  72 F_RELSEEK( */
+		.dc.b 0x26 /*  73 V_GET_PIXEL( */
+		.dc.b 0x10 /*  74 GSTICK() */
+		.dc.b 0x10 /*  75 GSTRIG() */
+		.dc.b 0x02 /*  76 BLITMODE( */
+		.dc.b 0x04 /*  77 CACHECTRL( */
+		.dc.b 0x02 /*  78 CT60_CACHE( */
+		.dc.b 0x10 /*  79 CT60_FLUSH_CACHE() */
+		.dc.b 0x02 /*  80 CT60_READ_CORE_TEMPERATURE( */
+		.dc.b 0x06 /*  81 CT60_RW_PARAMETER( */
+		.dc.b 0x04 /*  82 CT60_VMALLOC( */
+		.dc.b 0x04 /*  83 FGETCHAR( */
+		.dc.b 0x06 /*  84 FPUTCHAR( */
+		.dc.b 0x10 /*  85 WIND_NEW() */
+		.dc.b 0x10 /*  86 APPL_YIELD() */
+		.dc.b 0x10 /*  87 V_SHOW_C() */
+		.dc.b 0x10 /*  88 V_HIDE_C() */
+		.dc.b 0x1c /*  89 F_INPUT( */
+		.dc.b 0x84 /*  90 F_OUTPUT( */
+		.dc.b 0x1c /*  91 PREAD( */
+		.dc.b 0x1a /*  92 PWRITE( */
+		.dc.b 0x02 /*  93 JOYPAD( */
+		.dc.b 0x04 /*  94 UNPACK( */
+		.dc.b 0x22 /*  95 BINSTR( */
+		.dc.b 0x06 /*  96 BFIND( */
+		.dc.b 0x06 /*  97 BCOUNT( */
+		.dc.b 0x0e /*  98 ISASCII( */
+		.dc.b 0x02 /*  99 BSWAP&( */
+		.dc.b 0x02 /* 100 BSWAP( */
+		.dc.b 0x0e /* 101 CCONWS( */
+		.dc.b 0x02 /* 102 DSETDRV( */
+		.dc.b 0x0e /* 103 DCREATE( */
+		.dc.b 0x0e /* 104 DDELETE( */
+		.dc.b 0x02 /* 105 TSETDATE( */
+		.dc.b 0x02 /* 106 TSETTIME( */
+		.dc.b 0xb4 /* 107 DGETPATH( */
+		.dc.b 0x0e /* 108 DSETPATH( */
+		.dc.b 0x10 /* 109 GETTIME() */
+		.dc.b 0x02 /* 110 SETTIME( */
+		.dc.b 0x88 /* 111 FRENAME( */
+		.dc.b 0x10 /* 112 DRVMAP() */
+		.dc.b 0x06 /* 113 FDATIME( */
+		.dc.b 0x74 /* 114 DPATHCONF( */
+		.dc.b 0x86 /* 115 FATTRIB( */
+		.dc.b 0x04 /* 116 DFREE%( */
+		.dc.b 0x10 /* 117 RANDOM%() */
+		.dc.b 0x10 /* 118 GETREZ() */
+		.dc.b 0x10 /* 119 LOGBASE() */
+		.dc.b 0x10 /* 120 PHYSBASE() */
+		.dc.b 0x0e /* 121 V_CURTEXT( */
+		.dc.b 0x02 /* 122 VST_COLOR( */
+		.dc.b 0x02 /* 123 VST_EFFECTS( */
+		.dc.b 0x02 /* 124 VST_ROTATION( */
+		.dc.b 0x2c /* 125 VST_HEIGHT( */
+		.dc.b 0x02 /* 126 VST_FONT( */
+		.dc.b 0x10 /* 127 VQF_ATTRIBUTES() */
+		.dc.b 0x10 /* 128 VQL_ATTRIBUTES() */
+		.dc.b 0x10 /* 129 VQM_ATTRIBUTES() */
+		.dc.b 0x10 /* 130 VQT_ATTRIBUTES() */
+		.dc.b 0x04 /* 131 VR_TRNFM( */
+		.dc.b 0x02 /* 132 VQ_EXTND( */
+		.dc.b 0x02 /* 133 VQ_SCRNINFO( */
+		.dc.b 0x94 /* 134 V_BEZ( */
+		.dc.b 0x82 /* 135 V_BEZ_QUAL( */
+		.dc.b 0x8a /* 136 VQ_MOUSE( */
+		.dc.b 0x02 /* 137 VSL_TYPE( */
+		.dc.b 0x02 /* 138 VSL_WIDTH( */
+		.dc.b 0x04 /* 139 VSL_ENDS( */
+		.dc.b 0x02 /* 140 VSL_UDSTY( */
+		.dc.b 0x02 /* 141 VSL_COLOR( */
+		.dc.b 0x02 /* 142 VSM_COLOR( */
+		.dc.b 0x02 /* 143 VSM_HEIGHT( */
+		.dc.b 0x02 /* 144 VSM_TYPE( */
+		.dc.b 0x02 /* 145 VSWR_MODE( */
+		.dc.b 0x02 /* 146 VSF_COLOR( */
+		.dc.b 0x02 /* 147 VSF_INTERIOR( */
+		.dc.b 0x02 /* 148 VSF_PERIMETER( */
+		.dc.b 0x02 /* 149 VSF_STYLE( */
+		.dc.b 0x02 /* 150 VSF_UDPAT( */
+		.dc.b 0x02 /* 151 BCONIN( */
+		.dc.b 0x04 /* 152 BCONOUT( */
+		.dc.b 0x02 /* 153 BCOSTAT( */
+		.dc.b 0x02 /* 154 BCONSTAT( */
+		.dc.b 0x04 /* 155 SETEXC( */
+		.dc.b 0x10 /* 156 TICKCAL( */
+		.dc.b 0x02 /* 157 MEDIACH( */
+		.dc.b 0x02 /* 158 GETBPB( */
+		.dc.b 0x0a /* 159 RWABS( */
+		.dc.b 0x06 /* 160 FORM_POPUP( */
+		.dc.b 0x08 /* 161 MENU_ATTACH( */
+		.dc.b 0x08 /* 162 MENU_ISTART( */
+		.dc.b 0x08 /* 163 MENU_POPUP( */
+		.dc.b 0x04 /* 164 MENU_SETTINGS( */
+		.dc.b 0x0a /* 165 OBJC_XFIND( */
+		.dc.b 0x02 /* 166 RSRC_RCFIX( */
+		.dc.b 0x8e /* 167 APPL_SEARCH( */
+		.dc.b 0x32 /* 168 GRAF_MULTIRUBBER( */
+		.dc.b 0x0a /* 169 VS_CLIP( */
+		.dc.b 0x10 /* 170 VSC_FORM() */
+		.dc.b 0x02 /* 171 FDUP( */
+		.dc.b 0x04 /* 172 FFORCE( */
+		.dc.b 0x08 /* 173 FLOCK( */
+		.dc.b 0x10 /* 174 SYIELD() */
+		.dc.b 0x02 /* 175 FINSTAT( */
+		.dc.b 0x02 /* 176 FOUTSTAT( */
+		.dc.b 0x06 /* 177 FCNTL( */
+		.dc.b 0x08 /* 178 FSELECT( */
+		.dc.b 0x02 /* 179 SHUTDOWN( */
+		.dc.b 0x34 /* 180 PSYSCTL( */
+		.dc.b 0x08 /* 181 V_BAR( */
+		.dc.b 0x08 /* 182 V_RBOX( */
+		.dc.b 0x08 /* 183 V_RFBOX( */
+		.dc.b 0x08 /* 184 VR_RECFL( */
+		.dc.b 0x0a /* 185 V_ARC( */
+		.dc.b 0x06 /* 186 V_CIRCLE( */
+		.dc.b 0x34 /* 187 V_ELLARC( */
+		.dc.b 0x34 /* 188 V_ELLPIE( */
+		.dc.b 0x08 /* 189 V_ELLIPSE( */
+		.dc.b 0x0a /* 190 V_PIESLICE( */
+		.dc.b 0x06 /* 191 V_CONTOURFILL( */
+		.dc.b 0x22 /* 192 V_GTEXT( */
+		.dc.b 0x02 /* 193 V_PLINE( */
+		.dc.b 0x02 /* 194 V_PMARKER( */
+		.dc.b 0x02 /* 195 V_FILLAREA( */
+		.dc.b 0x90 /* 196 V_JUSTIFIED( */
+		.dc.b 0x8c /* 197 VQ_KEY_S( */
+		.dc.b 0x94 /* 198 V_BEZ_FILL( */
+		.dc.b 0x04 /* 199 SETCOLOR( */
+		.dc.b 0x06 /* 200 SETSCREEN( */
+		.dc.b 0x02 /* 201 SETPALETTE( */
+		.dc.b 0x02 /* 202 SUPEXEC( */
+		.dc.b 0x04 /* 203 KBRATE( */
+		.dc.b 0x34 /* 204 RSCONF( */
+		.dc.b 0x04 /* 205 CURSCONF( */
+		.dc.b 0x02 /* 206 BCONMAP( */
+		.dc.b 0x10 /* 207 KBDVBASE() */
+		.dc.b 0x08 /* 208 NVMACCESS( */
+		.dc.b 0x02 /* 209 IOREC( */
+		.dc.b 0x04 /* 210 IKBDWS( */
+		.dc.b 0x04 /* 211 MIDIWS( */
+		.dc.b 0x04 /* 212 GIACCESS( */
+		.dc.b 0x24 /* 213 FLOPRD( */
+		.dc.b 0x24 /* 214 FLOPWR( */
+		.dc.b 0x2a /* 215 FLOPFMT( */
+		.dc.b 0x24 /* 216 FLOPVER( */
+		.dc.b 0x04 /* 217 FLOPRATE( */
+		.dc.b 0x08 /* 218 DMAREAD( */
+		.dc.b 0x08 /* 219 DMAWRITE( */
+		.dc.b 0x02 /* 220 ONGIBIT( */
+		.dc.b 0x02 /* 221 OFFGIBIT( */
+		.dc.b 0x10 /* 222 BIOSKEYS() */
+		.dc.b 0x02 /* 223 SETPRT( */
+		.dc.b 0x02 /* 224 JDISINT( */
+		.dc.b 0x02 /* 225 JENABINT( */
+		.dc.b 0x08 /* 226 PROTOBT( */
+		.dc.b 0x02 /* 227 WAKETIME( */
+		.dc.b 0x02 /* 228 PRTBLK( */
+		.dc.b 0x10 /* 229 VGETMONITOR() */
+		.dc.b 0x02 /* 230 VGETSIZE( */
+		.dc.b 0x02 /* 231 VSETMODE( */
+		.dc.b 0x02 /* 232 VCHECKMODE( */
+		.dc.b 0x08 /* 233 VSETSCREEN( */
+		.dc.b 0x06 /* 234 VGETRGB( */
+		.dc.b 0x06 /* 235 VSETRGB( */
+		.dc.b 0x06 /* 236 VSETMASK( */
+		.dc.b 0x02 /* 237 VSETSYNC( */
+		.dc.b 0x10 /* 238 EGETSHIFT() */
+		.dc.b 0x02 /* 239 ESETSHIFT( */
+		.dc.b 0x02 /* 240 ESETBANK( */
+		.dc.b 0x04 /* 241 ESETCOLOR( */
+		.dc.b 0x02 /* 242 ESETGRAY( */
+		.dc.b 0x02 /* 243 ESETSMEAR( */
+		.dc.b 0x06 /* 244 EGETPALETTE( */
+		.dc.b 0x06 /* 245 ESETPALETTE( */
+		.dc.b 0x04 /* 246 CRC16( */
+		.dc.b 0x04 /* 247 CRC32( */
+		.dc.b 0x22 /* 248 WF_NAME( */
+		.dc.b 0x22 /* 249 WF_INFO( */
+		.dc.b 0x92 /* 250 ALERT( */
+		.dc.b 0x34 /* 251 LRWABS( */
+		.dc.b 0x24 /* 252 AP_SEND( */
+		.dc.b 0x0e /* 253 SALERT( */
+		.dc.b 0x74 /* 254 FCHMOD( */
+		.dc.b 0x04 /* 255 PTERMRES( */
 
 offset_table_sf210:
-		.dc.b 0x96 /* 0 */
-		.dc.b 0x98 /* 1 */
-		.dc.b 0x10 /* 2 */
-		.dc.b 0x02 /* 3 */
-		.dc.b 0x10 /* 4 */
-		.dc.b 0x10 /* 5 */
-		.dc.b 0x06 /* 6 */
-		.dc.b 0x0a /* 7 */
-		.dc.b 0x10 /* 8 */
-		.dc.b 0x04 /* 9 */
-		.dc.b 0x02 /* 10 */
-		.dc.b 0x02 /* 11 */
-		.dc.b 0x02 /* 12 */
-		.dc.b 0x02 /* 13 */
-		.dc.b 0x02 /* 14 */
-		.dc.b 0x10 /* 15 */
-		.dc.b 0x02 /* 16 */
-		.dc.b 0x02 /* 17 */
-		.dc.b 0x0e /* 18 */
-		.dc.b 0x06 /* 19 */
-		.dc.b 0x06 /* 20 */
-		.dc.b 0xbc /* 21 */
-		.dc.b 0xba /* 22 */
-		.dc.b 0x06 /* 23 */
-		.dc.b 0x06 /* 24 */
-		.dc.b 0x04 /* 25 */
-		.dc.b 0x04 /* 26 */
-		.dc.b 0x10 /* 27 */
-		.dc.b 0x02 /* 28 */
-		.dc.b 0x12 /* 29 */
-		.dc.b 0x4c /* 30 */
-		.dc.b 0x04 /* 31 */
-		.dc.b 0x4c /* 32 */
-		.dc.b 0x06 /* 33 */
-		.dc.b 0x04 /* 34 */
-		.dc.b 0x06 /* 35 */
-		.dc.b 0x08 /* 36 */
-		.dc.b 0x06 /* 37 */
-		.dc.b 0x06 /* 38 */
-		.dc.b 0x06 /* 39 */
-		.dc.b 0x04 /* 40 */
-		.dc.b 0x06 /* 41 */
-		.dc.b 0x06 /* 42 */
-		.dc.b 0x34 /* 43 */
-		.dc.b 0x34 /* 44 */
-		.dc.b 0x0a /* 45 */
-		.dc.b 0x0a /* 46 */
-		.dc.b 0x06 /* 47 */
-		.dc.b 0x06 /* 48 */
-		.dc.b 0x04 /* 49 */
-		.dc.b 0x10 /* 50 */
-		.dc.b 0x0e /* 51 */
-		.dc.b 0x74 /* 52 */
-		.dc.b 0x02 /* 53 */
-		.dc.b 0x1e /* 54 */
-		.dc.b 0x10 /* 55 */
-		.dc.b 0xa2 /* 56 */
-		.dc.b 0x00 /* 57 */
-		.dc.b 0x02 /* 58 */
-		.dc.b 0x02 /* 59 */
-		.dc.b 0x00 /* 60 */
-		.dc.b 0x02 /* 61 */
-		.dc.b 0x0e /* 62 */
-		.dc.b 0x00 /* 63 */
-		.dc.b 0x08 /* 64 */
-		.dc.b 0x04 /* 65 */
-		.dc.b 0x06 /* 66 */
-		.dc.b 0x06 /* 67 */
-		.dc.b 0x00 /* 68 */
-		.dc.b 0x00 /* 69 */
-		.dc.b 0x00 /* 70 */
-		.dc.b 0x00 /* 71 */
-		.dc.b 0x02 /* 72 */
-		.dc.b 0x02 /* 73 */
-		.dc.b 0x02 /* 74 */
-		.dc.b 0x00 /* 75 */
-		.dc.b 0x06 /* 76 */
-		.dc.b 0x00 /* 77 */
-		.dc.b 0x9c /* 78 */
-		.dc.b 0x00 /* 79 */
-		.dc.b 0x00 /* 80 */
-		.dc.b 0x00 /* 81 */
-		.dc.b 0x00 /* 82 */
-		.dc.b 0x02 /* 83 */
-		.dc.b 0x00 /* 84 */
-		.dc.b 0x00 /* 85 */
-		.dc.b 0x00 /* 86 */
-		.dc.b 0x00 /* 87 */
-		.dc.b 0x00 /* 88 */
-		.dc.b 0x10 /* 89 */
-		.dc.b 0x0a /* 90 */
-		.dc.b 0x9e /* 91 */
-		.dc.b 0x9e /* 92 */
-		.dc.b 0x10 /* 93 */
-		.dc.b 0x1c /* 94 */
-		.dc.b 0x00 /* 95 */
-		.dc.b 0x00 /* 96 */
-		.dc.b 0x04 /* 97 */
-		.dc.b 0x00 /* 98 */
-		.dc.b 0x00 /* 99 */
+		.dc.b 0x96 /*   0 SUBPTR( */
+		.dc.b 0x98 /*   1 S: */
+		.dc.b 0x10 /*   2 ERL */
+		.dc.b 0x02 /*   3 SYSTAB( */
+		.dc.b 0x10 /*   4 SYSTAB */
+		.dc.b 0x10 /*   5 FREEFILE() */
+		.dc.b 0x06 /*   6 MENU.TEXT( */
+		.dc.b 0x0a /*   7 SHEL.WRITE( */
+		.dc.b 0x10 /*   8 SYSTAB? */
+		.dc.b 0x04 /*   9 MROUND( */
+		.dc.b 0x02 /*  10 BSWAP3( */
+		.dc.b 0x02 /*  11 MIRROR|( */
+		.dc.b 0x02 /*  12 MIRROR&( */
+		.dc.b 0x02 /*  13 MIRROR( */
+		.dc.b 0x02 /*  14 MIRROR3( */
+		.dc.b 0x10 /*  15 PCR? */
+		.dc.b 0x02 /*  16 CONTERM( */
+		.dc.b 0x02 /*  17 _PCR */
+		.dc.b 0x0e /*  18 LOADMEM( */
+		.dc.b 0x06 /*  19 OB.STATE( */
+		.dc.b 0x06 /*  20 OB.FLAGS( */
+		.dc.b 0xbc /*  21 SETSTR( */
+		.dc.b 0xba /*  22 INPUTBOX( */
+		.dc.b 0x06 /*  23 BCOUNT&( */
+		.dc.b 0x06 /*  24 BCOUNT(% */
+		.dc.b 0x04 /*  25 C_VDI(# */
+		.dc.b 0x04 /*  26 C_XBIOS(# */
+		.dc.b 0x10 /*  27 NETWORK? */
+		.dc.b 0x02 /*  28 SBYTE( */
+		.dc.b 0x12 /*  29 SBYTE{ */
+		.dc.b 0x4c /*  30 INDEXCOUNT( */
+		.dc.b 0x04 /*  31 CALLOC( */
+		.dc.b 0x4c /*  32 ARRAYSIZE( */
+		.dc.b 0x06 /*  33 OB_RADIO( */
+		.dc.b 0x04 /*  34 CHECKSUM( */
+		.dc.b 0x06 /*  35 FSOCKET( */
+		.dc.b 0x08 /*  36 FSOCKETPAIR( */
+		.dc.b 0x06 /*  37 FACCEPT( */
+		.dc.b 0x06 /*  38 FCONNECT( */
+		.dc.b 0x06 /*  39 FBIND( */
+		.dc.b 0x04 /*  40 FRECVMSG( */
+		.dc.b 0x06 /*  41 FSENDMSG( */
+		.dc.b 0x06 /*  42 FLISTEN( */
+		.dc.b 0x34 /*  43 FRECVFROM( */
+		.dc.b 0x34 /*  44 FSENDTO( */
+		.dc.b 0x0a /*  45 FSETSOCKOPT( */
+		.dc.b 0x0a /*  46 FGETSOCKOPT( */
+		.dc.b 0x06 /*  47 FGETPEERNAME( */
+		.dc.b 0x06 /*  48 FGETSOCKNAME( */
+		.dc.b 0x04 /*  49 FSHUTDOWN( */
+		.dc.b 0x10 /*  50 LDG_INIT() */
+		.dc.b 0x0e /*  51 LDG_OPEN( */
+		.dc.b 0x74 /*  52 LDG_FIND( */
+		.dc.b 0x02 /*  53 LDG_CLOSE( */
+		.dc.b 0x1e /*  54 LDG_LIBPATH( */
+		.dc.b 0x10 /*  55 LDG_ERROR() */
+		.dc.b 0xa2 /*  56 STIK_INIT( */
+		.dc.b 0    /*  57 */
+		.dc.b 0x02 /*  58 STIK_KRFREE( */
+		.dc.b 0x02 /*  59 STIK_KRGETFREE( */
+		.dc.b 0    /*  60 */
+		.dc.b 0x02 /*  61 STIK_GET_ERR_TEXT( */
+		.dc.b 0x0e /*  62 STIK_GETVSTR( */
+		.dc.b 0    /*  63 STIK_GETVSTR( */
+		.dc.b 0x08 /*  64 STIK_TCP_OPEN( */
+		.dc.b 0x04 /*  65 STIK_TCP_CLOSE( */
+		.dc.b 0x06 /*  66 STIK_TCP_SEND( */
+		.dc.b 0x06 /*  67 STIK_TCP_WAIT_STATE( */
+		.dc.b 0    /*  68 STIK_TCP_WAIT_STATE( */
+		.dc.b 0    /*  69 STIK_TCP_WAIT_STATE( */
+		.dc.b 0    /*  70 STIK_TCP_WAIT_STATE( */
+		.dc.b 0    /*  71 STIK_TCP_WAIT_STATE( */
+		.dc.b 0x02 /*  72 STIK_CNKICK( */
+		.dc.b 0x02 /*  73 STIK_CNBYTE_COUNT( */
+		.dc.b 0x02 /*  74 STIK_CNGET_CHAR( */
+		.dc.b 0    /*  75 */
+		.dc.b 0x06 /*  76 STIK_CNGET_BLOCK( */
+		.dc.b 0    /*  77 */
+		.dc.b 0x9c /*  78 STIK_RESOLVE( */
+		.dc.b 0    /*  79 */
+		.dc.b 0    /*  80 */
+		.dc.b 0    /*  81 */
+		.dc.b 0    /*  82 */
+		.dc.b 0x02 /*  83 STIK_CNGETINFO( */
+		.dc.b 0    /*  84 */
+		.dc.b 0    /*  85 */
+		.dc.b 0    /*  86 */
+		.dc.b 0    /*  87 */
+		.dc.b 0    /*  88 */
+		.dc.b 0x10 /*  89 FONT_INIT() */
+		.dc.b 0x0a /*  90 FONT_SELECT( */
+		.dc.b 0x9e /*  91 WEEKDAY( */
+		.dc.b 0x9e /*  92 */
+		.dc.b 0x10 /*  93 AV_INIT() */
+		.dc.b 0x1c /*  94 AV_PROTOKOLL( */
+		.dc.b 0    /*  95 */
+		.dc.b 0    /*  96 */
+		.dc.b 0x04 /*  97 AV_SENDKEY( */
+		.dc.b 0    /*  98 */
+		.dc.b 0    /*  99 */
 	.IF GBE>=373
-		.dc.b 0x7e /* 100 */
+		.dc.b 0x7e /* 100 AV_OPENWIND( */
 	.ELSE
-		.dc.b 0x00 /* 100 */
+		.dc.b 0    /* 100 */
 	.ENDC
-		.dc.b 0xa4 /* 101 */
-		.dc.b 0x02 /* 102 */
-		.dc.b 0x02 /* 103 */
-		.dc.b 0x00 /* 104 */
-		.dc.b 0x0e /* 105 */
-		.dc.b 0x04 /* 106 */
-		.dc.b 0x00 /* 107 */
-		.dc.b 0x10 /* 108 */
-		.dc.b 0x02 /* 109 */
-		.dc.b 0xa4 /* 110 */
-		.dc.b 0x00 /* 111 */
+		.dc.b 0xa4 /* 101 AV_STARTPROG( */
+		.dc.b 0x02 /* 102 AV_ACCWINDOPEN( */
+		.dc.b 0x02 /* 103 AV_ACCWINDCLOSED( */
+		.dc.b 0    /* 104 */
+		.dc.b 0x0e /* 105 AV_PATH_UPDATE( */
+		.dc.b 0x04 /* 106 AV_WHAT_IZIT( */
+		.dc.b 0    /* 107 AV_WHAT_IZIT( */
+		.dc.b 0x10 /* 108 AV_EXIT() */
+		.dc.b 0x02 /* 109 AV_STARTED( */
+		.dc.b 0xa4 /* 110 AV_XWIND( */
+		.dc.b 0    /* 111 */
 	.IF GBE>=373
-		.dc.b 0x0e /* 112 */
-		.dc.b 0xa4 /* 113 */
-		.dc.b 0x0e /* 114 */
+		.dc.b 0x0e /* 112 AV_FILEINFO( */
+		.dc.b 0xa4 /* 113 AV_COPYFILE( */
+		.dc.b 0x0e /* 114 AV_DELFILE( */
 	.ELSE
-		.dc.b 0x00 /* 112 */
-		.dc.b 0x00 /* 113 */
-		.dc.b 0x00 /* 114 */
+		.dc.b 0    /* 112 */
+		.dc.b 0    /* 113 */
+		.dc.b 0    /* 114 */
 	.ENDC
-		.dc.b 0x0e /* 115 */
-		.dc.b 0x04 /* 116 */
-		.dc.b 0x04 /* 117 */
-		.dc.b 0x04 /* 118 */
-		.dc.b 0x02 /* 119 */
-		.dc.b 0x02 /* 120 */
-		.dc.b 0x10 /* 121 */
-		.dc.b 0xa0 /* 122 */
-		.dc.b 0x02 /* 123 */
-		.dc.b 0x04 /* 124 */
-		.dc.b 0x9c /* 125 */
-		.dc.b 0x06 /* 126 */
-		.dc.b 0x0e /* 127 */
-		.dc.b 0x10 /* 128 */
-		.dc.b 0x10 /* 129 */
-		.dc.b 0x02 /* 130 */
-		.dc.b 0x06 /* 131 */
-		.dc.b 0x06 /* 132 */
-		.dc.b 0x10 /* 133 */
-		.dc.b 0x02 /* 134 */
-		.dc.b 0x02 /* 135 */
-		.dc.b 0x04 /* 136 */
-		.dc.b 0x06 /* 137 */
-		.dc.b 0x06 /* 138 */
-		.dc.b 0x02 /* 139 */
-		.dc.b 0x04 /* 140 */
-		.dc.b 0x04 /* 141 */
-		.dc.b 0x04 /* 142 */
-		.dc.b 0x04 /* 143 */
-		.dc.b 0x86 /* 144 */
-		.dc.b 0x02 /* 145 */
-		.dc.b 0x04 /* 146 */
-		.dc.b 0x10 /* 147 */
-		.dc.b 0x04 /* 148 */
-		.dc.b 0x04 /* 149 */
-		.dc.b 0x06 /* 150 */
-		.dc.b 0x10 /* 151 */
-		.dc.b 0x7e /* 152 */
-		.dc.b 0x0e /* 153 */
-		.dc.b 0x0e /* 154 */
-		.dc.b 0x0e /* 155 */
-		.dc.b 0x0e /* 156 */
-		.dc.b 0x08 /* 157 */
-		.dc.b 0x04 /* 158 */
-		.dc.b 0x04 /* 159 */
-		.dc.b 0x02 /* 160 */
-		.dc.b 0x02 /* 161 */
-		.dc.b 0x04 /* 162 */
-		.dc.b 0x7e /* 163 */
-		.dc.b 0xa6 /* 164 */
-		.dc.b 0x1a /* 165 */
-		.dc.b 0x02 /* 166 */
-		.dc.b 0x02 /* 167 */
-		.dc.b 0x74 /* 168 */
-		.dc.b 0x06 /* 169 */
-		.dc.b 0xa8 /* 170 */
-		.dc.b 0xb2 /* 171 */
-		.dc.b 0x06 /* 172 */
-		.dc.b 0xaa /* 173 */
-		.dc.b 0x06 /* 174 */
-		.dc.b 0x06 /* 175 */
-		.dc.b 0x0e /* 176 */
-		.dc.b 0xac /* 177 */
-		.dc.b 0xae /* 178 */
-		.dc.b 0xb0 /* 179 */
-		.dc.b 0x06 /* 180 */
-		.dc.b 0x06 /* 181 */
-		.dc.b 0x84 /* 182 */
-		.dc.b 0x88 /* 183 */
-		.dc.b 0x7e /* 184 */
-		.dc.b 0x16 /* 185 */
-		.dc.b 0x04 /* 186 */
-		.dc.b 0x10 /* 187 */
-		.dc.b 0xb6 /* 188 */
-		.dc.b 0x00 /* 189 */
-		.dc.b 0x04 /* 190 */
-		.dc.b 0xa6 /* 191 */
-		.dc.b 0xb8 /* 192 */
-		.dc.b 0x02 /* 193 */
-		.dc.b 0x10 /* 194 */
-		.dc.b 0x02 /* 195 */
-		.dc.b 0x02 /* 196 */
-		.dc.b 0x02 /* 197 */
-		.dc.b 0x02 /* 198 */
-		.dc.b 0x00 /* 199 */
-		.dc.b 0x00 /* 200 */
-		.dc.b 0x00 /* 201 */
-		.dc.b 0x00 /* 202 */
-		.dc.b 0x04 /* 203 */
-		.dc.b 0x02 /* 204 */
-		.dc.b 0x2e /* 205 */
-		.dc.b 0x02 /* 206 */
-		.dc.b 0x02 /* 207 */
-		.dc.b 0x04 /* 208 */
-		.dc.b 0xca /* 209 */
-		.dc.b 0xc8 /* 210 */
-		.dc.b 0x0a /* 211 */
-		.dc.b 0x0a /* 212 */
-		.dc.b 0x08 /* 213 */
-		.dc.b 0x06 /* 214 */
-		.dc.b 0x02 /* 215 */
-		.dc.b 0x02 /* 216 */
-		.dc.b 0x02 /* 217 */
-		.dc.b 0x02 /* 218 */
-		.dc.b 0x02 /* 219 */
-		.dc.b 0x02 /* 220 */
-		.dc.b 0x06 /* 221 */
-		.dc.b 0x10 /* 222 */
-		.dc.b 0x10 /* 223 */
-		.dc.b 0x10 /* 224 */
-		.dc.b 0x10 /* 225 */
-		.dc.b 0x10 /* 226 */
-		.dc.b 0x10 /* 227 */
-		.dc.b 0x10 /* 228 */
-		.dc.b 0x10 /* 229 */
-		.dc.b 0x10 /* 230 */
-		.dc.b 0x10 /* 231 */
-		.dc.b 0x10 /* 232 */
-		.dc.b 0x10 /* 233 */
-		.dc.b 0x10 /* 234 */
-		.dc.b 0x10 /* 235 */
-		.dc.b 0x10 /* 236 */
-		.dc.b 0x10 /* 237 */
-		.dc.b 0x10 /* 238 */
-		.dc.b 0x10 /* 239 */
-		.dc.b 0x10 /* 240 */
-		.dc.b 0x10 /* 241 */
-		.dc.b 0x10 /* 242 */
-		.dc.b 0x10 /* 243 */
-		.dc.b 0x06 /* 244 */
-		.dc.b 0x10 /* 245 */
-		.dc.b 0x10 /* 246 */
-		.dc.b 0x10 /* 247 */
-		.dc.b 0x10 /* 248 */
-		.dc.b 0x10 /* 249 */
-		.dc.b 0x10 /* 250 */
-		.dc.b 0x10 /* 251 */
-		.dc.b 0x10 /* 252 */
-		.dc.b 0x10 /* 253 */
-		.dc.b 0xbe /* 254 */
+		.dc.b 0x0e /* 115 VA_START( */
+		.dc.b 0x04 /* 116 MAKE&( */
+		.dc.b 0x04 /* 117 MAKE%( */
+		.dc.b 0x04 /* 118 MAKE|( */
+		.dc.b 0x02 /* 119 F_CLOSE( */
+		.dc.b 0x02 /* 120 APPL.FIND( */
+		.dc.b 0x10 /* 121 ENVIRON */
+		.dc.b 0xa0 /* 122 SLBOPEN( */
+		.dc.b 0x02 /* 123 SLBCLOSE( */
+		.dc.b 0x04 /* 124 F_ENDSEEK( */
+		.dc.b 0x9c /* 125 POPUP( */
+		.dc.b 0x06 /* 126 FPOLL( */
+		.dc.b 0x0e /* 127 FILELEN( */
+		.dc.b 0x10 /* 128 PGETPID() */
+		.dc.b 0x10 /* 129 P~I */
+		.dc.b 0x02 /* 130 SWAP|( */
+		.dc.b 0x06 /* 131 BROUND( */
+		.dc.b 0x06 /* 132 BCOMPARE( */
+		.dc.b 0x10 /* 133 SCRDMP() */
+		.dc.b 0x02 /* 134 FPIPE( */
+		.dc.b 0x02 /* 135 PRUSAGE( */
+		.dc.b 0x04 /* 136 SUPTIME( */
+		.dc.b 0x06 /* 137 FMIDIPIPE( */
+		.dc.b 0x06 /* 138 CONSTRAIN( */
+		.dc.b 0x02 /* 139 NYBLE( */
+		.dc.b 0x04 /* 140 MAKE( */
+		.dc.b 0x04 /* 141 MEMBTST|( */
+		.dc.b 0x04 /* 142 MEMBTST&( */
+		.dc.b 0x04 /* 143 MEMBTST%( */
+		.dc.b 0x86 /* 144 FCHOWN( */
+		.dc.b 0x02 /* 145 PNICE( */
+		.dc.b 0x04 /* 146 PRENICE( */
+		.dc.b 0x10 /* 147 PGETPPID() */
+		.dc.b 0x04 /* 148 DLOCK( */
+		.dc.b 0x04 /* 149 PGETPRIORITY( */
+		.dc.b 0x06 /* 150 PSETPRIORITY( */
+		.dc.b 0x10 /* 151 VSYNC() */
+		.dc.b 0x7e /* 152 FILECOPY( */
+		.dc.b 0x0e /* 153 ISBLANK( */
+		.dc.b 0x0e /* 154 ISCNTRL( */
+		.dc.b 0x0e /* 155 ISPRINT( */
+		.dc.b 0x0e /* 156 ISSPACE( */
+		.dc.b 0x08 /* 157 RGB( */
+		.dc.b 0x04 /* 158 RGB256( */
+		.dc.b 0x04 /* 159 RGB1000( */
+		.dc.b 0x02 /* 160 WF_TOP( */
+		.dc.b 0x02 /* 161 PUSRVAL( */
+		.dc.b 0x04 /* 162 PSETLIMIT( */
+		.dc.b 0x7e /* 163 DWRITELABEL( */
+		.dc.b 0xa6 /* 164 DREADLABEL( */
+		.dc.b 0x1a /* 165 DGETCWD( */
+		.dc.b 0x02 /* 166 DCLOSEDIR( */
+		.dc.b 0x02 /* 167 DREWINDDIR( */
+		.dc.b 0x74 /* 168 DOPENDIR( */
+		.dc.b 0x06 /* 169 DREADDIR( */
+		.dc.b 0xa8 /* 170 DXREADDIR( */
+		.dc.b 0xb2 /* 171 FXATTR( */
+		.dc.b 0x06 /* 172 MACCESS( */
+		.dc.b 0xaa /* 173 MVALIDATE( */
+		.dc.b 0x06 /* 174 BFIND& */
+		.dc.b 0x06 /* 175 BFIND% */
+		.dc.b 0x0e /* 176 FEXIST( */
+		.dc.b 0xac /* 177 SPLIT( */
+		.dc.b 0xae /* 178 JOIN( */
+		.dc.b 0xb0 /* 179 GETSTR( */
+		.dc.b 0x06 /* 180 BCOMPARE&( */
+		.dc.b 0x06 /* 181 BCOMPARE%( */
+		.dc.b 0x84 /* 182 WIND_SGET( */
+		.dc.b 0x88 /* 183 SHEL_HELP( */
+		.dc.b 0x7e /* 184 SHEL_WDEF( */
+		.dc.b 0x16 /* 185 SHEL_RDEF( */
+		.dc.b 0x04 /* 186 PKILL( */
+		.dc.b 0x10 /* 187 DHST_INIT() */
+		.dc.b 0xb6 /* 188 DHST_ADD( */
+		.dc.b 0    /* 189 */
+		.dc.b 0x04 /* 190 PSIGNAL( */
+		.dc.b 0xa6 /* 191 LOADSTR( */
+		.dc.b 0xb8 /* 192 FILES( */
+		.dc.b 0x02 /* 193 MSG( */
+		.dc.b 0x10 /* 194 MSG */
+		.dc.b 0x02 /* 195 HINYBLE( */
+		.dc.b 0x02 /* 196 HIBYTE( */
+		.dc.b 0x02 /* 197 HIWORD( */
+		.dc.b 0x02 /* 198 HICARD( */
+		.dc.b 0    /* 199 */
+		.dc.b 0    /* 200 */
+		.dc.b 0    /* 201 */
+		.dc.b 0    /* 202 */
+		.dc.b 0x04 /* 203 SETCOOKIE( */
+		.dc.b 0x02 /* 204 DELCOOKIE( */
+		.dc.b 0x2e /* 205 FORM.KEYBD( */
+		.dc.b 0x02 /* 206 V_CTAB_VDI2IDX( */
+		.dc.b 0x02 /* 207 V_CTAB_IDX2VALUE( */
+		.dc.b 0x04 /* 208 VQ_DFLT_CTAB( */
+		.dc.b 0xca /* 209 V_COLOR2NEAREST( */
+		.dc.b 0xc8 /* 210 V_VALUE2COLOR( */
+		.dc.b 0x0a /* 211 V_COLOR2VALUE( */
+		.dc.b 0x0a /* 212 NEAREST_RGB( */
+		.dc.b 0x08 /* 213 GRAYSCALE( */
+		.dc.b 0x06 /* 214 DATE( */
+		.dc.b 0x02 /* 215 YEAR( */
+		.dc.b 0x02 /* 216 MONTH( */
+		.dc.b 0x02 /* 217 DAY( */
+		.dc.b 0x02 /* 218 HOUR24( */
+		.dc.b 0x02 /* 219 MINUTE( */
+		.dc.b 0x02 /* 220 SECOND( */
+		.dc.b 0x06 /* 221 TIME( */
+		.dc.b 0x10 /* 222 _FPU */
+		.dc.b 0x10 /* 223 _MCH */
+		.dc.b 0x10 /* 224 _CPUID */
+		.dc.b 0x10 /* 225 COMPILED? */
+		.dc.b 0x10 /* 226 M68K? */
+		.dc.b 0x10 /* 227 _VERSION */
+		.dc.b 0x10 /* 228 _CW */
+		.dc.b 0x10 /* 229 _CH */
+		.dc.b 0x10 /* 230 _0 */
+		.dc.b 0x10 /* 231 _1 */
+		.dc.b 0x10 /* 232 _2 */
+		.dc.b 0x10 /* 233 _3 */
+		.dc.b 0x10 /* 234 _4 */
+		.dc.b 0x10 /* 235 _5 */
+		.dc.b 0x10 /* 236 _6 */
+		.dc.b 0x10 /* 237 _7 */
+		.dc.b 0x10 /* 238 _8 */
+		.dc.b 0x10 /* 239 _9 */
+		.dc.b 0x10 /* 240 _BUILDINFO */
+		.dc.b 0x10 /* 241 _CF_ */
+		.dc.b 0x10 /* 242 G~H */
+		.dc.b 0x10 /* 243 G~R */
+		.dc.b 0x06 /* 244 BMPSIZE( */
+		.dc.b 0x10 /* 245 _DX */
+		.dc.b 0x10 /* 246 _DY */
+		.dc.b 0x10 /* 247 _DW */
+		.dc.b 0x10 /* 248 _DH */
+		.dc.b 0x10 /* 249 ACC? */
+		.dc.b 0x10 /* 250 AUTO? */
+		.dc.b 0x10 /* 251 FPU? */
+		.dc.b 0x10 /* 252 CPU020? */
+		.dc.b 0x10 /* 253 DMASND? */
+		.dc.b 0xbe /* 254 DAYNO( */
 		.dc.b 0xbe /* 255 */
 
 offset_table_sf211:
-		.dc.b 0x02 /* 0 */
-		.dc.b 0xc0 /* 1 */
-		.dc.b 0xc0 /* 2 */
-		.dc.b 0x02 /* 3 */
-		.dc.b 0x02 /* 4 */
-		.dc.b 0x10 /* 5 */
-		.dc.b 0x02 /* 6 */
-		.dc.b 0x02 /* 7 */
-		.dc.b 0x10 /* 8 */
-		.dc.b 0x02 /* 9 */
-		.dc.b 0x02 /* 10 */
-		.dc.b 0x02 /* 11 */
-		.dc.b 0x08 /* 12 */
-		.dc.b 0x08 /* 13 */
-		.dc.b 0x08 /* 14 */
-		.dc.b 0x08 /* 15 */
-		.dc.b 0x08 /* 16 */
-		.dc.b 0x34 /* 17 */
-		.dc.b 0x02 /* 18 */
-		.dc.b 0x10 /* 19 */
-		.dc.b 0x10 /* 20 */
-		.dc.b 0x10 /* 21 */
-		.dc.b 0xa2 /* 22 */
-		.dc.b 0x04 /* 23 */
-		.dc.b 0x86 /* 24 */
-		.dc.b 0x06 /* 25 */
-		.dc.b 0x06 /* 26 */
-		.dc.b 0x74 /* 27 */
-		.dc.b 0x02 /* 28 */
-		.dc.b 0x10 /* 29 */
-		.dc.b 0x10 /* 30 */
-		.dc.b 0x10 /* 31 */
-		.dc.b 0x06 /* 32 */
-		.dc.b 0x02 /* 33 */
-		.dc.b 0x02 /* 34 */
-		.dc.b 0x02 /* 35 */
-		.dc.b 0x02 /* 36 */
-		.dc.b 0x10 /* 37 */
-		.dc.b 0x10 /* 38 */
-		.dc.b 0x08 /* 39 */
-		.dc.b 0x08 /* 40 */
-		.dc.b 0x10 /* 41 */
-		.dc.b 0x04 /* 42 */
-		.dc.b 0x08 /* 43 */
-		.dc.b 0x06 /* 44 */
-		.dc.b 0x04 /* 45 */
-		.dc.b 0x02 /* 46 */
-		.dc.b 0x04 /* 47 */
-		.dc.b 0x02 /* 48 */
-		.dc.b 0xc2 /* 49 */
-		.dc.b 0x10 /* 50 */
-		.dc.b 0x8e /* 51 */
-		.dc.b 0x34 /* 52 */
-		.dc.b 0x08 /* 53 */
-		.dc.b 0x10 /* 54 */
-		.dc.b 0xc4 /* 55 */
-		.dc.b 0xc4 /* 56 */
-		.dc.b 0x0a /* 57 */
-		.dc.b 0x0a /* 58 */
-		.dc.b 0x0a /* 59 */
-		.dc.b 0x0a /* 60 */
-		.dc.b 0x0a /* 61 */
-		.dc.b 0xc6 /* 62 */
-		.dc.b 0xc6 /* 63 */
-		.dc.b 0xc6 /* 64 */
-		.dc.b 0xc6 /* 65 */
-		.dc.b 0xc6 /* 66 */
-		.dc.b 0x0a /* 67 */
-		.dc.b 0x0a /* 68 */
-		.dc.b 0x0a /* 69 */
-		.dc.b 0x0a /* 70 */
-		.dc.b 0x0a /* 71 */
-		.dc.b 0xc6 /* 72 */
-		.dc.b 0xc6 /* 73 */
-		.dc.b 0xc6 /* 74 */
-		.dc.b 0xc6 /* 75 */
-		.dc.b 0xc6 /* 76 */
-		.dc.b 0x0a /* 77 */
-		.dc.b 0x0a /* 78 */
-		.dc.b 0x0a /* 79 */
-		.dc.b 0x0a /* 80 */
-		.dc.b 0xc6 /* 81 */
-		.dc.b 0xc6 /* 82 */
-		.dc.b 0xc6 /* 83 */
-		.dc.b 0xc6 /* 84 */
-		.dc.b 0x08 /* 85 */
-		.dc.b 0x02 /* 86 */
-		.dc.b 0x08 /* 87 */
-		.dc.b 0x04 /* 88 */
-		.dc.b 0x04 /* 89 */
-		.dc.b 0x04 /* 90 */
-		.dc.b 0x04 /* 91 */
-		.dc.b 0x04 /* 92 */
-		.dc.b 0x04 /* 93 */
-		.dc.b 0x04 /* 94 */
-		.dc.b 0x00 /* 95 */
-		.dc.b 0x04 /* 96 */
-		.dc.b 0x04 /* 97 */
-		.dc.b 0x04 /* 98 */
-		.dc.b 0x04 /* 99 */
-		.dc.b 0x04 /* 100 */
-		.dc.b 0x04 /* 101 */
-		.dc.b 0x04 /* 102 */
-		.dc.b 0x04 /* 103 */
-		.dc.b 0x04 /* 104 */
-		.dc.b 0x04 /* 105 */
-		.dc.b 0x04 /* 106 */
-		.dc.b 0x04 /* 107 */
-		.dc.b 0x00 /* 108 */
-		.dc.b 0x04 /* 109 */
-		.dc.b 0x04 /* 110 */
-		.dc.b 0x04 /* 111 */
-		.dc.b 0x04 /* 112 */
-		.dc.b 0x04 /* 113 */
-		.dc.b 0x04 /* 114 */
-		.dc.b 0x04 /* 115 */
-		.dc.b 0x04 /* 116 */
-		.dc.b 0x04 /* 117 */
-		.dc.b 0x04 /* 118 */
-		.dc.b 0x04 /* 119 */
-		.dc.b 0x04 /* 120 */
-		.dc.b 0x04 /* 121 */
-		.dc.b 0x04 /* 122 */
-		.dc.b 0x04 /* 123 */
-		.dc.b 0x04 /* 124 */
-		.dc.b 0x04 /* 125 */
-		.dc.b 0x04 /* 126 */
-		.dc.b 0x04 /* 127 */
-		.dc.b 0x04 /* 128 */
-		.dc.b 0x04 /* 129 */
-		.dc.b 0x04 /* 130 */
-		.dc.b 0x04 /* 131 */
-		.dc.b 0x04 /* 132 */
-		.dc.b 0x04 /* 133 */
-		.dc.b 0x04 /* 134 */
-		.dc.b 0x04 /* 135 */
-		.dc.b 0x04 /* 136 */
-		.dc.b 0x04 /* 137 */
-		.dc.b 0x04 /* 138 */
-		.dc.b 0x04 /* 139 */
-		.dc.b 0x04 /* 140 */
-		.dc.b 0x04 /* 141 */
-		.dc.b 0x04 /* 142 */
-		.dc.b 0x04 /* 143 */
-		.dc.b 0x04 /* 144 */
-		.dc.b 0x04 /* 145 */
-		.dc.b 0x04 /* 146 */
-		.dc.b 0x04 /* 147 */
-		.dc.b 0x04 /* 148 */
-		.dc.b 0x04 /* 149 */
-		.dc.b 0x04 /* 150 */
-		.dc.b 0x04 /* 151 */
-		.dc.b 0x04 /* 152 */
-		.dc.b 0x04 /* 153 */
-		.dc.b 0x04 /* 154 */
-		.dc.b 0x04 /* 155 */
-		.dc.b 0x04 /* 156 */
-		.dc.b 0x04 /* 157 */
-		.dc.b 0x04 /* 158 */
-		.dc.b 0x04 /* 159 */
-		.dc.b 0x04 /* 160 */
-		.dc.b 0x04 /* 161 */
-		.dc.b 0x04 /* 162 */
-		.dc.b 0x04 /* 163 */
-		.dc.b 0x04 /* 164 */
-		.dc.b 0x04 /* 165 */
-		.dc.b 0x02 /* 166 */
-		.dc.b 0x10 /* 167 */
-		.dc.b 0xc8 /* 168 */
-		.dc.b 0x04 /* 169 */
-		.dc.b 0x10 /* 170 */
-		.dc.b 0x34 /* 171 */
-		.dc.b 0x02 /* 172 */
-		.dc.b 0x10 /* 173 */
-		.dc.b 0x10 /* 174 */
-		.dc.b 0x1a /* 175 */
-		.dc.b 0x2c /* 176 */
-		.dc.b 0x10 /* 177 */
-		.dc.b 0xce /* 178 */
-		.dc.b 0xcc /* 179 */
-		.dc.b 0xcc /* 180 */
-		.dc.b 0xcc /* 181 */
-		.dc.b 0x06 /* 182 */
-		.dc.b 0xa6 /* 183 */
-		.dc.b 0xd0 /* 184 */
+		.dc.b 0x02 /*   0 LEAP( */
+		.dc.b 0xc0 /*   1 WEEK( */
+		.dc.b 0xc0 /*   2 */
+		.dc.b 0x02 /*   3 HOUR12( */
+		.dc.b 0x02 /*   4 MERIDIEM( */
+		.dc.b 0x10 /*   5 JPEGD_INIT() */
+		.dc.b 0x02 /*   6 JPEGD_OPENDRIVER( */
+		.dc.b 0x02 /*   7 JPEGD_CLOSEDRIVER( */
+		.dc.b 0x10 /*   8 JPEGD_GETSTRUCTSIZE() */
+		.dc.b 0x02 /*   9 JPEGD_GETIMAGEINFO( */
+		.dc.b 0x02 /*  10 JPEGD_GETIMAGESIZE( */
+		.dc.b 0x02 /*  11 JPEGD_DECODEIMAGE( */
+		.dc.b 0x08 /*  12 DSP_DOBLOCK( */
+		.dc.b 0x08 /*  13 DSP_BLKHANDSHAKE( */
+		.dc.b 0x08 /*  14 DSP_BLKUNPACKED( */
+		.dc.b 0x08 /*  15 DSP_INSTREAM( */
+		.dc.b 0x08 /*  16 DSP_OUTSTREAM( */
+		.dc.b 0x34 /*  17 DSP_IOSTREAM( */
+		.dc.b 0x02 /*  18 DSP_REMOVEINTERRUPTS( */
+		.dc.b 0x10 /*  19 DSP_GETWORDSIZE() */
+		.dc.b 0x10 /*  20 DSP_LOCK() */
+		.dc.b 0x10 /*  21 DSP_UNLOCK() */
+		.dc.b 0xa2 /*  22 DSP_AVAILABLE( */
+		.dc.b 0x04 /*  23 DSP_RESERVE( */
+		.dc.b 0x86 /*  24 DSP_LOADPROG( */
+		.dc.b 0x06 /*  25 DSP_EXECPROG( */
+		.dc.b 0x06 /*  26 DSP_EXECBOOT( */
+		.dc.b 0x74 /*  27 DSP_LODTOBINARY( */
+		.dc.b 0x02 /*  28 DSP_TRIGGERHC( */
+		.dc.b 0x10 /*  29 DSP_REQUESTUNIQUEABILITY() */
+		.dc.b 0x10 /*  30 DSP_GETPROGABILITY() */
+		.dc.b 0x10 /*  31 DSP_FLUSHSUBROUTINES() */
+		.dc.b 0x06 /*  32 DSP_LOADSUBROUTINE( */
+		.dc.b 0x02 /*  33 DSP_INQSUBRABILITY( */
+		.dc.b 0x02 /*  34 DSP_RUNSUBROUTINE( */
+		.dc.b 0x02 /*  35 DSP_HF0( */
+		.dc.b 0x02 /*  36 DSP_HF1( */
+		.dc.b 0x10 /*  37 DSP_HF2() */
+		.dc.b 0x10 /*  38 DSP_HF3() */
+		.dc.b 0x08 /*  39 DSP_BLKWORDS( */
+		.dc.b 0x08 /*  40 DSP_BLKBYTES( */
+		.dc.b 0x10 /*  41 DSP_HSTAT() */
+		.dc.b 0x04 /*  42 DSP_SETVECTORS( */
+		.dc.b 0x08 /*  43 DSP_MULTBLOCKS( */
+		.dc.b 0x06 /*  44 VR_TRANSFER_BITS( */
+		.dc.b 0x04 /*  45 V_CREATE_CTAB( */
+		.dc.b 0x02 /*  46 V_DELETE_CTAB( */
+		.dc.b 0x04 /*  47 V_CREATE_ITAB( */
+		.dc.b 0x02 /*  48 V_DELETE_ITAB( */
+		.dc.b 0xc2 /*  49 VQ_PX_FORMAT( */
+		.dc.b 0x10 /*  50 V_GET_CTAB_ID() */
+		.dc.b 0x8e /*  51 VQT_EXT_NAME( */
+		.dc.b 0x34 /*  52 V_OPEN_BM( */
+		.dc.b 0x08 /*  53 V_RESIZE_BM( */
+		.dc.b 0x10 /*  54 V_HARDCOPY() */
+		.dc.b 0xc4 /*  55 VST_NAME( */
+		.dc.b 0xc4 /*  56 VQT_NAME_AND_ID( */
+		.dc.b 0x0a /*  57 VST_FG_COLOR( */
+		.dc.b 0x0a /*  58 VSF_FG_COLOR( */
+		.dc.b 0x0a /*  59 VSL_FG_COLOR( */
+		.dc.b 0x0a /*  60 VSM_FG_COLOR( */
+		.dc.b 0x0a /*  61 VSR_FG_COLOR( */
+		.dc.b 0xc6 /*  62 VQT_FG_COLOR( */
+		.dc.b 0xc6 /*  63 VQF_FG_COLOR( */
+		.dc.b 0xc6 /*  64 VQL_FG_COLOR( */
+		.dc.b 0xc6 /*  65 VQM_FG_COLOR( */
+		.dc.b 0xc6 /*  66 VQR_FG_COLOR( */
+		.dc.b 0x0a /*  67 VST_BG_COLOR( */
+		.dc.b 0x0a /*  68 VSF_BG_COLOR( */
+		.dc.b 0x0a /*  69 VSL_BG_COLOR( */
+		.dc.b 0x0a /*  70 VSM_BG_COLOR( */
+		.dc.b 0x0a /*  71 VSR_BG_COLOR( */
+		.dc.b 0xc6 /*  72 VQT_BG_COLOR( */
+		.dc.b 0xc6 /*  73 VQF_BG_COLOR( */
+		.dc.b 0xc6 /*  74 VQL_BG_COLOR( */
+		.dc.b 0xc6 /*  75 VQM_BG_COLOR( */
+		.dc.b 0xc6 /*  76 VQR_BG_COLOR( */
+		.dc.b 0x0a /*  77 VS_HILITE_COLOR( */
+		.dc.b 0x0a /*  78 VS_MIN_COLOR( */
+		.dc.b 0x0a /*  79 VS_MAX_COLOR( */
+		.dc.b 0x0a /*  80 VS_WEIGHT_COLOR( */
+		.dc.b 0xc6 /*  81 VQ_HILITE_COLOR( */
+		.dc.b 0xc6 /*  82 VQ_MIN_COLOR( */
+		.dc.b 0xc6 /*  83 VQ_MAX_COLOR( */
+		.dc.b 0xc6 /*  84 VQ_WEIGHT_COLOR( */
+		.dc.b 0x08 /*  85 V_SETRGB( */
+		.dc.b 0x02 /*  86 SUPERSCALAR( */
+		.dc.b 0x08 /*  87 VQT_XFNTINFO( */
+		.dc.b 0x04 /*  88 OB_SELECTED( */
+		.dc.b 0x04 /*  89 OB_CROSSED( */
+		.dc.b 0x04 /*  90 OB_CHECKED( */
+		.dc.b 0x04 /*  91 OB_DISABLED( */
+		.dc.b 0x04 /*  92 OB_OUTLINED( */
+		.dc.b 0x04 /*  93 OB_SHADOWED( */
+		.dc.b 0x04 /*  94 OB_WHITEBAK( */
+		.dc.b 0    /*  95 */
+		.dc.b 0x04 /*  96 OB_SELECTABLE( */
+		.dc.b 0x04 /*  97 OB_DEFAULT( */
+		.dc.b 0x04 /*  98 OB_EXIT( */
+		.dc.b 0x04 /*  99 OB_EDITABLE( */
+		.dc.b 0x04 /* 100 OB_RBUTTON( */
+		.dc.b 0x04 /* 101 OB_LASTOB( */
+		.dc.b 0x04 /* 102 OB_TOUCHEXIT( */
+		.dc.b 0x04 /* 103 OB_HIDETREE( */
+		.dc.b 0x04 /* 104 OB_INDIRECT( */
+		.dc.b 0x04 /* 105 OB_FL3DIND( */
+		.dc.b 0x04 /* 106 OB_FL3DACT( */
+		.dc.b 0x04 /* 107 OB_SUBMENU( */
+		.dc.b 0    /* 108 */
+		.dc.b 0x04 /* 109 OB_FL3DBAK( */
+		.dc.b 0x04 /* 110 BF_OBSPEC( */
+		.dc.b 0x04 /* 111 BF_CHARACTER( */
+		.dc.b 0x04 /* 112 BF_FRAMESIZE( */
+		.dc.b 0x04 /* 113 BF_FRAMECOL( */
+		.dc.b 0x04 /* 114 BF_TEXTCOL( */
+		.dc.b 0x04 /* 115 BF_TEXTMODE( */
+		.dc.b 0x04 /* 116 BF_FILLPATTERN( */
+		.dc.b 0x04 /* 117 BF_INTERIORCOL( */
+		.dc.b 0x04 /* 118 BI_PDATA( */
+		.dc.b 0x04 /* 119 BI_WB( */
+		.dc.b 0x04 /* 120 BI_HL( */
+		.dc.b 0x04 /* 121 BI_X( */
+		.dc.b 0x04 /* 122 BI_Y( */
+		.dc.b 0x04 /* 123 BI_COLOR( */
+		.dc.b 0x04 /* 124 UB_CODE( */
+		.dc.b 0x04 /* 125 UB_PARM( */
+		.dc.b 0x04 /* 126 TE_PTEXT( */
+		.dc.b 0x04 /* 127 TE_PTMPLT( */
+		.dc.b 0x04 /* 128 TE_PVALID( */
+		.dc.b 0x04 /* 129 TE_FONT( */
+		.dc.b 0x04 /* 130 TE_FONTID( */
+		.dc.b 0x04 /* 131 TE_JUST( */
+		.dc.b 0x04 /* 132 TE_COLOR( */
+		.dc.b 0x04 /* 133 TE_FONTSIZE( */
+		.dc.b 0x04 /* 134 TE_THICKNESS( */
+		.dc.b 0x04 /* 135 TE_TXTLEN( */
+		.dc.b 0x04 /* 136 TE_TMPLEN( */
+		.dc.b 0x04 /* 137 TE_FRAMECOL( */
+		.dc.b 0x04 /* 138 TE_TEXTCOL( */
+		.dc.b 0x04 /* 139 TE_TEXTMODE( */
+		.dc.b 0x04 /* 140 TE_FILLPATTERN( */
+		.dc.b 0x04 /* 141 TE_INTERIORCOL( */
+		.dc.b 0x04 /* 142 IB_PMASK( */
+		.dc.b 0x04 /* 143 IB_PDATA( */
+		.dc.b 0x04 /* 144 IB_PTEXT( */
+		.dc.b 0x04 /* 145 IB_CHAR( */
+		.dc.b 0x04 /* 146 IB_XCHAR( */
+		.dc.b 0x04 /* 147 IB_YCHAR( */
+		.dc.b 0x04 /* 148 IB_XICON( */
+		.dc.b 0x04 /* 149 IB_YICON( */
+		.dc.b 0x04 /* 150 IB_WICON( */
+		.dc.b 0x04 /* 151 IB_HICON( */
+		.dc.b 0x04 /* 152 IB_XTEXT( */
+		.dc.b 0x04 /* 153 IB_YTEXT( */
+		.dc.b 0x04 /* 154 IB_WTEXT( */
+		.dc.b 0x04 /* 155 IB_HTEXT( */
+		.dc.b 0x04 /* 156 IB_FCOLOR( */
+		.dc.b 0x04 /* 157 IB_BCOLOR( */
+		.dc.b 0x04 /* 158 IB_LETTER( */
+		.dc.b 0x04 /* 159 CI_MAINLIST( */
+		.dc.b 0x04 /* 160 CI_NUM_PLANES( */
+		.dc.b 0x04 /* 161 CI_COL_DATA( */
+		.dc.b 0x04 /* 162 CI_COL_MASK( */
+		.dc.b 0x04 /* 163 CI_SEL_DATA( */
+		.dc.b 0x04 /* 164 CI_SEL_MASK( */
+		.dc.b 0x04 /* 165 CI_NEXT_RES( */
+		.dc.b 0x02 /* 166 V_CTAB_IDX2VDI( */
+		.dc.b 0x10 /* 167 VQ_CTAB_ID() */
+		.dc.b 0xc8 /* 168 VQ_CTAB_ENTRY( */
+		.dc.b 0x04 /* 169 VQ_CTAB( */
+		.dc.b 0x10 /* 170 VS_DFLT_CTAB() */
+		.dc.b 0x34 /* 171 VS_CTAB_ENTRY( */
+		.dc.b 0x02 /* 172 VS_CTAB( */
+		.dc.b 0x10 /* 173 VR_CLIP_RECTS_BY_DST() */
+		.dc.b 0x10 /* 174 VR_CLIP_RECTS_BY_SRC() */
+		.dc.b 0x1a /* 175 VQT_FONTHEADER( */
+		.dc.b 0x2c /* 176 VST_WIDTH( */
+		.dc.b 0x10 /* 177 V_CLEAR_DISP_LIST() */
+		.dc.b 0xce /* 178 VEX_TIMV( */
+		.dc.b 0xcc /* 179 VEX_BUTV( */
+		.dc.b 0xcc /* 180 VEX_MOTV( */
+		.dc.b 0xcc /* 181 VEX_CURV( */
+		.dc.b 0x06 /* 182 INITMOUS( */
+		.dc.b 0xa6 /* 183 FREADLINK( */
+		.dc.b 0xd0 /* 184 INPUTRADIO( */
 	.IF GBE>=373
-		.dc.b 0xd2 /* 185 */
-		.dc.b 0x1c /* 186 */
-		.dc.b 0x1a /* 187 */
-		.dc.b 0x10 /* 188 */
-		.dc.b 0xd2 /* 189 */
-		.dc.b 0xd2 /* 190 */
-		.dc.b 0x10 /* 191 */
-		.dc.b 0x10 /* 192 */
-		.dc.b 0xd4 /* 193 */
-		.dc.b 0x36 /* 194 */
-		.dc.b 0x3a /* 195 */
-		.dc.b 0xd2 /* 196 */
-		.dc.b 0x02 /* 197 */
-		.dc.b 0x7e /* 198 */
-		.dc.b 0x7e /* 199 */
-		.dc.b 0x10 /* 200 */
-		.dc.b 0x04 /* 201 */
-		.dc.b 0x04 /* 202 */
-		.dc.b 0x04 /* 203 */
-		.dc.b 0x04 /* 204 */
-		.dc.b 0x04 /* 205 */
-		.dc.b 0x08 /* 206 */
-		.dc.b 0x08 /* 207 */
-		.dc.b 0x08 /* 208 */
-		.dc.b 0x08 /* 209 */
-		.dc.b 0x08 /* 210 */
-		.dc.b 0x02 /* 211 */
-		.dc.b 0x02 /* 212 */
-		.dc.b 0x10 /* 213 */
-		.dc.b 0x10 /* 214 */
-		.dc.b 0x02 /* 215 */
-		.dc.b 0x10 /* 216 */
-		.dc.b 0x02 /* 217 */
-		.dc.b 0x10 /* 218 */
-		.dc.b 0x02 /* 219 */
-		.dc.b 0x10 /* 220 */
-		.dc.b 0x02 /* 221 */
-		.dc.b 0x10 /* 222 */
-		.dc.b 0x10 /* 223 */
-		.dc.b 0x02 /* 224 */
-		.dc.b 0x02 /* 225 */
-		.dc.b 0x02 /* 226 */
-		.dc.b 0x02 /* 227 */
-		.dc.b 0x10 /* 228 */
-		.dc.b 0x10 /* 229 */
-		.dc.b 0x02 /* 230 */
-		.dc.b 0x06 /* 231 */
-		.dc.b 0x08 /* 232 */
-		.dc.b 0x10 /* 233 */
-		.dc.b 0x02 /* 234 */
-		.dc.b 0x02 /* 235 */
-		.dc.b 0x06 /* 236 */
-		.dc.b 0x10 /* 237 */
-		.dc.b 0x10 /* 238 */
-		.dc.b 0x10 /* 239 */
-		.dc.b 0x04 /* 240 */
-		.dc.b 0x06 /* 241 */
-		.dc.b 0x10 /* 242 */
-		.dc.b 0x02 /* 243 */
-		.dc.b 0x10 /* 244 */
-		.dc.b 0x02 /* 245 */
-		.dc.b 0x04 /* 246 */
-		.dc.b 0x04 /* 247 */
-		.dc.b 0x04 /* 248 */
-		.dc.b 0x04 /* 249 */
-		.dc.b 0x04 /* 250 */
-		.dc.b 0x10 /* 251 */
-		.dc.b 0x10 /* 252 */
-		.dc.b 0x10 /* 253 */
-		.dc.b 0x10 /* 254 */
-		.dc.b 0x10 /* 255 */
+		.dc.b 0xd2 /* 185 PIXEL24( */
+		.dc.b 0x1c /* 186 CWRITE( */
+		.dc.b 0x1a /* 187 CREAD( */
+		.dc.b 0x10 /* 188 SUPER? */
+		.dc.b 0xd2 /* 189 PIXEL32( */
+		.dc.b 0xd2 /* 190 PIXEL16( */
+		.dc.b 0x10 /* 191 V_BEZ_ON() */
+		.dc.b 0x10 /* 192 V_BEZ_OFF() */
+		.dc.b 0xd4 /* 193 VQ_CHCELLS( */
+		.dc.b 0x36 /* 194 RC_EQUAL( */
+		.dc.b 0x3a /* 195 OB_XYWH( */
+		.dc.b 0xd2 /* 196 PIXEL15( */
+		.dc.b 0x02 /* 197 PUMASK( */
+		.dc.b 0x7e /* 198 FLINK( */
+		.dc.b 0x7e /* 199 FSYMLINK( */
+		.dc.b 0x10 /* 200 _BOOTDEV */
+		.dc.b 0x04 /* 201 STRUCT!( */
+		.dc.b 0x04 /* 202 STRUCT|( */
+		.dc.b 0x04 /* 203 STRUCT&( */
+		.dc.b 0x04 /* 204 STRUCT%( */
+		.dc.b 0x04 /* 205 STRUCT( */
+		.dc.b 0x08 /* 206 PIXEL8C( */
+		.dc.b 0x08 /* 207 PIXEL1M( */
+		.dc.b 0x08 /* 208 PIXEL8P( */
+		.dc.b 0x08 /* 209 PIXEL4P( */
+		.dc.b 0x08 /* 210 PIXEL2P( */
+		.dc.b 0x02 /* 211 MDPEEK( */
+		.dc.b 0x02 /* 212 MLPEEK( */
+		.dc.b 0x10 /* 213 _GLOBAL */
+		.dc.b 0x10 /* 214 MULTITASK? */
+		.dc.b 0x02 /* 215 USERDEF|( */
+		.dc.b 0x10 /* 216 USERDEFBYT */
+		.dc.b 0x02 /* 217 USERDEF&( */
+		.dc.b 0x10 /* 218 USERDEFWRD */
+		.dc.b 0x02 /* 219 USERDEF%( */
+		.dc.b 0x10 /* 220 USERDEFLNG */
+		.dc.b 0x02 /* 221 USERDEF!( */
+		.dc.b 0x10 /* 222 USERDEFBIT */
+		.dc.b 0x10 /* 223 _BMPSIZE */
+		.dc.b 0x02 /* 224 PSIGBLOCK( */
+		.dc.b 0x02 /* 225 PSIGSETMASK( */
+		.dc.b 0x02 /* 226 TALARM( */
+		.dc.b 0x02 /* 227 TMALARM( */
+		.dc.b 0x10 /* 228 PAUSE() */
+		.dc.b 0x10 /* 229 PSIGPENDING() */
+		.dc.b 0x02 /* 230 PSIGPAUSE( */
+		.dc.b 0x06 /* 231 PSIGACTION( */
+		.dc.b 0x08 /* 232 PTRACE( */
+		.dc.b 0x10 /* 233 SYNC() */
+		.dc.b 0x02 /* 234 FSYNC( */
+		.dc.b 0x02 /* 235 SREALLOC( */
+		.dc.b 0x06 /* 236 PMSG( */
+		.dc.b 0x10 /* 237 PFORK() */
+		.dc.b 0x10 /* 238 PVFORK() */
+		.dc.b 0x10 /* 239 PWAIT() */
+		.dc.b 0x04 /* 240 PWAIT3( */
+		.dc.b 0x06 /* 241 PWAITPID( */
+		.dc.b 0x10 /* 242 PGETGID() */
+		.dc.b 0x02 /* 243 PSETGID( */
+		.dc.b 0x10 /* 244 PGETUID() */
+		.dc.b 0x02 /* 245 PSETUID( */
+		.dc.b 0x04 /* 246 ARRAY!( */
+		.dc.b 0x04 /* 247 ARRAY|( */
+		.dc.b 0x04 /* 248 ARRAY&( */
+		.dc.b 0x04 /* 249 ARRAY%( */
+		.dc.b 0x04 /* 250 ARRAY( */
+		.dc.b 0x10 /* 251 _A3 */
+		.dc.b 0x10 /* 252 _A4 */
+		.dc.b 0x10 /* 253 _A5 */
+		.dc.b 0x10 /* 254 _A6 */
+		.dc.b 0x10 /* 255 _A7 */
 
 offset_table_sf212:
-		.dc.b 0x02 /* 0 */
-		.dc.b 0x04 /* 1 */
-		.dc.b 0x04 /* 2 */
-		.dc.b 0x08 /* 3 */
-		.dc.b 0x10 /* 4 */
-		.dc.b 0x02 /* 5 */
-		.dc.b 0x22 /* 6 */
-		.dc.b 0x04 /* 7 */
-		.dc.b 0x06 /* 8 */
-		.dc.b 0x10 /* 9 */
-		.dc.b 0xb2 /* 10 */
-		.dc.b 0x10 /* 11 */
-		.dc.b 0x02 /* 12 */
-		.dc.b 0x10 /* 13 */
-		.dc.b 0x02 /* 14 */
-		.dc.b 0x02 /* 15 */
-		.dc.b 0x02 /* 16 */
-		.dc.b 0x10 /* 17 */
-		.dc.b 0x10 /* 18 */
-		.dc.b 0x10 /* 19 */
-		.dc.b 0x10 /* 20 */
-		.dc.b 0x10 /* 21 */
-		.dc.b 0x10 /* 22 */
-		.dc.b 0x10 /* 23 */
-		.dc.b 0x1e /* 24 */
-		.dc.b 0x10 /* 25 */
-		.dc.b 0x04 /* 26 */
-		.dc.b 0x04 /* 27 */
-		.dc.b 0x04 /* 28 */
-		.dc.b 0x10 /* 29 */
-		.dc.b 0x02 /* 30 */
-		.dc.b 0x10 /* 31 */
-		.dc.b 0x02 /* 32 */
-		.dc.b 0x10 /* 33 */
-		.dc.b 0x02 /* 34 */
-		.dc.b 0x04 /* 35 */
-		.dc.b 0x04 /* 36 */
-		.dc.b 0x06 /* 37 */
-		.dc.b 0xd6 /* 38 */
-		.dc.b 0x04 /* 39 */
-		.dc.b 0x04 /* 40 */
-		.dc.b 0x04 /* 41 */
-		.dc.b 0x10 /* 42 */
-		.dc.b 0x02 /* 43 */
-		.dc.b 0x06 /* 44 */
-		.dc.b 0x06 /* 45 */
-		.dc.b 0x0e /* 46 */
-		.dc.b 0xb2 /* 47 */
-		.dc.b 0x04 /* 48 */
-		.dc.b 0x9c /* 49 */
-		.dc.b 0x02 /* 50 */
-		.dc.b 0x02 /* 51 */
-		.dc.b 0x02 /* 52 */
-		.dc.b 0x06 /* 53 */
-		.dc.b 0xd4 /* 54 */
-		.dc.b 0x04 /* 55 */
-		.dc.b 0x10 /* 56 */
-		.dc.b 0x10 /* 57 */
-		.dc.b 0x10 /* 58 */
-		.dc.b 0x10 /* 59 */
-		.dc.b 0x10 /* 60 */
-		.dc.b 0x10 /* 61 */
-		.dc.b 0x10 /* 62 */
-		.dc.b 0x10 /* 63 */
-		.dc.b 0x10 /* 64 */
-		.dc.b 0x10 /* 65 */
-		.dc.b 0x10 /* 66 */
-		.dc.b 0x10 /* 67 */
-		.dc.b 0x10 /* 68 */
-		.dc.b 0x04 /* 69 */
+		.dc.b 0x02 /*   0 GETMPB( */
+		.dc.b 0x04 /*   1 MADDALT( */
+		.dc.b 0x04 /*   2 MFPINT( */
+		.dc.b 0x08 /*   3 XBTIMER( */
+		.dc.b 0x10 /*   4 PUNTAES() */
+		.dc.b 0x02 /*   5 SSBRK( */
+		.dc.b 0x22 /*   6 DBMSG( */
+		.dc.b 0x04 /*   7 FFCHMOD( */
+		.dc.b 0x06 /*   8 FFCHOWN( */
+		.dc.b 0x10 /*   9 SVERSION() */
+		.dc.b 0xb2 /*  10 DCNTL( */
+		.dc.b 0x10 /*  11 CCONIN() */
+		.dc.b 0x02 /*  12 CCONOUT( */
+		.dc.b 0x10 /*  13 CAUXIN() */
+		.dc.b 0x02 /*  14 CAUXOUT( */
+		.dc.b 0x02 /*  15 CPRNOUT( */
+		.dc.b 0x02 /*  16 CRAWIO( */
+		.dc.b 0x10 /*  17 CRAWCIN() */
+		.dc.b 0x10 /*  18 CNECIN() */
+		.dc.b 0x10 /*  19 CCONIS() */
+		.dc.b 0x10 /*  20 CCONOS() */
+		.dc.b 0x10 /*  21 CAUXIS() */
+		.dc.b 0x10 /*  22 CAUXOS() */
+		.dc.b 0x10 /*  23 CPRNOS() */
+		.dc.b 0x1e /*  24 CCONRS( */
+		.dc.b 0x10 /*  25 PGETPGRP() */
+		.dc.b 0x04 /*  26 PSETPGRP( */
+		.dc.b 0x04 /*  27 PGETGROUPS( */
+		.dc.b 0x04 /*  28 PSETGROUPS( */
+		.dc.b 0x10 /*  29 PGETAUID() */
+		.dc.b 0x02 /*  30 PSETAUID( */
+		.dc.b 0x10 /*  31 PGETEUID() */
+		.dc.b 0x02 /*  32 PSETEUID( */
+		.dc.b 0x10 /*  33 PGETEGID() */
+		.dc.b 0x02 /*  34 PSETEGID( */
+		.dc.b 0x04 /*  35 PSETREUID( */
+		.dc.b 0x04 /*  36 PSETREGID( */
+		.dc.b 0x06 /*  37 PSEMAPHORE( */
+		.dc.b 0xd6 /*  38 TSETITIMER( */
+		.dc.b 0x04 /*  39 TADJTIME( */
+		.dc.b 0x04 /*  40 TGETTIMEOFDAY( */
+		.dc.b 0x04 /*  41 TSETTIMEOFDAY( */
+		.dc.b 0x10 /*  42 PTERM0() */
+		.dc.b 0x02 /*  43 PTERM( */
+		.dc.b 0x06 /*  44 FREADV( */
+		.dc.b 0x06 /*  45 FWRITEV( */
+		.dc.b 0x0e /*  46 DCHROOT( */
+		.dc.b 0xb2 /*  47 FSTAT64( */
+		.dc.b 0x04 /*  48 FFSTAT64( */
+		.dc.b 0x9c /*  49 FCHOWN16( */
+		.dc.b 0x02 /*  50 FCHDIR( */
+		.dc.b 0x02 /*  51 FFDOPENDIR( */
+		.dc.b 0x02 /*  52 FDIRFD( */
+		.dc.b 0x06 /*  53 REALLOC( */
+		.dc.b 0xd4 /*  54 VQ_CURADDRESS( */
+		.dc.b 0x04 /*  55 V_CURADDRESS( */
+		.dc.b 0x10 /*  56 V_RVON() */
+		.dc.b 0x10 /*  57 V_RVOFF() */
+		.dc.b 0x10 /*  58 V_EXIT_CUR() */
+		.dc.b 0x10 /*  59 V_ENTER_CUR() */
+		.dc.b 0x10 /*  60 V_CURUP() */
+		.dc.b 0x10 /*  61 V_CURDOWN() */
+		.dc.b 0x10 /*  62 V_CURRIGHT() */
+		.dc.b 0x10 /*  63 V_CURLEFT() */
+		.dc.b 0x10 /*  64 V_CURHOME() */
+		.dc.b 0x10 /*  65 VQ_TABSTATUS() */
+		.dc.b 0x10 /*  66 V_EEOL() */
+		.dc.b 0x10 /*  67 V_EEOS() */
+		.dc.b 0x10 /*  68 V_RMCUR() */
+		.dc.b 0x04 /*  69 V_DSPCUR( */
 	.ENDC
 
 	.ENDC
@@ -13242,10 +13296,10 @@ yREAD_args:
 yWRITE_args:
 		.dc.b TOK_LINE_COMMENT
 		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x1524c-jmpbase)>>8)&255,(x1524c-jmpbase)&255
+		.dc.b ARG_PUSH,((write_channel_args-jmpbase)>>8)&255,(write_channel_args-jmpbase)&255
 		.dc.b TOK_LINE_COMMENT
 		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x15252-jmpbase)>>8)&255,(x15252-jmpbase)&255
+		.dc.b ARG_PUSH,((print_channel_args-jmpbase)>>8)&255,(print_channel_args-jmpbase)&255
 		.dc.b ARG_PUSH,((x15214-jmpbase)>>8)&255,(x15214-jmpbase)&255
 		.dc.b TOK_LINE_COMMENT
 		.dc.b ARG_END
@@ -13279,22 +13333,26 @@ yPRINT_args:
 		.dc.b ARG_PUSH,((x1523f-jmpbase)>>8)&255,(x1523f-jmpbase)&255
 		.dc.b TOK_LINE_COMMENT
 		.dc.b ARG_END
+
 x1523f:
 		.dc.b ARG_PUSH,((x144eb-jmpbase)>>8)&255,(x144eb-jmpbase)&255
 		.dc.b ARG_PUSH,((x1525b-jmpbase)>>8)&255,(x1525b-jmpbase)&255
 		.dc.b ARG_POP
 		.dc.b ARG_END
+
 yLPRINT_args:
 		.dc.b ARG_PUSH,((x1525b-jmpbase)>>8)&255,(x1525b-jmpbase)&255
 		.dc.b TOK_LINE_COMMENT
 		.dc.b ARG_END
-x1524c:
-		.dc.b 77
+
+write_channel_args:
+		.dc.b TOK_CHANNEL
 		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
 		.dc.b ARG_POP
 		.dc.b ARG_END
-x15252:
-		.dc.b 77
+
+print_channel_args:
+		.dc.b TOK_CHANNEL
 		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
 		.dc.b ARG_PUSH,((x144eb-jmpbase)>>8)&255,(x144eb-jmpbase)&255
 		.dc.b ARG_POP
@@ -14474,7 +14532,7 @@ x15c52:
 		lea.l      o850(a6),a0
 		lsr.w      #1,d0
 		move.w     d0,d6
-		lea.l      4300(a6),a3
+		lea.l      cmd_table_offsets(a6),a3
 		move.w     0(a3,d0.w),d1
 		beq        x15c52_8
 		lea.l      jmpbase(pc),a3
@@ -14620,7 +14678,7 @@ x15c52_14:
 		move.b     #' ',(a0)+
 x15c52_15:
 		add.w      d0,d0
-		lea.l      3372(a6),a3
+		lea.l      func_table_offsets(a6),a3
 		move.w     0(a3,d0.w),d1
 		beq.s      x15c52_19
 		lea.l      jmpbase(pc),a3
@@ -14901,7 +14959,7 @@ x16028_5:
 		bra        x15c52_13
 
 x1607a:
-		lea.l      3372(a6),a0
+		lea.l      func_table_offsets(a6),a0
 	.IFNE GBE
 		move.w     #(5384/2)-1,d0
 	.ELSE
@@ -14910,7 +14968,7 @@ x1607a:
 x1607a_1:
 		clr.w      (a0)+
 		dbf        d0,x1607a_1
-		lea.l      3372(a6),a0
+		lea.l      func_table_offsets(a6),a0
 		lea.l      func_misc_table(pc),a1
 		moveq.l    #0,d0
 x1607a_2:
@@ -14951,7 +15009,7 @@ x1607a_3:
 		lea.l      4(a1,d0.w),a1
 		bra.s      x1607a_2
 x1607a_4:
-		lea.l      4300(a6),a0
+		lea.l      cmd_table_offsets(a6),a0
 	.IF GBE>=373
 		lea.l      cmd_table,a1
 	.ELSE
@@ -14971,35 +15029,27 @@ x1607a_5:
 		lea.l      6(a1,d0.w),a1
 		bra.s      x1607a_5
 x1607a_6:
-		lea.l      3372(a6),a0
-	.IFNE GBE
-		move.w     #2048-1,d0
-	.ELSE
-		move.w     #464-1,d0
-	.ENDC
+		lea.l      func_table_offsets(a6),a0
+		move.w     #MAX_FUNCS-1,d0
 x1607a_7:
 		move.w     (a0)+,d1
 		bne.s      x1607a_8
 		move.w     -4(a0),-2(a0)
 x1607a_8:
 		dbf        d0,x1607a_7
-		lea.l      4300(a6),a0
-	.IFNE GBE
-		move.w     #644-1,d0
-	.ELSE
-		move.w     #512-1,d0
-	.ENDC
+		lea.l      cmd_table_offsets(a6),a0
+		move.w     #MAX_CMDS-1,d0
 x1607a_9:
 		move.w     (a0)+,d1
 		bne.s      x1607a_10
 		move.w     -4(a0),-2(a0)
 x1607a_10:
 		dbf        d0,x1607a_9
-		lea.l      4300(a6),a0
-		clr.w      126(a0)
-		clr.w      120(a0)
-		adda.w     #152,a0
-		moveq.l    #11,d0
+		lea.l      cmd_table_offsets(a6),a0
+		clr.w      TOK_CMD_LABEL*2(a0)
+		clr.w      TOK_CMD_GOSUB_IMP*2(a0)
+		adda.w     #TOK_CMD_ASSIGN_FLOAT*2,a0
+		moveq.l    #12-1,d0
 x1607a_11:
 		clr.w      (a0)+
 		dbf        d0,x1607a_11
@@ -15237,7 +15287,7 @@ x162ac_cont:
 		addi.w     #224,d0
 	.ENDIF
 		add.w      d0,d0
-		lea.l      3372(a6),a3
+		lea.l      func_table_offsets(a6),a3
 		move.w     0(a3,d0.w),d1
 		beq        x15c52_19
 		lea.l      jmpbase(pc),a3

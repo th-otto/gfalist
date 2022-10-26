@@ -1848,7 +1848,7 @@ struct nameversion const gfasft_211[256] = {
 	/*   94 */ { "OB_WHITEBAK(", 0, NULL },
 	/*   95 */ { NULL, 0, NULL }, /* unused */
 	/*   96 */ { "OB_SELECTABLE(", 0, NULL },
-	/*   97 */ { "OB_DEFAULT('", 0, NULL },
+	/*   97 */ { "OB_DEFAULT(", 0, NULL },
 	/*   98 */ { "OB_EXIT(", 0, NULL },
 	/*   99 */ { "OB_EDITABLE(", 0, NULL },
 	/*  100 */ { "OB_RBUTTON(", 0, NULL },
