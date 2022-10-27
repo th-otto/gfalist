@@ -410,7 +410,9 @@ extjmp_table:       ds.b 26*6      /*  214 */
                     ds.l 1         /*  454 */
                     ds.l 1         /*  458 */
                     ds.w 1         /*  462 */
-                    ds.b 26        /*  464 */
+                    ds.b 24        /*  464 */
+o488:               ds.b 1         /*  488 */
+o489:               ds.b 1         /*  489 */
 fstr_tmpbuf:        ds.b 22        /*  490 */
 fstr_outbuf:        ds.b 30        /*  512 */
 decimal_digits:     ds.w 1         /*  542 */
@@ -442,7 +444,9 @@ strdesc_end:        ds.l 1         /*  176 */
                     ds.l 1         /*  192 */
                     ds.l 1         /*  196 */
                     ds.l 1         /*  200 */
-                    ds.b 66        /*      */
+                    ds.b 64        /*      */
+o488:               ds.b 1         /*  268 */
+o489:               ds.b 1         /*  269 */
 fstr_tmpbuf:        ds.b 22        /*  270 */
 fstr_outbuf:        ds.b 30        /*  292 */
 decimal_digits:     ds.w 1         /*  322 */
@@ -1618,8 +1622,8 @@ Fval:
 		moveq.l    #0,d1
 		moveq.l    #0,d2
 		moveq.l    #0,d6
-		st         488(a6)
-		sf         489(a6)
+		st         o488(a6)
+		sf         o489(a6)
 Fval_1:
 		move.b     (a0)+,d4
 		cmpi.b     #' ',d4
@@ -1743,12 +1747,12 @@ Fval_21:
 		bpl.s      Fval_22
 		neg.w      d2
 Fval_22:
-		tst.b      489(a6)
+		tst.b      o489(a6)
 		beq.s      Fval_24
 Fval_23:
 		moveq.l    #-1,d2
 Fval_24:
-		clr.w      488(a6)
+		clr.w      o488(a6)
 		rts
 
 constone:
@@ -3862,8 +3866,8 @@ cmd_b_table: /* 11bc6 */
 		.dc.b 7
 		.ascii "BREPLACE"
 		.dc.b ((535*2)>>8)&255,((535*2)&255),((yBREPLACE_args-jmpbase)>>8)&255,(yBREPLACE_args-jmpbase)&255
-		.dc.b 9
 	.IF GBE>=372
+		.dc.b 9
 		.ascii "BF_OBSPEC("
 		.dc.b ((582*2)>>8)&255,((582*2)&255),((yBF_OBSPEC_args-jmpbase)>>8)&255,(yBF_OBSPEC_args-jmpbase)&255
 		.dc.b 12

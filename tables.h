@@ -1,6 +1,8 @@
 #ifndef TABLES_H
 #define TABLES_H
 
+#include <stdint.h>
+
 #define TARGET_VER36    0
 #define TARGET_VER370   370
 #define TARGET_VER371   371
@@ -11,6 +13,37 @@ struct nameversion {
 	const char *name;
 	int old_ver;
 	const char *old_name;
+};
+
+struct argdesc {
+	enum {
+		ARG_PUSH = -1,
+		ARG_CALL_FUNC = -2,
+		ARG_POP = -3,
+		ARG_END = -4,
+		ARG_REPLACE = -5,
+		ARG_BACK = -6
+	} type;
+	union {
+		const struct argdesc *table;
+		void (*func)(void);
+		intptr_t value; /* actually only byte, but need to cast to void * in initializations */
+	} u;
+};
+
+struct cmdname {
+	unsigned char len; /* length of name - 1 */
+	const char *name;
+	uint16_t token;
+	const struct argdesc *table;
+	int min_ver;
+	int max_ver;
+};
+
+struct funcname {
+	unsigned char len; /* length of name - 1 */
+	const char *name;
+	uint16_t token;
 };
 
 extern struct nameversion const gfalct[];

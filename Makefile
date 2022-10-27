@@ -22,11 +22,12 @@ BINDIR=${exec_prefix}/bin
 MANDIR=${prefix}/share/man
 
 # Precious targets
-TARGETS = gfalist lst2gfa.ttp
+TARGETS = gfalist lst2gfa.ttp gfatok
 
 GFALIST_OBJS = gfalist.o charset.o sky.o tables.o
+GFATOK_OBJS = gfatok.o toktable.o
 
-OBJS = $(GFALIST_OBJS)
+OBJS = $(GFALIST_OBJS) $(GFATOK_OBJS)
 
 # Headerfiles which should be added to the distribution
 HSRC=charset.h  sky.h  tables.h
@@ -39,11 +40,14 @@ TRASH = core ons.spec.OLD
 all: $(TARGETS)
 
 gfalist: $(GFALIST_OBJS)
-	$(CC) $(LFLAGS) $+ -o $@ -lm
+	$(CC) $(CFLAGS) $(LFLAGS) $+ -o $@ -lm
 gfalist.exe: $(CSRC)
 	$(WINCC)  $+ -o $@ -lm
 gfalist.ttp: $(CSRC)
 	$(TOSCC)  $+ -o $@ -lm
+
+gfatok: $(GFATOK_OBJS)
+	$(CC) $(CFLAGS) $(LFLAGS) $+ -o $@ -lm
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
