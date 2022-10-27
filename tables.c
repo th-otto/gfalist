@@ -1493,7 +1493,7 @@ struct nameversion const gfasft_210[256] = {
 	/*    2 */ { "ERL", 0, NULL },
 	/*    3 */ { "SYSTAB(", TARGET_VER370, NULL }, /* parameter change in 3.71 */
 	/*    4 */ { "SYSTAB", 0, NULL },
-	/*    5 */ { "FREEFILE()", TARGET_VER370, "CFREE(" },
+	/*    5 */ { "FREEFILE()", TARGET_VER370, "CFREE()" },
 	/*    6 */ { "MENU.TEXT(", 0, NULL },
 	/*    7 */ { "SHEL.WRITE(", 0, NULL },
 	/*    8 */ { "SYSTAB?", 0, NULL },

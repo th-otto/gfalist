@@ -202,13 +202,13 @@ int main(void)
 	char name[100];
 
 	out = stdout;
-	fp = fopen("lst2gfa.ttp", "rb");
+	fp = fopen("lst2gfa_orig.ttp", "rb");
 	if (fp == NULL)
 		return 1;
 
 	first_char = 0;
-	offset = 0x1325c;
-	fseek(fp, offset - 0x10000 + 28 + 228, SEEK_SET);
+	offset = 0x128b7;
+	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
 	while (offset < 0x80000)
 	{
 		len = fgetc(fp);
@@ -245,8 +245,8 @@ int main(void)
 	fprintf(out, "\n");
 
 	first_char = 0;
-	offset = 0x11b58;
-	fseek(fp, offset - 0x10000 + 28 + 228, SEEK_SET);
+	offset = 0x11afa;
+	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
 	while (offset < 0x80000)
 	{
 		len = fgetc(fp);

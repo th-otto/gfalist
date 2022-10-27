@@ -40,10 +40,17 @@ struct cmdname {
 	int max_ver;
 };
 
+struct matcmdname {
+	const char *name;
+	const struct argdesc *table;
+};
+
 struct funcname {
 	unsigned char len; /* length of name - 1 */
 	const char *name;
 	uint16_t token;
+	int min_ver;
+	int max_ver;
 };
 
 extern struct nameversion const gfalct[];
