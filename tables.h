@@ -3,17 +3,35 @@
 
 #include <stdint.h>
 
+#ifndef UNUSED
+#define UNUSED(x) ((void)(x))
+#endif
+
 #define TARGET_VER36    0
 #define TARGET_VER370   370
 #define TARGET_VER371   371
 #define TARGET_VER372   372
 #define TARGET_VER373   373
 
+struct argstack {
+	const char *src;
+	uint8_t *dst;
+	const struct argdesc *table;
+};
+
+struct funcparse {
+	struct argstack current;
+	struct argstack stack[100];
+	int stackdepth;
+};
+
 struct nameversion {
 	const char *name;
 	int old_ver;
 	const char *old_name;
 };
+
+struct globals;
 
 struct argdesc {
 	enum {
@@ -26,7 +44,7 @@ struct argdesc {
 	} type;
 	union {
 		const struct argdesc *table;
-		void (*func)(void);
+		void (*func)(struct globals *G, struct funcparse *parse);
 		intptr_t value; /* actually only unsigned short, but need to cast to void * in initializations */
 	} u;
 };
@@ -101,6 +119,8 @@ extern struct gfaversinfo const gfarecl[71];
 #define TOK_CMD_SELECT_STR          44
 #define TOK_CMD_EOF                 45
 #define TOK_CMD_DO_WHILE            49
+#define TOK_CMD_DO_UNTIL            50
+#define TOK_CMD_LOOP_WHILE          51
 #define TOK_CMD_LOOP_UNTIL          52
 #define TOK_CMD_FLAPPED_PROCEDURE   54
 #define TOK_CMD_EXITIF2             55

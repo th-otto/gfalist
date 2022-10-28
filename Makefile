@@ -102,4 +102,4 @@ ons.spec: README HISTORY packdist.sh
 #DEPEND
 sky.o: sky.c sky.h tables.h
 gfalist.o: gfalist.c $(HSRC) version.h
-
+tables.o toktable.o: tables.h

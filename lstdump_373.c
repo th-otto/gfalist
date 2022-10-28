@@ -222,6 +222,10 @@ static void dump_table(FILE *fp, int offset, int end)
 			fprintf(out, "\t\t.dc.b %d,%d\n", c, c2);
 			offset += 2;
 			break;
+		case 33:
+			fprintf(out, "\t\t.dc.b TOK_COMMA\n");
+			offset += 1;
+			break;
 		case 70:
 			fprintf(out, "\t\t.dc.b TOK_LINE_COMMENT\n");
 			offset += 1;
