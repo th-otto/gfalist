@@ -27,7 +27,7 @@ struct argdesc {
 	union {
 		const struct argdesc *table;
 		void (*func)(void);
-		intptr_t value; /* actually only byte, but need to cast to void * in initializations */
+		intptr_t value; /* actually only unsigned short, but need to cast to void * in initializations */
 	} u;
 };
 

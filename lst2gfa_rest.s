@@ -35,11 +35,7 @@ x10004_2:
 x10004_3:
 		lea.l      lowercase_filenames(pc),a0
 		move.w     d1,(a0)
-	.IFNE GBE /* zzz */
 		lea.l      reading_msg,a0
-	.ELSE
-		lea.l      reading_msg(pc),a0
-	.ENDC
 		bsr        printstr
 		movea.l    baspag(a6),a0
 		lea.l      129(a0),a0
@@ -66,23 +62,11 @@ x1007a_1:
 		move.l     d0,-(a7)
 		move.l     x10302(pc),d0
 		bsr        print_decimal
-	.IFNE GBE
 		lea.l      lines_msg,a0
-	.ELSE
-		lea.l      lines_msg(pc),a0
-	.ENDC
 		bsr        printstr
-	.IFNE GBE /* zzz */
 		move.l     x16786+6,d0
-	.ELSE
-		move.l     x16786+6(pc),d0
-	.ENDC
 		bsr        print_decimal
-	.IFNE GBE /* zzz */
 		lea.l      bytes_msg,a0
-	.ELSE
-		lea.l      bytes_msg(pc),a0
-	.ENDC
 		bsr        printstr
 		move.w     d6,d0
 		cmpi.w     #6,d0
@@ -101,11 +85,7 @@ x1007a_2:
 x1007a_3:
 		move.l     6(a0),d0
 		bsr        print_decimal
-	.IFNE GBE /* zzz */
 		lea.l      exitcode_msg,a0
-	.ELSE
-		lea.l      exitcode_msg(pc),a0
-	.ENDC
 		bsr        printstr
 		move.l     x10306(pc),d0
 		bne.s      x1007a_5
@@ -126,22 +106,14 @@ exit:
 
 x1007a_5:
 		bsr        print_decimal
-	.IFNE GBE /* zzz */
 		lea.l      x16780,a0
-	.ELSE
-		lea.l      x16780(pc),a0
-	.ENDC
 		move.w     #0x0200,(a0)
 		moveq.l    #0,d1
 x1007a_6:
 		lea.l      x10306(pc),a1
 		subq.l     #1,(a1)
 		bmi.s      x1007a_10
-	.IFNE GBE /* zzz */
 		movea.l    x16782,a1
-	.ELSE
-		movea.l    x16782(pc),a1
-	.ENDC
 		move.l     a1,d0
 		beq.s      x1007a_10
 		move.w     d1,d0
@@ -156,18 +128,10 @@ x1007a_7:
 		divu.w     #10,d2
 		tst.w      d2
 		bne.s      x1007a_7
-	.IFNE GBE /* zzz */
 		lea.l      x16780,a0
-	.ELSE
-		lea.l      x16780(pc),a0
-	.ENDC
 		move.w     (a0),d2
 		add.w      d3,d2
-	.IFNE GBE /* zzz */
 		cmp.w      columns,d2
-	.ELSE
-		cmp.w      columns(pc),d2
-	.ENDC
 		blt.s      x1007a_8
 		subq.w     #1,d3
 		move.w     d3,(a0)
@@ -188,63 +152,31 @@ x1007a_10:
 		bra.s      x101d0
 
 ERROR:
-	.IFNE GBE /* zzz */
 		lea.l      error_str,a0
-	.ELSE
-		lea.l      error_str(pc),a0
-	.ENDC
 		bra.s      failure
 
 x10194:
-	.IFNE GBE /* zzz */
 		lea.l      usage_msg,a0
-	.ELSE
-		lea.l      usage_msg(pc),a0
-	.ENDC
 		bra.s      failure_1
 stackoverflow:
-	.IFNE GBE /* zzz */
 		lea.l      stack_overflow_msg,a0
-	.ELSE
-		lea.l      stack_overflow_msg(pc),a0
-	.ENDC
 		bra.s      failure
 x10194_1:
 		bsr        x1022c
 		bra.s      failure
 x10194_2:
-	.IFNE GBE /* zzz */
 		lea.l      notalst_msg,a0
-	.ELSE
-		lea.l      notalst_msg(pc),a0
-	.ENDC
 x101aa:
-	.IFNE GBE /* zzz */
 		lea.l      open_err_msg,a0
-	.ELSE
-		lea.l      open_err_msg(pc),a0
-	.ENDC
 		bra.s      failure
 x10194_3:
-	.IFNE GBE /* zzz */
 		lea.l      save_err_msg,a0
-	.ELSE
-		lea.l      save_err_msg(pc),a0
-	.ENDC
 		bra.s      failure
 x10194_4:
-	.IFNE GBE /* zzz */
 		lea.l      load_err_msg,a0
-	.ELSE
-		lea.l      load_err_msg(pc),a0
-	.ENDC
 
 failure:
-	.IFNE GBE /* zzz */
 		pea.l      att_msg
-	.ELSE
-		pea.l      att_msg(pc)
-	.ENDC
 		bra.s      failure_2
 failure_1:
 		clr.l      -(a7)
@@ -257,17 +189,9 @@ failure_2:
 
 x101d0:
 		bsr.w      printnl
-	.IFNE GBE /* zzz */
 		move.w     mtask,d0
-	.ELSE
-		move.w     mtask(pc),d0
-	.ENDC
 		bne.s      x101d0_1
-	.IFNE GBE /* zzz */
 		lea.l      waitkey_msg,a0
-	.ELSE
-		lea.l      waitkey_msg(pc),a0
-	.ENDC
 		bsr.w      printstr
 		move.w     #7,-(a7) /* Crawcin */
 		trap       #1
@@ -285,11 +209,7 @@ x101f0:
 		addq.l     #8,a7
 		tst.w      d0
 		bmi.s      x101aa
-	.IFNE GBE /* zzz */
 		lea.l      x16786,a1
-	.ELSE
-		lea.l      x16786(pc),a1
-	.ENDC
 		move.w     d0,d1
 		add.w      d1,d1
 		add.w      d0,d1
@@ -320,11 +240,7 @@ x1030a:
 		adda.l     4(a7),a0
 		movem.l    d1-d3/a1-a2,-(a7)
 		lea.l      -64(a7),a7
-	.IFNE GBE /* zzz */
 		lea.l      x16778,a1
-	.ELSE
-		lea.l      x16778(pc),a1
-	.ENDC
 		move.l     (a1),d1
 		clr.l      (a1)
 		cmp.l      d1,d0
@@ -393,11 +309,7 @@ x1030a_4:
 		addq.l     #4,a7
 		tst.w      d0
 		bmi.s      x1030a_11
-	.IFNE GBE /* zzz */
 		lea.l      inline_msg,a0
-	.ELSE
-		lea.l      inline_msg(pc),a0
-	.ENDC
 		bsr        printstr
 		lea.l      (a7),a0
 x1030a_5:
@@ -406,11 +318,7 @@ x1030a_5:
 		bsr        cconout
 		move.l     d3,d0
 		bsr        print_decimal
-	.IFNE GBE /* zzz */
 		lea.l      bytes_read_msg,a0
-	.ELSE
-		lea.l      bytes_read_msg(pc),a0
-	.ENDC
 x1030a_6:
 		bsr        printstr
 x1030a_7:
@@ -418,35 +326,19 @@ x1030a_7:
 		movem.l    (a7)+,d1-d3/a1-a2
 		rts
 x1030a_8:
-	.IFNE GBE /* zzz */
 		lea.l      inline_msg,a0
-	.ELSE
-		lea.l      inline_msg(pc),a0
-	.ENDC
 		bsr        printstr
 		lea.l      (a7),a0
 		bsr        printstr
-	.IFNE GBE /* zzz */
 		lea.l      cannot_open_msg,a0
-	.ELSE
-		lea.l      cannot_open_msg(pc),a0
-	.ENDC
 x1030a_9:
 		bra.s      x1030a_6
 x1030a_10:
-	.IFNE GBE /* zzz */
 		lea.l      inline_msg,a0
-	.ELSE
-		lea.l      inline_msg(pc),a0
-	.ENDC
 		bsr        printstr
 		lea.l      (a7),a0
 		bsr        printstr
-	.IFNE GBE /* zzz */
 		lea.l      cannot_read_msg,a0
-	.ELSE
-		lea.l      cannot_read_msg(pc),a0
-	.ENDC
 		bsr        printstr
 		move.w     d3,-(a7)
 		move.w     #62,-(a7) /* Fclose */
@@ -454,27 +346,15 @@ x1030a_10:
 		addq.l     #4,a7
 		bra.s      x1030a_7
 x1030a_11:
-	.IFNE GBE /* zzz */
 		lea.l      inline_msg,a0
-	.ELSE
-		lea.l      inline_msg(pc),a0
-	.ENDC
 		bsr        printstr
 		lea.l      (a7),a0
 		bsr        printstr
-	.IFNE GBE /* zzz */
 		lea.l      cannot_close_msg,a0
-	.ELSE
-		lea.l      cannot_close_msg(pc),a0
-	.ENDC
 		bra.s      x1030a_5
 x1030a_12:
 		addq.l     #8,a7
-	.IFNE GBE /* zzz */
 		lea.l      not_inline_msg,a0
-	.ELSE
-		lea.l      not_inline_msg(pc),a0
-	.ENDC
 		bsr        printstr
 		lea.l      o1106(a6),a0
 x1030a_13:
@@ -487,11 +367,7 @@ x1030a_13:
 		bsr        printstr
 		movem.l    (a7)+,d0/a0
 		move.b     d0,(a0)
-	.IFNE GBE /* zzz */
 		lea.l      crnl,a0
-	.ELSE
-		lea.l      crnl(pc),a0
-	.ENDC
 		bra.s      x1030a_9
 
 lowercase_filenames: .dc.w 0
@@ -519,19 +395,11 @@ x1047e:
 		.dc.w       0x0000
 
 startup:
-	.IFNE GBE /* zzz */
 		pea.l      find_mtask
-	.ELSE
-		pea.l      find_mtask(pc)
-	.ENDC
 		move.w     #38,-(a7) /* Supexec */
 		trap       #14
 		addq.l     #6,a7
-	.IFNE GBE /* zzz */
 		move.w     mtask,d0
-	.ELSE
-		move.w     mtask(pc),d0
-	.ENDC
 		beq.s      startup_5
 		lea.l      _entry-212(pc),a0 /* get environment ptr from basepage */
 		move.l     (a0),d0
@@ -596,17 +464,9 @@ startup_6:
 startup_7:
 		moveq.l    #80,d0
 startup_8:
-	.IFNE GBE /* zzz */
 		lea.l      columns,a0
-	.ELSE
-		lea.l      columns(pc),a0
-	.ENDC
 		move.w     d0,(a0)
-	.IFNE GBE /* zzz */
 		lea.l      x16768,a0
-	.ELSE
-		lea.l      x16768(pc),a0
-	.ENDC
 		move.l     #0x40ACEAD6,d0 /* d0 = 2056756B ' Vuk' */
 		ror.l      #1,d0
 		move.l     d0,(a0)+
@@ -618,17 +478,9 @@ startup_8:
 		move.l     d0,(a0)+
 		move.w     #0x2000,(a0)
 		bsr        printnl
-	.IFNE GBE /* zzz */
 		lea.l      x16768,a0
-	.ELSE
-		lea.l      x16768(pc),a0
-	.ENDC
 		bsr        printstr
-	.IFNE GBE /* zzz */
 		lea.l      version_msg,a0
-	.ELSE
-		lea.l      version_msg(pc),a0
-	.ENDC
 		bsr        printstr
 		jmp        main.l
 
@@ -713,11 +565,7 @@ main_2:
 		clr.w      -(a7)
 		move.w     #74,-(a7) /* Mshrink */
 		trap       #1
-	.IFNE GBE /* zzz */
 		jsr        x16534
-	.ELSE
-		bsr        x16534
-	.ENDC
 		jsr        x11a44.l
 		.dc.w 0xa000 /* ALINE      #0 */
 		move.l     a1,200(a6)
@@ -1219,11 +1067,7 @@ x1142c:
 		pea.l      (a1)
 		move.w     d0,-(a7)
 	.IFNE STRANGE_CHECK
-	.IFNE GBE /* zzz */
 		lea.l      x16768-8196,a0
-	.ELSE
-		lea.l      x16768-8196(pc),a0
-	.ENDC
 		lea.l      8196(a0),a0 /* a0 = 00016768 */
 		move.l     #0x8159D5AC,d0
 		ror.l      #2,d0 /* d0 = 2056756B ' Vuk' */
@@ -1257,19 +1101,11 @@ x11480:
 		move.w     #62,-(a7) /* Fclose */
 		trap       #1
 		addq.l     #4,a7  /* leave filename on stack */
-	.IFNE GBE /* zzz */
 		lea.l      file_msg,a0
-	.ELSE
-		lea.l      file_msg(pc),a0
-	.ENDC
 		bsr        printstr
 		movea.l    (a7),a0
 		bsr        printstr
-	.IFNE GBE /* zzz */
 		lea.l      already_exists_msg,a0
-	.ELSE
-		lea.l      already_exists_msg(pc),a0
-	.ENDC
 		bsr        printstr
 		movea.l    (a7),a1
 		lea.l      o850(a6),a0
@@ -1310,11 +1146,7 @@ x11480_6:
 		addq.l     #2,a7
 		tst.l      d0
 		bmi.s      x11480_7
-	.IFNE GBE /* zzz */
 		lea.l      deleted_file_msg,a0
-	.ELSE
-		lea.l      deleted_file_msg(pc),a0
-	.ENDC
 		bsr        printstr
 		lea.l      o850(a6),a0
 		bsr        printstr
@@ -1327,19 +1159,11 @@ x11480_7:
 		lea.l      12(a7),a7
 		tst.l      d0
 		bmi.s      x11480_8
-	.IFNE GBE /* zzz */
 		lea.l      renamed_file_msg,a0
-	.ELSE
-		lea.l      renamed_file_msg(pc),a0
-	.ENDC
 		bsr        printstr
 		movea.l    (a7),a0
 		bsr        printstr
-	.IFNE GBE /* zzz */
 		lea.l      to_msg,a0
-	.ELSE
-		lea.l      to_msg(pc),a0
-	.ENDC
 		bsr        printstr
 		lea.l      o850(a6),a0
 		bsr        printstr
@@ -1505,11 +1329,7 @@ x1160e_14:
 		cmpi.l     #8192-1,d1
 		bgt.s      x1160e_15
 		lsl.w      #2,d1
-	.IFNE GBE /* zzz */
 		lea.l      x16782,a1
-	.ELSE
-		lea.l      x16782(pc),a1
-	.ENDC
 		tst.l      (a1)
 		beq.s      x1160e_15
 		movea.l    (a1),a1
@@ -1545,11 +1365,7 @@ x1160e_17:
 x1160e_18:
 		addq.l     #3,a1
 		move.l     (a1)+,d1
-	.IFNE GBE /* zzz */
 		lea.l      x16778,a2
-	.ELSE
-		lea.l      x16778(pc),a2
-	.ENDC
 		move.l     d1,(a2)
 		add.l      d0,d1
 		addq.l     #1,d1
@@ -1953,13 +1769,8 @@ x11ae8:
 
 x11af6: .dc.l 0
 
-	.IFNE GBE
-jmpbase:
-    .ENDC
 		.even
-	.IFEQ GBE
 jmpbase:
-	.ENDC
 
 f13696:
 		moveq.l    #9,d0
@@ -1973,11 +1784,7 @@ f1369e:
 		moveq.l    #2,d0
 f136a0:
 		bsr        find_function
-	.IFNE GBE
 		cmpi.w     #(x136d0_end-x136d0)*2-1,d6
-	.ELSE
-		cmpi.w     #(x136d0_end-x136d0)*2,d6
-	.ENDC
 		bhi.s      f136a0_1
 		move.w     d6,d1
 		lsr.w      #1,d1
@@ -2068,9 +1875,9 @@ x136d0:
 		.dc.b (0<<4)+0   /* TOK_STRING,TOK_SUCC */
 		.dc.b (2<<4)+0   /* TOK_DIR,TOK_PRED */
 		.dc.b (1<<4)+0   /* TOK_DRAW,TOK_TRIM */
-	.IFNE GBE
+#if GBE > 0
 		.dc.b (9<<4)+9   /* TOK_CMDLINE,TOK_CURDIR */
-	.ENDC
+#endif
 x136d0_end:
 		.even
 
@@ -2350,15 +2157,10 @@ x1395a_1:
 		move.b     (a2)+,d0
 		cmpi.b     #240,d0
 		bhi.s      x1395a_5
-	.IFNE GBE
 		cmpi.b     #TOK_SUBFUNC_208,d0 /* secondary function table? */
 		bcs.s      x1395a_2
 		cmpi.b     #TOK_SUBFUNC_214,d0
 		bhi.s      x1395a_2
-	.ELSE
-		cmpi.b     #TOK_SUBFUNC_208,d0 /* secondary function table? */
-		bne.s      x1395a_2
-	.ENDC
 		asl.w      #8,d0
 		move.b     (a2)+,d0
 x1395a_2:
@@ -2519,11 +2321,7 @@ handle_function_10:
 		beq.s      handle_function_11
 		moveq.l    #8,d6
 		addq.l     #1,a0
-		.IFNE GBE
 		bra.s      find_function_7
-		.ELSE
-		bra.w      find_function_7
-		.ENDC
 handle_function_11:
 		movea.l    a0,a5
 		moveq.l    #-1,d6
@@ -2547,11 +2345,7 @@ find_function:
 		subi.w     #'A',d6
 		bmi.s      handle_function_9
 		cmpi.w     #25,d6
-	.IFNE GBE
 		bhi.s      handle_function_12
-	.ELSE
-		bcc.s      handle_function_12
-	.ENDC
 		lea.l      func_index_table(pc),a3
 		add.w      d6,d6
 		move.w     0(a3,d6.w),d6
@@ -2754,11 +2548,7 @@ x13c36_5:
 		subq.l     #1,a0
 		tst.w      d2
 		bmi.s      f13c9a_6
-		.IFNE GBE
 		jsr        FITOF.l
-		.ELSE
-		jsr        322(a6) /* -> FITOF */
-		.ENDC
 		move.l     a1,d3
 		lsr.b      #1,d3
 		bcc.s      f13c9a_4 /* odd address? */
@@ -2982,365 +2772,268 @@ f13e8c_4:
 /* 371: 5674c */
 /* 372: 57864 */
 /* 373: 58654 */
-yMAT_args:
-		.dc.b ARG_CALL_FUNC,((f13e8c-jmpbase)>>8)&255,(f13e8c-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((ymat_ADD_args-jmpbase)>>8)&255,(ymat_ADD_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((ymat_SUB_args-jmpbase)>>8)&255,(ymat_SUB_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((ymat_MUL_args-jmpbase)>>8)&255,(ymat_MUL_args-jmpbase)&255
-		.dc.b ARG_END
-
-ymat_ADD_args:
-		.dc.b ARG_REPLACE,80
-		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_PUSH,((x13eec-jmpbase)>>8)&255,(x13eec-jmpbase)&255
-		.dc.b ARG_END
-
-x13eec:
-		.dc.b 19
-		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b 6
-		.dc.b ARG_PUSH,((x13fd3-jmpbase)>>8)&255,(x13fd3-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b 33
-		.dc.b ARG_PUSH,((x13fd3-jmpbase)>>8)&255,(x13fd3-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
 
 ymat_SUB_args:
-		.dc.b ARG_REPLACE,84
-		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_PUSH,((x13f0e-jmpbase)>>8)&255,(x13f0e-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_REPLACE, { (void *)84 } },
+	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
+	{ 32, { 0 } },
+	{ ARG_PUSH, { x13f0e } },
+	{ ARG_END, { 0 } }
 
 x13f0e:
-		.dc.b 19
-		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b 5
-		.dc.b ARG_PUSH,((x13fd3-jmpbase)>>8)&255,(x13fd3-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b 33
-		.dc.b ARG_PUSH,((x13fd3-jmpbase)>>8)&255,(x13fd3-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ 19, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
+	{ 32, { 0 } },
+	{ 5, { 0 } },
+	{ ARG_PUSH, { x13fd3 } },
+	{ ARG_POP, { 0 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x13fd3 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+
 ymat_MUL_args:
-		.dc.b ARG_PUSH,((x13f2a-jmpbase)>>8)&255,(x13f2a-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x13f2a } },
+	{ ARG_END, { 0 } }
 
 x13f2a:
-		.dc.b ARG_REPLACE,120
-		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b 19
-		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b 7
-		.dc.b ARG_PUSH,((x13fd3-jmpbase)>>8)&255,(x13fd3-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,122
-		.dc.b ARG_CALL_FUNC,((expect_float-jmpbase)>>8)&255,(expect_float-jmpbase)&255
-		.dc.b 19
-		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b 7
-		.dc.b ARG_PUSH,((x13fd3-jmpbase)>>8)&255,(x13fd3-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,124
-		.dc.b ARG_CALL_FUNC,((expect_float-jmpbase)>>8)&255,(expect_float-jmpbase)&255
-		.dc.b 19
-		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b 7
-		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b 7
-		.dc.b ARG_PUSH,((x13fd3-jmpbase)>>8)&255,(x13fd3-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,126
-		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
-
-ymat_DET_args:
-		.dc.b ARG_REPLACE,92
-x13f6b:
-		.dc.b ARG_CALL_FUNC,((expect_float-jmpbase)>>8)&255,(expect_float-jmpbase)&255
-		.dc.b 19
-		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
-		.dc.b ARG_PUSH,((x13f77-jmpbase)>>8)&255,(x13f77-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
-
-x13f77:
-		.dc.b ARG_PUSH,((x1503f-jmpbase)>>8)&255,(x1503f-jmpbase)&255
-		.dc.b 32
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b 32
-		.dc.b ARG_END
-
-ymat_QDET_args:
-		.dc.b ARG_REPLACE,114
-		.dc.b ARG_PUSH,((x13f6b-jmpbase)>>8)&255,(x13f6b-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_REPLACE, { (void *)120 } },
+	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
+	{ 32, { 0 } },
+	{ 19, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
+	{ 32, { 0 } },
+	{ 7, { 0 } },
+	{ ARG_PUSH, { x13fd3 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)122 } },
+	{ ARG_CALL_FUNC, { (void *)expect_float } },
+	{ 19, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
+	{ 32, { 0 } },
+	{ 7, { 0 } },
+	{ ARG_PUSH, { x13fd3 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)124 } },
+	{ ARG_CALL_FUNC, { (void *)expect_float } },
+	{ 19, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
+	{ 32, { 0 } },
+	{ 7, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
+	{ 32, { 0 } },
+	{ 7, { 0 } },
+	{ ARG_PUSH, { x13fd3 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)126 } },
+	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
+	{ 32, { 0 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 ymat_RANG_args:
-		.dc.b ARG_REPLACE,118
-		.dc.b ARG_PUSH,((x13f6b-jmpbase)>>8)&255,(x13f6b-jmpbase)&255
-		.dc.b ARG_END
-
-ymat_XCPY_args:
-		.dc.b ARG_REPLACE,90
-		.dc.b ARG_PUSH,((x13f96-jmpbase)>>8)&255,(x13f96-jmpbase)&255
-		.dc.b ARG_END
-
-ymat_CPY_args:
-		.dc.b ARG_REPLACE,88
-x13f96:
-		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
-		.dc.b ARG_PUSH,((x13fab-jmpbase)>>8)&255,(x13fab-jmpbase)&255
-		.dc.b 32
-		.dc.b 19
-		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
-		.dc.b ARG_PUSH,((x13fab-jmpbase)>>8)&255,(x13fab-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_PUSH,((x13faa-jmpbase)>>8)&255,(x13faa-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
-x13faa:
-		.dc.b 33
-x13fab:
-		.dc.b ARG_PUSH,((x1503f-jmpbase)>>8)&255,(x1503f-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ ARG_REPLACE, { (void *)118 } },
+	{ ARG_PUSH, { ymat_DET_args+1 } },
+	{ ARG_END, { 0 } }
 
 ymat_PRINT_args:
-		.dc.b ARG_REPLACE,102
-		.dc.b ARG_PUSH,((print_channel_args-jmpbase)>>8)&255,(print_channel_args-jmpbase)&255
-		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_PUSH,((x13fbe-jmpbase)>>8)&255,(x13fbe-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_REPLACE, { (void *)102 } },
+	{ ARG_PUSH, { print_channel_args } },
+	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
+	{ 32, { 0 } },
+	{ ARG_PUSH, { x13fbe } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 x13fbe:
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 
 ymat_INPUT_args:
-		.dc.b ARG_REPLACE,116
-		.dc.b ARG_PUSH,((print_channel_args-jmpbase)>>8)&255,(print_channel_args-jmpbase)&255
-		.dc.b ARG_PUSH,((x13fd3-jmpbase)>>8)&255,(x13fd3-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_REPLACE, { (void *)116 } },
+	{ ARG_PUSH, { print_channel_args } },
+	{ ARG_PUSH, { x13fd3 } },
+	{ ARG_END, { 0 } }
 
 ymat_READ_args:
-		.dc.b ARG_REPLACE,100
+	{ ARG_REPLACE, { (void *)100 } },
 x13fd3:
-		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
+	{ 32, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 ymat_TRANS_args:
-		.dc.b ARG_REPLACE,104
-		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_PUSH,((x13fe4-jmpbase)>>8)&255,(x13fe4-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_REPLACE, { (void *)104 } },
+	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
+	{ 32, { 0 } },
+	{ ARG_PUSH, { x13fe4 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+
 x13fe4:
-		.dc.b 19
-		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 19, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 
 ymat_INV_args:
-		.dc.b ARG_REPLACE,128
-		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b 19
-		.dc.b ARG_PUSH,((x13fd3-jmpbase)>>8)&255,(x13fd3-jmpbase)&255
-		.dc.b ARG_END
-
-ymat_CLR_args:
-		.dc.b ARG_REPLACE,106
-		.dc.b ARG_PUSH,((x13fd3-jmpbase)>>8)&255,(x13fd3-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_REPLACE, { (void *)128 } },
+	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
+	{ 32, { 0 } },
+	{ 19, { 0 } },
+	{ ARG_PUSH, { x13fd3 } },
+	{ ARG_END, { 0 } }
 
 ymat_ONE_args:
-		.dc.b ARG_REPLACE,110
-		.dc.b ARG_PUSH,((x13fd3-jmpbase)>>8)&255,(x13fd3-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_REPLACE, { (void *)110 } },
+	{ ARG_PUSH, { x13fd3 } },
+	{ ARG_END, { 0 } }
 
 ymat_NEG_args:
-		.dc.b ARG_REPLACE,94
-		.dc.b ARG_PUSH,((x13fd3-jmpbase)>>8)&255,(x13fd3-jmpbase)&255
-		.dc.b ARG_END
-
-ymat_ABS_args:
-		.dc.b ARG_REPLACE,96
-		.dc.b ARG_PUSH,((x13fd3-jmpbase)>>8)&255,(x13fd3-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_REPLACE, { (void *)94 } },
+	{ ARG_PUSH, { x13fd3 } },
+	{ ARG_END, { 0 } }
 
 ymat_NORM_args:
-		.dc.b ARG_REPLACE,98
-		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b 33
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_REPLACE, { (void *)98 } },
+	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
+	{ 32, { 0 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_END, { 0 } }
 
 ymat_SET_args:
-		.dc.b ARG_REPLACE,108
-		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b 19
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
-
-ymat_BASE_args:
-		.dc.b ARG_REPLACE,112
-		.dc.b ARG_PUSH,((x1402b-jmpbase)>>8)&255,(x1402b-jmpbase)&255
-		.dc.b ARG_END
-x1402b:
-		.dc.b 184
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b 185
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_REPLACE, { (void *)108 } },
+	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
+	{ 32, { 0 } },
+	{ 19, { 0 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 ySSORT_args:
 yQSORT_args:
-		.dc.b ARG_PUSH,((x14039-jmpbase)>>8)&255,(x14039-jmpbase)&255
-		.dc.b ARG_PUSH,((x14066-jmpbase)>>8)&255,(x14066-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14039 } },
+	{ ARG_PUSH, { x14066 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 x14039:
-		.dc.b ARG_CALL_FUNC,((expect_string_arr-jmpbase)>>8)&255,(expect_string_arr-jmpbase)&255
-		.dc.b ARG_PUSH,((x14076-jmpbase)>>8)&255,(x14076-jmpbase)&255
-		.dc.b ARG_PUSH,((x14054-jmpbase)>>8)&255,(x14054-jmpbase)&255
-		.dc.b ARG_PUSH,((x1404d-jmpbase)>>8)&255,(x1404d-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x1436a-jmpbase)>>8)&255,(x1436a-jmpbase)&255
-		.dc.b ARG_PUSH,((x14076-jmpbase)>>8)&255,(x14076-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
+	{ ARG_PUSH, { x14076 } },
+	{ ARG_PUSH, { x14054 } },
+	{ ARG_PUSH, { x1404d } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x1436a } },
+	{ ARG_PUSH, { x14076 } },
+	{ ARG_END, { 0 } }
 
 x1404d:
-		.dc.b 114
-		.dc.b ARG_PUSH,((x1405a-jmpbase)>>8)&255,(x1405a-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 114, { 0 } },
+	{ ARG_PUSH, { x1405a } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 
 x14054:
-		.dc.b 109
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 109, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 
 x1405a:
-		.dc.b ARG_CALL_FUNC,((expect_int_arr-jmpbase)>>8)&255,(expect_int_arr-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_word_arr-jmpbase)>>8)&255,(expect_word_arr-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_byte_arr-jmpbase)>>8)&255,(expect_byte_arr-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)expect_int_arr } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_word_arr } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_byte_arr } },
+	{ ARG_END, { 0 } }
+
 x14066:
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_PUSH,((x1406f-jmpbase)>>8)&255,(x1406f-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x1406f } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
+
 x1406f:
-		.dc.b 33
-		.dc.b ARG_CALL_FUNC,((expect_int_arr-jmpbase)>>8)&255,(expect_int_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 33, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_int_arr } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
+
 x14076:
-		.dc.b 5
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b 6
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b 32
-		.dc.b ARG_END
+	{ 5, { 0 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 6, { 0 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 
 yVOID_args:
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14b9a } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 yLET_args:
-		.dc.b ARG_PUSH,((x14392-jmpbase)>>8)&255,(x14392-jmpbase)&255
-		.dc.b 19
-		.dc.b ARG_REPLACE,69
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x1435e-jmpbase)>>8)&255,(x1435e-jmpbase)&255
-		.dc.b 19
-		.dc.b ARG_REPLACE,69
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x1438e-jmpbase)>>8)&255,(x1438e-jmpbase)&255
-		.dc.b 5
-		.dc.b 19
-		.dc.b ARG_CALL_FUNC,((f140e2-jmpbase)>>8)&255,(f140e2-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x1438e-jmpbase)>>8)&255,(x1438e-jmpbase)&255
-		.dc.b 6
-		.dc.b 19
-		.dc.b ARG_CALL_FUNC,((f140d6-jmpbase)>>8)&255,(f140d6-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x1438e-jmpbase)>>8)&255,(x1438e-jmpbase)&255
-		.dc.b 7
-		.dc.b 19
-		.dc.b ARG_CALL_FUNC,((f140ee-jmpbase)>>8)&255,(f140ee-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x1438e-jmpbase)>>8)&255,(x1438e-jmpbase)&255
-		.dc.b 8
-		.dc.b 19
-		.dc.b ARG_CALL_FUNC,((f140fa-jmpbase)>>8)&255,(f140fa-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x14372-jmpbase)>>8)&255,(x14372-jmpbase)&255
-		.dc.b ARG_PUSH,((x14147-jmpbase)>>8)&255,(x14147-jmpbase)&255
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x1437e-jmpbase)>>8)&255,(x1437e-jmpbase)&255
-		.dc.b ARG_PUSH,((x14147-jmpbase)>>8)&255,(x14147-jmpbase)&255
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((yRSET_args-jmpbase)>>8)&255,(yRSET_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14392 } },
+	{ 19, { 0 } },
+	{ ARG_REPLACE, { (void *)69 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x1435e } },
+	{ 19, { 0 } },
+	{ ARG_REPLACE, { (void *)69 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x1438e } },
+	{ 5, { 0 } },
+	{ 19, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f140e2 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x1438e } },
+	{ 6, { 0 } },
+	{ 19, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f140d6 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x1438e } },
+	{ 7, { 0 } },
+	{ 19, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f140ee } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x1438e } },
+	{ 8, { 0 } },
+	{ 19, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f140fa } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x14372 } },
+	{ ARG_PUSH, { x14147 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x1437e } },
+	{ ARG_PUSH, { x14147 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { yRSET_args } },
+	{ ARG_END, { 0 } }
+
 		.even
 
 f140d6:
@@ -3371,54 +3064,54 @@ f140fa_1:
 /* 372: 57aa8 */
 /* 373: 58898 */
 yDELETE_args:
-		.dc.b ARG_PUSH,((x1436a-jmpbase)>>8)&255,(x1436a-jmpbase)&255
-		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x1436a } },
+	{ ARG_PUSH, { x14c92 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 yINSERT_args:
-		.dc.b ARG_PUSH,((x14372-jmpbase)>>8)&255,(x14372-jmpbase)&255
-		.dc.b ARG_PUSH,((x1413e-jmpbase)>>8)&255,(x1413e-jmpbase)&255
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
-		.dc.b ARG_PUSH,((x1413e-jmpbase)>>8)&255,(x1413e-jmpbase)&255
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_string_arr-jmpbase)>>8)&255,(expect_string_arr-jmpbase)&255
-		.dc.b ARG_PUSH,((x1413e-jmpbase)>>8)&255,(x1413e-jmpbase)&255
+	{ ARG_PUSH, { x14372 } },
+	{ ARG_PUSH, { x1413e } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
+	{ ARG_PUSH, { x1413e } },
+	{ ARG_PUSH, { x14b9a } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
+	{ ARG_PUSH, { x1413e } },
 x14139:
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 x1413e:
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b 32
-		.dc.b -6
-		.dc.b 19
-		.dc.b ARG_REPLACE,TOK_ARRAY_ASS
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14b96 } },
+	{ 32, { 0 } },
+	{ -6, { 0 } },
+	{ 19, { 0 } },
+	{ ARG_REPLACE, { (void *)TOK_ARRAY_ASS } },
+	{ ARG_END, { 0 } }
 
 x14147:
-		.dc.b ARG_PUSH,((x1519e-jmpbase)>>8)&255,(x1519e-jmpbase)&255
-		.dc.b -6
-		.dc.b 19
-		.dc.b ARG_REPLACE,TOK_ARRAY_ASS
-		.dc.b ARG_END
+	{ ARG_PUSH, { x1519e } },
+	{ -6, { 0 } },
+	{ 19, { 0 } },
+	{ ARG_REPLACE, { (void *)TOK_ARRAY_ASS } },
+	{ ARG_END, { 0 } }
 
-	.IFNE GBE
+#if GBE > 0
 ySTRUCTs_args:
 yOB_TEXTs_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b 32
-		.dc.b -6
-		.dc.b 19
-		.dc.b ARG_REPLACE,TOK_ARRAY_ASS
-		.dc.b ARG_PUSH,((yCHDIR_args-jmpbase)>>8)&255,(yCHDIR_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ 32, { 0 } },
+	{ -6, { 0 } },
+	{ 19, { 0 } },
+	{ ARG_REPLACE, { (void *)TOK_ARRAY_ASS } },
+	{ ARG_PUSH, { yCHDIR_args } },
+	{ ARG_END, { 0 } }
 
 yUSERBLK_args:
 yTEDINFO_args:
@@ -3429,8 +3122,8 @@ yBITBLK_args:
 yOB_RADIO_args:
 yOB_dot_FLAGS_args:
 yOB_dot_STATE_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-	.ENDC
+	{ ARG_PUSH, { x14475 } },
+#endif
 
 yWINDTAB_args:
 yUB_PARM_args:
@@ -3522,7 +3215,7 @@ yBF_FRAMESIZE_args:
 yBF_CHARACTER_args:
 yBF_OBSPEC_args:
 yARRAY_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+	{ ARG_PUSH, { x14475 } },
 yUSERDEF_args:
 yPTSOUT_args:
 yPTSIN_args:
@@ -3534,20 +3227,20 @@ yGINTIN_args:
 yCONTRL_args:
 yADDROUT_args:
 yADDRIN_args:
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b 32
-		.dc.b -6
-		.dc.b 19
-		.dc.b ARG_REPLACE,TOK_ARRAY_ASS
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14b96 } },
+	{ 32, { 0 } },
+	{ -6, { 0 } },
+	{ 19, { 0 } },
+	{ ARG_REPLACE, { (void *)TOK_ARRAY_ASS } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_END, { 0 } }
 
 yCONT_args:
-		.dc.b ARG_PUSH,((ySELECT_args-jmpbase)>>8)&255,(ySELECT_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13da6-jmpbase)>>8)&255,(f13da6-jmpbase)&255
-		.dc.b ARG_PUSH,((yPTSOUT_args-jmpbase)>>8)&255,(yPTSOUT_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { ySELECT_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13da6 } },
+	{ ARG_PUSH, { yPTSOUT_args } },
+	{ ARG_END, { 0 } }
 
 yWORD_args:
 ySBYTE_args:
@@ -3558,510 +3251,528 @@ yFLOAT_args:
 yDOUBLE_args:
 yCARD_args:
 yBYTE_args:
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b 88
-		.dc.b -6
-		.dc.b 19
-		.dc.b ARG_REPLACE,TOK_REFEND
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14b96 } },
+	{ 88, { 0 } },
+	{ -6, { 0 } },
+	{ 19, { 0 } },
+	{ ARG_REPLACE, { (void *)TOK_REFEND } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_END, { 0 } }
 
 yCHAR_args:
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b 88
-		.dc.b -6
-		.dc.b 19
-		.dc.b ARG_REPLACE,TOK_REFEND
-		.dc.b ARG_PUSH,((x14139-jmpbase)>>8)&255,(x14139-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14b96 } },
+	{ 88, { 0 } },
+	{ -6, { 0 } },
+	{ 19, { 0 } },
+	{ ARG_REPLACE, { (void *)TOK_REFEND } },
+	{ ARG_PUSH, { x14139 } },
+	{ ARG_END, { 0 } }
 
 yRSET_args:
 yLSET_args:
-		.dc.b ARG_CALL_FUNC,((expect_string-jmpbase)>>8)&255,(expect_string-jmpbase)&255
-		.dc.b ARG_PUSH,((x14196-jmpbase)>>8)&255,(x14196-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_string_arr-jmpbase)>>8)&255,(expect_string_arr-jmpbase)&255
-		.dc.b ARG_PUSH,((x1519e-jmpbase)>>8)&255,(x1519e-jmpbase)&255
-		.dc.b -6
-		.dc.b 19
-		.dc.b ARG_REPLACE,TOK_ARRAY_ASS
-		.dc.b ARG_PUSH,((x14139-jmpbase)>>8)&255,(x14139-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)expect_string } },
+	{ ARG_PUSH, { x14196 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
+	{ ARG_PUSH, { x1519e } },
+	{ -6, { 0 } },
+	{ 19, { 0 } },
+	{ ARG_REPLACE, { (void *)TOK_ARRAY_ASS } },
+	{ ARG_PUSH, { x14139 } },
+	{ ARG_END, { 0 } }
 
 x14196:
-		.dc.b 19
-		.dc.b ARG_REPLACE,TOK_ASSIGN
-		.dc.b ARG_PUSH,((x14139-jmpbase)>>8)&255,(x14139-jmpbase)&255
-		.dc.b ARG_END
+	{ 19, { 0 } },
+	{ ARG_REPLACE, { (void *)TOK_ASSIGN } },
+	{ ARG_PUSH, { x14139 } },
+	{ ARG_END, { 0 } }
 
 yIF_args:
-		.dc.b ARG_CALL_FUNC,((f13b62-jmpbase)>>8)&255,(f13b62-jmpbase)&255
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b ARG_PUSH,((x141b0-jmpbase)>>8)&255,(x141b0-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)f13b62 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ ARG_PUSH, { x141b0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 yWHILE_args:
 yUNTIL_args:
 yENDREPEAT_args:
-		.dc.b ARG_CALL_FUNC,((f13b62-jmpbase)>>8)&255,(f13b62-jmpbase)&255
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)f13b62 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+
 x141b0:
-		.dc.b 74
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 74, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
+
 x141b3:
-		.dc.b 90
-		.dc.b -6
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 90, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 
 yWEND_args:
 yENDWHILE_args:
-		.dc.b ARG_CALL_FUNC,((f13b62-jmpbase)>>8)&255,(f13b62-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)f13b62 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+
 yDO_args:
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d82-jmpbase)>>8)&255,(f13d82-jmpbase)&255
-		.dc.b ARG_PUSH,((yWORD_args-jmpbase)>>8)&255,(yWORD_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13b68-jmpbase)>>8)&255,(f13b68-jmpbase)&255
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d82 } },
+	{ ARG_PUSH, { yWORD_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13b68 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 yLOOP_args:
 yENDDO_args:
-		.dc.b ARG_CALL_FUNC,((f13b62-jmpbase)>>8)&255,(f13b62-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13b6c-jmpbase)>>8)&255,(f13b6c-jmpbase)&255
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)f13b62 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13b6c } },
+	{ ARG_PUSH, { x14b9a } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 yELSE_args:
-		.dc.b ARG_CALL_FUNC,((f13b62-jmpbase)>>8)&255,(f13b62-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,32
+	{ ARG_CALL_FUNC, { (void *)f13b62 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)32 } },
 yEXIT_IF_args:
-		.dc.b ARG_CALL_FUNC,((f13b62-jmpbase)>>8)&255,(f13b62-jmpbase)&255
-		.dc.b ARG_PUSH,((x141b3-jmpbase)>>8)&255,(x141b3-jmpbase)&255
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)f13b62 } },
+	{ ARG_PUSH, { x141b3 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 yRETURN_args:
 yENDSUB_args:
 yENDPROC_args:
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,34
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,36
-		.dc.b ARG_PUSH,((x14139-jmpbase)>>8)&255,(x14139-jmpbase)&255
-		.dc.b ARG_END
-yFOR_args:
-		.dc.b ARG_PUSH,((x1438e-jmpbase)>>8)&255,(x1438e-jmpbase)&255
-		.dc.b ARG_PUSH,((x14228-jmpbase)>>8)&255,(x14228-jmpbase)&255
-		.dc.b ARG_POP
-yFORM_INPUT_args:
-		.dc.b ARG_CALL_FUNC,((handle_form_input-jmpbase)>>8)&255,(handle_form_input-jmpbase)&255
-		.dc.b ARG_PUSH,((x14213-jmpbase)>>8)&255,(x14213-jmpbase)&255
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b ARG_PUSH,((x14217-jmpbase)>>8)&255,(x14217-jmpbase)&255
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)34 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)36 } },
+	{ ARG_PUSH, { x14139 } },
+	{ ARG_END, { 0 } }
 
+yFOR_args:
+	{ ARG_PUSH, { x1438e } },
+	{ ARG_PUSH, { x14228 } },
+	{ ARG_POP, { 0 } },
+yFORM_INPUT_args:
+	{ ARG_CALL_FUNC, { (void *)handle_form_input } },
+	{ ARG_PUSH, { x14213 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ ARG_PUSH, { x14217 } },
 ySPUT_args:
 ySGET_args:
 yMNAM_args:
-		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x143ec } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+
 x14213:
-		.dc.b 96
-		.dc.b -6
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 96, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
+
 x14217:
-		.dc.b 33
-		.dc.b ARG_POP
-		.dc.b 108
-		.dc.b ARG_POP
-		.dc.b 34
-		.dc.b ARG_REPLACE,33
-		.dc.b ARG_END
+	{ 33, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 108, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 34, { 0 } },
+	{ ARG_REPLACE, { (void *)33 } },
+	{ ARG_END, { 0 } }
+
 x1421f:
-		.dc.b ARG_PUSH,((x14217-jmpbase)>>8)&255,(x14217-jmpbase)&255
-		.dc.b ARG_REPLACE,108
-		.dc.b ARG_POP
-		.dc.b 249,108
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14217 } },
+	{ ARG_REPLACE, { (void *)108 } },
+	{ ARG_POP, { 0 } },
+	{ 249,108, { 0 } },
+	{ ARG_END, { 0 } }
+
 x14228:
-		.dc.b 19
-		.dc.b ARG_REPLACE,69
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b 71
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_PUSH,((x14245-jmpbase)>>8)&255,(x14245-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b 19
-		.dc.b ARG_REPLACE,69
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b 73
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_CALL_FUNC,((f15972-jmpbase)>>8)&255,(f15972-jmpbase)&255
-		.dc.b ARG_END
+	{ 19, { 0 } },
+	{ ARG_REPLACE, { (void *)69 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ 71, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x14245 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 19, { 0 } },
+	{ ARG_REPLACE, { (void *)69 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ 73, { 0 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_CALL_FUNC, { (void *)f15972 } },
+	{ ARG_END, { 0 } }
+
 x14245:
-		.dc.b 72
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_CALL_FUNC,((f15976-jmpbase)>>8)&255,(f15976-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f1596e-jmpbase)>>8)&255,(f1596e-jmpbase)&255
-		.dc.b ARG_END
+	{ 72, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_CALL_FUNC, { (void *)f15976 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f1596e } },
+	{ ARG_END, { 0 } }
 
 yNEXT_args:
 yENDFOR_args:
-		.dc.b ARG_CALL_FUNC,((f13b62-jmpbase)>>8)&255,(f13b62-jmpbase)&255
-		.dc.b ARG_PUSH,((x1438e-jmpbase)>>8)&255,(x1438e-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)f13b62 } },
+	{ ARG_PUSH, { x1438e } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 yCASE_args:
-		.dc.b ARG_CALL_FUNC,((f13b62-jmpbase)>>8)&255,(f13b62-jmpbase)&255
-		.dc.b ARG_PUSH,((x14264-jmpbase)>>8)&255,(x14264-jmpbase)&255
-		.dc.b ARG_PUSH,((x14286-jmpbase)>>8)&255,(x14286-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)f13b62 } },
+	{ ARG_PUSH, { x14264 } },
+	{ ARG_PUSH, { x14286 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 x14264:
-		.dc.b 71
-		.dc.b ARG_PUSH,((x14276-jmpbase)>>8)&255,(x14276-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x14276-jmpbase)>>8)&255,(x14276-jmpbase)&255
-		.dc.b 71
-		.dc.b ARG_PUSH,((x14276-jmpbase)>>8)&255,(x14276-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x14276-jmpbase)>>8)&255,(x14276-jmpbase)&255
-		.dc.b 71
-		.dc.b ARG_POP
+	{ 71, { 0 } },
+	{ ARG_PUSH, { x14276 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x14276 } },
+	{ 71, { 0 } },
+	{ ARG_PUSH, { x14276 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x14276 } },
+	{ 71, { 0 } },
+	{ ARG_POP, { 0 } },
 x14276:
-		.dc.b ARG_CALL_FUNC,((f1595a-jmpbase)>>8)&255,(f1595a-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_int-jmpbase)>>8)&255,(expect_int-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_word-jmpbase)>>8)&255,(expect_word-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_byte-jmpbase)>>8)&255,(expect_byte-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)f1595a } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_int } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_word } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_byte } },
+	{ ARG_END, { 0 } }
+
 x14286:
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14264-jmpbase)>>8)&255,(x14264-jmpbase)&255
-		.dc.b ARG_PUSH,((x14286-jmpbase)>>8)&255,(x14286-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14264 } },
+	{ ARG_PUSH, { x14286 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
+
 ySWITCH_args:
-		.dc.b ARG_CALL_FUNC,((f13b62-jmpbase)>>8)&255,(f13b62-jmpbase)&255
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,88
-		.dc.b ARG_CALL_FUNC,((f13b62-jmpbase)>>8)&255,(f13b62-jmpbase)&255
-		.dc.b ARG_PUSH,((x14139-jmpbase)>>8)&255,(x14139-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)f13b62 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)88 } },
+	{ ARG_CALL_FUNC, { (void *)f13b62 } },
+	{ ARG_PUSH, { x14139 } },
+	{ ARG_END, { 0 } }
+
 yDEFAULT_args:
-		.dc.b ARG_CALL_FUNC,((f13b62-jmpbase)>>8)&255,(f13b62-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)f13b62 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+
 yENDSELECT_args:
 yENDSWITCH_args:
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 ySUB_args:
-		.dc.b ARG_PUSH,((x143cb-jmpbase)>>8)&255,(x143cb-jmpbase)&255
-		.dc.b ARG_PUSH,((x14311-jmpbase)>>8)&255,(x14311-jmpbase)&255
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x1433e-jmpbase)>>8)&255,(x1433e-jmpbase)&255
-		.dc.b ARG_PUSH,((x14311-jmpbase)>>8)&255,(x14311-jmpbase)&255
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b -6
-		.dc.b ARG_REPLACE,0
-		.dc.b 249,12
-		.dc.b ARG_PUSH,((yPROCEDURE_args-jmpbase)>>8)&255,(yPROCEDURE_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x143cb } },
+	{ ARG_PUSH, { x14311 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x1433e } },
+	{ ARG_PUSH, { x14311 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_POP, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_REPLACE, { (void *)0 } },
+	{ 249,12, { 0 } },
+	{ ARG_PUSH, { yPROCEDURE_args } },
+	{ ARG_END, { 0 } }
 
 yADD_args:
-		.dc.b ARG_PUSH,((x143cb-jmpbase)>>8)&255,(x143cb-jmpbase)&255
-		.dc.b ARG_PUSH,((x14319-jmpbase)>>8)&255,(x14319-jmpbase)&255
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x1433e-jmpbase)>>8)&255,(x1433e-jmpbase)&255
-		.dc.b ARG_PUSH,((x14319-jmpbase)>>8)&255,(x14319-jmpbase)&255
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d8e-jmpbase)>>8)&255,(f13d8e-jmpbase)&255
-		.dc.b ARG_PUSH,((yPTSOUT_args-jmpbase)>>8)&255,(yPTSOUT_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d9a-jmpbase)>>8)&255,(f13d9a-jmpbase)&255
-		.dc.b ARG_PUSH,((yPTSOUT_args-jmpbase)>>8)&255,(yPTSOUT_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x143cb } },
+	{ ARG_PUSH, { x14319 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x1433e } },
+	{ ARG_PUSH, { x14319 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d8e } },
+	{ ARG_PUSH, { yPTSOUT_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d9a } },
+	{ ARG_PUSH, { yPTSOUT_args } },
+	{ ARG_END, { 0 } }
 
 yMUL_args:
-		.dc.b ARG_PUSH,((x143cb-jmpbase)>>8)&255,(x143cb-jmpbase)&255
-		.dc.b ARG_PUSH,((x14321-jmpbase)>>8)&255,(x14321-jmpbase)&255
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x1433e-jmpbase)>>8)&255,(x1433e-jmpbase)&255
-		.dc.b ARG_PUSH,((x14321-jmpbase)>>8)&255,(x14321-jmpbase)&255
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x143cb } },
+	{ ARG_PUSH, { x14321 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x1433e } },
+	{ ARG_PUSH, { x14321 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_END, { 0 } }
+
 yDIV_args:
-		.dc.b ARG_PUSH,((x143cb-jmpbase)>>8)&255,(x143cb-jmpbase)&255
-		.dc.b ARG_PUSH,((x14329-jmpbase)>>8)&255,(x14329-jmpbase)&255
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x1433e-jmpbase)>>8)&255,(x1433e-jmpbase)&255
-		.dc.b ARG_PUSH,((x14329-jmpbase)>>8)&255,(x14329-jmpbase)&255
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x143cb } },
+	{ ARG_PUSH, { x14329 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x1433e } },
+	{ ARG_PUSH, { x14329 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_END, { 0 } }
+
 x14311:
-		.dc.b 33
-		.dc.b ARG_POP
-		.dc.b 5
-		.dc.b 19
-		.dc.b -6
-		.dc.b ARG_REPLACE,33
-		.dc.b ARG_END
+	{ 33, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 5, { 0 } },
+	{ 19, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_REPLACE, { (void *)33 } },
+	{ ARG_END, { 0 } }
+
 x14319:
-		.dc.b 33
-		.dc.b ARG_POP
-		.dc.b 6
-		.dc.b 19
-		.dc.b -6
-		.dc.b ARG_REPLACE,33
-		.dc.b ARG_END
+	{ 33, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 6, { 0 } },
+	{ 19, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_REPLACE, { (void *)33 } },
+	{ ARG_END, { 0 } }
+
 x14321:
-		.dc.b 33
-		.dc.b ARG_POP
-		.dc.b 7
-		.dc.b 19
-		.dc.b -6
-		.dc.b ARG_REPLACE,33
-		.dc.b ARG_END
+	{ 33, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 7, { 0 } },
+	{ 19, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_REPLACE, { (void *)33 } },
+	{ ARG_END, { 0 } }
+
 x14329:
-		.dc.b 33
-		.dc.b ARG_POP
-		.dc.b 8
-		.dc.b 19
-		.dc.b -6
-		.dc.b ARG_REPLACE,33
-		.dc.b ARG_END
+	{ 33, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 8, { 0 } },
+	{ 19, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_REPLACE, { (void *)33 } },
+	{ ARG_END, { 0 } }
 
 yINC_args:
 yDEC_args:
-		.dc.b ARG_PUSH,((x1433e-jmpbase)>>8)&255,(x1433e-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x1433e } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+
 x14336:
-		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
-		.dc.b ARG_POP
+	{ ARG_PUSH, { x143ec } },
+	{ ARG_POP, { 0 } },
 x1433a:
-		.dc.b ARG_PUSH,((x143e1-jmpbase)>>8)&255,(x143e1-jmpbase)&255
-		.dc.b ARG_POP
+	{ ARG_PUSH, { x143e1 } },
+	{ ARG_POP, { 0 } },
 
 x1433e:
-		.dc.b ARG_PUSH,((x14402-jmpbase)>>8)&255,(x14402-jmpbase)&255
-		.dc.b ARG_POP
+	{ ARG_PUSH, { x14402 } },
+	{ ARG_POP, { 0 } },
 x14342:
-		.dc.b ARG_PUSH,((x143f7-jmpbase)>>8)&255,(x143f7-jmpbase)&255
-		.dc.b ARG_POP
+	{ ARG_PUSH, { x143f7 } },
+	{ ARG_POP, { 0 } },
 
 x14346:
-		.dc.b ARG_PUSH,((x143d6-jmpbase)>>8)&255,(x143d6-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x143cb-jmpbase)>>8)&255,(x143cb-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x143d6 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x143cb } },
+	{ ARG_END, { 0 } }
 
 x1434e:
-		.dc.b ARG_CALL_FUNC,((expect_byte-jmpbase)>>8)&255,(expect_byte-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_string-jmpbase)>>8)&255,(expect_string-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_int-jmpbase)>>8)&255,(expect_int-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_word-jmpbase)>>8)&255,(expect_word-jmpbase)&255
-		.dc.b ARG_POP
+	{ ARG_CALL_FUNC, { (void *)expect_byte } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_string } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_int } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_word } },
+	{ ARG_POP, { 0 } },
 x1435e:
-		.dc.b ARG_CALL_FUNC,((expect_float-jmpbase)>>8)&255,(expect_float-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_bool-jmpbase)>>8)&255,(expect_bool-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)expect_float } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_bool } },
+	{ ARG_END, { 0 } }
+
 x14366:
-		.dc.b ARG_CALL_FUNC,((expect_bool_arr-jmpbase)>>8)&255,(expect_bool_arr-jmpbase)&255
-		.dc.b ARG_POP
+	{ ARG_CALL_FUNC, { (void *)expect_bool_arr } },
+	{ ARG_POP, { 0 } },
 x1436a:
-		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_string_arr-jmpbase)>>8)&255,(expect_string_arr-jmpbase)&255
-		.dc.b ARG_POP
+	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
+	{ ARG_POP, { 0 } },
 x14372:
-		.dc.b ARG_CALL_FUNC,((expect_int_arr-jmpbase)>>8)&255,(expect_int_arr-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_word_arr-jmpbase)>>8)&255,(expect_word_arr-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_byte_arr-jmpbase)>>8)&255,(expect_byte_arr-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)expect_int_arr } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_word_arr } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_byte_arr } },
+	{ ARG_END, { 0 } }
+
 x1437e:
-		.dc.b ARG_CALL_FUNC,((expect_bool_arr-jmpbase)>>8)&255,(expect_bool_arr-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)expect_bool_arr } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
+	{ ARG_END, { 0 } }
+
 x14386:
-		.dc.b ARG_CALL_FUNC,((expect_float-jmpbase)>>8)&255,(expect_float-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_int-jmpbase)>>8)&255,(expect_int-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)expect_float } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_int } },
+	{ ARG_END, { 0 } }
+
 x1438e:
-		.dc.b ARG_CALL_FUNC,((expect_float-jmpbase)>>8)&255,(expect_float-jmpbase)&255
-		.dc.b ARG_POP
+	{ ARG_CALL_FUNC, { (void *)expect_float } },
+	{ ARG_POP, { 0 } },
 x14392:
-		.dc.b ARG_CALL_FUNC,((expect_int-jmpbase)>>8)&255,(expect_int-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_word-jmpbase)>>8)&255,(expect_word-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_byte-jmpbase)>>8)&255,(expect_byte-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)expect_int } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_word } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_byte } },
+	{ ARG_END, { 0 } }
 
 x1439e:
-		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
-		.dc.b ARG_END
-x143a6:
-		.dc.b ARG_PUSH,((x14366-jmpbase)>>8)&255,(x14366-jmpbase)&255
-		.dc.b ARG_PUSH,((x1519e-jmpbase)>>8)&255,(x1519e-jmpbase)&255
-		.dc.b ARG_END
-x143ad:
-		.dc.b ARG_CALL_FUNC,((expect_string_arr-jmpbase)>>8)&255,(expect_string_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-x143b2:
-		.dc.b ARG_CALL_FUNC,((expect_bool_arr-jmpbase)>>8)&255,(expect_bool_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_byte_arr-jmpbase)>>8)&255,(expect_byte_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-x143bc:
-		.dc.b ARG_CALL_FUNC,((expect_word_arr-jmpbase)>>8)&255,(expect_word_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-x143c6:
-		.dc.b ARG_CALL_FUNC,((expect_int_arr-jmpbase)>>8)&255,(expect_int_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
-x143cb:
-		.dc.b ARG_CALL_FUNC,((expect_float-jmpbase)>>8)&255,(expect_float-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
-		.dc.b ARG_PUSH,((x1519e-jmpbase)>>8)&255,(x1519e-jmpbase)&255
-		.dc.b ARG_END
-x143d6:
-		.dc.b ARG_CALL_FUNC,((expect_int-jmpbase)>>8)&255,(expect_int-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_int_arr-jmpbase)>>8)&255,(expect_int_arr-jmpbase)&255
-		.dc.b ARG_PUSH,((x1519e-jmpbase)>>8)&255,(x1519e-jmpbase)&255
-		.dc.b ARG_END
-x143e1:
-		.dc.b ARG_CALL_FUNC,((expect_bool-jmpbase)>>8)&255,(expect_bool-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_bool_arr-jmpbase)>>8)&255,(expect_bool_arr-jmpbase)&255
-		.dc.b ARG_PUSH,((x1519e-jmpbase)>>8)&255,(x1519e-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x143ec } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x143ec } },
+	{ ARG_END, { 0 } }
 
-x143ec:
-		.dc.b ARG_CALL_FUNC,((expect_string-jmpbase)>>8)&255,(expect_string-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_string_arr-jmpbase)>>8)&255,(expect_string_arr-jmpbase)&255
-		.dc.b ARG_PUSH,((x1519e-jmpbase)>>8)&255,(x1519e-jmpbase)&255
-		.dc.b ARG_END
+x143a6:
+	{ ARG_PUSH, { x14366 } },
+	{ ARG_PUSH, { x1519e } },
+	{ ARG_END, { 0 } }
+
+x143ad:
+	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+x143b2:
+	{ ARG_CALL_FUNC, { (void *)expect_bool_arr } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_byte_arr } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+x143bc:
+	{ ARG_CALL_FUNC, { (void *)expect_word_arr } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+x143c6:
+	{ ARG_CALL_FUNC, { (void *)expect_int_arr } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
+
+x143cb:
+	{ ARG_CALL_FUNC, { (void *)expect_float } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
+	{ ARG_PUSH, { x1519e } },
+	{ ARG_END, { 0 } }
+
+x143d6:
+	{ ARG_CALL_FUNC, { (void *)expect_int } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_int_arr } },
+	{ ARG_PUSH, { x1519e } },
+	{ ARG_END, { 0 } }
 
 x143f7:
-		.dc.b ARG_CALL_FUNC,((expect_word-jmpbase)>>8)&255,(expect_word-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_word_arr-jmpbase)>>8)&255,(expect_word_arr-jmpbase)&255
-		.dc.b ARG_PUSH,((x1519e-jmpbase)>>8)&255,(x1519e-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)expect_word } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_word_arr } },
+	{ ARG_PUSH, { x1519e } },
+	{ ARG_END, { 0 } }
+
 x14402:
-		.dc.b ARG_CALL_FUNC,((expect_byte-jmpbase)>>8)&255,(expect_byte-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_byte_arr-jmpbase)>>8)&255,(expect_byte_arr-jmpbase)&255
-		.dc.b ARG_PUSH,((x1519e-jmpbase)>>8)&255,(x1519e-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)expect_byte } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_byte_arr } },
+	{ ARG_PUSH, { x1519e } },
+	{ ARG_END, { 0 } }
+
 x1440d:
-		.dc.b ARG_PUSH,((x14342-jmpbase)>>8)&255,(x14342-jmpbase)&255
-		.dc.b 33
+	{ ARG_PUSH, { x14342 } },
+	{ 33, { 0 } },
 x14411:
-		.dc.b ARG_PUSH,((x14342-jmpbase)>>8)&255,(x14342-jmpbase)&255
-		.dc.b 33
+	{ ARG_PUSH, { x14342 } },
+	{ 33, { 0 } },
 x14415:
-		.dc.b ARG_PUSH,((x14342-jmpbase)>>8)&255,(x14342-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14342-jmpbase)>>8)&255,(x14342-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14342 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14342 } },
+	{ ARG_END, { 0 } }
+
 yERASE_args:
-		.dc.b ARG_PUSH,((x143ad-jmpbase)>>8)&255,(x143ad-jmpbase)&255
-		.dc.b ARG_PUSH,((x14425-jmpbase)>>8)&255,(x14425-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x143ad } },
+	{ ARG_PUSH, { x14425 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+
 x14425:
-		.dc.b 33
-		.dc.b ARG_PUSH,((x143ad-jmpbase)>>8)&255,(x143ad-jmpbase)&255
-		.dc.b ARG_PUSH,((x14425-jmpbase)>>8)&255,(x14425-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x143ad } },
+	{ ARG_PUSH, { x14425 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
+
 x1442e:
-		.dc.b ARG_PUSH,((x144eb-jmpbase)>>8)&255,(x144eb-jmpbase)&255
-		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
-		.dc.b ARG_PUSH,((x1442e-jmpbase)>>8)&255,(x1442e-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { x143ec } },
+	{ ARG_PUSH, { x1442e } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 
 yLINE_INPUT_args:
 yLINE_args:
-		.dc.b -6
-		.dc.b 249,52
-		.dc.b ARG_PUSH,((x14213-jmpbase)>>8)&255,(x14213-jmpbase)&255
-		.dc.b ARG_PUSH,((print_channel_args-jmpbase)>>8)&255,(print_channel_args-jmpbase)&255
-		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
-		.dc.b ARG_PUSH,((x1442e-jmpbase)>>8)&255,(x1442e-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x14213-jmpbase)>>8)&255,(x14213-jmpbase)&255
-		.dc.b ARG_CALL_FUNC,((f13d22-jmpbase)>>8)&255,(f13d22-jmpbase)&255
-		.dc.b ARG_PUSH,((x144eb-jmpbase)>>8)&255,(x144eb-jmpbase)&255
-		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
-		.dc.b ARG_PUSH,((x1442e-jmpbase)>>8)&255,(x1442e-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b -6
-		.dc.b 249,54
+	{ -6, { 0 } },
+	{ 249,52, { 0 } },
+	{ ARG_PUSH, { x14213 } },
+	{ ARG_PUSH, { print_channel_args } },
+	{ ARG_PUSH, { x143ec } },
+	{ ARG_PUSH, { x1442e } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x14213 } },
+	{ ARG_CALL_FUNC, { (void *)f13d22 } },
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { x143ec } },
+	{ ARG_PUSH, { x1442e } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ -6, { 0 } },
+	{ 249,54, { 0 } },
 
 yVPBAR_args:
 yVBOX_args:
@@ -4082,7 +3793,7 @@ yC2P_args:
 yBAR_args:
 yBREPLACE_args:
 yBOX_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+	{ ARG_PUSH, { x14475 } },
 
 yTBITBLT_args:
 ySNDH_args:
@@ -4096,7 +3807,7 @@ yMEMEXG_args:
 yBFILL_args:
 yBEXG_args:
 yBMOVE_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+	{ ARG_PUSH, { x14475 } },
 
 yVPLOT_args:
 ySLPOKE_args:
@@ -4119,7 +3830,7 @@ yLPOKE_args:
 yDPOKE_args:
 yBZERO_args:
 yBMIRROR_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+	{ ARG_PUSH, { x14475 } },
 
 yCLEARW_args:
 yCLOSEW_args:
@@ -4157,7 +3868,7 @@ yCOLOR_args:
 yBOUNDARY_args:
 yAMOUSE_args:
 yTMOUSE_args:
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
+	{ ARG_PUSH, { x14b96 } },
 
 ySELECT_args:
 yFUNCTION_flapped_args:
@@ -4186,185 +3897,175 @@ yENDIF_args:
 yCOLDBOOT_args:
 yCPUFLUSH_args:
 yBEEP_args:
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 yINLINE_args:
-		.dc.b ARG_CALL_FUNC,((expect_int-jmpbase)>>8)&255,(expect_int-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_CALL_FUNC,((f158f8-jmpbase)>>8)&255,(f158f8-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
-x14475:
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_END
-	.IFNE GBE
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-	.ENDC
+	{ ARG_CALL_FUNC, { (void *)expect_int } },
+	{ 33, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f158f8 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+
 yVCURVE_args:
 ySET_PXYXY_args:
 ySET_RXYWH_args:
 yCURVE_args:
 yARECT_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+	{ ARG_PUSH, { x14475 } },
 ySET_GCBITMAP_args:
 ySFILL_args:
 yHLINE_args:
 yALINE_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+	{ ARG_PUSH, { x14475 } },
 ySET_PXYWH_args:
 ySET_MENU_args:
 ySET_MFDB_args:
 yCRASTER_args:
 yACHAR_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+	{ ARG_PUSH, { x14475 } },
 yVGET_args:
 yPIXEL1M_args:
 yPIXEL2P_args:
 yPIXEL4P_args:
 yPIXEL8P_args:
 yPIXEL8C_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((yVBOX_args-jmpbase)>>8)&255,(yVBOX_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { yVBOX_args } },
+	{ ARG_END, { 0 } }
+
 yAPOLY_args:
-		.dc.b ARG_PUSH,((x1503c-jmpbase)>>8)&255,(x1503c-jmpbase)&255
-		.dc.b ARG_PUSH,((x144ba-jmpbase)>>8)&255,(x144ba-jmpbase)&255
+	{ ARG_PUSH, { x1503c } },
+	{ ARG_PUSH, { x144ba } },
 yACLIP_args:
-		.dc.b ARG_PUSH,((yVGET_args-jmpbase)>>8)&255,(yVGET_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { yVGET_args } },
+	{ ARG_END, { 0 } }
+
 yCHDRIVE_args:
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b ARG_PUSH,((yCHDIR_args-jmpbase)>>8)&255,(yCHDIR_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ ARG_PUSH, { yCHDIR_args } },
+	{ ARG_END, { 0 } }
+
 yFILL_args:
-		.dc.b ARG_PUSH,((yVPLOT_args-jmpbase)>>8)&255,(yVPLOT_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b ARG_PUSH,((yTBITBLT_args-jmpbase)>>8)&255,(yTBITBLT_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { yVPLOT_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ ARG_PUSH, { yTBITBLT_args } },
+	{ ARG_END, { 0 } }
+
 ySETMOUSE_args:
-		.dc.b ARG_PUSH,((yTBITBLT_args-jmpbase)>>8)&255,(yTBITBLT_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((yVPLOT_args-jmpbase)>>8)&255,(yVPLOT_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { yTBITBLT_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { yVPLOT_args } },
+	{ ARG_END, { 0 } }
+
 yVSETCOLOR_args:
-		.dc.b ARG_PUSH,((yVBOX_args-jmpbase)>>8)&255,(yVBOX_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((yVPLOT_args-jmpbase)>>8)&255,(yVPLOT_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { yVBOX_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { yVPLOT_args } },
+	{ ARG_END, { 0 } }
+
 x144ba:
-		.dc.b 71
-		.dc.b ARG_POP
-		.dc.b 33
-		.dc.b ARG_REPLACE,71
-		.dc.b ARG_END
+	{ 71, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 33, { 0 } },
+	{ ARG_REPLACE, { (void *)71 } },
+	{ ARG_END, { 0 } }
+
 star_args:
-		.dc.b ARG_PUSH,((x14386-jmpbase)>>8)&255,(x14386-jmpbase)&255
-		.dc.b 19
-		.dc.b ARG_REPLACE,69
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b ARG_PUSH,((x14386-jmpbase)>>8)&255,(x14386-jmpbase)&255
-		.dc.b 19
-		.dc.b ARG_REPLACE,69
-		.dc.b ARG_PUSH,((x14139-jmpbase)>>8)&255,(x14139-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14386 } },
+	{ 19, { 0 } },
+	{ ARG_REPLACE, { (void *)69 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ ARG_PUSH, { x14386 } },
+	{ 19, { 0 } },
+	{ ARG_REPLACE, { (void *)69 } },
+	{ ARG_PUSH, { x14139 } },
+	{ ARG_END, { 0 } }
+
 yEXEC_args:
-		.dc.b ARG_PUSH,((x144dd-jmpbase)>>8)&255,(x144dd-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x144dd } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+
 x144dd:
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b ARG_PUSH,((x144e6-jmpbase)>>8)&255,(x144e6-jmpbase)&255
-		.dc.b ARG_PUSH,((x144e6-jmpbase)>>8)&255,(x144e6-jmpbase)&255
+	{ ARG_PUSH, { x14b9a } },
+	{ ARG_PUSH, { x144e6 } },
+	{ ARG_PUSH, { x144e6 } },
 x144e6:
-		.dc.b 33
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b ARG_END
-x144eb:
-		.dc.b 33
-		.dc.b ARG_POP
-		.dc.b 34
-		.dc.b ARG_END
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ ARG_END, { 0 } }
+
 x144ef:
-		.dc.b ARG_PUSH,((x144eb-jmpbase)>>8)&255,(x144eb-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b 249,33
-		.dc.b ARG_END
-x144f6:
-		.dc.b ARG_PUSH,((x144ff-jmpbase)>>8)&255,(x144ff-jmpbase)&255
-		.dc.b 249,77
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_END
-x144ff:
-		.dc.b TOK_CHANNEL
-		.dc.b -6
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_POP, { 0 } },
+	{ 249,33, { 0 } },
+	{ ARG_END, { 0 } }
 
 x14503:
-		.dc.b TOK_CHANNEL
-		.dc.b ARG_PUSH,((x14570-jmpbase)>>8)&255,(x14570-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ TOK_CHANNEL, { 0 } },
+	{ ARG_PUSH, { x14570 } },
+	{ 33, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 
 yFILESELECT_args:
 yFILES_args:
-		.dc.b ARG_CALL_FUNC,((f13d6a-jmpbase)>>8)&255,(f13d6a-jmpbase)&255
-		.dc.b ARG_PUSH,((x14503-jmpbase)>>8)&255,(x14503-jmpbase)&255
-		.dc.b ARG_PUSH,((x14570-jmpbase)>>8)&255,(x14570-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14570-jmpbase)>>8)&255,(x14570-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d76-jmpbase)>>8)&255,(f13d76-jmpbase)&255
+	{ ARG_CALL_FUNC, { (void *)f13d6a } },
+	{ ARG_PUSH, { x14503 } },
+	{ ARG_PUSH, { x14570 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14570 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x143ec } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d76 } },
 yDUMP_args:
 yDIR_args:
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x14570-jmpbase)>>8)&255,(x14570-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x14570-jmpbase)>>8)&255,(x14570-jmpbase)&255
-		.dc.b ARG_PUSH,((x14532-jmpbase)>>8)&255,(x14532-jmpbase)&255
-		.dc.b ARG_PUSH,((x14570-jmpbase)>>8)&255,(x14570-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x14570 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x14570 } },
+	{ ARG_PUSH, { x14532 } },
+	{ ARG_PUSH, { x14570 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+
 x14532:
-		.dc.b 71
-		.dc.b ARG_POP
-		.dc.b 33
-		.dc.b ARG_REPLACE,71
-		.dc.b ARG_POP
-		.dc.b 34
-		.dc.b ARG_REPLACE,71
-		.dc.b ARG_POP
-		.dc.b 249,71
-		.dc.b ARG_END
+	{ 71, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 33, { 0 } },
+	{ ARG_REPLACE, { (void *)71 } },
+	{ ARG_POP, { 0 } },
+	{ 34, { 0 } },
+	{ ARG_REPLACE, { (void *)71 } },
+	{ ARG_POP, { 0 } },
+	{ 249,71, { 0 } },
+	{ ARG_END, { 0 } }
 
 yOPTION_args:
-		.dc.b TOK_BASE
-		.dc.b TOK_CONST_ZERO
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b TOK_BASE
-		.dc.b TOK_CONST_ONE
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ TOK_BASE, { 0 } },
+	{ TOK_CONST_ZERO, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ TOK_BASE, { 0 } },
+	{ TOK_CONST_ONE, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 yRUN_args:
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
 ySAVE_args:
 yRMDIR_args:
 yPSAVE_args:
@@ -4377,11 +4078,11 @@ yLIST_args:
 yKILL_args:
 yCHAIN_args:
 yCHDIR_args:
-		.dc.b ARG_PUSH,((x14139-jmpbase)>>8)&255,(x14139-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d1c-jmpbase)>>8)&255,(f13d1c-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14139 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d1c } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 yDEFFLT_args:
 yDEFDBL_args:
@@ -4391,27 +4092,30 @@ yDEFBIT_args:
 yDEFWRD_args:
 yDEFBYT_args:
 yDEFINT_args:
-		.dc.b ARG_PUSH,((x1455c-jmpbase)>>8)&255,(x1455c-jmpbase)&255
-		.dc.b ARG_CALL_FUNC,((execute_defint-jmpbase)>>8)&255,(execute_defint-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x1455c } },
+	{ ARG_CALL_FUNC, { (void *)execute_defint } },
+	{ ARG_END, { 0 } }
+
 x1455c:
-		.dc.b ARG_CALL_FUNC,((f13d22-jmpbase)>>8)&255,(f13d22-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d1c-jmpbase)>>8)&255,(f13d1c-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)f13d22 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d1c } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+
 yRENAME_args:
 yNAME_args:
-		.dc.b ARG_PUSH,((x14570-jmpbase)>>8)&255,(x14570-jmpbase)&255
-		.dc.b ARG_PUSH,((x1421f-jmpbase)>>8)&255,(x1421f-jmpbase)&255
-		.dc.b ARG_PUSH,((yCHDIR_args-jmpbase)>>8)&255,(yCHDIR_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14570 } },
+	{ ARG_PUSH, { x1421f } },
+	{ ARG_PUSH, { yCHDIR_args } },
+	{ ARG_END, { 0 } }
+
 x14570:
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f14578-jmpbase)>>8)&255,(f14578-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x15068 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f14578 } },
+	{ ARG_END, { 0 } }
 		.even
 
 /* 371: 56e06 */
@@ -4459,412 +4163,412 @@ f14578_6:
 /* 372: 57f6e */
 /* 373: 58d5e */
 ySETTIME_args:
-		.dc.b ARG_PUSH,((x145ce-jmpbase)>>8)&255,(x145ce-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((yCHDIR_args-jmpbase)>>8)&255,(yCHDIR_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x145ce } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { yCHDIR_args } },
+	{ ARG_END, { 0 } }
 x145ce:
-		.dc.b ARG_PUSH,((x14570-jmpbase)>>8)&255,(x14570-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14570 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 yOPEN_args:
-		.dc.b ARG_CALL_FUNC,((f13d5a-jmpbase)>>8)&255,(f13d5a-jmpbase)&255
-		.dc.b ARG_PUSH,((x145f0-jmpbase)>>8)&255,(x145f0-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,18
-		.dc.b ARG_PUSH,((x14570-jmpbase)>>8)&255,(x14570-jmpbase)&255
-		.dc.b ARG_PUSH,((x144ef-jmpbase)>>8)&255,(x144ef-jmpbase)&255
-		.dc.b ARG_PUSH,((x144f6-jmpbase)>>8)&255,(x144f6-jmpbase)&255
-		.dc.b ARG_PUSH,((x144ef-jmpbase)>>8)&255,(x144ef-jmpbase)&255
-		.dc.b ARG_PUSH,((x14570-jmpbase)>>8)&255,(x14570-jmpbase)&255
-		.dc.b ARG_PUSH,((x14b90-jmpbase)>>8)&255,(x14b90-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)f13d5a } },
+	{ ARG_PUSH, { x145f0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)18 } },
+	{ ARG_PUSH, { x14570 } },
+	{ ARG_PUSH, { x144ef } },
+	{ ARG_PUSH, { x144f6 } },
+	{ ARG_PUSH, { x144ef } },
+	{ ARG_PUSH, { x14570 } },
+	{ ARG_PUSH, { x14b90 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 x145f0:
-		.dc.b ARG_REPLACE,20
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((yTBITBLT_args-jmpbase)>>8)&255,(yTBITBLT_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,22
-		.dc.b ARG_PUSH,((x144ff-jmpbase)>>8)&255,(x144ff-jmpbase)&255
-		.dc.b ARG_PUSH,((ySET_PXYWH_args-jmpbase)>>8)&255,(ySET_PXYWH_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_REPLACE, { (void *)20 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { yTBITBLT_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)22 } },
+	{ ARG_PUSH, { x144ff } },
+	{ ARG_PUSH, { ySET_PXYWH_args } },
+	{ ARG_END, { 0 } }
 yCLOSE_args:
-		.dc.b ARG_CALL_FUNC,((f13d5a-jmpbase)>>8)&255,(f13d5a-jmpbase)&255
-		.dc.b ARG_PUSH,((x14628-jmpbase)>>8)&255,(x14628-jmpbase)&255
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,24
+	{ ARG_CALL_FUNC, { (void *)f13d5a } },
+	{ ARG_PUSH, { x14628 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)24 } },
 yCLS_args:
-		.dc.b ARG_PUSH,((x144f6-jmpbase)>>8)&255,(x144f6-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
-	.IFNE GBE
+	{ ARG_PUSH, { x144f6 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+#if GBE > 0
 x57fbe_372:
 x58dae_373:
-		.dc.b ARG_PUSH,((x57fc3_372-jmpbase)>>8)&255,(x57fc3_372-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x57fc3_372 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x57fc3_372:
-		.dc.b ARG_CALL_FUNC,((f15444-jmpbase)>>8)&255,(f15444-jmpbase)&255
-		.dc.b ARG_END
-	.ENDC
+	{ ARG_CALL_FUNC, { (void *)f15444 } },
+	{ ARG_END, { 0 } }
+#endif
 yTRON_args:
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b TOK_CHANNEL
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b ARG_CALL_FUNC,((f15444-jmpbase)>>8)&255,(f15444-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ TOK_CHANNEL, { 0 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ ARG_CALL_FUNC, { (void *)f15444 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 x14628:
-		.dc.b TOK_CHANNEL
-		.dc.b -6
-		.dc.b ARG_REPLACE,28
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,26
-		.dc.b ARG_END
+	{ TOK_CHANNEL, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_REPLACE, { (void *)28 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)26 } },
+	{ ARG_END, { 0 } }
 yCLEAR_args:
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d5a-jmpbase)>>8)&255,(f13d5a-jmpbase)&255
-		.dc.b ARG_PUSH,((x1463c-jmpbase)>>8)&255,(x1463c-jmpbase)&255
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_END
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d5a } },
+	{ ARG_PUSH, { x1463c } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_END, { 0 } }
 
 x1463c:
-		.dc.b TOK_CHANNEL
-		.dc.b -6
-		.dc.b ARG_REPLACE,34
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,32
-		.dc.b ARG_END
+	{ TOK_CHANNEL, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_REPLACE, { (void *)34 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)32 } },
+	{ ARG_END, { 0 } }
 
 yFULLW_args:
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b TOK_CHANNEL
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_POP, { 0 } },
+	{ TOK_CHANNEL, { 0 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_END, { 0 } }
 
 yTOUCH_args:
 yTOPW_args:
-		.dc.b ARG_PUSH,((x144ff-jmpbase)>>8)&255,(x144ff-jmpbase)&255
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x144ff } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_END, { 0 } }
 
 yTITLEW_args:
 ySTRPOKE_args:
 yINFOW_args:
-		.dc.b ARG_PUSH,((x144ff-jmpbase)>>8)&255,(x144ff-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((yCHDIR_args-jmpbase)>>8)&255,(yCHDIR_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x144ff } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { yCHDIR_args } },
+	{ ARG_END, { 0 } }
 REM_args:
 yDATA_args:
-		.dc.b ARG_CALL_FUNC,((f13bca-jmpbase)>>8)&255,(f13bca-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)f13bca } },
+	{ ARG_END, { 0 } }
 yMIDs_args:
-		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
-		.dc.b ARG_PUSH,((x14695-jmpbase)>>8)&255,(x14695-jmpbase)&255
-		.dc.b ARG_PUSH,((x14b90-jmpbase)>>8)&255,(x14b90-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_PUSH,((x14196-jmpbase)>>8)&255,(x14196-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x143ec } },
+	{ ARG_PUSH, { x14695 } },
+	{ ARG_PUSH, { x14b90 } },
+	{ 32, { 0 } },
+	{ ARG_PUSH, { x14196 } },
+	{ ARG_END, { 0 } }
 yPELLIPSE_args:
 yELLIPSE_args:
-		.dc.b ARG_PUSH,((yVBOX_args-jmpbase)>>8)&255,(yVBOX_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b ARG_PUSH,((ySET_PXYWH_args-jmpbase)>>8)&255,(ySET_PXYWH_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { yVBOX_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ ARG_PUSH, { ySET_PXYWH_args } },
+	{ ARG_END, { 0 } }
 yPCIRCLE_args:
 yCIRCLE_args:
-		.dc.b ARG_PUSH,((yTBITBLT_args-jmpbase)>>8)&255,(yTBITBLT_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b ARG_PUSH,((yVGET_args-jmpbase)>>8)&255,(yVGET_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { yTBITBLT_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ ARG_PUSH, { yVGET_args } },
+	{ ARG_END, { 0 } }
 	.IFEQ GBE
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_PUSH,((x144eb-jmpbase)>>8)&255,(x144eb-jmpbase)&255
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_PUSH,((x144eb-jmpbase)>>8)&255,(x144eb-jmpbase)&255
-	.ENDC
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x144eb } },
+#endif
 x14692:
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
+	{ ARG_PUSH, { x14b96 } },
 x14695:
-		.dc.b ARG_PUSH,((x144eb-jmpbase)>>8)&255,(x144eb-jmpbase)&255
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_END, { 0 } }
 
 yDRAW_args:
-		.dc.b ARG_PUSH,((x146d3-jmpbase)>>8)&255,(x146d3-jmpbase)&255
-		.dc.b ARG_PUSH,((x14692-jmpbase)>>8)&255,(x14692-jmpbase)&255
-		.dc.b ARG_PUSH,((x146c9-jmpbase)>>8)&255,(x146c9-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b ARG_PUSH,((x146ad-jmpbase)>>8)&255,(x146ad-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x146d3 } },
+	{ ARG_PUSH, { x14692 } },
+	{ ARG_PUSH, { x146c9 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ ARG_PUSH, { x146ad } },
+	{ ARG_END, { 0 } }
 
 x146ad:
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b ARG_PUSH,((x146b4-jmpbase)>>8)&255,(x146b4-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x15068 } },
+	{ ARG_PUSH, { x146b4 } },
+	{ ARG_END, { 0 } }
 
 x146b4:
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x146c0-jmpbase)>>8)&255,(x146c0-jmpbase)&255
-		.dc.b ARG_PUSH,((x1529b-jmpbase)>>8)&255,(x1529b-jmpbase)&255
-		.dc.b ARG_PUSH,((x146b4-jmpbase)>>8)&255,(x146b4-jmpbase)&255
-		.dc.b ARG_END
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x146c0 } },
+	{ ARG_PUSH, { x1529b } },
+	{ ARG_PUSH, { x146b4 } },
+	{ ARG_END, { 0 } }
 
 x146c0:
-		.dc.b 33
-		.dc.b ARG_POP
-		.dc.b 34
-		.dc.b ARG_POP
-		.dc.b 87
-		.dc.b ARG_POP
-		.dc.b 249,33
-		.dc.b ARG_END
+	{ 33, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 34, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 87, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 249,33, { 0 } },
+	{ ARG_END, { 0 } }
 x146c9:
-		.dc.b 71
-		.dc.b ARG_PUSH,((x14692-jmpbase)>>8)&255,(x14692-jmpbase)&255
-		.dc.b ARG_PUSH,((x146c9-jmpbase)>>8)&255,(x146c9-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ 71, { 0 } },
+	{ ARG_PUSH, { x14692 } },
+	{ ARG_PUSH, { x146c9 } },
+	{ ARG_POP, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 x146d3:
-		.dc.b 71
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 71, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 yBSAVE_args:
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b ARG_PUSH,((x14695-jmpbase)>>8)&255,(x14695-jmpbase)&255
-		.dc.b ARG_PUSH,((x14695-jmpbase)>>8)&255,(x14695-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x15068 } },
+	{ ARG_PUSH, { x14695 } },
+	{ ARG_PUSH, { x14695 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 yBLOAD_args:
-		.dc.b ARG_PUSH,((x14139-jmpbase)>>8)&255,(x14139-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b ARG_PUSH,((x14b90-jmpbase)>>8)&255,(x14b90-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14139 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ ARG_PUSH, { x14b90 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 yFIELD_args:
-		.dc.b ARG_PUSH,((x144f6-jmpbase)>>8)&255,(x144f6-jmpbase)&255
-		.dc.b ARG_PUSH,((x146f8-jmpbase)>>8)&255,(x146f8-jmpbase)&255
-		.dc.b ARG_PUSH,((x1470c-jmpbase)>>8)&255,(x1470c-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x144f6 } },
+	{ ARG_PUSH, { x146f8 } },
+	{ ARG_PUSH, { x1470c } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 x146f8:
-		.dc.b ARG_PUSH,((x14695-jmpbase)>>8)&255,(x14695-jmpbase)&255
-		.dc.b ARG_PUSH,((x1421f-jmpbase)>>8)&255,(x1421f-jmpbase)&255
-		.dc.b ARG_CALL_FUNC,((expect_string-jmpbase)>>8)&255,(expect_string-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x14695-jmpbase)>>8)&255,(x14695-jmpbase)&255
-		.dc.b 89
-		.dc.b ARG_REPLACE,122
-		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14695 } },
+	{ ARG_PUSH, { x1421f } },
+	{ ARG_CALL_FUNC, { (void *)expect_string } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x14695 } },
+	{ 89, { 0 } },
+	{ ARG_REPLACE, { (void *)122 } },
+	{ ARG_PUSH, { x14c92 } },
+	{ ARG_END, { 0 } }
 x1470c:
-		.dc.b ARG_PUSH,((x146f8-jmpbase)>>8)&255,(x146f8-jmpbase)&255
-		.dc.b ARG_PUSH,((x1470c-jmpbase)>>8)&255,(x1470c-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ ARG_PUSH, { x146f8 } },
+	{ ARG_PUSH, { x1470c } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 yGET_args:
-		.dc.b ARG_PUSH,((x15039-jmpbase)>>8)&255,(x15039-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,4
-		.dc.b ARG_PUSH,((x144f6-jmpbase)>>8)&255,(x144f6-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,6
-		.dc.b ARG_PUSH,((x144f6-jmpbase)>>8)&255,(x144f6-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x15039 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x143ec } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)4 } },
+	{ ARG_PUSH, { x144f6 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)6 } },
+	{ ARG_PUSH, { x144f6 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_END, { 0 } }
 yPUT_args:
-		.dc.b ARG_PUSH,((x1503f-jmpbase)>>8)&255,(x1503f-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,10
-		.dc.b ARG_PUSH,((x1503f-jmpbase)>>8)&255,(x1503f-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,12
-		.dc.b ARG_PUSH,((x144f6-jmpbase)>>8)&255,(x144f6-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,14
-		.dc.b ARG_PUSH,((x144f6-jmpbase)>>8)&255,(x144f6-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x1503f } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x143ec } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)10 } },
+	{ ARG_PUSH, { x1503f } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x143ec } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)12 } },
+	{ ARG_PUSH, { x144f6 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)14 } },
+	{ ARG_PUSH, { x144f6 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_END, { 0 } }
 
-	.IFNE GBE
+#if GBE > 0
 yVPUT_args:
-		.dc.b ARG_PUSH,((x1503c-jmpbase)>>8)&255,(x1503c-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,218
-		.dc.b ARG_PUSH,((x15039-jmpbase)>>8)&255,(x15039-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
-	.ENDC
+	{ ARG_PUSH, { x1503c } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)218 } },
+	{ ARG_PUSH, { x15039 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+#endif
 
 yDEFFILL_args:
-		.dc.b ARG_PUSH,((yDEFMARK_args-jmpbase)>>8)&255,(yDEFMARK_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,60
-		.dc.b ARG_PUSH,((x14b91-jmpbase)>>8)&255,(x14b91-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((yCHDIR_args-jmpbase)>>8)&255,(yCHDIR_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { yDEFMARK_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)60 } },
+	{ ARG_PUSH, { x14b91 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { yCHDIR_args } },
+	{ ARG_END, { 0 } }
 
 yCLIP_args:
-		.dc.b TOK_OFF
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b TOK_CHANNEL
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_PUSH,((x14aa3-jmpbase)>>8)&255,(x14aa3-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b ARG_PUSH,((x15039-jmpbase)>>8)&255,(x15039-jmpbase)&255
-		.dc.b ARG_PUSH,((x14aa3-jmpbase)>>8)&255,(x14aa3-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b ARG_PUSH,((x1503f-jmpbase)>>8)&255,(x1503f-jmpbase)&255
-		.dc.b 71
-		.dc.b ARG_PUSH,((x1503f-jmpbase)>>8)&255,(x1503f-jmpbase)&255
-		.dc.b ARG_PUSH,((x14aa3-jmpbase)>>8)&255,(x14aa3-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b 109
-		.dc.b ARG_PUSH,((x1503f-jmpbase)>>8)&255,(x1503f-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ TOK_OFF, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ TOK_CHANNEL, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x14aa3 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ ARG_PUSH, { x15039 } },
+	{ ARG_PUSH, { x14aa3 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ ARG_PUSH, { x1503f } },
+	{ 71, { 0 } },
+	{ ARG_PUSH, { x1503f } },
+	{ ARG_PUSH, { x14aa3 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ 109, { 0 } },
+	{ ARG_PUSH, { x1503f } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 yDMASOUND_args:
-		.dc.b ARG_PUSH,((yVBOX_args-jmpbase)>>8)&255,(yVBOX_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((yTBITBLT_args-jmpbase)>>8)&255,(yTBITBLT_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { yVBOX_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { yTBITBLT_args } },
+	{ ARG_END, { 0 } }
 ySOUND_args:
-		.dc.b ARG_PUSH,((x1503f-jmpbase)>>8)&255,(x1503f-jmpbase)&255
-		.dc.b ARG_PUSH,((x144eb-jmpbase)>>8)&255,(x144eb-jmpbase)&255
-		.dc.b TOK_CHANNEL
-		.dc.b ARG_PUSH,((x147b9-jmpbase)>>8)&255,(x147b9-jmpbase)&255
-		.dc.b ARG_POP
+	{ ARG_PUSH, { x1503f } },
+	{ ARG_PUSH, { x144eb } },
+	{ TOK_CHANNEL, { 0 } },
+	{ ARG_PUSH, { x147b9 } },
+	{ ARG_POP, { 0 } },
 
 yWAVE_args:
-		.dc.b ARG_PUSH,((yVGET_args-jmpbase)>>8)&255,(yVGET_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((yVBOX_args-jmpbase)>>8)&255,(yVBOX_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((yTBITBLT_args-jmpbase)>>8)&255,(yTBITBLT_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((yENDIF_args-jmpbase)>>8)&255,(yENDIF_args-jmpbase)&255
-		.dc.b ARG_POP
+	{ ARG_PUSH, { yVGET_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { yVBOX_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { yTBITBLT_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { yENDIF_args } },
+	{ ARG_POP, { 0 } },
 x147b9:
-		.dc.b ARG_PUSH,((yVPLOT_args-jmpbase)>>8)&255,(yVPLOT_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { yVPLOT_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_END, { 0 } }
 
 yOUT_args:
-		.dc.b ARG_PUSH,((x147d8-jmpbase)>>8)&255,(x147d8-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b TOK_CHANNEL
-		.dc.b ARG_PUSH,((x147d8-jmpbase)>>8)&255,(x147d8-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13de4-jmpbase)>>8)&255,(f13de4-jmpbase)&255
-		.dc.b TOK_CHANNEL
-		.dc.b ARG_PUSH,((x147d8-jmpbase)>>8)&255,(x147d8-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13de4-jmpbase)>>8)&255,(f13de4-jmpbase)&255
+	{ ARG_PUSH, { x147d8 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ TOK_CHANNEL, { 0 } },
+	{ ARG_PUSH, { x147d8 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13de4 } },
+	{ TOK_CHANNEL, { 0 } },
+	{ ARG_PUSH, { x147d8 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13de4 } },
 
 x147d8:
-		.dc.b ARG_PUSH,((x1503f-jmpbase)>>8)&255,(x1503f-jmpbase)&255
-		.dc.b ARG_PUSH,((x147e0-jmpbase)>>8)&255,(x147e0-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x1503f } },
+	{ ARG_PUSH, { x147e0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 x147e0:
-		.dc.b ARG_PUSH,((x144eb-jmpbase)>>8)&255,(x144eb-jmpbase)&255
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_PUSH,((x147e0-jmpbase)>>8)&255,(x147e0-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x147e0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 yENDSEEK_args:
 ySEEK_args:
 yRELSEEK_args:
-		.dc.b ARG_PUSH,((x144ff-jmpbase)>>8)&255,(x144ff-jmpbase)&255
-		.dc.b ARG_PUSH,((yVPLOT_args-jmpbase)>>8)&255,(yVPLOT_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x144ff } },
+	{ ARG_PUSH, { yVPLOT_args } },
+	{ ARG_END, { 0 } }
 
 yRECORD_args:
-		.dc.b ARG_PUSH,((x144f6-jmpbase)>>8)&255,(x144f6-jmpbase)&255
-		.dc.b ARG_PUSH,((x144eb-jmpbase)>>8)&255,(x144eb-jmpbase)&255
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x144f6 } },
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_END, { 0 } }
 yDIM_args:
-		.dc.b ARG_PUSH,((x143a6-jmpbase)>>8)&255,(x143a6-jmpbase)&255
-		.dc.b ARG_PUSH,((x14804-jmpbase)>>8)&255,(x14804-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x143a6 } },
+	{ ARG_PUSH, { x14804 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 x14804:
-		.dc.b 33
-		.dc.b ARG_PUSH,((x143a6-jmpbase)>>8)&255,(x143a6-jmpbase)&255
-		.dc.b ARG_PUSH,((x14804-jmpbase)>>8)&255,(x14804-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x143a6 } },
+	{ ARG_PUSH, { x14804 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 x1480d:
-		.dc.b 76
-		.dc.b ARG_POP
-		.dc.b 159
-		.dc.b ARG_REPLACE,76
-		.dc.b ARG_POP
-		.dc.b 249,76
-		.dc.b ARG_END
+	{ 76, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 159, { 0 } },
+	{ ARG_REPLACE, { (void *)76 } },
+	{ ARG_POP, { 0 } },
+	{ 249,76, { 0 } },
+	{ ARG_END, { 0 } }
 x14816:
-		.dc.b ARG_PUSH,((x1480d-jmpbase)>>8)&255,(x1480d-jmpbase)&255
+	{ ARG_PUSH, { x1480d } },
 x14819:
-		.dc.b -6
-		.dc.b ARG_CALL_FUNC,((f15444-jmpbase)>>8)&255,(f15444-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ -6, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f15444 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 x1481f:
-		.dc.b 76
-		.dc.b ARG_POP
-		.dc.b 159
-		.dc.b ARG_REPLACE,76
-		.dc.b ARG_END
+	{ 76, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 159, { 0 } },
+	{ ARG_REPLACE, { (void *)76 } },
+	{ ARG_END, { 0 } }
 x14825:
-		.dc.b ARG_PUSH,((x1480d-jmpbase)>>8)&255,(x1480d-jmpbase)&255
-		.dc.b ARG_CALL_FUNC,((f15444-jmpbase)>>8)&255,(f15444-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x1480d } },
+	{ ARG_CALL_FUNC, { (void *)f15444 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 yON_MENU_OBOX_args:
 yON_MENU_IBOX_args:
@@ -4879,523 +4583,488 @@ yON_BREAK_args:
 yON_ERROR_GOSUB_args:
 yON_ERROR_args:
 yON_args:
-		.dc.b -6
-		.dc.b ARG_REPLACE,1
-		.dc.b 249,0
-		.dc.b 151
-		.dc.b -6
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,4
-		.dc.b 153
-		.dc.b -6
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,6
-		.dc.b 153
-		.dc.b -6
-		.dc.b 154
-		.dc.b -6
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,2
-		.dc.b 151
-		.dc.b -6
-		.dc.b ARG_PUSH,((x14816-jmpbase)>>8)&255,(x14816-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,8
-		.dc.b 153
-		.dc.b -6
-		.dc.b ARG_PUSH,((x14816-jmpbase)>>8)&255,(x14816-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,10
-		.dc.b 167
-		.dc.b -6
-		.dc.b ARG_PUSH,((x1481f-jmpbase)>>8)&255,(x1481f-jmpbase)&255
-		.dc.b ARG_PUSH,((x14819-jmpbase)>>8)&255,(x14819-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,12
-		.dc.b 167
-		.dc.b -6
-		.dc.b 174
-		.dc.b -6
-		.dc.b ARG_PUSH,((x14816-jmpbase)>>8)&255,(x14816-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,14
-		.dc.b 167
-		.dc.b -6
-		.dc.b 170
-		.dc.b -6
-		.dc.b ARG_PUSH,((x14816-jmpbase)>>8)&255,(x14816-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,16
-		.dc.b 167
-		.dc.b -6
-		.dc.b 171
-		.dc.b -6
-		.dc.b ARG_PUSH,((x1503c-jmpbase)>>8)&255,(x1503c-jmpbase)&255
-		.dc.b ARG_PUSH,((x14825-jmpbase)>>8)&255,(x14825-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,220
-		.dc.b 167
-		.dc.b -6
-		.dc.b 172
-		.dc.b -6
-		.dc.b ARG_PUSH,((x15036-jmpbase)>>8)&255,(x15036-jmpbase)&255
-		.dc.b ARG_PUSH,((x14825-jmpbase)>>8)&255,(x14825-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,222
-		.dc.b 167
-		.dc.b -6
-		.dc.b 173
-		.dc.b -6
-		.dc.b ARG_PUSH,((x15036-jmpbase)>>8)&255,(x15036-jmpbase)&255
-		.dc.b ARG_PUSH,((x14825-jmpbase)>>8)&255,(x14825-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,20
-		.dc.b 167
-		.dc.b -6
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,18
-		.dc.b 167
-		.dc.b -6
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b -6
-		.dc.b ARG_REPLACE,0
-		.dc.b 249,252
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_PUSH,((x1480d-jmpbase)>>8)&255,(x1480d-jmpbase)&255
-		.dc.b ARG_PUSH,((x148ca-jmpbase)>>8)&255,(x148ca-jmpbase)&255
-		.dc.b ARG_END
+	{ -6, { 0 } },
+	{ ARG_REPLACE, { (void *)1 } },
+	{ 249,0, { 0 } },
+	{ 151, { 0 } },
+	{ -6, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)4 } },
+	{ 153, { 0 } },
+	{ -6, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)6 } },
+	{ 153, { 0 } },
+	{ -6, { 0 } },
+	{ 154, { 0 } },
+	{ -6, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)2 } },
+	{ 151, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_PUSH, { x14816 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)8 } },
+	{ 153, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_PUSH, { x14816 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)10 } },
+	{ 167, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_PUSH, { x1481f } },
+	{ ARG_PUSH, { x14819 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)12 } },
+	{ 167, { 0 } },
+	{ -6, { 0 } },
+	{ 174, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_PUSH, { x14816 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)14 } },
+	{ 167, { 0 } },
+	{ -6, { 0 } },
+	{ 170, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_PUSH, { x14816 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)16 } },
+	{ 167, { 0 } },
+	{ -6, { 0 } },
+	{ 171, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_PUSH, { x1503c } },
+	{ ARG_PUSH, { x14825 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)220 } },
+	{ 167, { 0 } },
+	{ -6, { 0 } },
+	{ 172, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_PUSH, { x15036 } },
+	{ ARG_PUSH, { x14825 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)222 } },
+	{ 167, { 0 } },
+	{ -6, { 0 } },
+	{ 173, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_PUSH, { x15036 } },
+	{ ARG_PUSH, { x14825 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)20 } },
+	{ 167, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)18 } },
+	{ 167, { 0 } },
+	{ -6, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_REPLACE, { (void *)0 } },
+	{ 249,252, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x1480d } },
+	{ ARG_PUSH, { x148ca } },
+	{ ARG_END, { 0 } }
 
 yEVERY_args:
 yAFTER_args:
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_PUSH,((x14825-jmpbase)>>8)&255,(x14825-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b 152
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b 154
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x14825 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ 152, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ 154, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 x148ca:
-		.dc.b ARG_CALL_FUNC,((f15444-jmpbase)>>8)&255,(f15444-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f15444-jmpbase)>>8)&255,(f15444-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x148ca-jmpbase)>>8)&255,(x148ca-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)f15444 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f15444 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x148ca } },
+	{ ARG_END, { 0 } }
 
 yRESUME_args:
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b 168
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b ARG_CALL_FUNC,((f15448-jmpbase)>>8)&255,(f15448-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 168, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ ARG_CALL_FUNC, { (void *)f15448 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 yPROCEDURE_args:
-		.dc.b ARG_CALL_FUNC,((f15444-jmpbase)>>8)&255,(f15444-jmpbase)&255
-		.dc.b ARG_PUSH,((x1491e-jmpbase)>>8)&255,(x1491e-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)f15444 } },
+	{ ARG_PUSH, { x1491e } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 yFUNCTION_args:
-		.dc.b ARG_CALL_FUNC,((f154c4-jmpbase)>>8)&255,(f154c4-jmpbase)&255
-		.dc.b ARG_PUSH,((x14917-jmpbase)>>8)&255,(x14917-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f154da-jmpbase)>>8)&255,(f154da-jmpbase)&255
-		.dc.b ARG_PUSH,((x14917-jmpbase)>>8)&255,(x14917-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)f154c4 } },
+	{ ARG_PUSH, { x14917 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f154da } },
+	{ ARG_PUSH, { x14917 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 yDEFFN_args:
-		.dc.b ARG_CALL_FUNC,((f154c4-jmpbase)>>8)&255,(f154c4-jmpbase)&255
-		.dc.b ARG_PUSH,((x14917-jmpbase)>>8)&255,(x14917-jmpbase)&255
-		.dc.b 19
-		.dc.b ARG_REPLACE,69
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f154da-jmpbase)>>8)&255,(f154da-jmpbase)&255
-		.dc.b ARG_PUSH,((x14917-jmpbase)>>8)&255,(x14917-jmpbase)&255
-		.dc.b 19
-		.dc.b ARG_REPLACE,69
-		.dc.b ARG_PUSH,((x14139-jmpbase)>>8)&255,(x14139-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)f154c4 } },
+	{ ARG_PUSH, { x14917 } },
+	{ 19, { 0 } },
+	{ ARG_REPLACE, { (void *)69 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f154da } },
+	{ ARG_PUSH, { x14917 } },
+	{ 19, { 0 } },
+	{ ARG_REPLACE, { (void *)69 } },
+	{ ARG_PUSH, { x14139 } },
+	{ ARG_END, { 0 } }
 
 x14917:
-		.dc.b 35
-		.dc.b ARG_PUSH,((x14926-jmpbase)>>8)&255,(x14926-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 35, { 0 } },
+	{ ARG_PUSH, { x14926 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 
 x1491e:
-		.dc.b 35
-		.dc.b -6
-		.dc.b ARG_PUSH,((x14926-jmpbase)>>8)&255,(x14926-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 35, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_PUSH, { x14926 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 
 x14926:
-		.dc.b 50
-		.dc.b ARG_PUSH,((x14947-jmpbase)>>8)&255,(x14947-jmpbase)&255
-		.dc.b ARG_PUSH,((x14951-jmpbase)>>8)&255,(x14951-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x1434e-jmpbase)>>8)&255,(x1434e-jmpbase)&255
-		.dc.b ARG_PUSH,((x14935-jmpbase)>>8)&255,(x14935-jmpbase)&255
-		.dc.b ARG_END
+	{ 50, { 0 } },
+	{ ARG_PUSH, { x14947 } },
+	{ ARG_PUSH, { x14951 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x1434e } },
+	{ ARG_PUSH, { x14935 } },
+	{ ARG_END, { 0 } }
 
 x14935:
-		.dc.b 33
-		.dc.b 50
-		.dc.b ARG_PUSH,((x14947-jmpbase)>>8)&255,(x14947-jmpbase)&255
-		.dc.b ARG_PUSH,((x14951-jmpbase)>>8)&255,(x14951-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b 33
-		.dc.b ARG_PUSH,((x1434e-jmpbase)>>8)&255,(x1434e-jmpbase)&255
-		.dc.b ARG_PUSH,((x14935-jmpbase)>>8)&255,(x14935-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 33, { 0 } },
+	{ 50, { 0 } },
+	{ ARG_PUSH, { x14947 } },
+	{ ARG_PUSH, { x14951 } },
+	{ ARG_POP, { 0 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x1434e } },
+	{ ARG_PUSH, { x14935 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 
 x14947:
-		.dc.b ARG_PUSH,((x1434e-jmpbase)>>8)&255,(x1434e-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x143ad-jmpbase)>>8)&255,(x143ad-jmpbase)&255
-		.dc.b ARG_REPLACE,51
-		.dc.b ARG_END
+	{ ARG_PUSH, { x1434e } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x143ad } },
+	{ ARG_REPLACE, { (void *)51 } },
+	{ ARG_END, { 0 } }
 x14951:
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14947-jmpbase)>>8)&255,(x14947-jmpbase)&255
-		.dc.b ARG_PUSH,((x14951-jmpbase)>>8)&255,(x14951-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14947 } },
+	{ ARG_PUSH, { x14951 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 yGOSUB_args:
-		.dc.b ARG_CALL_FUNC,((f15444-jmpbase)>>8)&255,(f15444-jmpbase)&255
-		.dc.b ARG_PUSH,((x14962-jmpbase)>>8)&255,(x14962-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
-x14962:
-		.dc.b 35
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_PUSH,((x14982-jmpbase)>>8)&255,(x14982-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b 35
-		.dc.b ARG_REPLACE,157
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b ARG_PUSH,((x14982-jmpbase)>>8)&255,(x14982-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b 35
-		.dc.b ARG_PUSH,((x143ad-jmpbase)>>8)&255,(x143ad-jmpbase)&255
-		.dc.b ARG_REPLACE,51
-		.dc.b ARG_PUSH,((x14982-jmpbase)>>8)&255,(x14982-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b ARG_END
-x14982:
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_PUSH,((x14982-jmpbase)>>8)&255,(x14982-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b 33
-		.dc.b ARG_REPLACE,156
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b ARG_PUSH,((x14982-jmpbase)>>8)&255,(x14982-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b 33
-		.dc.b ARG_PUSH,((x143ad-jmpbase)>>8)&255,(x143ad-jmpbase)&255
-		.dc.b ARG_REPLACE,51
-		.dc.b ARG_PUSH,((x14982-jmpbase)>>8)&255,(x14982-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)f15444 } },
+	{ ARG_PUSH, { x14962 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 LABEL_args:
-		.dc.b ARG_CALL_FUNC,((f15448-jmpbase)>>8)&255,(f15448-jmpbase)&255
-		.dc.b TOK_LABEL
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)f15448 } },
+	{ TOK_LABEL, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 yRESTORE_args:
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
 yGOTO_args:
-		.dc.b ARG_CALL_FUNC,((f15448-jmpbase)>>8)&255,(f15448-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)f15448 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 ySWAP_args:
-		.dc.b ARG_PUSH,((x143cb-jmpbase)>>8)&255,(x143cb-jmpbase)&255
-		.dc.b ARG_PUSH,((x144eb-jmpbase)>>8)&255,(x144eb-jmpbase)&255
-		.dc.b ARG_PUSH,((x143cb-jmpbase)>>8)&255,(x143cb-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x143d6-jmpbase)>>8)&255,(x143d6-jmpbase)&255
-		.dc.b ARG_PUSH,((x144eb-jmpbase)>>8)&255,(x144eb-jmpbase)&255
-		.dc.b ARG_PUSH,((x143d6-jmpbase)>>8)&255,(x143d6-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x143e1-jmpbase)>>8)&255,(x143e1-jmpbase)&255
-		.dc.b ARG_PUSH,((x144eb-jmpbase)>>8)&255,(x144eb-jmpbase)&255
-		.dc.b ARG_PUSH,((x143e1-jmpbase)>>8)&255,(x143e1-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
-		.dc.b ARG_PUSH,((x144eb-jmpbase)>>8)&255,(x144eb-jmpbase)&255
-		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x143f7-jmpbase)>>8)&255,(x143f7-jmpbase)&255
-		.dc.b ARG_PUSH,((x144eb-jmpbase)>>8)&255,(x144eb-jmpbase)&255
-		.dc.b ARG_PUSH,((x143f7-jmpbase)>>8)&255,(x143f7-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x14402-jmpbase)>>8)&255,(x14402-jmpbase)&255
-		.dc.b ARG_PUSH,((x144eb-jmpbase)>>8)&255,(x144eb-jmpbase)&255
-		.dc.b ARG_PUSH,((x14402-jmpbase)>>8)&255,(x14402-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b 33
-		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_int_arr-jmpbase)>>8)&255,(expect_int_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b 33
-		.dc.b ARG_CALL_FUNC,((expect_int_arr-jmpbase)>>8)&255,(expect_int_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_bool_arr-jmpbase)>>8)&255,(expect_bool_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b 33
-		.dc.b ARG_CALL_FUNC,((expect_bool_arr-jmpbase)>>8)&255,(expect_bool_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_string_arr-jmpbase)>>8)&255,(expect_string_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b 33
-		.dc.b ARG_CALL_FUNC,((expect_string_arr-jmpbase)>>8)&255,(expect_string_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_word_arr-jmpbase)>>8)&255,(expect_word_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b 33
-		.dc.b ARG_CALL_FUNC,((expect_word_arr-jmpbase)>>8)&255,(expect_word_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((expect_byte_arr-jmpbase)>>8)&255,(expect_byte_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b 33
-		.dc.b ARG_CALL_FUNC,((expect_byte_arr-jmpbase)>>8)&255,(expect_byte_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b 7
-		.dc.b ARG_PUSH,((x14386-jmpbase)>>8)&255,(x14386-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x143ad-jmpbase)>>8)&255,(x143ad-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x143cb } },
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { x143cb } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x143d6 } },
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { x143d6 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x143e1 } },
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { x143e1 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x143ec } },
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { x143ec } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x143f7 } },
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { x143f7 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x14402 } },
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { x14402 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
+	{ 32, { 0 } },
+	{ 33, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
+	{ 32, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_int_arr } },
+	{ 32, { 0 } },
+	{ 33, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_int_arr } },
+	{ 32, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_bool_arr } },
+	{ 32, { 0 } },
+	{ 33, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_bool_arr } },
+	{ 32, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
+	{ 32, { 0 } },
+	{ 33, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
+	{ 32, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_word_arr } },
+	{ 32, { 0 } },
+	{ 33, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_word_arr } },
+	{ 32, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_byte_arr } },
+	{ 32, { 0 } },
+	{ 33, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_byte_arr } },
+	{ 32, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ 7, { 0 } },
+	{ ARG_PUSH, { x14386 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x143ad } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 yMENU_args:
 yMENU_KILL_args:
 yMENU_OFF_args:
-		.dc.b ARG_CALL_FUNC,((expect_string_arr-jmpbase)>>8)&255,(expect_string_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b TOK_OFF
-		.dc.b -6
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b TOK_KILL
-		.dc.b -6
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b ARG_PUSH,((yVPLOT_args-jmpbase)>>8)&255,(yVPLOT_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b 249,55
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
+	{ 32, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ TOK_OFF, { 0 } },
+	{ -6, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ TOK_KILL, { 0 } },
+	{ -6, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ ARG_PUSH, { yVPLOT_args } },
+	{ ARG_POP, { 0 } },
+	{ 249,55, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 yARRAYFILL_args:
-		.dc.b ARG_PUSH,((x143b2-jmpbase)>>8)&255,(x143b2-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x143b2 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 yRCALL_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_CALL_FUNC,((expect_int_arr-jmpbase)>>8)&255,(expect_int_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_CALL_FUNC, { (void *)expect_int_arr } },
+	{ 32, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 yBITBLT_args:
-		.dc.b ARG_PUSH,((x143c6-jmpbase)>>8)&255,(x143c6-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x143c6-jmpbase)>>8)&255,(x143c6-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x143c6-jmpbase)>>8)&255,(x143c6-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b ARG_PUSH,((x143c6-jmpbase)>>8)&255,(x143c6-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x143c6 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x143c6 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x143c6 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ ARG_PUSH, { x143c6 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_END, { 0 } }
 yPOLYMARK_args:
 yPOLYFILL_args:
 yPOLYLINE_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x143bc-jmpbase)>>8)&255,(x143bc-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x143bc-jmpbase)>>8)&255,(x143bc-jmpbase)&255
-		.dc.b ARG_PUSH,((x14aa3-jmpbase)>>8)&255,(x14aa3-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x143bc } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x143bc } },
+	{ ARG_PUSH, { x14aa3 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 x14aa3:
-		.dc.b 109
-		.dc.b ARG_PUSH,((x1503f-jmpbase)>>8)&255,(x1503f-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 109, { 0 } },
+	{ ARG_PUSH, { x1503f } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 yLOCAL_args:
 yCLR_args:
-		.dc.b ARG_PUSH,((x1434e-jmpbase)>>8)&255,(x1434e-jmpbase)&255
-		.dc.b ARG_PUSH,((x14ab1-jmpbase)>>8)&255,(x14ab1-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x1434e } },
+	{ ARG_PUSH, { x14ab1 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 x14ab1:
-		.dc.b 33
-		.dc.b ARG_PUSH,((x1434e-jmpbase)>>8)&255,(x1434e-jmpbase)&255
-		.dc.b ARG_PUSH,((x14ab1-jmpbase)>>8)&255,(x14ab1-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x1434e } },
+	{ ARG_PUSH, { x14ab1 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 yMOUSE_args:
 yGMOUSE_args:
-		.dc.b ARG_PUSH,((x1433a-jmpbase)>>8)&255,(x1433a-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x1433a-jmpbase)>>8)&255,(x1433a-jmpbase)&255
-		.dc.b 33
+	{ ARG_PUSH, { x1433a } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x1433a } },
+	{ 33, { 0 } },
 yKEYLOOK_args:
 yKEYGET_args:
 yKEYTEST_args:
-		.dc.b ARG_PUSH,((x1433a-jmpbase)>>8)&255,(x1433a-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x1433a } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
-	.IFNE GBE
+#if GBE > 0
 x58478_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x1433a-jmpbase)>>8)&255,(x1433a-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x1433a } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x58480_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+	{ ARG_PUSH, { x14475 } },
 x58483_372:
-		.dc.b ARG_PUSH,((x14342-jmpbase)>>8)&255,(x14342-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14342 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x58488_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x58497_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14475 } },
 x584a3_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+	{ ARG_PUSH, { x14475 } },
 x584a6_372:
-		.dc.b ARG_PUSH,((x14342-jmpbase)>>8)&255,(x14342-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14342-jmpbase)>>8)&255,(x14342-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14342-jmpbase)>>8)&255,(x14342-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14342-jmpbase)>>8)&255,(x14342-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
-	.ENDC
+	{ ARG_PUSH, { x14342 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14342 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14342 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14342 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
+#endif
 
 yALERT_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x1433a-jmpbase)>>8)&255,(x1433a-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x1433a } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 yKEYDEF_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14139-jmpbase)>>8)&255,(x14139-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14139 } },
+	{ ARG_END, { 0 } }
 
 yDEFTEXT_args:
-		.dc.b ARG_PUSH,((yDEFMARK_args-jmpbase)>>8)&255,(yDEFMARK_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((yDEFLINE_args-jmpbase)>>8)&255,(yDEFLINE_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x14b91-jmpbase)>>8)&255,(x14b91-jmpbase)&255
-		.dc.b 33
+	{ ARG_PUSH, { yDEFMARK_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { yDEFLINE_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x14b91 } },
+	{ 33, { 0 } },
 yDEFLINE_args:
-		.dc.b ARG_PUSH,((x14b91-jmpbase)>>8)&255,(x14b91-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14b91-jmpbase)>>8)&255,(x14b91-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14b91-jmpbase)>>8)&255,(x14b91-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14b91-jmpbase)>>8)&255,(x14b91-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
+	{ ARG_PUSH, { x14b91 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14b91 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14b91 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14b91 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
 yDEFMARK_args:
-		.dc.b ARG_PUSH,((x14b91-jmpbase)>>8)&255,(x14b91-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14b91-jmpbase)>>8)&255,(x14b91-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14b91-jmpbase)>>8)&255,(x14b91-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x14b91-jmpbase)>>8)&255,(x14b91-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14b91-jmpbase)>>8)&255,(x14b91-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
+	{ ARG_PUSH, { x14b91 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14b91 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14b91 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x14b91 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14b91 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
 
 yVCLS_args:
 ySLEEP_args:
@@ -5403,244 +5072,197 @@ ySYSTEM_args:
 yRANDOMIZE_args:
 yQUIT_args:
 yMONITOR_args:
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_POP, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 yRESERVE_args:
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,208
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_END
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)208 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_END, { 0 } }
 yBPUT_args:
 yBGET_args:
-		.dc.b ARG_PUSH,((x144f6-jmpbase)>>8)&255,(x144f6-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((yVPLOT_args-jmpbase)>>8)&255,(yVPLOT_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x144f6 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { yVPLOT_args } },
+	{ ARG_END, { 0 } }
 
-	.IFNE GBE
-	.IF GBE>=373
+#if GBE > 0
+#if GBE >= 373
 yRC_REDRAW_args:
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,74
-		.dc.b ARG_PUSH,((yVPBAR_args-jmpbase)>>8)&255,(yVPBAR_args-jmpbase)&255
-		.dc.b ARG_END
-	.ENDC
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)74 } },
+	{ ARG_PUSH, { yVPBAR_args } },
+	{ ARG_END, { 0 } }
+#endif
 ySTRARRAYFILL_args:
-		.dc.b ARG_CALL_FUNC,((expect_string_arr-jmpbase)>>8)&255,(expect_string_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b 33
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
+	{ 32, { 0 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 x58524_372:
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_CALL_FUNC,((expect_string_arr-jmpbase)>>8)&255,(expect_string_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
+	{ 32, { 0 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x58531_372:
-		.dc.b ARG_CALL_FUNC,((expect_string_arr-jmpbase)>>8)&255,(expect_string_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
+	{ 32, { 0 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x143ec } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x58541_372:
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x143ec } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x58550_372:
-		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x143ec } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x5855f_372:
-		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x143ec } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14c92 } },
+	{ ARG_END, { 0 } }
 x58567_372:
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_CALL_FUNC,((expect_string_arr-jmpbase)>>8)&255,(expect_string_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b 32
-		.dc.b ARG_END
-	.IF GBE>=373
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
+	{ 32, { 0 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
+#if GBE >= 373
 yPIXEL24_args:
-		.dc.b ARG_PUSH,((yVGET_args-jmpbase)>>8)&255,(yVGET_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,2
-		.dc.b ARG_PUSH,((ySET_GCBITMAP_args-jmpbase)>>8)&255,(ySET_GCBITMAP_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { yVGET_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)2 } },
+	{ ARG_PUSH, { ySET_GCBITMAP_args } },
+	{ ARG_END, { 0 } }
 yPIXEL32_args:
-		.dc.b ARG_PUSH,((yVGET_args-jmpbase)>>8)&255,(yVGET_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,6
-		.dc.b ARG_PUSH,((ySET_GCBITMAP_args-jmpbase)>>8)&255,(ySET_GCBITMAP_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { yVGET_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)6 } },
+	{ ARG_PUSH, { ySET_GCBITMAP_args } },
+	{ ARG_END, { 0 } }
 yPIXEL16_args:
-		.dc.b ARG_PUSH,((yVGET_args-jmpbase)>>8)&255,(yVGET_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,10
-		.dc.b ARG_PUSH,((ySET_GCBITMAP_args-jmpbase)>>8)&255,(ySET_GCBITMAP_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { yVGET_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)10 } },
+	{ ARG_PUSH, { ySET_GCBITMAP_args } },
+	{ ARG_END, { 0 } }
 yPIXEL15_args:
-		.dc.b ARG_PUSH,((yVGET_args-jmpbase)>>8)&255,(yVGET_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,14
-		.dc.b ARG_PUSH,((ySET_GCBITMAP_args-jmpbase)>>8)&255,(ySET_GCBITMAP_args-jmpbase)&255
-		.dc.b ARG_END
-	.ENDC
-	.ENDC
+	{ ARG_PUSH, { yVGET_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)14 } },
+	{ ARG_PUSH, { ySET_GCBITMAP_args } },
+	{ ARG_END, { 0 } }
+#endif
+#endif
 
 ySTORE_args:
-		.dc.b ARG_PUSH,((x144f6-jmpbase)>>8)&255,(x144f6-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_CALL_FUNC,((expect_string_arr-jmpbase)>>8)&255,(expect_string_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_PUSH,((x14b49-jmpbase)>>8)&255,(x14b49-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x144f6 } },
+	{ 33, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
+	{ 32, { 0 } },
+	{ ARG_PUSH, { x14b49 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 yRECALL_args:
-		.dc.b ARG_PUSH,((x144f6-jmpbase)>>8)&255,(x144f6-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_CALL_FUNC,((expect_string_arr-jmpbase)>>8)&255,(expect_string_arr-jmpbase)&255
-		.dc.b 32
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14b4f-jmpbase)>>8)&255,(x14b4f-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14346-jmpbase)>>8)&255,(x14346-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x144f6 } },
+	{ 33, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
+	{ 32, { 0 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14b4f } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14346 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 x14b49:
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14b4f-jmpbase)>>8)&255,(x14b4f-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14b4f } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 
 x14b4f:
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_PUSH,((x14b56-jmpbase)>>8)&255,(x14b56-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x14b56 } },
+	{ ARG_END, { 0 } }
 
 x14b56:
-		.dc.b 71
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 71, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 
 yVRC_COPY_args:
 yRC_COPY_args:
-		.dc.b ARG_PUSH,((x15036-jmpbase)>>8)&255,(x15036-jmpbase)&255
-		.dc.b ARG_PUSH,((x14532-jmpbase)>>8)&255,(x14532-jmpbase)&255
-		.dc.b ARG_PUSH,((x1503c-jmpbase)>>8)&255,(x1503c-jmpbase)&255
-		.dc.b ARG_PUSH,((x14b90-jmpbase)>>8)&255,(x14b90-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x15036 } },
+	{ ARG_PUSH, { x14532 } },
+	{ ARG_PUSH, { x1503c } },
+	{ ARG_PUSH, { x14b90 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 ySETCOLOR_args:
-		.dc.b ARG_PUSH,((yVPLOT_args-jmpbase)>>8)&255,(yVPLOT_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,168
-		.dc.b ARG_PUSH,((yVBOX_args-jmpbase)>>8)&255,(yVBOX_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { yVPLOT_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)168 } },
+	{ ARG_PUSH, { yVBOX_args } },
+	{ ARG_END, { 0 } }
 
 yVDISYS_args:
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,174
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,176
-		.dc.b ARG_PUSH,((yTBITBLT_args-jmpbase)>>8)&255,(yTBITBLT_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,178
-		.dc.b ARG_PUSH,((yVBOX_args-jmpbase)>>8)&255,(yVBOX_args-jmpbase)&255
-		.dc.b ARG_END
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)174 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)176 } },
+	{ ARG_PUSH, { yTBITBLT_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)178 } },
+	{ ARG_PUSH, { yVBOX_args } },
+	{ ARG_END, { 0 } }
 
 yGEMSYS_args:
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,182
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-	.IFNE GBE
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((yVGET_args-jmpbase)>>8)&255,(yVGET_args-jmpbase)&255
-	.ENDC
-		.dc.b ARG_END
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)182 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+#if GBE > 0
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { yVGET_args } },
+#endif
+	{ ARG_END, { 0 } }
 x14b90:
-		.dc.b 33
+	{ 33, { 0 } },
 x14b91:
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 
-x14b96:
-		.dc.b ARG_CALL_FUNC,((f158f8-jmpbase)>>8)&255,(f158f8-jmpbase)&255
-		.dc.b ARG_POP
-x14b9a:
-x585e8:
-		.dc.b ARG_PUSH,((x14ba8-jmpbase)>>8)&255,(x14ba8-jmpbase)&255
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x14bb2-jmpbase)>>8)&255,(x14bb2-jmpbase)&255
-		.dc.b ARG_PUSH,((x14bc8-jmpbase)>>8)&255,(x14bc8-jmpbase)&255
-		.dc.b ARG_END
-
-x14ba8:
-		.dc.b 6
-		.dc.b ARG_REPLACE,29
-		.dc.b ARG_POP
-		.dc.b 5
-		.dc.b ARG_REPLACE,30
-		.dc.b ARG_POP
-		.dc.b 31
-		.dc.b ARG_END
-
-x14bb2:
-		.dc.b ARG_CALL_FUNC,((f13c9a-jmpbase)>>8)&255,(f13c9a-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x14bd0-jmpbase)>>8)&255,(x14bd0-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b ARG_PUSH,((x1517e-jmpbase)>>8)&255,(x1517e-jmpbase)&255
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x1433a-jmpbase)>>8)&255,(x1433a-jmpbase)&255
-		.dc.b ARG_END
-
-x14bc8:
-		.dc.b ARG_CALL_FUNC,((f1369a-jmpbase)>>8)&255,(f1369a-jmpbase)&255
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
-
-x14bd0:
-		.dc.b ARG_CALL_FUNC,((f14bde-jmpbase)>>8)&255,(f14bde-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x15160-jmpbase)>>8)&255,(x15160-jmpbase)&255
-		.dc.b ARG_CALL_FUNC,((f154c4-jmpbase)>>8)&255,(f154c4-jmpbase)&255
-		.dc.b ARG_PUSH,((x14962-jmpbase)>>8)&255,(x14962-jmpbase)&255
-		.dc.b ARG_END
 	.even
 
 /* 371: 574f4 */
@@ -5651,7 +5273,7 @@ f14bde:
 		lea.l      offset_table_pf(pc),a2
 		move.w     d6,d0
 		bpl.s      f14bde_1
-	.IFNE GBE
+#if GBE > 0
 		cmpi.w     #(TOK_SUBFUNC_208<<8)+255,d0
 		bls.s      f14bde_208
 		cmpi.w     #(TOK_SUBFUNC_209<<8)+255,d0
@@ -5675,11 +5297,11 @@ f14bde_213:
 		move.b     #TOK_SUBFUNC_213,(a1)+ /* secondary function table */
 		bra.s      f14bde_subfunc
 f14bde_212:
-	.IF GBE>=373
+#if GBE >= 373
 		lea.l      offset_table_sf212(pc),a2
-	.ELSE
+#else
 		lea.l      offset_table_sf214(pc),a2
-	.ENDC
+#endif
 		move.b     #TOK_SUBFUNC_212,(a1)+ /* secondary function table */
 		bra.s      f14bde_subfunc
 f14bde_211:
@@ -5694,10 +5316,10 @@ f14bde_209:
 		lea.l      offset_table_sf209(pc),a2
 		move.b     #TOK_SUBFUNC_209,(a1)+ /* secondary function table */
 		bra.s      f14bde_subfunc
-	.ELSE
+#else
 		cmpi.w     #(TOK_SUBFUNC_208<<8)+255,d0 /* token in range? */
 		bhi        f13c9a_6
-	.ENDC
+#endif
 f14bde_208:
 		lea.l      offset_table_sf208(pc),a2
 		move.b     #TOK_SUBFUNC_208,(a1)+ /* secondary function table */
@@ -5729,17 +5351,17 @@ x14c16:
 		.dc.w x14ee8-jmpbase
 		.dc.w x14f3c-jmpbase
 		.dc.w x14f41-jmpbase
-	.IF GBE>=372
+#if GBE >= 372
 		.dc.w x58e08_372-jmpbase
-	.ELSE
+#else
 		.dc.w x14f4a-jmpbase
-	.ENDC
+#endif
 		.dc.w x14f55-jmpbase
-	.IF GBE>=372
+#if GBE >= 372
 		.dc.w x58e0b_372-jmpbase
-	.ELSE
+#else
 		.dc.w x14f4d-jmpbase
-	.ENDC
+#endif
 		.dc.w x14f5d-jmpbase
 		.dc.w x14f52-jmpbase
 		.dc.w x14cee-jmpbase
@@ -5783,7 +5405,7 @@ x14c16:
 		.dc.w x14efd-jmpbase
 		.dc.w x14ef4-jmpbase
 		.dc.w x14c8e-jmpbase
-	.IF GBE>=372
+#if GBE >= 372
 		.dc.w x58d52_372-jmpbase
 		.dc.w x58d64_372-jmpbase
 		.dc.w x58dd0_372-jmpbase
@@ -5830,197 +5452,191 @@ x14c16:
 		.dc.w x58d4a_372-jmpbase
 		.dc.w x58d35_372-jmpbase
 		.dc.w x58e60_372-jmpbase
-	.ENDC
-	.IF GBE>=373
+#endif
+#if GBE >= 373
 		.dc.w x59d80_373-jmpbase
 		.dc.w x59be7_373-jmpbase
 		.dc.w x59c1f_373-jmpbase
-	.ENDC
+#endif
 		.dc.w 0
 
 /* 371: 5764e */
 /* 372: 58798 */
 /* 373: 595be */
-	.IFNE GBE
+#if GBE > 0
 y132:
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x587a9_372:
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x587b6_372:
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
-	.ENDC
+	{ ARG_PUSH, { x14b96 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
+#endif
+
 x14c8e:
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-
-x587c7_372:
-x14c92:
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
-
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
 x14c97:
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_PUSH,((x14c9f-jmpbase)>>8)&255,(x14c9f-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x14c9f } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 
 x14c9f:
-		.dc.b 33
-		.dc.b ARG_PUSH,((x15036-jmpbase)>>8)&255,(x15036-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x15036-jmpbase)>>8)&255,(x15036-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x15036 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x15036 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 x14ca9:
-		.dc.b ARG_REPLACE,208
-		.dc.b 35
-		.dc.b ARG_REPLACE,1
-		.dc.b ARG_PUSH,((x14cfd-jmpbase)>>8)&255,(x14cfd-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_REPLACE, { (void *)208 } },
+	{ 35, { 0 } },
+	{ ARG_REPLACE, { (void *)1 } },
+	{ ARG_PUSH, { x14cfd } },
+	{ ARG_END, { 0 } }
 x14cb2:
-		.dc.b ARG_REPLACE,208
-		.dc.b 35
-		.dc.b ARG_REPLACE,4
-		.dc.b ARG_PUSH,((x14cfd-jmpbase)>>8)&255,(x14cfd-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_REPLACE, { (void *)208 } },
+	{ 35, { 0 } },
+	{ ARG_REPLACE, { (void *)4 } },
+	{ ARG_PUSH, { x14cfd } },
+	{ ARG_END, { 0 } }
 x14cbb:
-		.dc.b ARG_REPLACE,208
-		.dc.b 35
-		.dc.b ARG_REPLACE,5
-		.dc.b ARG_PUSH,((x14cfd-jmpbase)>>8)&255,(x14cfd-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_REPLACE, { (void *)208 } },
+	{ 35, { 0 } },
+	{ ARG_REPLACE, { (void *)5 } },
+	{ ARG_PUSH, { x14cfd } },
+	{ ARG_END, { 0 } }
 x14cc4:
-		.dc.b ARG_REPLACE,208
-		.dc.b 35
-		.dc.b ARG_REPLACE,6
-		.dc.b ARG_PUSH,((x14cfd-jmpbase)>>8)&255,(x14cfd-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_REPLACE, { (void *)208 } },
+	{ 35, { 0 } },
+	{ ARG_REPLACE, { (void *)6 } },
+	{ ARG_PUSH, { x14cfd } },
+	{ ARG_END, { 0 } }
 x14ccd:
-		.dc.b ARG_REPLACE,208
-		.dc.b 35
-		.dc.b ARG_REPLACE,7
-		.dc.b ARG_PUSH,((x14cfd-jmpbase)>>8)&255,(x14cfd-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_REPLACE, { (void *)208 } },
+	{ 35, { 0 } },
+	{ ARG_REPLACE, { (void *)7 } },
+	{ ARG_PUSH, { x14cfd } },
+	{ ARG_END, { 0 } }
 x14cd6:
-		.dc.b ARG_REPLACE,208
-		.dc.b 35
-		.dc.b ARG_REPLACE,8
-		.dc.b ARG_PUSH,((x14cfd-jmpbase)>>8)&255,(x14cfd-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_REPLACE, { (void *)208 } },
+	{ 35, { 0 } },
+	{ ARG_REPLACE, { (void *)8 } },
+	{ ARG_PUSH, { x14cfd } },
+	{ ARG_END, { 0 } }
 x14cdf:
-		.dc.b ARG_REPLACE,208
-		.dc.b 35
-		.dc.b ARG_REPLACE,9
-		.dc.b ARG_PUSH,((x14cfd-jmpbase)>>8)&255,(x14cfd-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_REPLACE, { (void *)208 } },
+	{ 35, { 0 } },
+	{ ARG_REPLACE, { (void *)9 } },
+	{ ARG_PUSH, { x14cfd } },
+	{ ARG_END, { 0 } }
 
 x14ce8:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+	{ ARG_PUSH, { x14475 } },
 x14ceb:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+	{ ARG_PUSH, { x14475 } },
 x14cee:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+	{ ARG_PUSH, { x14475 } },
 x14cf1:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+	{ ARG_PUSH, { x14475 } },
 x14cf4:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+	{ ARG_PUSH, { x14475 } },
 x14cf7:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+	{ ARG_PUSH, { x14475 } },
 x14cfa:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+	{ ARG_PUSH, { x14475 } },
 x14cfd:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+	{ ARG_PUSH, { x14475 } },
 x14d00:
-		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
+	{ ARG_PUSH, { x14c92 } },
 x14d03:
-		.dc.b ARG_END
+	{ ARG_END, { 0 } }
 
 x14d04:
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14b9a } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 
 x14d09:
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x15068 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x59669_373:
 x14d0e:
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b 88
-		.dc.b ARG_END
-	.IFNE GBE
+	{ ARG_PUSH, { x14b96 } },
+	{ 88, { 0 } },
+	{ ARG_END, { 0 } }
+#if GBE > 0
 x58848_372:
-		.dc.b ARG_PUSH,((x14cf7-jmpbase)>>8)&255,(x14cf7-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b TOK_SUBFUNC_208,239
-		.dc.b ARG_REPLACE,240
-		.dc.b ARG_PUSH,((x14cf4-jmpbase)>>8)&255,(x14cf4-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14cf7 } },
+	{ ARG_POP, { 0 } },
+	{ (TOK_SUBFUNC_208<<8)+239, { 0 } },
+	{ ARG_REPLACE, { (void *)240 } },
+	{ ARG_PUSH, { x14cf4 } },
+	{ ARG_END, { 0 } }
 x58854_372:
-		.dc.b ARG_PUSH,((x14cfd-jmpbase)>>8)&255,(x14cfd-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b TOK_SUBFUNC_210,91
-		.dc.b ARG_REPLACE,92
-		.dc.b ARG_PUSH,((x14cf7-jmpbase)>>8)&255,(x14cf7-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14cfd } },
+	{ ARG_POP, { 0 } },
+	{ (TOK_SUBFUNC_210<<8)+91, { 0 } },
+	{ ARG_REPLACE, { (void *)92 } },
+	{ ARG_PUSH, { x14cf7 } },
+	{ ARG_END, { 0 } }
 x58860_372:
-		.dc.b ARG_PUSH,((x14d00-jmpbase)>>8)&255,(x14d00-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b TOK_SUBFUNC_210,254
-		.dc.b ARG_REPLACE,255
-		.dc.b ARG_PUSH,((x14cfa-jmpbase)>>8)&255,(x14cfa-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14d00 } },
+	{ ARG_POP, { 0 } },
+	{ (TOK_SUBFUNC_210<<8)+254, { 0 } },
+	{ ARG_REPLACE, { (void *)255 } },
+	{ ARG_PUSH, { x14cfa } },
+	{ ARG_END, { 0 } }
 x5886c_372:
-		.dc.b ARG_PUSH,((x14cfd-jmpbase)>>8)&255,(x14cfd-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b TOK_SUBFUNC_211,1
-		.dc.b ARG_REPLACE,2
-		.dc.b ARG_PUSH,((x14cf7-jmpbase)>>8)&255,(x14cf7-jmpbase)&255
-		.dc.b ARG_END
-	.ENDC
+	{ ARG_PUSH, { x14cfd } },
+	{ ARG_POP, { 0 } },
+	{ (TOK_SUBFUNC_211<<8)+1, { 0 } },
+	{ ARG_REPLACE, { (void *)2 } },
+	{ ARG_PUSH, { x14cf7 } },
+	{ ARG_END, { 0 } }
+#endif
 x14d13:
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b 112
-		.dc.b ARG_REPLACE,113
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14b9a } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 112, { 0 } },
+	{ ARG_REPLACE, { (void *)113 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14c92 } },
+	{ ARG_END, { 0 } }
 x14d23:
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b ARG_PUSH,((x14d2b-jmpbase)>>8)&255,(x14d2b-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14b9a } },
+	{ ARG_PUSH, { x14d2b } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x14d2b:
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b ARG_PUSH,((x14d2b-jmpbase)>>8)&255,(x14d2b-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ ARG_PUSH, { x14d2b } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 
 /* 371: 57751 */
 /* 372: 58899 */
@@ -6169,11 +5785,11 @@ offset_table_pf:
 		.dc.b 0    /* 139 W: */
 		.dc.b 0x02 /* 140 FACT( */
 		.dc.b 0x04 /* 141 COMBIN( */
-	.IF GBE>=372
+#if GBE >= 372
 		.dc.b 0    /* 142 ENVIRON$( */
-	.ELSE
+#else
 		.dc.b 0x0c /* 142 ENVIRON$(*/
-	.ENDC
+#endif
 		.dc.b 0x04 /* 143 VARIAT( */
 		.dc.b 0    /* 144 LTRIM$( */
 		.dc.b 0    /* 145 RTRIM$( */
@@ -6200,11 +5816,11 @@ offset_table_pf:
 		.dc.b 0    /* 166 TIMESTAMP$( */
 		.dc.b 0    /* 167 MENU */
 		.dc.b 0    /* 168 NEXT */
-	.IF GBE>=372
+#if GBE >= 372
 		.dc.b 0    /* 169 STRPEEK$( */
-	.ELSE
+#else
 		.dc.b 0x10 /* 169 STRPEEK$( */
-	.ENDC
+#endif
 		.dc.b 0    /* 170 KEY */
 		.dc.b 0    /* 171 BUTTON */
 		.dc.b 0    /* 172 IBOX */
@@ -6218,11 +5834,11 @@ offset_table_pf:
 		.dc.b 0    /* 180 XLATE$( */
 		.dc.b 0    /* 181 STRUCT$( */
 		.dc.b 0    /* 182 BASE  */
-	.IF GBE>=372
+#if GBE >= 372
 		.dc.b 0x10 /* 183 NULL */
-	.ELSE
+#else
 		.dc.b 0    /* 183 NULL */
-	.ENDC
+#endif
 		.dc.b 0    /* 184 0 */
 		.dc.b 0    /* 185 1 */
 		.dc.b 0    /* 186 2 */
@@ -6233,15 +5849,15 @@ offset_table_pf:
 		.dc.b 0    /* 191 STR$( */
 		.dc.b 0    /* 192 STR$( */
 		.dc.b 0    /* 193 HEX$( */
-	.IF GBE>=372
+#if GBE >= 372
 		.dc.b 0    /* 194 HEX$( */
-	.ELSE
+#else
 		.dc.b 0x10 /* 194 HEX$(*/
-	.ENDC
+#endif
 		.dc.b 0    /* 195 OCT$( */
-	.IF GBE>=372
+#if GBE >= 372
 		.dc.b 0    /* 196 OCT$(*/
-	.ENDC
+#endif
 
 offset_table_sf208:
 		.dc.b 0x04 /*   0 MUL( */
@@ -6485,7 +6101,7 @@ offset_table_sf208:
 		.dc.b 0x10 /* 238 _C */
 	.IF GBE<372
 		.dc.b 0x08 /* 239 GETSIZE( */
-	.ELSE
+#else
 		.dc.b 0x9a /* 239  GETSIZE( */
 		.dc.b 0x9a /* 240  GETSIZE( */
 		.dc.b 0x10 /* 241 _B */
@@ -6863,11 +6479,11 @@ offset_table_sf210:
 		.dc.b 0x04 /*  97 AV_SENDKEY( */
 		.dc.b 0    /*  98 */
 		.dc.b 0    /*  99 */
-	.IF GBE>=373
+#if GBE >= 373
 		.dc.b 0x7e /* 100 AV_OPENWIND( */
-	.ELSE
+#else
 		.dc.b 0    /* 100 */
-	.ENDC
+#endif
 		.dc.b 0xa4 /* 101 AV_STARTPROG( */
 		.dc.b 0x02 /* 102 AV_ACCWINDOPEN( */
 		.dc.b 0x02 /* 103 AV_ACCWINDCLOSED( */
@@ -6879,15 +6495,15 @@ offset_table_sf210:
 		.dc.b 0x02 /* 109 AV_STARTED( */
 		.dc.b 0xa4 /* 110 AV_XWIND( */
 		.dc.b 0    /* 111 */
-	.IF GBE>=373
+#if GBE >= 373
 		.dc.b 0x0e /* 112 AV_FILEINFO( */
 		.dc.b 0xa4 /* 113 AV_COPYFILE( */
 		.dc.b 0x0e /* 114 AV_DELFILE( */
-	.ELSE
+#else
 		.dc.b 0    /* 112 */
 		.dc.b 0    /* 113 */
 		.dc.b 0    /* 114 */
-	.ENDC
+#endif
 		.dc.b 0x0e /* 115 VA_START( */
 		.dc.b 0x04 /* 116 MAKE&( */
 		.dc.b 0x04 /* 117 MAKE%( */
@@ -7216,7 +6832,7 @@ offset_table_sf211:
 		.dc.b 0x06 /* 182 INITMOUS( */
 		.dc.b 0xa6 /* 183 FREADLINK( */
 		.dc.b 0xd0 /* 184 INPUTRADIO( */
-	.IF GBE>=373
+#if GBE >= 373
 		.dc.b 0xd2 /* 185 PIXEL24( */
 		.dc.b 0x1c /* 186 CWRITE( */
 		.dc.b 0x1a /* 187 CREAD( */
@@ -7360,16 +6976,16 @@ offset_table_sf212:
 		.dc.b 0x10 /*  67 V_EEOS() */
 		.dc.b 0x10 /*  68 V_RMCUR() */
 		.dc.b 0x04 /*  69 V_DSPCUR( */
-	.ENDC
+#endif
 
-	.ENDC
+#endif
 
 	.IF GBE<372
 offset_table_sf209:
 offset_table_sf210:
 offset_table_sf211:
 offset_table_sf212:
-	.ENDC
+#endif
 
 offset_table_sf213:
 offset_table_sf214:
@@ -7379,1003 +6995,889 @@ offset_table_sf214:
 /* 372: 58d18 */
 /* 373: 59bca */
 x14ee8:
-		.dc.b ARG_PUSH,((x1502d-jmpbase)>>8)&255,(x1502d-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x1502d-jmpbase)>>8)&255,(x1502d-jmpbase)&255
-		.dc.b ARG_PUSH,((x14f19-jmpbase)>>8)&255,(x14f19-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x1502d } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x1502d } },
+	{ ARG_PUSH, { x14f19 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x14ef4:
-		.dc.b ARG_PUSH,((x15039-jmpbase)>>8)&255,(x15039-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x1440d-jmpbase)>>8)&255,(x1440d-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x15039 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x1440d } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x14efd:
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b ARG_PUSH,((x14f15-jmpbase)>>8)&255,(x14f15-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x15068 } },
+	{ ARG_PUSH, { x14f15 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 
-	.IFNE GBE
-	.IF GBE>=373
+#if GBE > 0
+#if GBE >= 373
 x59be7_373:
-		.dc.b ARG_PUSH,((x1433e-jmpbase)>>8)&255,(x1433e-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x1433e-jmpbase)>>8)&255,(x1433e-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
-	.ENDC
+	{ ARG_PUSH, { x1433e } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x1433e } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
+#endif
 x58d35_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14346-jmpbase)>>8)&255,(x14346-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14342-jmpbase)>>8)&255,(x14342-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14346 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14342 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x58d41_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+	{ ARG_PUSH, { x14475 } },
 x58d44_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14475 } },
 x58d4a_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14346-jmpbase)>>8)&255,(x14346-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14346 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x58d52_372:
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_PUSH,((x58d5a_372-jmpbase)>>8)&255,(x58d5a_372-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x58d5a_372 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x58d5a_372:
-		.dc.b 33
-		.dc.b ARG_PUSH,((x58d60_372-jmpbase)>>8)&255,(x58d60_372-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x58d60_372 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 x58d60_372:
-		.dc.b ARG_PUSH,((x14346-jmpbase)>>8)&255,(x14346-jmpbase)&255
-		.dc.b ARG_END
-	.IF GBE>=373
+	{ ARG_PUSH, { x14346 } },
+	{ ARG_END, { 0 } }
+#if GBE >= 373
 x59c1f_373:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14346-jmpbase)>>8)&255,(x14346-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14346-jmpbase)>>8)&255,(x14346-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
-	.ENDC
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14346 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14346 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
+#endif
 x58d64_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+	{ ARG_PUSH, { x14475 } },
 x58d67_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+	{ ARG_PUSH, { x14475 } },
 x58d6a_372:
-		.dc.b ARG_PUSH,((x14411-jmpbase)>>8)&255,(x14411-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14411 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 yRGB_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x1433e-jmpbase)>>8)&255,(x1433e-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x1433e-jmpbase)>>8)&255,(x1433e-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x1433e-jmpbase)>>8)&255,(x1433e-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x1433e } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x1433e } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x1433e } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 yAVERAGE_RGB_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x1433a-jmpbase)>>8)&255,(x1433a-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x1433a-jmpbase)>>8)&255,(x1433a-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x1433a-jmpbase)>>8)&255,(x1433a-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
-	.ENDC
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x1433a } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x1433a } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x1433a } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+#endif
 
 x14f05:
-		.dc.b ARG_PUSH,((x1503c-jmpbase)>>8)&255,(x1503c-jmpbase)&255
-		.dc.b ARG_PUSH,((x14f1d-jmpbase)>>8)&255,(x14f1d-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x1503c } },
+	{ ARG_PUSH, { x14f1d } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x14f0d:
-		.dc.b ARG_PUSH,((x15036-jmpbase)>>8)&255,(x15036-jmpbase)&255
-		.dc.b ARG_PUSH,((x14f1d-jmpbase)>>8)&255,(x14f1d-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x15036 } },
+	{ ARG_PUSH, { x14f1d } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x14f15:
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14415-jmpbase)>>8)&255,(x14415-jmpbase)&255
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14415 } },
 x14f19:
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14415-jmpbase)>>8)&255,(x14415-jmpbase)&255
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14415 } },
 x14f1d:
-		.dc.b 33
+	{ 33, { 0 } },
 x14f1e:
-		.dc.b ARG_PUSH,((x1440d-jmpbase)>>8)&255,(x1440d-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ ARG_PUSH, { x1440d } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 x14f23:
-		.dc.b ARG_PUSH,((x14f1e-jmpbase)>>8)&255,(x14f1e-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14f1e } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 
 x14f28:
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14415-jmpbase)>>8)&255,(x14415-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14415 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 
 x14f2e:
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14342-jmpbase)>>8)&255,(x14342-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14342 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 
-	.IFNE GBE
+#if GBE > 0
 x58dd0_372:
-		.dc.b ARG_PUSH,((x1439e-jmpbase)>>8)&255,(x1439e-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14342-jmpbase)>>8)&255,(x14342-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
-	.ENDC
+	{ ARG_PUSH, { x1439e } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14342 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
+#endif
 
 x14f34:
-		.dc.b ARG_PUSH,((x1439e-jmpbase)>>8)&255,(x1439e-jmpbase)&255
-		.dc.b ARG_PUSH,((x14f2e-jmpbase)>>8)&255,(x14f2e-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x1439e } },
+	{ ARG_PUSH, { x14f2e } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x14f3c:
-		.dc.b ARG_PUSH,((x1439e-jmpbase)>>8)&255,(x1439e-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x1439e } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x14f41:
-		.dc.b ARG_PUSH,((x1503c-jmpbase)>>8)&255,(x1503c-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14fa6-jmpbase)>>8)&255,(x14fa6-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
-	.IF GBE>=372
+	{ ARG_PUSH, { x1503c } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14fa6 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
+#if GBE >= 372
 x58df3_372:
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-	.ELSE
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
+#else
 x14f4a:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-	.ENDC
+	{ ARG_PUSH, { x14475 } },
+#endif
 x14f4d:
-		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x143ec } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 
-	.IFNE GBE
+#if GBE > 0
 
 yTPUT_args:
-		.dc.b ARG_PUSH,((x1503f-jmpbase)>>8)&255,(x1503f-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14fa6-jmpbase)>>8)&255,(x14fa6-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x1503f } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14fa6 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 x58e05_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+	{ ARG_PUSH, { x14475 } },
 x58e08_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+	{ ARG_PUSH, { x14475 } },
 x58e0b_372:
-		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x143ec } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 yVER2STR_args:
 yENVIRON_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x143ec } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 yBXLATE_args:
 yBCRYPT_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 x58e23_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14c92 } },
+	{ ARG_END, { 0 } }
 x58e37_372:
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x58e48_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x143ec } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x58e60_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x1433e-jmpbase)>>8)&255,(x1433e-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x1433e } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x58e70_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
-	.ENDC
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x143ec } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
+#endif
 
 x14f52:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+	{ ARG_PUSH, { x14475 } },
 x14f55:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x14f5d:
-		.dc.b ARG_PUSH,((x14346-jmpbase)>>8)&255,(x14346-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14346 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x14f66:
-		.dc.b ARG_PUSH,((x15039-jmpbase)>>8)&255,(x15039-jmpbase)&255
-		.dc.b 33
+	{ ARG_PUSH, { x15039 } },
+	{ 33, { 0 } },
 x14f6a:
-		.dc.b ARG_PUSH,((x1503f-jmpbase)>>8)&255,(x1503f-jmpbase)&255
-		.dc.b 33
+	{ ARG_PUSH, { x1503f } },
+	{ 33, { 0 } },
 x14f6e:
-		.dc.b ARG_PUSH,((x1503f-jmpbase)>>8)&255,(x1503f-jmpbase)&255
-		.dc.b ARG_PUSH,((x14f28-jmpbase)>>8)&255,(x14f28-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
-	.IFNE GBE
+	{ ARG_PUSH, { x1503f } },
+	{ ARG_PUSH, { x14f28 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
+#if GBE > 0
 x58ea0_372:
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_PUSH,((x14f28-jmpbase)>>8)&255,(x14f28-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x14f28 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x58ea8_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
-		.dc.b ARG_PUSH,((x14f28-jmpbase)>>8)&255,(x14f28-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
-	.ENDC
-	.IF GBE>=373
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x143ec } },
+	{ ARG_PUSH, { x14f28 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
+#endif
+#if GBE >= 373
 x59d80_373:
-		.dc.b ARG_PUSH,((x15039-jmpbase)>>8)&255,(x15039-jmpbase)&255
-		.dc.b ARG_PUSH,((x59d88_373-jmpbase)>>8)&255,(x59d88_373-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x15039 } },
+	{ ARG_PUSH, { x59d88_373 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x59d88_373:
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14411-jmpbase)>>8)&255,(x14411-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
-	.ENDC
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14411 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
+#endif
 x14f76:
-		.dc.b ARG_PUSH,((x1503f-jmpbase)>>8)&255,(x1503f-jmpbase)&255
-		.dc.b 33
+	{ ARG_PUSH, { x1503f } },
+	{ 33, { 0 } },
 x14f7a:
-		.dc.b ARG_PUSH,((x1503c-jmpbase)>>8)&255,(x1503c-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14342-jmpbase)>>8)&255,(x14342-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x1503c } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14342 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x14f83:
-		.dc.b ARG_PUSH,((x15039-jmpbase)>>8)&255,(x15039-jmpbase)&255
-		.dc.b 33
+	{ ARG_PUSH, { x15039 } },
+	{ 33, { 0 } },
 x14f87:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+	{ ARG_PUSH, { x14475 } },
 x14f8a:
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_PUSH,((x14f1d-jmpbase)>>8)&255,(x14f1d-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x14f1d } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x14f92:
-		.dc.b ARG_PUSH,((x1503f-jmpbase)>>8)&255,(x1503f-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14346-jmpbase)>>8)&255,(x14346-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
-	.IFNE GBE
+	{ ARG_PUSH, { x1503f } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14346 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
+#if GBE > 0
 x58ed8_372:
-		.dc.b ARG_PUSH,((x14fa3-jmpbase)>>8)&255,(x14fa3-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14fa3 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x58edd_372:
-		.dc.b ARG_PUSH,((x14fa6-jmpbase)>>8)&255,(x14fa6-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
-	.ENDC
+	{ ARG_PUSH, { x14fa6 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
+#endif
 
 x14f9b:
-		.dc.b ARG_PUSH,((x14fa6-jmpbase)>>8)&255,(x14fa6-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14fa6 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_END, { 0 } }
 
 x14fa3:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+	{ ARG_PUSH, { x14475 } },
 
-x14fa6:
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b ARG_END
-
-	.IFNE GBE
+#if GBE > 0
 ySCALL_args:
-		.dc.b ARG_PUSH,((x14346-jmpbase)>>8)&255,(x14346-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14346 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 x58efa_372:
-		.dc.b ARG_PUSH,((x14346-jmpbase)>>8)&255,(x14346-jmpbase)&255
-		.dc.b 33
+	{ ARG_PUSH, { x14346 } },
+	{ 33, { 0 } },
 x58efe_372:
-		.dc.b ARG_PUSH,((x14346-jmpbase)>>8)&255,(x14346-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14346 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x58f03_372:
-		.dc.b ARG_PUSH,((x14f9b-jmpbase)>>8)&255,(x14f9b-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14346-jmpbase)>>8)&255,(x14346-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14346-jmpbase)>>8)&255,(x14346-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14f9b } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14346 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14346 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x58f10_372:
-		.dc.b ARG_PUSH,((x14f9b-jmpbase)>>8)&255,(x14f9b-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
-	.ENDC
+	{ ARG_PUSH, { x14f9b } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
+#endif
 
 x14fae:
-		.dc.b ARG_PUSH,((x14fa6-jmpbase)>>8)&255,(x14fa6-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b TOK_SUBFUNC_208,68
-		.dc.b ARG_REPLACE,69
-		.dc.b ARG_PUSH,((x14fa3-jmpbase)>>8)&255,(x14fa3-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b TOK_SUBFUNC_208,68
-		.dc.b ARG_REPLACE,70
-		.dc.b ARG_PUSH,((x14f9b-jmpbase)>>8)&255,(x14f9b-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14fa6 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ (TOK_SUBFUNC_208<<8)+68, { 0 } },
+	{ ARG_REPLACE, { (void *)69 } },
+	{ ARG_PUSH, { x14fa3 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ (TOK_SUBFUNC_208<<8)+68, { 0 } },
+	{ ARG_REPLACE, { (void *)70 } },
+	{ ARG_PUSH, { x14f9b } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 
 x14fc5:
-		.dc.b ARG_PUSH,((x14fa6-jmpbase)>>8)&255,(x14fa6-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b TOK_SUBFUNC_208,209
-		.dc.b ARG_REPLACE,210
-		.dc.b ARG_PUSH,((x14fa3-jmpbase)>>8)&255,(x14fa3-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b TOK_SUBFUNC_208,209
-		.dc.b ARG_REPLACE,211
-		.dc.b ARG_PUSH,((x14f9b-jmpbase)>>8)&255,(x14f9b-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14fa6 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ (TOK_SUBFUNC_208<<8)+209, { 0 } },
+	{ ARG_REPLACE, { (void *)210 } },
+	{ ARG_PUSH, { x14fa3 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ (TOK_SUBFUNC_208<<8)+209, { 0 } },
+	{ ARG_REPLACE, { (void *)211 } },
+	{ ARG_PUSH, { x14f9b } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x14fdc:
-		.dc.b ARG_PUSH,((x14fe1-jmpbase)>>8)&255,(x14fe1-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14fe1 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x14fe1:
-		.dc.b ARG_PUSH,((x14336-jmpbase)>>8)&255,(x14336-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14336 } },
+	{ ARG_END, { 0 } }
 x14fe5:
-		.dc.b ARG_PUSH,((x14fe9-jmpbase)>>8)&255,(x14fe9-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14fe9 } },
+	{ ARG_END, { 0 } }
 x14fe9:
-		.dc.b ARG_PUSH,((x1434e-jmpbase)>>8)&255,(x1434e-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
+	{ ARG_PUSH, { x1434e } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
 x14fee:
-		.dc.b ARG_PUSH,((x143ad-jmpbase)>>8)&255,(x143ad-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x143ad } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x14ff3:
-		.dc.b ARG_REPLACE,208
-		.dc.b 249,189
-		.dc.b ARG_PUSH,((x1501f-jmpbase)>>8)&255,(x1501f-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_REPLACE, { (void *)208 } },
+	{ 249,189, { 0 } },
+	{ ARG_PUSH, { x1501f } },
+	{ ARG_END, { 0 } }
 x14ffb:
-		.dc.b ARG_PUSH,((x15046-jmpbase)>>8)&255,(x15046-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x15046 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x15000:
-		.dc.b ARG_PUSH,((x144dd-jmpbase)>>8)&255,(x144dd-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x144dd } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x15005:
-		.dc.b ARG_CALL_FUNC,((f154aa-jmpbase)>>8)&255,(f154aa-jmpbase)&255
-		.dc.b 35
-		.dc.b ARG_REPLACE,157
-		.dc.b ARG_PUSH,((x15050-jmpbase)>>8)&255,(x15050-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)f154aa } },
+	{ 35, { 0 } },
+	{ ARG_REPLACE, { (void *)157 } },
+	{ ARG_PUSH, { x15050 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 x15010:
-		.dc.b ARG_PUSH,((x14b91-jmpbase)>>8)&255,(x14b91-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14b91 } },
+	{ 32, { 0 } },
+	{ ARG_END, { 0 } }
 yABSOLUTE_args:
-		.dc.b ARG_PUSH,((x1434e-jmpbase)>>8)&255,(x1434e-jmpbase)&255
-		.dc.b ARG_PUSH,((x15027-jmpbase)>>8)&255,(x15027-jmpbase)&255
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x1434e } },
+	{ ARG_PUSH, { x15027 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_END, { 0 } }
 x1501f:
-		.dc.b ARG_PUSH,((x143ad-jmpbase)>>8)&255,(x143ad-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x1434e-jmpbase)>>8)&255,(x1434e-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x143ad } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x1434e } },
+	{ ARG_END, { 0 } }
 x15027:
-		.dc.b 33
-		.dc.b ARG_POP
-		.dc.b 19
-		.dc.b ARG_REPLACE,33
-		.dc.b ARG_END
-x1502d:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-x15036:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-x15039:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-x1503c:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-x1503f:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_END
+	{ 33, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 19, { 0 } },
+	{ ARG_REPLACE, { (void *)33 } },
+	{ ARG_END, { 0 } }
+
 x15046:
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_PUSH,((x1504d-jmpbase)>>8)&255,(x1504d-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x1504d } },
+	{ ARG_END, { 0 } }
 x1504d:
-		.dc.b ARG_PUSH,((x144eb-jmpbase)>>8)&255,(x144eb-jmpbase)&255
+	{ ARG_PUSH, { x144eb } },
 x15050:
-		.dc.b ARG_PUSH,((x1505b-jmpbase)>>8)&255,(x1505b-jmpbase)&255
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_PUSH,((x1504d-jmpbase)>>8)&255,(x1504d-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ ARG_PUSH, { x1505b } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x1504d } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 x1505b:
-		.dc.b 138
-		.dc.b ARG_POP
-		.dc.b 139
-		.dc.b ARG_POP
-		.dc.b ARG_END
-x15060:
-		.dc.b 117
-		.dc.b ARG_REPLACE,118
-		.dc.b ARG_POP
-		.dc.b 119
-		.dc.b ARG_REPLACE,120
-		.dc.b ARG_END
-x15068:
-		.dc.b ARG_PUSH,((x1506f-jmpbase)>>8)&255,(x1506f-jmpbase)&255
-		.dc.b ARG_PUSH,((x15176-jmpbase)>>8)&255,(x15176-jmpbase)&255
-		.dc.b ARG_END
+	{ 138, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 139, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
+
 x1506f:
-		.dc.b ARG_CALL_FUNC,((f13d22-jmpbase)>>8)&255,(f13d22-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13696-jmpbase)>>8)&255,(f13696-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b 135
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b 58
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b 58
-		.dc.b ARG_REPLACE,59
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b 60
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b 60
-		.dc.b ARG_REPLACE,61
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b 62
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b 62
-		.dc.b ARG_REPLACE,63
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f1369e-jmpbase)>>8)&255,(f1369e-jmpbase)&255
-		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b 94
-		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b 94
-		.dc.b ARG_REPLACE,95
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_PUSH,((x144eb-jmpbase)>>8)&255,(x144eb-jmpbase)&255
-		.dc.b ARG_PUSH,((x144f6-jmpbase)>>8)&255,(x144f6-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x15060-jmpbase)>>8)&255,(x15060-jmpbase)&255
-		.dc.b ARG_PUSH,((x15164-jmpbase)>>8)&255,(x15164-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b 127
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
+	{ ARG_CALL_FUNC, { (void *)f13d22 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13696 } },
+	{ ARG_POP, { 0 } },
+	{ 135, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 58, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 58, { 0 } },
+	{ ARG_REPLACE, { (void *)59 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14c92 } },
+	{ ARG_POP, { 0 } },
+	{ 60, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 60, { 0 } },
+	{ ARG_REPLACE, { (void *)61 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14c92 } },
+	{ ARG_POP, { 0 } },
+	{ 62, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14c92 } },
+	{ ARG_POP, { 0 } },
+	{ 62, { 0 } },
+	{ ARG_REPLACE, { (void *)63 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14c92 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f1369e } },
+	{ ARG_PUSH, { x14c92 } },
+	{ ARG_POP, { 0 } },
+	{ 94, { 0 } },
+	{ ARG_PUSH, { x14c92 } },
+	{ ARG_POP, { 0 } },
+	{ 94, { 0 } },
+	{ ARG_REPLACE, { (void *)95 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { x144f6 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x15060 } },
+	{ ARG_PUSH, { x15164 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 127, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
 .IFNE GBE
-		.dc.b 148
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b 160
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b 144
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b 145
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b 150
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b 146
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b 147
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b 142
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b 177
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b 166
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b 164
-		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b 165
-		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b 149
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
-		.dc.b ARG_POP
-	.IF GBE>=373
-		.dc.b 181
-	.ELSE
-		.dc.b 169
-	.ENDC
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
-		.dc.b ARG_POP
-	.IF GBE>=373
-		.dc.b 169
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
-		.dc.b ARG_POP
-	.ENDC
-		.dc.b 178
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b 179
-		.dc.b ARG_PUSH,((x14fa6-jmpbase)>>8)&255,(x14fa6-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b 180
-		.dc.b ARG_PUSH,((x14fa6-jmpbase)>>8)&255,(x14fa6-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
+	{ 148, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 160, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 144, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 145, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 150, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 146, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 147, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 142, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 177, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 166, { 0 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 164, { 0 } },
+	{ ARG_PUSH, { x14c92 } },
+	{ ARG_POP, { 0 } },
+	{ 165, { 0 } },
+	{ ARG_PUSH, { x14c92 } },
+	{ ARG_POP, { 0 } },
+	{ 149, { 0 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14c92 } },
+	{ ARG_POP, { 0 } },
+#if GBE >= 373
+	{ 181, { 0 } },
+#else
+	{ 169, { 0 } },
+#endif
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14c92 } },
+	{ ARG_POP, { 0 } },
+#if GBE >= 373
+	{ 169, { 0 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14c92 } },
+	{ ARG_POP, { 0 } },
+#endif
+	{ 178, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 179, { 0 } },
+	{ ARG_PUSH, { x14fa6 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 180, { 0 } },
+	{ ARG_PUSH, { x14fa6 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
 .ENDC
+
 x150de:
-		.dc.b 129
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b 129
-		.dc.b ARG_REPLACE,130
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x15160-jmpbase)>>8)&255,(x15160-jmpbase)&255
-		.dc.b ARG_CALL_FUNC,((f154da-jmpbase)>>8)&255,(f154da-jmpbase)&255
-		.dc.b ARG_PUSH,((x14962-jmpbase)>>8)&255,(x14962-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b TOK_SUBFUNC_208,96
-		.dc.b -6
-		.dc.b ARG_REPLACE,131
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b TOK_SUBFUNC_208,97
-		.dc.b -6
-		.dc.b ARG_REPLACE,133
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b 190
-		.dc.b ARG_PUSH,((x1512d-jmpbase)>>8)&255,(x1512d-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b 193
-		.dc.b ARG_PUSH,((x1513f-jmpbase)>>8)&255,(x1513f-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b 195
-		.dc.b ARG_PUSH,((x1514a-jmpbase)>>8)&255,(x1514a-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b 115
-		.dc.b ARG_PUSH,((x15155-jmpbase)>>8)&255,(x15155-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b 97
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b 88
-		.dc.b ARG_END
-x1512d:
-		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,191
-		.dc.b ARG_PUSH,((x1503f-jmpbase)>>8)&255,(x1503f-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,192
-		.dc.b ARG_PUSH,((x1503c-jmpbase)>>8)&255,(x1503c-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
-x1513f:
-		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,194
-		.dc.b ARG_PUSH,((x1503f-jmpbase)>>8)&255,(x1503f-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
-x1514a:
-		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,196
-		.dc.b ARG_PUSH,((x1503f-jmpbase)>>8)&255,(x1503f-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
-x15155:
-		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,116
-		.dc.b ARG_PUSH,((x1503f-jmpbase)>>8)&255,(x1503f-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
-x15160:
-		.dc.b 158
-		.dc.b ARG_POP
-		.dc.b 159
-		.dc.b ARG_END
-x15164:
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b ARG_PUSH,((x1516b-jmpbase)>>8)&255,(x1516b-jmpbase)&255
-		.dc.b ARG_END
-x1516b:
-		.dc.b ARG_PUSH,((x144eb-jmpbase)>>8)&255,(x144eb-jmpbase)&255
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b ARG_PUSH,((x1516b-jmpbase)>>8)&255,(x1516b-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
-x15176:
-		.dc.b 6
-		.dc.b ARG_REPLACE,28
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
-x1517e:
-		.dc.b 12
-		.dc.b ARG_REPLACE,20
-		.dc.b ARG_POP
-		.dc.b 13
-		.dc.b ARG_REPLACE,21
-		.dc.b ARG_POP
-		.dc.b 14
-		.dc.b ARG_REPLACE,22
-		.dc.b ARG_POP
-		.dc.b 15
-		.dc.b ARG_REPLACE,23
-		.dc.b ARG_POP
-		.dc.b 16
-		.dc.b ARG_REPLACE,24
-		.dc.b ARG_POP
-		.dc.b 17
-		.dc.b ARG_REPLACE,25
-		.dc.b ARG_POP
-		.dc.b 18
-		.dc.b ARG_REPLACE,26
-		.dc.b ARG_POP
-		.dc.b 19
-		.dc.b ARG_REPLACE,27
-		.dc.b ARG_END
-x1519e:
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_PUSH,((x151a6-jmpbase)>>8)&255,(x151a6-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_END
-x151a6:
-		.dc.b 33
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_PUSH,((x151a6-jmpbase)>>8)&255,(x151a6-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 129, { 0 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x14c92 } },
+	{ ARG_POP, { 0 } },
+	{ 129, { 0 } },
+	{ ARG_REPLACE, { (void *)130 } },
+	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x15160 } },
+	{ ARG_CALL_FUNC, { (void *)f154da } },
+	{ ARG_PUSH, { x14962 } },
+	{ ARG_POP, { 0 } },
+	{ (TOK_SUBFUNC_208<<8)+96, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_REPLACE, { (void *)131 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ (TOK_SUBFUNC_208<<8)+97, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_REPLACE, { (void *)133 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 190, { 0 } },
+	{ ARG_PUSH, { x1512d } },
+	{ ARG_POP, { 0 } },
+	{ 193, { 0 } },
+	{ ARG_PUSH, { x1513f } },
+	{ ARG_POP, { 0 } },
+	{ 195, { 0 } },
+	{ ARG_PUSH, { x1514a } },
+	{ ARG_POP, { 0 } },
+	{ 115, { 0 } },
+	{ ARG_PUSH, { x15155 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x143ec } },
+	{ ARG_POP, { 0 } },
+	{ 97, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ 88, { 0 } },
+	{ ARG_END, { 0 } }
+
+
+
 yTEXT_args:
-		.dc.b ARG_PUSH,((x1503f-jmpbase)>>8)&255,(x1503f-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x1529b-jmpbase)>>8)&255,(x1529b-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
+	{ ARG_PUSH, { x1503f } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x1529b } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
 yATEXT_args:
-		.dc.b ARG_PUSH,((x1503c-jmpbase)>>8)&255,(x1503c-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x1529b-jmpbase)>>8)&255,(x1529b-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x1503c } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x1529b } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 	.IFEQ GBE
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b ARG_PUSH,((x151cf-jmpbase)>>8)&255,(x151cf-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x14b9a-jmpbase)>>8)&255,(x14b9a-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x15068 } },
+	{ ARG_PUSH, { x151cf } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ ARG_END, { 0 } }
 x151cf:
-		.dc.b ARG_PUSH,((x1517e-jmpbase)>>8)&255,(x1517e-jmpbase)&255
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b ARG_PUSH,((x14bc8-jmpbase)>>8)&255,(x14bc8-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
-	.ENDC
+	{ ARG_PUSH, { x1517e } },
+	{ ARG_PUSH, { x15068 } },
+	{ ARG_PUSH, { x14bc8 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
+#endif
 yINPUT_args:
-		.dc.b ARG_CALL_FUNC,((f13d22-jmpbase)>>8)&255,(f13d22-jmpbase)&255
-		.dc.b ARG_PUSH,((x151eb-jmpbase)>>8)&255,(x151eb-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x151ee-jmpbase)>>8)&255,(x151ee-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b ARG_PUSH,((x144f6-jmpbase)>>8)&255,(x144f6-jmpbase)&255
+	{ ARG_CALL_FUNC, { (void *)f13d22 } },
+	{ ARG_PUSH, { x151eb } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x151ee } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ ARG_PUSH, { x144f6 } },
 x151eb:
-		.dc.b ARG_PUSH,((x144eb-jmpbase)>>8)&255,(x144eb-jmpbase)&255
+	{ ARG_PUSH, { x144eb } },
 x151ee:
-		.dc.b ARG_PUSH,((x14336-jmpbase)>>8)&255,(x14336-jmpbase)&255
-		.dc.b ARG_PUSH,((x151f6-jmpbase)>>8)&255,(x151f6-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14336 } },
+	{ ARG_PUSH, { x151f6 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 x151f6:
-		.dc.b ARG_PUSH,((x144eb-jmpbase)>>8)&255,(x144eb-jmpbase)&255
-		.dc.b ARG_PUSH,((x14336-jmpbase)>>8)&255,(x14336-jmpbase)&255
-		.dc.b ARG_PUSH,((x151f6-jmpbase)>>8)&255,(x151f6-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { x14336 } },
+	{ ARG_PUSH, { x151f6 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 yREAD_args:
-		.dc.b ARG_PUSH,((x151ee-jmpbase)>>8)&255,(x151ee-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x151ee } },
+	{ ARG_END, { 0 } }
 yWRITE_args:
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((write_channel_args-jmpbase)>>8)&255,(write_channel_args-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((print_channel_args-jmpbase)>>8)&255,(print_channel_args-jmpbase)&255
-		.dc.b ARG_PUSH,((x15214-jmpbase)>>8)&255,(x15214-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { write_channel_args } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { print_channel_args } },
+	{ ARG_PUSH, { x15214 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 x15214:
-		.dc.b ARG_PUSH,((x1529b-jmpbase)>>8)&255,(x1529b-jmpbase)&255
-		.dc.b ARG_PUSH,((x1521b-jmpbase)>>8)&255,(x1521b-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x1529b } },
+	{ ARG_PUSH, { x1521b } },
+	{ ARG_END, { 0 } }
 x1521b:
-		.dc.b ARG_PUSH,((x15228-jmpbase)>>8)&255,(x15228-jmpbase)&255
-		.dc.b ARG_PUSH,((x1529b-jmpbase)>>8)&255,(x1529b-jmpbase)&255
-		.dc.b ARG_PUSH,((x1521b-jmpbase)>>8)&255,(x1521b-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b 34
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ ARG_PUSH, { x15228 } },
+	{ ARG_PUSH, { x1529b } },
+	{ ARG_PUSH, { x1521b } },
+	{ ARG_POP, { 0 } },
+	{ 34, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 
 x15228:
-		.dc.b 33
-		.dc.b ARG_POP
-		.dc.b 34
-		.dc.b ARG_REPLACE,33
-		.dc.b ARG_END
+	{ 33, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 34, { 0 } },
+	{ ARG_REPLACE, { (void *)33 } },
+	{ ARG_END, { 0 } }
 
 yPRINT_args:
-		.dc.b ARG_PUSH,((x1525b-jmpbase)>>8)&255,(x1525b-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_POP
-		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b TOK_CHANNEL
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_PUSH,((x1523f-jmpbase)>>8)&255,(x1523f-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x1525b } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ TOK_CHANNEL, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x1523f } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 x1523f:
-		.dc.b ARG_PUSH,((x144eb-jmpbase)>>8)&255,(x144eb-jmpbase)&255
-		.dc.b ARG_PUSH,((x1525b-jmpbase)>>8)&255,(x1525b-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { x1525b } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 
 yLPRINT_args:
-		.dc.b ARG_PUSH,((x1525b-jmpbase)>>8)&255,(x1525b-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x1525b } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 write_channel_args:
-		.dc.b TOK_CHANNEL
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ TOK_CHANNEL, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 
 print_channel_args:
-		.dc.b TOK_CHANNEL
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_PUSH,((x144eb-jmpbase)>>8)&255,(x144eb-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ TOK_CHANNEL, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 
 x1525b:
-		.dc.b ARG_PUSH,((x144eb-jmpbase)>>8)&255,(x144eb-jmpbase)&255
-		.dc.b ARG_PUSH,((x1525b-jmpbase)>>8)&255,(x1525b-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b TOK_PRINTSPACE
-		.dc.b ARG_PUSH,((x1525b-jmpbase)>>8)&255,(x1525b-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b TOK_AT
-		.dc.b ARG_PUSH,((x1503f-jmpbase)>>8)&255,(x1503f-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_CALL_FUNC,((f15306-jmpbase)>>8)&255,(f15306-jmpbase)&255
-		.dc.b ARG_CALL_FUNC,((f15310-jmpbase)>>8)&255,(f15310-jmpbase)&255
-		.dc.b ARG_PUSH,((x1525b-jmpbase)>>8)&255,(x1525b-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x15297-jmpbase)>>8)&255,(x15297-jmpbase)&255
-		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
-		.dc.b ARG_CALL_FUNC,((f15310-jmpbase)>>8)&255,(f15310-jmpbase)&255
-		.dc.b ARG_PUSH,((x1525b-jmpbase)>>8)&255,(x1525b-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b 163
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((x15214-jmpbase)>>8)&255,(x15214-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x1529b-jmpbase)>>8)&255,(x1529b-jmpbase)&255
-		.dc.b ARG_CALL_FUNC,((f15310-jmpbase)>>8)&255,(f15310-jmpbase)&255
-		.dc.b ARG_PUSH,((x1525b-jmpbase)>>8)&255,(x1525b-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { x1525b } },
+	{ ARG_POP, { 0 } },
+	{ TOK_PRINTSPACE, { 0 } },
+	{ ARG_PUSH, { x1525b } },
+	{ ARG_POP, { 0 } },
+	{ TOK_AT, { 0 } },
+	{ ARG_PUSH, { x1503f } },
+	{ 32, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f15306 } },
+	{ ARG_CALL_FUNC, { (void *)f15310 } },
+	{ ARG_PUSH, { x1525b } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x15297 } },
+	{ ARG_PUSH, { x14c92 } },
+	{ ARG_CALL_FUNC, { (void *)f15310 } },
+	{ ARG_PUSH, { x1525b } },
+	{ ARG_POP, { 0 } },
+	{ 163, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x15214 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x1529b } },
+	{ ARG_CALL_FUNC, { (void *)f15310 } },
+	{ ARG_PUSH, { x1525b } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 
 x15297:
-		.dc.b TOK_TAB
-		.dc.b ARG_POP
-		.dc.b TOK_SPC
-		.dc.b ARG_END
+	{ TOK_TAB, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ TOK_SPC, { 0 } },
+	{ ARG_END, { 0 } }
 
 x1529b:
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b ARG_CALL_FUNC,((f152e6-jmpbase)>>8)&255,(f152e6-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b 249,55
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x15068 } },
+	{ ARG_CALL_FUNC, { (void *)f152e6 } },
+	{ ARG_POP, { 0 } },
+	{ 249,55, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_END, { 0 } }
 
 yDEFMOUSE_args:
-		.dc.b ARG_PUSH,((yCLEARW_args-jmpbase)>>8)&255,(yCLEARW_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_REPLACE,48
-		.dc.b ARG_PUSH,((yCHDIR_args-jmpbase)>>8)&255,(yCHDIR_args-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)48 } },
+	{ ARG_PUSH, { yCHDIR_args } },
+	{ ARG_END, { 0 } }
 
 ySPRITE_args:
-		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
-		.dc.b 33
-		.dc.b ARG_PUSH,((yVPLOT_args-jmpbase)>>8)&255,(yVPLOT_args-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_PUSH, { x143ec } },
+	{ 33, { 0 } },
+	{ ARG_PUSH, { yVPLOT_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x143ec } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 yCALL_args:
-		.dc.b ARG_CALL_FUNC,((f154aa-jmpbase)>>8)&255,(f154aa-jmpbase)&255
-		.dc.b ARG_PUSH,((x152c7-jmpbase)>>8)&255,(x152c7-jmpbase)&255
-		.dc.b TOK_LINE_COMMENT
-		.dc.b ARG_END
+	{ ARG_CALL_FUNC, { (void *)f154aa } },
+	{ ARG_PUSH, { x152c7 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 
 x152c7:
-		.dc.b 35
-		.dc.b ARG_REPLACE,157
-		.dc.b ARG_PUSH,((x152dc-jmpbase)>>8)&255,(x152dc-jmpbase)&255
-		.dc.b ARG_PUSH,((x152d3-jmpbase)>>8)&255,(x152d3-jmpbase)&255
-		.dc.b 32
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 35, { 0 } },
+	{ ARG_REPLACE, { (void *)157 } },
+	{ ARG_PUSH, { x152dc } },
+	{ ARG_PUSH, { x152d3 } },
+	{ 32, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 
 x152d3:
-		.dc.b 33
-		.dc.b ARG_PUSH,((x152dc-jmpbase)>>8)&255,(x152dc-jmpbase)&255
-		.dc.b ARG_PUSH,((x152d3-jmpbase)>>8)&255,(x152d3-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b ARG_END
+	{ 33, { 0 } },
+	{ ARG_PUSH, { x152dc } },
+	{ ARG_PUSH, { x152d3 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 
 x152dc:
-		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
-		.dc.b ARG_POP
-		.dc.b 249,55
-		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
-		.dc.b ARG_END
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_POP, { 0 } },
+	{ 249,55, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ ARG_END, { 0 } }
 	.even
 
 /* 371: 5807e */
@@ -8669,11 +8171,7 @@ x154f0_3:
 		rts
 x154f0_4:
 		cmpi.b     #TOK_SUBFUNC_214,d0
-	.IFNE GBE
 		bhi.s      x154f0_11
-	.ELSE
-		bcc.s      x154f0_11
-	.ENDC
 		cmpi.b     #TOK_SUBFUNC_208,d0
 		bcc.s      x154f0_6
 		lsr.b      #1,d0
@@ -8792,9 +8290,9 @@ x154f0_23:
 		add.w      d0,d0
 		lea.l      5360(a6),a0
 		move.l     #0x5B325D5B,(a0)+ /* '[2][' */
-	.IF GBE>=372
+#if GBE >= 372
 		move.l     #0x4E657720,(a0)+ /* 'New ' */
-	.ENDC
+#endif
 		lea.l      newvar_msg,a1
 		cmpi.w     #28,d0
 		bcs.s      x154f0_24
@@ -8810,13 +8308,13 @@ x154f0_25:
 x154f0_26:
 		move.b     (a1)+,(a0)+
 		bne.s      x154f0_26
-	.IF GBE>=372
+#if GBE >= 372
 		move.b     #'?',-1(a0)
 		move.b     #' ',(a0)+
-	.ELSE
+#else
 		move.b     #' ',-1(a0)
 		move.b     #'?',(a0)+
-	.ENDC
+#endif
 x154f0_27:
 		move.b     #'|',(a0)+
 		moveq.l    #30-1,d2
@@ -8875,7 +8373,7 @@ x154f0_33:
 		tst.b      MergeFlg+1
 		bne.s      x154f0_34
 		jsr        x1194e.l
-	.ENDC
+#endif
 x154f0_34:
 		lea.l      20(a6),a0
 		adda.w     d0,a0
@@ -8903,7 +8401,7 @@ x154f0_36:
 		tst.b      MergeFlg+1
 		bne.s      x154f0_37
 		jsr        x118e2.l
-	.ENDC
+#endif
 x154f0_37:
 		movem.l    (a7)+,d0-d2/d7/a0-a2
 		bra        x154f0_21
@@ -9593,11 +9091,7 @@ x15c52_14:
 		cmpi.b     #55,d0
 		beq.s      x15c52_13
 		cmpi.b     #TOK_SUBFUNC_214,d0
-	.IFNE GBE
 		bhi        x15c52_28
-	.ELSE
-		bcc        x15c52_28
-	.ENDC
 		cmpi.b     #TOK_CHAR_CONST,d0
 		bcc        x162ac
 		lea.l      x15fe8(pc),a3
@@ -9854,11 +9348,7 @@ x16028_1:
 		move.l     (a1)+,d0
 		move.w     (a1)+,d1
 		move.w     (a1)+,d2
-		.IFNE GBE
 		jsr FFTOI.l
-		.ELSE
-		jsr        extjmp_table+19*6(a6) /* -> FFTOI */
-		.ENDC
 		bsr        print_hex
 		bra        x15c52_13
 x16028_2:
@@ -9867,11 +9357,7 @@ x16028_3:
 		move.l     (a1)+,d0
 		move.w     (a1)+,d1
 		move.w     (a1)+,d2
-		.IFNE GBE
 		jsr FFTOI.l
-		.ELSE
-		jsr        extjmp_table+19*6(a6) /* -> FFTOI */
-		.ENDC
 		bsr        print_oct
 		bra        x15c52_13
 x16028_4:
@@ -9880,21 +9366,17 @@ x16028_5:
 		move.l     (a1)+,d0
 		move.w     (a1)+,d1
 		move.w     (a1)+,d2
-		.IFNE GBE
 		jsr FFTOI.l
-		.ELSE
-		jsr        extjmp_table+19*6(a6) /* -> FFTOI */
-		.ENDC
 		bsr        print_bin
 		bra        x15c52_13
 
 x1607a:
 		lea.l      func_table_offsets(a6),a0
-	.IFNE GBE
+#if GBE > 0
 		move.w     #(5384/2)-1,d0
-	.ELSE
+#else
 		move.w     #(1952/2)-1,d0
-	.ENDC
+#endif
 x1607a_1:
 		clr.w      (a0)+
 		dbf        d0,x1607a_1
@@ -9908,7 +9390,7 @@ x1607a_2:
 		move.b     3(a1,d0.w),d1
 		move.b     2(a1,d0.w),d2
 		beq.s      x1607a_3
-	.IFNE GBE
+#if GBE > 0
 		addi.w     #256,d1
 		cmp.b      #TOK_SUBFUNC_208,d2
 		beq.s      x1607a_3
@@ -9928,9 +9410,9 @@ x1607a_2:
 		cmp.b      #TOK_SUBFUNC_213,d2
 		beq.s      x1607a_3
 		addi.w     #256,d1
-	.ELSE
+#else
 		addi.w     #TOK_REF_FLOAT_SHORT,d1
-	.ENDC
+#endif
 x1607a_3:
 		add.w      d1,d1
 		move.l     a1,d2
@@ -9940,9 +9422,9 @@ x1607a_3:
 		bra.s      x1607a_2
 x1607a_4:
 		lea.l      cmd_table_offsets(a6),a0
-	.IF GBE>=373
+#if GBE >= 373
 		lea.l      cmd_table,a1
-	.ELSE
+#else
 		lea.l      cmd_table(pc),a1
 	.ENDIF
 		moveq.l    #0,d0
@@ -10000,12 +9482,12 @@ x1612c_1:
 		beq.s      x1612c_3
 		cmpi.b     #'"',d2
 		bne.s      x1612c_2
-	.IFNE GBE
+#if GBE > 0
 		addq.l     #1,a0
 		move.b     d2,(a0)
-	.ELSE
+#else
 		move.b     d2,(a0)+
-	.ENDC
+#endif
 x1612c_2:
 		addq.l     #1,a0
 x1612c_3:
@@ -10173,7 +9655,7 @@ x16294_2:
 		bra        x15c52_13
 
 x162ac:
-	.IFNE GBE
+#if GBE > 0
 		cmp.b      #TOK_SUBFUNC_208,d0
 		beq.s      x162ac_208
 		cmp.b      #TOK_SUBFUNC_209,d0
@@ -10209,7 +9691,7 @@ x162ac_208:
 		move.w     #1*256,d0
 x162ac_cont:
 		move.b     (a1)+,d0
-	.ELSE
+#else
 		cmpi.b     #TOK_SUBFUNC_208,d0
 		bne.s      x16294
 		moveq.l    #0,d0
@@ -10406,11 +9888,7 @@ x16534:
 		andi.b     #1,d1
 		bne.s      x16534_2
 		move.l     (a7)+,d1
-	.IFNE GBE /* zzz */
 		lea.l      x16782,a0
-	.ELSE
-		lea.l      x16782(pc),a0
-	.ENDC
 		move.l     d0,(a0)
 		move.l     d1,-(a7)
 		move.l     d0,-(a7)
@@ -10420,11 +9898,7 @@ x16534:
 		lea.l      12(a7),a7
 		tst.l      d0
 		bmi.s      x16534_3
-	.IFNE GBE /* zzz */
 		movea.l    x16782,a0
-	.ELSE
-		movea.l    x16782(pc),a0
-	.ENDC
 		move.w     #0x1FFF,d0
 x16534_1:
 		clr.l      (a0)+
@@ -10433,11 +9907,7 @@ x16534_1:
 x16534_2:
 		addq.l     #4,a7
 x16534_3:
-	.IFNE GBE /* zzz */
 		lea.l      x16782,a0
-	.ELSE
-		lea.l      x16782(pc),a0
-	.ENDC
 		clr.l      (a0)
 		rts
 
@@ -10458,11 +9928,7 @@ find_mtask1:
 find_mtask2:
 		moveq.l    #0,d0
 find_mtask3:
-	.IFNE GBE /* zzz */
 		lea.l      mtask,a0
-	.ELSE
-		lea.l      mtask(pc),a0
-	.ENDC
 		move.w     d0,(a0)
 		rts
 
@@ -10594,3 +10060,6 @@ bss_end: /* 1779c */
 8698: workout
 9708: workin
 */
+
+
+.dc.b
