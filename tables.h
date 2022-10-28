@@ -347,7 +347,7 @@ extern struct gfaversinfo const gfarecl[71];
 #define TOK_REPLACE                178
 #define TOK_CRYPT                  179
 #define TOK_XLATE                  180
-#define TOK_RES_181                181
+#define TOK_STRUCTSTR              181
 #define TOK_BASE                   182
 #define TOK_NULL                   183
 #define TOK_CONST_ZERO             184

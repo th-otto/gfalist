@@ -2809,29 +2809,6 @@ x1439e:
 	{ ARG_PUSH, { x143ec } },
 	{ ARG_END, { 0 } }
 
-x143ad:
-	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
-	{ TOK_RPAREN, { 0 } },
-	{ ARG_POP, { 0 } },
-x143b2:
-	{ ARG_CALL_FUNC, { (void *)expect_bool_arr } },
-	{ TOK_RPAREN, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_CALL_FUNC, { (void *)expect_byte_arr } },
-	{ TOK_RPAREN, { 0 } },
-	{ ARG_POP, { 0 } },
-x143bc:
-	{ ARG_CALL_FUNC, { (void *)expect_word_arr } },
-	{ TOK_RPAREN, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
-	{ TOK_RPAREN, { 0 } },
-	{ ARG_POP, { 0 } },
-x143c6:
-	{ ARG_CALL_FUNC, { (void *)expect_int_arr } },
-	{ TOK_RPAREN, { 0 } },
-	{ ARG_END, { 0 } }
-
 x1440d:
 	{ ARG_PUSH, { x14336+6 } },
 	{ TOK_COMMA, { 0 } },
@@ -2904,51 +2881,13 @@ x57fc3_372:
 	{ ARG_END, { 0 } }
 #endif
 
-yARRAYFILL_args:
-	{ ARG_PUSH, { x143b2 } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x14b9a } },
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_END, { 0 } }
-
-yRCALL_args:
-	{ ARG_PUSH, { iexp_comma } },
-	{ ARG_CALL_FUNC, { (void *)expect_int_arr } },
-	{ TOK_RPAREN, { 0 } },
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_END, { 0 } }
-yBITBLT_args:
-	{ ARG_PUSH, { x143c6 } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x143c6 } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x143c6 } },
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_CALL_FUNC, { (void *)f13d64 } },
-	{ ARG_PUSH, { x143c6 } },
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_CALL_FUNC, { (void *)f13d64 } },
-	{ ARG_PUSH, { yCLEARW_args } },
-	{ ARG_END, { 0 } }
-yPOLYMARK_args:
-yPOLYFILL_args:
-yPOLYLINE_args:
-	{ ARG_PUSH, { iexp_comma } },
-	{ ARG_PUSH, { x143bc } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x143bc } },
-	{ ARG_PUSH, { x14aa3 } },
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_END, { 0 } }
-
 #if GBE > 0
 x58478_372:
 	{ ARG_PUSH, { iexp_comma } },
 	{ ARG_PUSH, { x14336+2 } },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
+
 x58480_372:
 	{ ARG_PUSH, { iexp_comma } },
 x58483_372:
@@ -2964,6 +2903,7 @@ x58488_372:
 	{ ARG_PUSH, { x15068 } },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
+
 x58497_372:
 	{ ARG_PUSH, { iexp_comma } },
 	{ ARG_PUSH, { iexp_comma } },
@@ -2983,92 +2923,7 @@ x584a6_372:
 	{ ARG_END, { 0 } }
 #endif
 
-yALERT_args:
-	{ ARG_PUSH, { iexp_comma } },
-	{ ARG_PUSH, { x15068 } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { iexp_comma } },
-	{ ARG_PUSH, { x15068 } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x14336+2 } },
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_END, { 0 } }
-
-yKEYDEF_args:
-	{ ARG_PUSH, { iexp_comma } },
-	{ ARG_PUSH, { x14139 } },
-	{ ARG_END, { 0 } }
-
-yDEFTEXT_args:
-	{ ARG_PUSH, { yDEFMARK_args } },
-	{ ARG_POP, { 0 } },
-	{ ARG_PUSH, { yDEFLINE_args } },
-	{ ARG_POP, { 0 } },
-	{ ARG_PUSH, { x14b90+1 } },
-	{ TOK_COMMA, { 0 } },
-yDEFLINE_args:
-	{ ARG_PUSH, { x14b90+1 } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x14b90+1 } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x14b90+1 } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x14b90+1 } },
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_POP, { 0 } },
-yDEFMARK_args:
-	{ ARG_PUSH, { x14b90+1 } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x14b90+1 } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x14b90+1 } },
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_PUSH, { x14b90+1 } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x14b90+1 } },
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_POP, { 0 } },
-
-yVCLS_args:
-ySLEEP_args:
-ySYSTEM_args:
-yRANDOMIZE_args:
-yQUIT_args:
-yMONITOR_args:
-	{ ARG_PUSH, { yCLEARW_args } },
-	{ ARG_POP, { 0 } },
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_END, { 0 } }
-yRESERVE_args:
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_REPLACE, { (void *)208 } },
-	{ ARG_PUSH, { yCLEARW_args } },
-	{ ARG_END, { 0 } }
-yBPUT_args:
-yBGET_args:
-	{ ARG_PUSH, { x144f6 } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { yBMIRROR_args } },
-	{ ARG_END, { 0 } }
-
 #if GBE > 0
-#if GBE >= 373
-yRC_REDRAW_args:
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_REPLACE, { (void *)74 } },
-	{ ARG_PUSH, { yVPBAR_args } },
-	{ ARG_END, { 0 } }
-#endif
-ySTRARRAYFILL_args:
-	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
-	{ TOK_RPAREN, { 0 } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x15068 } },
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_END, { 0 } }
 x58524_372:
 	{ ARG_PUSH, { x15068 } },
 	{ TOK_COMMA, { 0 } },
@@ -3077,6 +2932,7 @@ x58524_372:
 	{ TOK_RPAREN, { 0 } },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
+
 x58531_372:
 	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
 	{ TOK_RPAREN, { 0 } },
@@ -3086,6 +2942,7 @@ x58531_372:
 	{ ARG_PUSH, { x143ec } },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
+
 x58541_372:
 	{ ARG_PUSH, { x15068 } },
 	{ TOK_COMMA, { 0 } },
@@ -3094,6 +2951,7 @@ x58541_372:
 	{ ARG_PUSH, { x143ec } },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
+
 x58550_372:
 	{ ARG_PUSH, { x143ec } },
 	{ TOK_COMMA, { 0 } },
@@ -3102,11 +2960,13 @@ x58550_372:
 	{ ARG_PUSH, { x15068 } },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
+
 x5855f_372:
 	{ ARG_PUSH, { x143ec } },
 	{ TOK_COMMA, { 0 } },
 	{ ARG_PUSH, { x14c92 } },
 	{ ARG_END, { 0 } }
+
 x58567_372:
 	{ ARG_PUSH, { x15068 } },
 	{ TOK_COMMA, { 0 } },
@@ -3115,111 +2975,7 @@ x58567_372:
 	{ TOK_RPAREN, { 0 } },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
-#if GBE >= 373
-yPIXEL24_args:
-	{ ARG_PUSH, { yVGET_args } },
-	{ ARG_POP, { 0 } },
-	{ ARG_REPLACE, { (void *)2 } },
-	{ ARG_PUSH, { ySET_GCBITMAP_args } },
-	{ ARG_END, { 0 } }
-yPIXEL32_args:
-	{ ARG_PUSH, { yVGET_args } },
-	{ ARG_POP, { 0 } },
-	{ ARG_REPLACE, { (void *)6 } },
-	{ ARG_PUSH, { ySET_GCBITMAP_args } },
-	{ ARG_END, { 0 } }
-yPIXEL16_args:
-	{ ARG_PUSH, { yVGET_args } },
-	{ ARG_POP, { 0 } },
-	{ ARG_REPLACE, { (void *)10 } },
-	{ ARG_PUSH, { ySET_GCBITMAP_args } },
-	{ ARG_END, { 0 } }
-yPIXEL15_args:
-	{ ARG_PUSH, { yVGET_args } },
-	{ ARG_POP, { 0 } },
-	{ ARG_REPLACE, { (void *)14 } },
-	{ ARG_PUSH, { ySET_GCBITMAP_args } },
-	{ ARG_END, { 0 } }
 #endif
-#endif
-
-ySTORE_args:
-	{ ARG_PUSH, { x144f6 } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
-	{ TOK_RPAREN, { 0 } },
-	{ ARG_PUSH, { x14b49 } },
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_END, { 0 } }
-
-yRECALL_args:
-	{ ARG_PUSH, { x144f6 } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
-	{ TOK_RPAREN, { 0 } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x14b4f } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x14336+8 } },
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_END, { 0 } }
-
-x14b49:
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x14b4f } },
-	{ ARG_POP, { 0 } },
-	{ ARG_END, { 0 } }
-
-x14b4f:
-	{ ARG_PUSH, { x14b96 } },
-	{ ARG_PUSH, { x14b56 } },
-	{ ARG_END, { 0 } }
-
-x14b56:
-	{ TOK_TO, { 0 } },
-	{ ARG_PUSH, { x14b96 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_END, { 0 } }
-
-yVRC_COPY_args:
-yRC_COPY_args:
-	{ ARG_PUSH, { x15036 } },
-	{ ARG_PUSH, { x14532 } },
-	{ ARG_PUSH, { x1503c } },
-	{ ARG_PUSH, { x14b90 } },
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_END, { 0 } }
-
-ySETCOLOR_args:
-	{ ARG_PUSH, { yBMIRROR_args } },
-	{ ARG_POP, { 0 } },
-	{ ARG_REPLACE, { (void *)168 } },
-	{ ARG_PUSH, { yBOX_args } },
-	{ ARG_END, { 0 } }
-
-yVDISYS_args:
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_REPLACE, { (void *)174 } },
-	{ ARG_PUSH, { yCLEARW_args } },
-	{ ARG_POP, { 0 } },
-	{ ARG_REPLACE, { (void *)176 } },
-	{ ARG_PUSH, { yBMOVE_args } },
-	{ ARG_POP, { 0 } },
-	{ ARG_REPLACE, { (void *)178 } },
-	{ ARG_PUSH, { yBOX_args } },
-	{ ARG_END, { 0 } }
-
-yGEMSYS_args:
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_REPLACE, { (void *)182 } },
-	{ ARG_PUSH, { yCLEARW_args } },
-#if GBE > 0
-	{ ARG_POP, { 0 } },
-	{ ARG_PUSH, { yVGET_args } },
-#endif
-	{ ARG_END, { 0 } }
 
 	.even
 
@@ -4949,6 +4705,8 @@ offset_table_sf213:
 offset_table_sf214:
 		.even
 
+zzz
+
 /* 371: 57b1c */
 /* 372: 58d18 */
 /* 373: 59bca */
@@ -5030,30 +4788,7 @@ x58d6a_372:
 	{ ARG_PUSH, { x14411 } },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
-yRGB_args:
-	{ ARG_PUSH, { iexp_comma } },
-	{ ARG_PUSH, { iexp_comma } },
-	{ ARG_PUSH, { x14336+4 } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x14336+4 } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x14336+4 } },
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_END, { 0 } }
-yAVERAGE_RGB_args:
-	{ ARG_PUSH, { iexp_comma } },
-	{ ARG_PUSH, { iexp_comma } },
-	{ ARG_PUSH, { iexp_comma } },
-	{ ARG_PUSH, { iexp_comma } },
-	{ ARG_PUSH, { iexp_comma } },
-	{ ARG_PUSH, { iexp_comma } },
-	{ ARG_PUSH, { x14336+2 } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x14336+2 } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x14336+2 } },
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_END, { 0 } }
+
 #endif
 
 x14f05:
@@ -5061,11 +4796,13 @@ x14f05:
 	{ ARG_PUSH, { x14f1d } },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
+
 x14f0d:
 	{ ARG_PUSH, { x15036 } },
 	{ ARG_PUSH, { x14f1d } },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
+
 x14f15:
 	{ TOK_COMMA, { 0 } },
 	{ ARG_PUSH, { x14415 } },
@@ -5078,6 +4815,7 @@ x14f1e:
 	{ ARG_PUSH, { x1440d } },
 	{ ARG_POP, { 0 } },
 	{ ARG_END, { 0 } }
+
 x14f23:
 	{ ARG_PUSH, { x14f1e } },
 	{ TOK_RPAREN, { 0 } },
@@ -5138,14 +4876,6 @@ x14f4d:
 	{ ARG_END, { 0 } }
 
 #if GBE > 0
-
-yTPUT_args:
-	{ ARG_PUSH, { x1503f } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x14fa6 } },
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_END, { 0 } }
-
 x58e05_372:
 	{ ARG_PUSH, { iexp_comma } },
 x58e08_372:
@@ -5153,21 +4883,6 @@ x58e08_372:
 x58e0b_372:
 	{ ARG_PUSH, { x143ec } },
 	{ TOK_RPAREN, { 0 } },
-	{ ARG_END, { 0 } }
-
-yVER2STR_args:
-yENVIRON_args:
-	{ ARG_PUSH, { iexp_comma } },
-	{ ARG_PUSH, { x143ec } },
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_END, { 0 } }
-
-yBXLATE_args:
-yBCRYPT_args:
-	{ ARG_PUSH, { iexp_comma } },
-	{ ARG_PUSH, { iexp_comma } },
-	{ ARG_PUSH, { x15068 } },
-	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_END, { 0 } }
 
 x58e23_372:
@@ -5190,6 +4905,7 @@ x58e37_372:
 	{ ARG_PUSH, { x15068 } },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
+
 x58e48_372:
 	{ ARG_PUSH, { iexp_comma } },
 	{ ARG_PUSH, { x15068 } },
@@ -5203,6 +4919,7 @@ x58e48_372:
 	{ ARG_PUSH, { x143ec } },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
+
 x58e60_372:
 	{ ARG_PUSH, { iexp_comma } },
 	{ ARG_PUSH, { x15068 } },
@@ -5212,6 +4929,7 @@ x58e60_372:
 	{ ARG_PUSH, { x14336+4 } },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
+
 x58e70_372:
 	{ ARG_PUSH, { iexp_comma } },
 	{ ARG_PUSH, { x15068 } },
@@ -5228,12 +4946,14 @@ x14f55:
 	{ ARG_PUSH, { x15068 } },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
+
 x14f5d:
 	{ ARG_PUSH, { x14336+8 } },
 	{ TOK_COMMA, { 0 } },
 	{ ARG_PUSH, { x15068 } },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
+
 x14f66:
 	{ ARG_PUSH, { x15039 } },
 	{ TOK_COMMA, { 0 } },
@@ -5245,6 +4965,7 @@ x14f6e:
 	{ ARG_PUSH, { x14f28 } },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
+
 #if GBE > 0
 x58ea0_372:
 	{ ARG_PUSH, { x14b96 } },
@@ -5258,6 +4979,7 @@ x58ea8_372:
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
 #endif
+
 #if GBE >= 373
 x59d80_373:
 	{ ARG_PUSH, { x15039 } },
@@ -5317,12 +5039,11 @@ x14f9b:
 
 x14fa3:
 	{ ARG_PUSH, { iexp_comma } },
-
-#if GBE > 0
-ySCALL_args:
 	{ ARG_PUSH, { x14336+8 } },
 	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_END, { 0 } }
+
+#if GBE > 0
 x58efa_372:
 	{ ARG_PUSH, { x14336+8 } },
 	{ TOK_COMMA, { 0 } },
@@ -5330,6 +5051,7 @@ x58efe_372:
 	{ ARG_PUSH, { x14336+8 } },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
+
 x58f03_372:
 	{ ARG_PUSH, { x14f9b } },
 	{ TOK_COMMA, { 0 } },
@@ -5338,6 +5060,7 @@ x58f03_372:
 	{ ARG_PUSH, { x14336+8 } },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
+
 x58f10_372:
 	{ ARG_PUSH, { x14f9b } },
 	{ TOK_RPAREN, { 0 } },
@@ -5373,16 +5096,20 @@ x14fc5:
 	{ ARG_PUSH, { x14f9b } },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
+
 x14fdc:
 	{ ARG_PUSH, { x14fe1 } },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
+
 x14fe1:
 	{ ARG_PUSH, { x14336 } },
 	{ ARG_END, { 0 } }
+
 x14fe5:
 	{ ARG_PUSH, { x14fe9 } },
 	{ ARG_END, { 0 } }
+
 x14fe9:
 	{ ARG_PUSH, { x1434e } },
 	{ TOK_RPAREN, { 0 } },
@@ -5391,19 +5118,23 @@ x14fee:
 	{ ARG_PUSH, { x143ad } },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
+
 x14ff3:
 	{ ARG_REPLACE, { (void *)208 } },
 	{ 249, { (void *)189 } },
 	{ ARG_PUSH, { x1501f } },
 	{ ARG_END, { 0 } }
+
 x14ffb:
 	{ ARG_PUSH, { x15046 } },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
+
 x15000:
 	{ ARG_PUSH, { x144dd } },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
+
 x15005:
 	{ ARG_CALL_FUNC, { (void *)f154aa } },
 	{ 35, { 0 } },
@@ -5411,31 +5142,23 @@ x15005:
 	{ ARG_PUSH, { x15050 } },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
+
 x15010:
 	{ ARG_PUSH, { x14b90+1 } },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
-yABSOLUTE_args:
-	{ ARG_PUSH, { x1434e } },
-	{ ARG_PUSH, { x15027 } },
-	{ ARG_PUSH, { yCLEARW_args } },
-	{ ARG_END, { 0 } }
+
 x1501f:
 	{ ARG_PUSH, { x143ad } },
 	{ ARG_POP, { 0 } },
 	{ ARG_PUSH, { x1434e } },
-	{ ARG_END, { 0 } }
-x15027:
-	{ TOK_COMMA, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ TOK_EQ, { 0 } },
-	{ ARG_REPLACE, { (void *)33 } },
 	{ ARG_END, { 0 } }
 
 x15046:
 	{ ARG_PUSH, { x14b96 } },
 	{ ARG_PUSH, { x1504d } },
 	{ ARG_END, { 0 } }
+
 x1504d:
 	{ ARG_PUSH, { x144eb } },
 x15050:
@@ -5444,158 +5167,13 @@ x15050:
 	{ ARG_PUSH, { x1504d } },
 	{ ARG_POP, { 0 } },
 	{ ARG_END, { 0 } }
+
 x1505b:
 	{ 138, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ 139, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ ARG_END, { 0 } }
-
-x1506f:
-	{ ARG_CALL_FUNC, { (void *)f13d22 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_CALL_FUNC, { (void *)f13696 } },
-	{ ARG_POP, { 0 } },
-	{ 135, { 0 } },
-	{ ARG_PUSH, { x15068 } },
-	{ TOK_RPAREN, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ 58, { 0 } },
-	{ ARG_PUSH, { x15068 } },
-	{ TOK_RPAREN, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ 58, { 0 } },
-	{ ARG_REPLACE, { (void *)59 } },
-	{ ARG_PUSH, { x15068 } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x14c92 } },
-	{ ARG_POP, { 0 } },
-	{ 60, { 0 } },
-	{ ARG_PUSH, { x15068 } },
-	{ TOK_RPAREN, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ 60, { 0 } },
-	{ ARG_REPLACE, { (void *)61 } },
-	{ ARG_PUSH, { x15068 } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x14c92 } },
-	{ ARG_POP, { 0 } },
-	{ 62, { 0 } },
-	{ ARG_PUSH, { x15068 } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x14c92 } },
-	{ ARG_POP, { 0 } },
-	{ 62, { 0 } },
-	{ ARG_REPLACE, { (void *)63 } },
-	{ ARG_PUSH, { x15068 } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { iexp_comma } },
-	{ ARG_PUSH, { x14c92 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_CALL_FUNC, { (void *)f1369e } },
-	{ ARG_PUSH, { x14c92 } },
-	{ ARG_POP, { 0 } },
-	{ 94, { 0 } },
-	{ ARG_PUSH, { x14c92 } },
-	{ ARG_POP, { 0 } },
-	{ 94, { 0 } },
-	{ ARG_REPLACE, { (void *)95 } },
-	{ ARG_PUSH, { x14b96 } },
-	{ ARG_PUSH, { x144eb } },
-	{ ARG_PUSH, { x144f6 } },
-	{ TOK_RPAREN, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_PUSH, { x15060 } },
-	{ ARG_PUSH, { x15164 } },
-	{ TOK_RPAREN, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ 127, { 0 } },
-	{ ARG_PUSH, { x15068 } },
-	{ TOK_RPAREN, { 0 } },
-	{ ARG_POP, { 0 } },
-.IFNE GBE
-	{ 148, { 0 } },
-	{ ARG_PUSH, { x15068 } },
-	{ TOK_RPAREN, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ 160, { 0 } },
-	{ ARG_PUSH, { x15068 } },
-	{ TOK_RPAREN, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ 144, { 0 } },
-	{ ARG_PUSH, { x15068 } },
-	{ TOK_RPAREN, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ 145, { 0 } },
-	{ ARG_PUSH, { x15068 } },
-	{ TOK_RPAREN, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ 150, { 0 } },
-	{ ARG_PUSH, { x15068 } },
-	{ TOK_RPAREN, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ 146, { 0 } },
-	{ ARG_PUSH, { x15068 } },
-	{ TOK_RPAREN, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ 147, { 0 } },
-	{ ARG_PUSH, { x15068 } },
-	{ TOK_RPAREN, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ 142, { 0 } },
-	{ ARG_PUSH, { x15068 } },
-	{ TOK_RPAREN, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ 177, { 0 } },
-	{ ARG_PUSH, { x15068 } },
-	{ TOK_RPAREN, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ 166, { 0 } },
-	{ ARG_PUSH, { iexp_comma } },
-	{ ARG_PUSH, { x15068 } },
-	{ TOK_RPAREN, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ 164, { 0 } },
-	{ ARG_PUSH, { x14c92 } },
-	{ ARG_POP, { 0 } },
-	{ 165, { 0 } },
-	{ ARG_PUSH, { x14c92 } },
-	{ ARG_POP, { 0 } },
-	{ 149, { 0 } },
-	{ ARG_PUSH, { iexp_comma } },
-	{ ARG_PUSH, { x14c92 } },
-	{ ARG_POP, { 0 } },
-#if GBE >= 373
-	{ 181, { 0 } },
-#else
-	{ 169, { 0 } },
-#endif
-	{ ARG_PUSH, { iexp_comma } },
-	{ ARG_PUSH, { x14c92 } },
-	{ ARG_POP, { 0 } },
-#if GBE >= 373
-	{ 169, { 0 } },
-	{ ARG_PUSH, { iexp_comma } },
-	{ ARG_PUSH, { x14c92 } },
-	{ ARG_POP, { 0 } },
-#endif
-	{ 178, { 0 } },
-	{ ARG_PUSH, { x15068 } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x15068 } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x15068 } },
-	{ TOK_RPAREN, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ 179, { 0 } },
-	{ ARG_PUSH, { x14fa6 } },
-	{ TOK_RPAREN, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ 180, { 0 } },
-	{ ARG_PUSH, { x14fa6 } },
-	{ TOK_RPAREN, { 0 } },
-	{ ARG_POP, { 0 } },
-.ENDC
 
 x150de:
 	{ 129, { 0 } },
@@ -5644,195 +5222,6 @@ x150de:
 	{ ARG_END, { 0 } }
 
 
-
-yTEXT_args:
-	{ ARG_PUSH, { x1503f } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x1529b } },
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_CALL_FUNC, { (void *)f13d64 } },
-yATEXT_args:
-	{ ARG_PUSH, { x1503c } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x1529b } },
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_END, { 0 } }
-	.IFEQ GBE
-	{ ARG_PUSH, { x15068 } },
-	{ ARG_PUSH, { x151cf } },
-	{ ARG_POP, { 0 } },
-	{ ARG_PUSH, { x14b9a } },
-	{ ARG_END, { 0 } }
-x151cf:
-	{ ARG_PUSH, { x1517e } },
-	{ ARG_PUSH, { x15068 } },
-	{ ARG_PUSH, { x14bc8 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_END, { 0 } }
-#endif
-yINPUT_args:
-	{ ARG_CALL_FUNC, { (void *)f13d22 } },
-	{ ARG_PUSH, { x151eb } },
-	{ ARG_POP, { 0 } },
-	{ ARG_PUSH, { x151ee } },
-	{ ARG_POP, { 0 } },
-	{ ARG_CALL_FUNC, { (void *)f13d64 } },
-	{ ARG_PUSH, { x144f6 } },
-x151eb:
-	{ ARG_PUSH, { x144eb } },
-x151ee:
-	{ ARG_PUSH, { x14336 } },
-	{ ARG_PUSH, { x151f6 } },
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_END, { 0 } }
-x151f6:
-	{ ARG_PUSH, { x144eb } },
-	{ ARG_PUSH, { x14336 } },
-	{ ARG_PUSH, { x151f6 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_END, { 0 } }
-yREAD_args:
-	{ ARG_PUSH, { x151ee } },
-	{ ARG_END, { 0 } }
-yWRITE_args:
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_PUSH, { write_channel_args } },
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_PUSH, { print_channel_args } },
-	{ ARG_PUSH, { x15214 } },
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_END, { 0 } }
-x15214:
-	{ ARG_PUSH, { x1529b } },
-	{ ARG_PUSH, { x1521b } },
-	{ ARG_END, { 0 } }
-x1521b:
-	{ ARG_PUSH, { x15228 } },
-	{ ARG_PUSH, { x1529b } },
-	{ ARG_PUSH, { x1521b } },
-	{ ARG_POP, { 0 } },
-	{ TOK_SEMI, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_END, { 0 } }
-
-x15228:
-	{ TOK_COMMA, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ TOK_SEMI, { 0 } },
-	{ ARG_REPLACE, { (void *)33 } },
-	{ ARG_END, { 0 } }
-
-yPRINT_args:
-	{ ARG_PUSH, { x1525b } },
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_CALL_FUNC, { (void *)f13d64 } },
-	{ TOK_CHANNEL, { 0 } },
-	{ ARG_PUSH, { x14b96 } },
-	{ ARG_PUSH, { x1523f } },
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_END, { 0 } }
-
-x1523f:
-	{ ARG_PUSH, { x144eb } },
-	{ ARG_PUSH, { x1525b } },
-	{ ARG_POP, { 0 } },
-	{ ARG_END, { 0 } }
-
-yLPRINT_args:
-	{ ARG_PUSH, { x1525b } },
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_END, { 0 } }
-
-write_channel_args:
-	{ TOK_CHANNEL, { 0 } },
-	{ ARG_PUSH, { x14b96 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_END, { 0 } }
-
-x1525b:
-	{ ARG_PUSH, { x144eb } },
-	{ ARG_PUSH, { x1525b } },
-	{ ARG_POP, { 0 } },
-	{ TOK_PRINTSPACE, { 0 } },
-	{ ARG_PUSH, { x1525b } },
-	{ ARG_POP, { 0 } },
-	{ TOK_AT, { 0 } },
-	{ ARG_PUSH, { x1503f } },
-	{ TOK_RPAREN, { 0 } },
-	{ ARG_CALL_FUNC, { (void *)f15306 } },
-	{ ARG_CALL_FUNC, { (void *)f15310 } },
-	{ ARG_PUSH, { x1525b } },
-	{ ARG_POP, { 0 } },
-	{ ARG_PUSH, { x15297 } },
-	{ ARG_PUSH, { x14c92 } },
-	{ ARG_CALL_FUNC, { (void *)f15310 } },
-	{ ARG_PUSH, { x1525b } },
-	{ ARG_POP, { 0 } },
-	{ 163, { 0 } },
-	{ ARG_PUSH, { x15068 } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x15214 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_PUSH, { x1529b } },
-	{ ARG_CALL_FUNC, { (void *)f15310 } },
-	{ ARG_PUSH, { x1525b } },
-	{ ARG_POP, { 0 } },
-	{ ARG_END, { 0 } }
-
-x15297:
-	{ TOK_TAB, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ TOK_SPC, { 0 } },
-	{ ARG_END, { 0 } }
-
-yDEFMOUSE_args:
-	{ ARG_PUSH, { yCLEARW_args } },
-	{ ARG_POP, { 0 } },
-	{ ARG_REPLACE, { (void *)48 } },
-	{ ARG_PUSH, { yCHDIR_args } },
-	{ ARG_END, { 0 } }
-
-ySPRITE_args:
-	{ ARG_PUSH, { x143ec } },
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { yBMIRROR_args } },
-	{ ARG_POP, { 0 } },
-	{ ARG_PUSH, { x143ec } },
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_END, { 0 } }
-
-yCALL_args:
-	{ ARG_CALL_FUNC, { (void *)f154aa } },
-	{ ARG_PUSH, { x152c7 } },
-	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_END, { 0 } }
-
-x152c7:
-	{ 35, { 0 } },
-	{ ARG_REPLACE, { (void *)157 } },
-	{ ARG_PUSH, { x152dc } },
-	{ ARG_PUSH, { x152d3 } },
-	{ TOK_RPAREN, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_END, { 0 } }
-
-x152d3:
-	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x152dc } },
-	{ ARG_PUSH, { x152d3 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_END, { 0 } }
-
-x152dc:
-	{ ARG_PUSH, { x14b96 } },
-	{ ARG_POP, { 0 } },
-	{ 249, { (void *)55 } },
-	{ ARG_PUSH, { x15068 } },
-	{ ARG_END, { 0 } }
 	.even
 
 /* 371: 5807e */
