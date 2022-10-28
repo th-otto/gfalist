@@ -27,9 +27,9 @@ static void scan_table(FILE *fp, int offset, int end)
 	{
 		++label;
 		used[offset] = malloc(sizeof(struct label));
-		used[offset]->name = malloc(20);
+		used[offset]->name = malloc(30);
 		used[offset]->next = NULL;
-		sprintf(used[offset]->name, "%d", maptable[label]);
+		sprintf(used[offset]->name, "y%d", maptable[label]);
 	}
 	while (offset < end)
 	{
@@ -74,7 +74,7 @@ static void scan_table(FILE *fp, int offset, int end)
 				used[dst] = malloc(sizeof(struct label));
 				used[dst]->name = malloc(20);
 				used[dst]->next = NULL;
-				sprintf(used[dst]->name, "%d", maptable[label]);
+				sprintf(used[dst]->name, "y%d", maptable[label]);
 			}
 			offset += 3;
 			break;
@@ -106,13 +106,12 @@ static void scan_table(FILE *fp, int offset, int end)
 }
 
 
-static void dump_table(FILE *fp, int offset, int end, int diffbase)
+static void dump_table(FILE *fp, int offset, int end)
 {
 	int c;
 	int c2;
 	int dst;
 
-	(void)diffbase;
 	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
 	while (offset < end)
 	{
@@ -126,20 +125,20 @@ static void dump_table(FILE *fp, int offset, int end, int diffbase)
 		switch (c)
 		{
 		case 250:
-			fprintf(out, "\t.dc.b -6\n");
+			fprintf(out, "\t\t.dc.b -6\n");
 			offset += 1;
 			break;
 		case 251:
 			c = fgetc(fp);
-			fprintf(out, "\t.dc.b -5,%d\n", c);
+			fprintf(out, "\t\t.dc.b -5,%d\n", c);
 			offset += 2;
 			break;
 		case 252:
-			fprintf(out, "\t.dc.b -4\n");
+			fprintf(out, "\t\t.dc.b -4\n");
 			offset += 1;
 			break;
 		case 253:
-			fprintf(out, "\t.dc.b -3\n");
+			fprintf(out, "\t\t.dc.b -3\n");
 			offset += 1;
 			break;
 		case 254:
@@ -148,7 +147,7 @@ static void dump_table(FILE *fp, int offset, int end, int diffbase)
 			c = c * 256 + c2;
 			c = (short)c;
 			dst = jmpbase + c;
-			fprintf(out, "\t.dc.b -2,((f%d-jmpbase)>>8)&255,(f%d-jmpbase)&255\n", funcused[dst], funcused[dst]);
+			fprintf(out, "\t\t.dc.b -2,((f%d-jmpbase)>>8)&255,(f%d-jmpbase)&255\n", funcused[dst], funcused[dst]);
 			offset += 3;
 			break;
 		case 255:
@@ -157,7 +156,7 @@ static void dump_table(FILE *fp, int offset, int end, int diffbase)
 			c = c * 256 + c2;
 			c = (short)c;
 			dst = jmpbase + c;
-			fprintf(out, "\t.dc.b -1,((y%s-jmpbase)>>8)&255,(y%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
+			fprintf(out, "\t\t.dc.b -1,((y%s-jmpbase)>>8)&255,(y%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
 			offset += 3;
 			break;
 		case 208:
@@ -178,11 +177,11 @@ static void dump_table(FILE *fp, int offset, int end, int diffbase)
 		case 248:
 		case 249:
 			c2 = getc(fp);
-			fprintf(out, "\t.dc.b %d,%d\n", c, c2);
+			fprintf(out, "\t\t.dc.b %d,%d\n", c, c2);
 			offset += 2;
 			break;
 		default:
-			fprintf(out, "\t.dc.b %d\n", c);
+			fprintf(out, "\t\t.dc.b %d\n", c);
 			offset += 1;
 			break;
 		}
@@ -202,12 +201,15 @@ int main(void)
 	char name[100];
 
 	out = stdout;
-	fp = fopen("lst2gfa_orig.ttp", "rb");
+	fp = fopen("gbe/gbe370.prg", "rb");
 	if (fp == NULL)
 		return 1;
 
+	for (i = 0; i < (int)(sizeof(maptable) / sizeof(maptable[0])); i++)
+		maptable[i] = i;
+
 	first_char = 0;
-	offset = 0x128b7;
+	offset = 0x51c8a;
 	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
 	while (offset < 0x80000)
 	{
@@ -245,7 +247,7 @@ int main(void)
 	fprintf(out, "\n");
 
 	first_char = 0;
-	offset = 0x11afa;
+	offset = 0x50c42;
 	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
 	while (offset < 0x80000)
 	{
@@ -279,8 +281,11 @@ int main(void)
 			case '{':
 			case '#':
 			case '?':
-			case '$':
+			case '.':
 				c = '_';
+				break;
+			case '$':
+				c = 's';
 				break;
 			}
 			name[i] = c;
@@ -307,18 +312,19 @@ int main(void)
 			
 			strcat(name, "_args");
 			l = malloc(sizeof(struct label));
-			l->name = strdup(name);
+			l->name = malloc(strlen(name) + 2);
+			sprintf(l->name, "y%s", name);
 			l->next = used[dst];
 			used[dst] = l;
 		}
-		fprintf(out, ",((y%s-jmpbase)>>8)&255,(y%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
+		fprintf(out, ",((%s-jmpbase)>>8)&255,(%s-jmpbase)&255\n", used[dst]->name, used[dst]->name);
 
 		offset += len + 6;
 	}
 	fprintf(out, "offset = %05x\n", offset);
 	fprintf(out, "\n");
 
-	if (1)
+	if (0)
 	{
 	/* mat cmd table */
 	offset = 0x13e02;
@@ -450,15 +456,15 @@ int main(void)
 	scan_table(fp, 0x14c8e, 0x14d34);
 	scan_table(fp, 0x14ee8, 0x152e4);
 	
-	dump_table(fp, 0x13ed2, 0x140d6, 0);
+	dump_table(fp, 0x13ed2, 0x140d6);
 	fprintf(out, "\n");
-	dump_table(fp, 0x14116, 0x14578, 0);
+	dump_table(fp, 0x14116, 0x14578);
 	fprintf(out, "\n");
-	dump_table(fp, 0x145c6, 0x14bde, 0);
+	dump_table(fp, 0x145c6, 0x14bde);
 	fprintf(out, "\n");
-	dump_table(fp, 0x14c8e, 0x14d34, 0);
+	dump_table(fp, 0x14c8e, 0x14d34);
 	fprintf(out, "\n");
-	dump_table(fp, 0x14ee8, 0x152e4, 0);
+	dump_table(fp, 0x14ee8, 0x152e4);
 	fprintf(out, "\n");
 	}
 

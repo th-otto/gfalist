@@ -9,11 +9,7 @@
 extern struct argdesc const x14b9a[];
 extern struct argdesc const x14bb2[];
 extern struct argdesc const x14bc8[];
-extern struct argdesc const x1506f[];
 extern struct argdesc const x15068[];
-extern struct argdesc const x144eb[];
-extern struct argdesc const x144f6[];
-extern struct argdesc const x15060[];
 extern struct argdesc const x15164[];
 extern struct argdesc const x14fa6[];
 extern struct argdesc const x14962[];
@@ -22,9 +18,6 @@ extern struct argdesc const x1513f[];
 extern struct argdesc const x1514a[];
 extern struct argdesc const x15155[];
 extern struct argdesc const x143ec[];
-extern struct argdesc const x144ff[];
-extern struct argdesc const x1516b[];
-extern struct argdesc const x1503c[];
 extern struct argdesc const x1503f[];
 
 
@@ -161,7 +154,21 @@ static void f13da6(struct globals *G, struct funcparse *parse)
 }
 
 
-static void f13b62(struct globals *G, struct funcparse *parse)
+static void f13d8e(struct globals *G, struct funcparse *parse)
+{
+	UNUSED(G);
+	UNUSED(parse);
+}
+
+
+static void f13d9a(struct globals *G, struct funcparse *parse)
+{
+	UNUSED(G);
+	UNUSED(parse);
+}
+
+
+static void f15448(struct globals *G, struct funcparse *parse)
 {
 	UNUSED(G);
 	UNUSED(parse);
@@ -169,6 +176,83 @@ static void f13b62(struct globals *G, struct funcparse *parse)
 
 
 static void f1595a(struct globals *G, struct funcparse *parse)
+{
+	UNUSED(G);
+	UNUSED(parse);
+}
+
+
+static void f13d6a(struct globals *G, struct funcparse *parse)
+{
+	UNUSED(G);
+	UNUSED(parse);
+}
+
+
+static void f14578(struct globals *G, struct funcparse *parse)
+{
+	UNUSED(G);
+	UNUSED(parse);
+}
+
+
+static void f13d1c(struct globals *G, struct funcparse *parse)
+{
+	UNUSED(G);
+	UNUSED(parse);
+}
+
+
+static void f13de4(struct globals *G, struct funcparse *parse)
+{
+	UNUSED(G);
+	UNUSED(parse);
+}
+
+
+static void f13bca(struct globals *G, struct funcparse *parse)
+{
+	UNUSED(G);
+	UNUSED(parse);
+}
+
+
+static void f152e6(struct globals *G, struct funcparse *parse)
+{
+	UNUSED(G);
+	UNUSED(parse);
+}
+
+
+static void f15444(struct globals *G, struct funcparse *parse)
+{
+	UNUSED(G);
+	UNUSED(parse);
+}
+
+
+static void f13d76(struct globals *G, struct funcparse *parse)
+{
+	UNUSED(G);
+	UNUSED(parse);
+}
+
+
+static void f13d5a(struct globals *G, struct funcparse *parse)
+{
+	UNUSED(G);
+	UNUSED(parse);
+}
+
+
+static void execute_defint(struct globals *G, struct funcparse *parse)
+{
+	UNUSED(G);
+	UNUSED(parse);
+}
+
+
+static void f13b62(struct globals *G, struct funcparse *parse)
 {
 	UNUSED(G);
 	UNUSED(parse);
@@ -292,51 +376,329 @@ static void expect_int_arr(struct globals *G, struct funcparse *parse)
 
 
 static struct argdesc const REM_args[] = {
+	{ ARG_CALL_FUNC, { (void *)f13bca } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14386[] = {
+	{ ARG_CALL_FUNC, { (void *)expect_float } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_int } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14139[] = {
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const star_args[] = {
+	{ ARG_PUSH, { x14386 } },
+	{ TOK_EQ, { 0 } },
+	{ ARG_REPLACE, { (void *)69 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ ARG_PUSH, { x14386 } },
+	{ TOK_EQ, { 0 } },
+	{ ARG_REPLACE, { (void *)69 } },
+	{ ARG_PUSH, { x14139 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yPRINT_args[] = {
 };
 
 static struct argdesc const yGOSUB_args[] = {
+	{ ARG_CALL_FUNC, { (void *)f15444 } },
+	{ ARG_PUSH, { x14962 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+struct argdesc const LABEL_args[] = {
+	{ ARG_CALL_FUNC, { (void *)f15448 } },
+	{ TOK_LABEL, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yALERT_args[] = {
 };
 
+static struct argdesc const x14076[] = {
+	{ 5, { 0 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 6, { 0 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14ba8[] = {
+	{ 6, { 0 } },
+	{ ARG_REPLACE, { (void *)29 } },
+	{ ARG_POP, { 0 } },
+	{ 5, { 0 } },
+	{ ARG_REPLACE, { (void *)30 } },
+	{ ARG_POP, { 0 } },
+	{ 31, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14b96[] = {
+	{ ARG_CALL_FUNC, { (void *)f158f8 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x14ba8 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x14bb2 } },
+	{ ARG_PUSH, { x14bc8 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x151a6[] = {
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x151a6 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x1519e[] = {
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x151a6 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x143cb[] = {
+	{ ARG_CALL_FUNC, { (void *)expect_float } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
+	{ ARG_PUSH, { x1519e } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14319[] = {
+	{ TOK_COMMA, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 6, { 0 } },
+	{ TOK_EQ, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_REPLACE, { (void *)33 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x143e1[] = {
+	{ ARG_CALL_FUNC, { (void *)expect_bool } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_bool_arr } },
+	{ ARG_PUSH, { x1519e } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14402[] = {
+	{ ARG_CALL_FUNC, { (void *)expect_byte } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_byte_arr } },
+	{ ARG_PUSH, { x1519e } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x143f7[] = {
+	{ ARG_CALL_FUNC, { (void *)expect_word } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_word_arr } },
+	{ ARG_PUSH, { x1519e } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x143d6[] = {
+	{ ARG_CALL_FUNC, { (void *)expect_int } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_int_arr } },
+	{ ARG_PUSH, { x1519e } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14336[] = {
+	{ ARG_PUSH, { x143ec } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x143e1 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x14402 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x143f7 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x143d6 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x143cb } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const yCLEARW_args[] = {
+	{ ARG_PUSH, { x14b96 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const yINTIN_args[] = {
+	{ ARG_PUSH, { x14b96 } },
+	{ TOK_RPAREN, { 0 } },
+	{ -6, { 0 } },
+	{ TOK_EQ, { 0 } },
+	{ ARG_REPLACE, { (void *)TOK_ARRAY_ASS } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_END, { 0 } }
+};
+
 static struct argdesc const yADD_args[] = {
+	{ ARG_PUSH, { x143cb } },
+	{ ARG_PUSH, { x14319 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x14336+4 } },
+	{ ARG_PUSH, { x14319 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d8e } },
+	{ ARG_PUSH, { yINTIN_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d9a } },
+	{ ARG_PUSH, { yINTIN_args } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const iexp_comma[] = {
+	{ ARG_PUSH, { x14b96 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_END, { 0 } },
+	{ ARG_PUSH, { iexp_comma } }
+};
+
+static struct argdesc const yBOX_args[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x14b96 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yALINE_args[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { yBOX_args } },
+	{ ARG_END, { 0 } }
 };
 
+/*
+ * SET.PXYXY iexp,iexp,iexp,iexp,iexp,iexp,iexp,iexp
+ */
 static struct argdesc const yARECT_args[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { yBOX_args } },
+	{ ARG_END, { 0 } }
+};
+
+/*
+ * SET.PXYWH iexp,iexp,iexp,iexp,iexp,iexp
+ * SET.MFDB iexp,iexp,iexp,iexp,iexp,iexp
+ * CRASTER iexp,iexp,iexp,iexp,iexp,iexp
+ * SET.MENU iexp,iexp,iexp,iexp,iexp,iexp
+ * ACHAR iexp,iexp,iexp,iexp,iexp,iexp
+ */
+static struct argdesc const yACHAR_args[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { yBOX_args } },
+	{ ARG_END, { 0 } }
+};
+
+/*
+ * VGET iexp,iexp,iexp,iexp,iexp
+ */
+static struct argdesc const yVGET_args[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { yBOX_args } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x1503c[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x144ba[] = {
+	{ TOK_TO, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_REPLACE, { (void *)71 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yAPOLY_args[] = {
-};
-
-static struct argdesc const yACHAR_args[] = {
+	{ ARG_PUSH, { x1503c } },
+	{ ARG_PUSH, { x144ba } },
+	{ ARG_PUSH, { yVGET_args } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yACLIP_args[] = {
+	{ ARG_PUSH, { yVGET_args } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yABSOLUTE_args[] = {
 };
 
+static struct argdesc const x1480d[] = {
+	{ 76, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 159, { 0 } },
+	{ ARG_REPLACE, { (void *)76 } },
+	{ ARG_POP, { 0 } },
+	{ 249, { (void *)76 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14825[] = {
+	{ ARG_PUSH, { x1480d } },
+	{ ARG_CALL_FUNC, { (void *)f15444 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
 static struct argdesc const yAFTER_args[] = {
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x14825 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ 152, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ 154, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yATEXT_args[] = {
 };
 
 static struct argdesc const yARRAYFILL_args[] = {
-};
-
-static struct argdesc const yAMOUSE_args[] = {
 };
 
 static struct argdesc const yAVERAGE_RGB_args[] = {
@@ -347,9 +709,11 @@ static struct argdesc const yTIMESTAMP_args[] = {
 };
 
 static struct argdesc const yBMOVE_args[] = {
-};
-
-static struct argdesc const yBOX_args[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x14b96 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yBGET_args[] = {
@@ -358,31 +722,56 @@ static struct argdesc const yBGET_args[] = {
 static struct argdesc const yBPUT_args[] = {
 };
 
-static struct argdesc const yBOUNDARY_args[] = {
-};
-
 static struct argdesc const yBITBLT_args[] = {
 };
 
+static struct argdesc const x144eb[] = {
+	{ TOK_COMMA, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ TOK_SEMI, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14695[] = {
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14b90[] = {
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
 static struct argdesc const yBSAVE_args[] = {
+	{ ARG_PUSH, { x15068 } },
+	{ ARG_PUSH, { x14695 } },
+	{ ARG_PUSH, { x14695 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yBLOAD_args[] = {
-};
-
-static struct argdesc const yBEXG_args[] = {
+	{ ARG_PUSH, { x14139 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ ARG_PUSH, { x14b90 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yBMIRROR_args[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x14b96 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
-static struct argdesc const yBZERO_args[] = {
-};
-
-static struct argdesc const yBFILL_args[] = {
-};
-
-static struct argdesc const yBEEP_args[] = {
+static struct argdesc const no_args[] = {
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yBCRYPT_args[] = {
@@ -391,25 +780,16 @@ static struct argdesc const yBCRYPT_args[] = {
 static struct argdesc const yBXLATE_args[] = {
 };
 
-static struct argdesc const yBREPLACE_args[] = {
-};
-
-static struct argdesc const yBAR_args[] = {
-};
-
-static struct argdesc const yCOLOR_args[] = {
-};
-
 static struct argdesc const x14264[] = {
-	{ 71, { 0 } },
+	{ TOK_TO, { 0 } },
 	{ ARG_PUSH, { x14264+10 } },
 	{ ARG_POP, { 0 } },
 	{ ARG_PUSH, { x14264+10 } },
-	{ 71, { 0 } },
+	{ TOK_TO, { 0 } },
 	{ ARG_PUSH, { x14264+10 } },
 	{ ARG_POP, { 0 } },
 	{ ARG_PUSH, { x14264+10 } },
-	{ 71, { 0 } },
+	{ TOK_TO, { 0 } },
 	{ ARG_POP, { 0 } },
 	/* x14276: */
 	{ ARG_CALL_FUNC, { (void *)f1595a } },
@@ -438,66 +818,11 @@ static struct argdesc const yCASE_args[] = {
 	{ ARG_END, { 0 } }
 };
 
-static struct argdesc const ySELECT_args[] = {
-};
-
-static struct argdesc const yCLEARW_args[] = {
-};
-
-static struct argdesc const x14076[] = {
-	{ 5, { 0 } },
-	{ 32, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ 6, { 0 } },
-	{ 32, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ 32, { 0 } },
-	{ ARG_END, { 0 } }
-};
-
-static struct argdesc const x14ba8[] = {
-	{ 6, { 0 } },
-	{ ARG_REPLACE, { (void *)29 } },
-	{ ARG_POP, { 0 } },
-	{ 5, { 0 } },
-	{ ARG_REPLACE, { (void *)30 } },
-	{ ARG_POP, { 0 } },
-	{ 31, { 0 } },
-	{ ARG_END, { 0 } }
-};
-
-static struct argdesc const x14b96[] = {
-	{ ARG_CALL_FUNC, { (void *)f158f8 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_PUSH, { x14ba8 } },
-	{ ARG_PUSH, { x14b9a } },
-	{ ARG_POP, { 0 } },
-	{ ARG_PUSH, { x14bb2 } },
-	{ ARG_PUSH, { x14bc8 } },
-	{ ARG_END, { 0 } }
-};
-
-static struct argdesc const yINTIN_args[] = {
-	{ ARG_PUSH, { x14b96 } },
-	{ 32, { 0 } },
-	{ -6, { 0 } },
-	{ 19, { 0 } },
-	{ ARG_REPLACE, { (void *)TOK_ARRAY_ASS } },
-	{ ARG_PUSH, { yCLEARW_args } },
-	{ ARG_END, { 0 } }
-};
-
 static struct argdesc const yCONT_args[] = {
-	{ ARG_PUSH, { ySELECT_args } },
+	{ ARG_PUSH, { no_args } },
 	{ ARG_POP, { 0 } },
 	{ ARG_CALL_FUNC, { (void *)f13da6 } },
 	{ ARG_PUSH, { yINTIN_args } },
-	{ ARG_END, { 0 } }
-};
-
-static struct argdesc const x14139[] = {
-	{ ARG_PUSH, { x15068 } },
-	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_END, { 0 } }
 };
 
@@ -505,68 +830,208 @@ static struct argdesc const yCHAR_args[] = {
 	{ ARG_PUSH, { x14b96 } },
 	{ 88, { 0 } },
 	{ -6, { 0 } },
-	{ 19, { 0 } },
+	{ TOK_EQ, { 0 } },
 	{ ARG_REPLACE, { (void *)TOK_REFEND } },
 	{ ARG_PUSH, { x14139 } },
 	{ ARG_END, { 0 } }
 };
 
-static struct argdesc const ySTRPOKE_args[] = {
-};
-
-static struct argdesc const yCLOSE_args[] = {
+static struct argdesc const x1463c[] = {
+	{ TOK_CHANNEL, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_REPLACE, { (void *)34 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)32 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yCLEAR_args[] = {
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d5a } },
+	{ ARG_PUSH, { x1463c } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yCIRCLE_args[] = {
+	{ ARG_PUSH, { yBMOVE_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ ARG_PUSH, { yVGET_args } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yCHDIR_args[] = {
+	{ ARG_PUSH, { x14139 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d1c } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yCHDRIVE_args[] = {
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ ARG_PUSH, { yCHDIR_args } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x1434e[] = {
+	{ ARG_CALL_FUNC, { (void *)expect_byte } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_string } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_int } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_word } },
+	{ ARG_POP, { 0 } },
+	/* x1435e */
+	{ ARG_CALL_FUNC, { (void *)expect_float } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_bool } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14ab1[] = {
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x1434e } },
+	{ ARG_PUSH, { x14ab1 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yCLR_args[] = {
+	{ ARG_PUSH, { x1434e } },
+	{ ARG_PUSH, { x14ab1 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x144ff[] = {
+	{ TOK_CHANNEL, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x144f6[] = {
+	{ ARG_PUSH, { x144ff } },
+	{ 249, { (void *)77 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yCLS_args[] = {
+	{ ARG_PUSH, { x144f6 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14628[] = {
+	{ TOK_CHANNEL, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_REPLACE, { (void *)28 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)26 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const yCLOSE_args[] = {
+	{ ARG_CALL_FUNC, { (void *)f13d5a } },
+	{ ARG_PUSH, { x14628 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)24 } },
+	{ ARG_PUSH, { x144f6 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14aa3[] = {
+	{ 109, { 0 } },
+	{ ARG_PUSH, { x1503f } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+struct argdesc const x1502d[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_END, { 0 } }
+};
+
+struct argdesc const x15036[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_END, { 0 } }
+};
+
+struct argdesc const x15039[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_END, { 0 } }
+};
+
+struct argdesc const x1503f[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yCLIP_args[] = {
-};
-
-static struct argdesc const yCHAIN_args[] = {
+	{ TOK_OFF, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ TOK_CHANNEL, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x14aa3 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ ARG_PUSH, { x15039 } },
+	{ ARG_PUSH, { x14aa3 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ ARG_PUSH, { x1503f } },
+	{ TOK_TO, { 0 } },
+	{ ARG_PUSH, { x1503f } },
+	{ ARG_PUSH, { x14aa3 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ 109, { 0 } },
+	{ ARG_PUSH, { x1503f } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yCALL_args[] = {
-};
-
-static struct argdesc const yCURVE_args[] = {
-};
-
-static struct argdesc const yC2P_args[] = {
-};
-
-static struct argdesc const yCRASTER_args[] = {
-};
-
-static struct argdesc const yCPUFLUSH_args[] = {
-};
-
-static struct argdesc const yCOLDBOOT_args[] = {
-};
-
-static struct argdesc const yDATA_args[] = {
 };
 
 static struct argdesc const yWORD_args[] = {
 	{ ARG_PUSH, { x14b96 } },
 	{ 88, { 0 } },
 	{ -6, { 0 } },
-	{ 19, { 0 } },
+	{ TOK_EQ, { 0 } },
 	{ ARG_REPLACE, { (void *)TOK_REFEND } },
 	{ ARG_PUSH, { yCLEARW_args } },
 	{ ARG_END, { 0 } }
@@ -590,22 +1055,104 @@ static struct argdesc const yDEFLINE_args[] = {
 static struct argdesc const yDEFMOUSE_args[] = {
 };
 
-static struct argdesc const yDEFLIST_args[] = {
-};
-
 static struct argdesc const yDEFMARK_args[] = {
-};
-
-static struct argdesc const yDEFNUM_args[] = {
 };
 
 static struct argdesc const yDEFTEXT_args[] = {
 };
 
 static struct argdesc const yDEFFILL_args[] = {
+	{ ARG_PUSH, { yDEFMARK_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)60 } },
+	{ ARG_PUSH, { x14b90+1 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { yCHDIR_args } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x143ad[] = {
+	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_bool_arr } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_byte_arr } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_word_arr } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_int_arr } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14947[] = {
+	{ ARG_PUSH, { x1434e } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x143ad } },
+	{ ARG_REPLACE, { (void *)51 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14951[] = {
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14947 } },
+	{ ARG_PUSH, { x14951 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14935[] = {
+	{ TOK_COMMA, { 0 } },
+	{ 50, { 0 } },
+	{ ARG_PUSH, { x14947 } },
+	{ ARG_PUSH, { x14951 } },
+	{ ARG_POP, { 0 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x1434e } },
+	{ ARG_PUSH, { x14935 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14926[] = {
+	{ 50, { 0 } },
+	{ ARG_PUSH, { x14947 } },
+	{ ARG_PUSH, { x14951 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x1434e } },
+	{ ARG_PUSH, { x14935 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14917[] = {
+	{ 35, { 0 } },
+	{ ARG_PUSH, { x14926 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yDEFFN_args[] = {
+	{ ARG_CALL_FUNC, { (void *)f154c4 } },
+	{ ARG_PUSH, { x14917 } },
+	{ TOK_EQ, { 0 } },
+	{ ARG_REPLACE, { (void *)69 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f154da } },
+	{ ARG_PUSH, { x14917 } },
+	{ TOK_EQ, { 0 } },
+	{ ARG_REPLACE, { (void *)69 } },
+	{ ARG_PUSH, { x14139 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yDEFAULT_args[] = {
@@ -615,27 +1162,36 @@ static struct argdesc const yDEFAULT_args[] = {
 };
 
 static struct argdesc const yDEC_args[] = {
+	{ ARG_PUSH, { x14336+4 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14329[] = {
+	{ TOK_COMMA, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 8, { 0 } },
+	{ TOK_EQ, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_REPLACE, { (void *)33 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yDIV_args[] = {
+	{ ARG_PUSH, { x143cb } },
+	{ ARG_PUSH, { x14329 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x14336+4 } },
+	{ ARG_PUSH, { x14329 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_END, { 0 } }
 };
 
-static struct argdesc const yDPOKE_args[] = {
-};
-
-static struct argdesc const yDIM_args[] = {
-};
-
-static struct argdesc const yDMASOUND_args[] = {
-};
-
-static struct argdesc const yDMACONTROL_args[] = {
-};
-
-static struct argdesc const yDIR_args[] = {
-};
-
-static struct argdesc const x1436a[] = {
+static struct argdesc const expect_any_arr[] = {
+	{ ARG_CALL_FUNC, { (void *)expect_bool_arr } },
+	{ ARG_POP, { 0 } },
 	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
 	{ ARG_POP, { 0 } },
 	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
@@ -648,50 +1204,160 @@ static struct argdesc const x1436a[] = {
 	{ ARG_END, { 0 } }
 };
 
+static struct argdesc const x143a6[] = {
+	{ ARG_PUSH, { expect_any_arr } },
+	{ ARG_PUSH, { x1519e } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14804[] = {
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x143a6 } },
+	{ ARG_PUSH, { x14804 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const yDIM_args[] = {
+	{ ARG_PUSH, { x143a6 } },
+	{ ARG_PUSH, { x14804 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const yDMASOUND_args[] = {
+	{ ARG_PUSH, { yBOX_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { yBMOVE_args } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14570[] = {
+	{ ARG_PUSH, { x15068 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f14578 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14532[] = {
+	{ TOK_TO, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_REPLACE, { (void *)71 } },
+	{ ARG_POP, { 0 } },
+	{ TOK_SEMI, { 0 } },
+	{ ARG_REPLACE, { (void *)71 } },
+	{ ARG_POP, { 0 } },
+	{ 249, { (void *)71 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const yDIR_args[] = {
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x14570 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x14570 } },
+	{ ARG_PUSH, { x14532 } },
+	{ ARG_PUSH, { x14570 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
 static struct argdesc const x14c92[] = {
 	{ ARG_PUSH, { x14b96 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yDELETE_args[] = {
-	{ ARG_PUSH, { x1436a } },
+	{ ARG_PUSH, { expect_any_arr+2 } },
 	{ ARG_PUSH, { x14c92 } },
 	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_END, { 0 } }
 };
 
-static struct argdesc const yDRAW_args[] = {
+static struct argdesc const x14692[] = {
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_END, { 0 } }
 };
 
-static struct argdesc const yDELAY_args[] = {
+static struct argdesc const x146d3[] = {
+	{ TOK_TO, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x146c9[] = {
+	{ TOK_TO, { 0 } },
+	{ ARG_PUSH, { x14692 } },
+	{ ARG_PUSH, { x146c9 } },
+	{ ARG_POP, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x146c0[] = {
+	{ TOK_COMMA, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ TOK_SEMI, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 87, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 249, { (void *)33 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x1529b[] = {
+	{ ARG_PUSH, { x15068 } },
+	{ ARG_CALL_FUNC, { (void *)f152e6 } },
+	{ ARG_POP, { 0 } },
+	{ 249, { (void *)55 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x146b4[] = {
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x146c0 } },
+	{ ARG_PUSH, { x1529b } },
+	{ ARG_PUSH, { x146b4 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x146ad[] = {
+	{ ARG_PUSH, { x15068 } },
+	{ ARG_PUSH, { x146b4 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const yDRAW_args[] = {
+	{ ARG_PUSH, { x146d3 } },
+	{ ARG_PUSH, { x14692 } },
+	{ ARG_PUSH, { x146c9 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ ARG_PUSH, { x146ad } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x1455c[] = {
+	{ ARG_CALL_FUNC, { (void *)f13d22 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d1c } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yDEFINT_args[] = {
-};
-
-static struct argdesc const yDEFBYT_args[] = {
-};
-
-static struct argdesc const yDEFWRD_args[] = {
-};
-
-static struct argdesc const yDEFBIT_args[] = {
-};
-
-static struct argdesc const yDEFSTR_args[] = {
-};
-
-static struct argdesc const yDEFSNG_args[] = {
-};
-
-static struct argdesc const yDEFDBL_args[] = {
-};
-
-static struct argdesc const yDEFFLT_args[] = {
-};
-
-static struct argdesc const yDUMP_args[] = {
+	{ ARG_PUSH, { x1455c } },
+	{ ARG_CALL_FUNC, { (void *)execute_defint } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x141b3[] = {
@@ -711,12 +1377,6 @@ static struct argdesc const yELSE_args[] = {
 	{ ARG_PUSH, { x14b9a } },
 	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_END, { 0 } }
-};
-
-static struct argdesc const yENDIF_args[] = {
-};
-
-static struct argdesc const yENDFUNC_args[] = {
 };
 
 static struct argdesc const yENDSWITCH_args[] = {
@@ -746,24 +1406,41 @@ static struct argdesc const yEXIT_IF_args[] = {
 };
 
 static struct argdesc const yELLIPSE_args[] = {
+	{ ARG_PUSH, { yBOX_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ ARG_PUSH, { yACHAR_args } },
+	{ ARG_END, { 0 } }
 };
 
-static struct argdesc const yERROR_args[] = {
-};
-
-static struct argdesc const yEDIT_args[] = {
+static struct argdesc const x14425[] = {
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x143ad } },
+	{ ARG_PUSH, { x14425 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yERASE_args[] = {
+	{ ARG_PUSH, { x143ad } },
+	{ ARG_PUSH, { x14425 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x144dd[] = {
+	{ ARG_PUSH, { x14b9a } },
+	{ ARG_PUSH, { x144dd+3 } },
+	{ ARG_PUSH, { x144dd+3 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yEXEC_args[] = {
-};
-
-static struct argdesc const yEVERY_args[] = {
-};
-
-static struct argdesc const yENDSEEK_args[] = {
+	{ ARG_PUSH, { x144dd } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yENVIRON_args[] = {
@@ -788,11 +1465,11 @@ static struct argdesc const x14213[] = {
 };
 
 static struct argdesc const x14217[] = {
-	{ 33, { 0 } },
+	{ TOK_COMMA, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ 108, { 0 } },
 	{ ARG_POP, { 0 } },
-	{ 34, { 0 } },
+	{ TOK_SEMI, { 0 } },
 	{ ARG_REPLACE, { (void *)33 } },
 	{ ARG_END, { 0 } }
 };
@@ -807,15 +1484,15 @@ static struct argdesc const x14245[] = {
 };
 
 static struct argdesc const x14228[] = {
-	{ 19, { 0 } },
+	{ TOK_EQ, { 0 } },
 	{ ARG_REPLACE, { (void *)69 } },
 	{ ARG_PUSH, { x14b96 } },
-	{ 71, { 0 } },
+	{ TOK_TO, { 0 } },
 	{ ARG_PUSH, { x14b96 } },
 	{ ARG_PUSH, { x14245 } },
 	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_POP, { 0 } },
-	{ 19, { 0 } },
+	{ TOK_EQ, { 0 } },
 	{ ARG_REPLACE, { (void *)69 } },
 	{ ARG_PUSH, { x14b96 } },
 	{ 73, { 0 } },
@@ -838,57 +1515,122 @@ static struct argdesc const yFOR_args[] = {
 };
 
 static struct argdesc const yFUNCTION_args[] = {
+	{ ARG_CALL_FUNC, { (void *)f154c4 } },
+	{ ARG_PUSH, { x14917 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f154da } },
+	{ ARG_PUSH, { x14917 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yFILL_args[] = {
+	{ ARG_PUSH, { yBMIRROR_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ ARG_PUSH, { yBMOVE_args } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x1421f[] = {
+	{ ARG_PUSH, { x14217 } },
+	{ ARG_REPLACE, { (void *)108 } },
+	{ ARG_POP, { 0 } },
+	{ 249, { (void *)108 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x146f8[] = {
+	{ ARG_PUSH, { x14695 } },
+	{ ARG_PUSH, { x1421f } },
+	{ ARG_CALL_FUNC, { (void *)expect_string } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x14695 } },
+	{ 89, { 0 } },
+	{ ARG_REPLACE, { (void *)122 } },
+	{ ARG_PUSH, { x14c92 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x1470c[] = {
+	{ ARG_PUSH, { x146f8 } },
+	{ ARG_PUSH, { x1470c } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yFIELD_args[] = {
+	{ ARG_PUSH, { x144f6 } },
+	{ ARG_PUSH, { x146f8 } },
+	{ ARG_PUSH, { x1470c } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14503[] = {
+	{ TOK_CHANNEL, { 0 } },
+	{ ARG_PUSH, { x14570 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yFILES_args[] = {
-};
-
-static struct argdesc const yFILESELECT_args[] = {
+	{ ARG_CALL_FUNC, { (void *)f13d6a } },
+	{ ARG_PUSH, { x14503 } },
+	{ ARG_PUSH, { x14570 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14570 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x143ec } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d76 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x14570 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x14570 } },
+	{ ARG_PUSH, { x14532 } },
+	{ ARG_PUSH, { x14570 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yFULLW_args[] = {
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_POP, { 0 } },
+	{ TOK_CHANNEL, { 0 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yGOTO_args[] = {
+	{ ARG_CALL_FUNC, { (void *)f15448 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yGEMSYS_args[] = {
 };
 
 static struct argdesc const yGET_args[] = {
-};
-
-static struct argdesc const yGRAPHMODE_args[] = {
-};
-
-static struct argdesc const yGSTICK_args[] = {
-};
-
-static struct argdesc const yGHIDEM_args[] = {
-};
-
-static struct argdesc const yGSHOWM_args[] = {
-};
-
-static struct argdesc const yGMOUSE_args[] = {
-};
-
-static struct argdesc const yHARDCOPY_args[] = {
-};
-
-static struct argdesc const yHIDEM_args[] = {
-};
-
-static struct argdesc const yHLINE_args[] = {
-};
-
-static struct argdesc const yHTAB_args[] = {
+	{ ARG_PUSH, { x15039 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x143ec } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)4 } },
+	{ ARG_PUSH, { x144f6 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)6 } },
+	{ ARG_PUSH, { x144f6 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x141b0[] = {
@@ -905,32 +1647,24 @@ static struct argdesc const yIF_args[] = {
 	{ ARG_END, { 0 } }
 };
 
-static struct argdesc const yINC_args[] = {
-};
-
 static struct argdesc const yINFOW_args[] = {
-};
-
-static struct argdesc const x14372[] = {
-	{ ARG_CALL_FUNC, { (void *)expect_int_arr } },
-	{ ARG_POP, { 0 } },
-	{ ARG_CALL_FUNC, { (void *)expect_word_arr } },
-	{ ARG_POP, { 0 } },
-	{ ARG_CALL_FUNC, { (void *)expect_byte_arr } },
+	{ ARG_PUSH, { x144ff } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { yCHDIR_args } },
 	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x1413e[] = {
 	{ ARG_PUSH, { x14b96 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ -6, { 0 } },
-	{ 19, { 0 } },
+	{ TOK_EQ, { 0 } },
 	{ ARG_REPLACE, { (void *)TOK_ARRAY_ASS } },
 	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yINSERT_args[] = {
-	{ ARG_PUSH, { x14372 } },
+	{ ARG_PUSH, { expect_any_arr+6 } },
 	{ ARG_PUSH, { x1413e } },
 	{ ARG_PUSH, { yCLEARW_args } },
 	{ ARG_POP, { 0 } },
@@ -950,33 +1684,20 @@ static struct argdesc const yINPUT_args[] = {
 };
 
 static struct argdesc const yINLINE_args[] = {
-};
-
-static struct argdesc const yIKBD_args[] = {
-};
-
-static struct argdesc const yJOYPAD_args[] = {
-};
-
-static struct argdesc const yKEYPAD_args[] = {
+	{ ARG_CALL_FUNC, { (void *)expect_int } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f158f8 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yKEYTEST_args[] = {
-};
-
-static struct argdesc const yKEYGET_args[] = {
-};
-
-static struct argdesc const yKEYLOOK_args[] = {
-};
-
-static struct argdesc const yKEYPRESS_args[] = {
+	{ ARG_PUSH, { x14336+2 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yKEYDEF_args[] = {
-};
-
-static struct argdesc const yKILL_args[] = {
 };
 
 static struct argdesc const yLOOP_args[] = {
@@ -990,24 +1711,9 @@ static struct argdesc const yLOOP_args[] = {
 };
 
 static struct argdesc const x14196[] = {
-	{ 19, { 0 } },
+	{ TOK_EQ, { 0 } },
 	{ ARG_REPLACE, { (void *)TOK_ASSIGN } },
 	{ ARG_PUSH, { x14139 } },
-	{ ARG_END, { 0 } }
-};
-
-static struct argdesc const x151a6[] = {
-	{ 33, { 0 } },
-	{ ARG_PUSH, { x14b96 } },
-	{ ARG_PUSH, { x151a6 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_END, { 0 } }
-};
-
-static struct argdesc const x1519e[] = {
-	{ ARG_PUSH, { x14b96 } },
-	{ ARG_PUSH, { x151a6 } },
-	{ 32, { 0 } },
 	{ ARG_END, { 0 } }
 };
 
@@ -1018,16 +1724,9 @@ static struct argdesc const yRSET_args[] = {
 	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
 	{ ARG_PUSH, { x1519e } },
 	{ -6, { 0 } },
-	{ 19, { 0 } },
+	{ TOK_EQ, { 0 } },
 	{ ARG_REPLACE, { (void *)TOK_ARRAY_ASS } },
 	{ ARG_PUSH, { x14139 } },
-	{ ARG_END, { 0 } }
-};
-
-static struct argdesc const x1435e[] = {
-	{ ARG_CALL_FUNC, { (void *)expect_float } },
-	{ ARG_POP, { 0 } },
-	{ ARG_CALL_FUNC, { (void *)expect_bool } },
 	{ ARG_END, { 0 } }
 };
 
@@ -1041,44 +1740,44 @@ static struct argdesc const x1437e[] = {
 static struct argdesc const x14147[] = {
 	{ ARG_PUSH, { x1519e } },
 	{ -6, { 0 } },
-	{ 19, { 0 } },
+	{ TOK_EQ, { 0 } },
 	{ ARG_REPLACE, { (void *)TOK_ARRAY_ASS } },
 	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yLET_args[] = {
 	{ ARG_PUSH, { x1438e+2 } },
-	{ 19, { 0 } },
+	{ TOK_EQ, { 0 } },
 	{ ARG_REPLACE, { (void *)69 } },
 	{ ARG_PUSH, { yCLEARW_args } },
 	{ ARG_POP, { 0 } },
-	{ ARG_PUSH, { x1435e } },
-	{ 19, { 0 } },
+	{ ARG_PUSH, { x1434e+8 } },
+	{ TOK_EQ, { 0 } },
 	{ ARG_REPLACE, { (void *)69 } },
 	{ ARG_PUSH, { x14b9a } },
 	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ ARG_PUSH, { x1438e } },
 	{ 5, { 0 } },
-	{ 19, { 0 } },
+	{ TOK_EQ, { 0 } },
 	{ ARG_CALL_FUNC, { (void *)f140e2 } },
 	{ ARG_POP, { 0 } },
 	{ ARG_PUSH, { x1438e } },
 	{ 6, { 0 } },
-	{ 19, { 0 } },
+	{ TOK_EQ, { 0 } },
 	{ ARG_CALL_FUNC, { (void *)f140d6 } },
 	{ ARG_POP, { 0 } },
 	{ ARG_PUSH, { x1438e } },
-	{ 7, { 0 } },
-	{ 19, { 0 } },
+	{ TOK_MUL, { 0 } },
+	{ TOK_EQ, { 0 } },
 	{ ARG_CALL_FUNC, { (void *)f140ee } },
 	{ ARG_POP, { 0 } },
 	{ ARG_PUSH, { x1438e } },
 	{ 8, { 0 } },
-	{ 19, { 0 } },
+	{ TOK_EQ, { 0 } },
 	{ ARG_CALL_FUNC, { (void *)f140fa } },
 	{ ARG_POP, { 0 } },
-	{ ARG_PUSH, { x14372 } },
+	{ ARG_PUSH, { expect_any_arr+6 } },
 	{ ARG_PUSH, { x14147 } },
 	{ ARG_PUSH, { yCLEARW_args } },
 	{ ARG_POP, { 0 } },
@@ -1091,109 +1790,119 @@ static struct argdesc const yLET_args[] = {
 	{ ARG_END, { 0 } }
 };
 
+static struct argdesc const print_channel_args[] = {
+	{ TOK_CHANNEL, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x1442e[] = {
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { x143ec } },
+	{ ARG_PUSH, { x1442e } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
 static struct argdesc const yLINE_args[] = {
-};
-
-static struct argdesc const yLPOKE_args[] = {
-};
-
-static struct argdesc const yLOCAL_args[] = {
+	{ -6, { 0 } },
+	{ 249, { (void *)52 } },
+	{ ARG_PUSH, { x14213 } },
+	{ ARG_PUSH, { print_channel_args } },
+	{ ARG_PUSH, { x143ec } },
+	{ ARG_PUSH, { x1442e } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x14213 } },
+	{ ARG_CALL_FUNC, { (void *)f13d22 } },
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { x143ec } },
+	{ ARG_PUSH, { x1442e } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ -6, { 0 } },
+	{ 249, { (void *)54 } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x14b96 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yLPRINT_args[] = {
 };
 
-static struct argdesc const yLOCATE_args[] = {
-};
-
-static struct argdesc const yLIST_args[] = {
-};
-
-static struct argdesc const yLLIST_args[] = {
-};
-
-static struct argdesc const yLOAD_args[] = {
-};
-
-static struct argdesc const yLOG_MSG_args[] = {
-};
-
-static struct argdesc const yLOG_SET_args[] = {
-};
-
-static struct argdesc const yLOG_FILE_args[] = {
-};
-
-static struct argdesc const yLOG_KILL_args[] = {
-};
-
 static struct argdesc const yMONITOR_args[] = {
 };
 
+static struct argdesc const x14321[] = {
+	{ TOK_COMMA, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ TOK_MUL, { 0 } },
+	{ TOK_EQ, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_REPLACE, { (void *)33 } },
+	{ ARG_END, { 0 } }
+};
+
 static struct argdesc const yMUL_args[] = {
+	{ ARG_PUSH, { x143cb } },
+	{ ARG_PUSH, { x14321 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x14336+4 } },
+	{ ARG_PUSH, { x14321 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yMENU_args[] = {
+	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
+	{ TOK_RPAREN, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ TOK_OFF, { 0 } },
+	{ -6, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ TOK_KILL, { 0 } },
+	{ -6, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ ARG_PUSH, { yBMIRROR_args } },
+	{ ARG_POP, { 0 } },
+	{ 249, { (void *)55 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yMIDs_args[] = {
-};
-
-static struct argdesc const yMKDIR_args[] = {
+	{ ARG_PUSH, { x143ec } },
+	{ ARG_PUSH, { x14695 } },
+	{ ARG_PUSH, { x14b90 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_PUSH, { x14196 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yMOUSE_args[] = {
-};
-
-static struct argdesc const yMODE_args[] = {
-};
-
-static struct argdesc const yMW_OUT_args[] = {
-};
-
-static struct argdesc const yMEMEXG_args[] = {
-};
-
-static struct argdesc const yMEMBSET_args[] = {
-};
-
-static struct argdesc const yMEMBCLR_args[] = {
-};
-
-static struct argdesc const yMEMBCHG_args[] = {
-};
-
-static struct argdesc const yMEMOR_args[] = {
-};
-
-static struct argdesc const yMEMAND_args[] = {
-};
-
-static struct argdesc const yMEMXOR_args[] = {
-};
-
-static struct argdesc const yMEMSWAP_args[] = {
-};
-
-static struct argdesc const yMEMFILL_args[] = {
-};
-
-static struct argdesc const yMEMZERO_args[] = {
-};
-
-static struct argdesc const yMEMREPLACE_args[] = {
-};
-
-static struct argdesc const yMEMMIRROR_args[] = {
-};
-
-static struct argdesc const yMEMMIRROR3_args[] = {
-};
-
-static struct argdesc const yMDPOKE_args[] = {
-};
-
-static struct argdesc const yMLPOKE_args[] = {
+	{ ARG_PUSH, { x14336+2 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14336+2 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14336+2 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yNEXT_args[] = {
@@ -1204,69 +1913,252 @@ static struct argdesc const yNEXT_args[] = {
 };
 
 static struct argdesc const yNAME_args[] = {
+	{ ARG_PUSH, { x14570 } },
+	{ ARG_PUSH, { x1421f } },
+	{ ARG_PUSH, { yCHDIR_args } },
+	{ ARG_END, { 0 } }
 };
 
-static struct argdesc const yNEW_args[] = {
+static struct argdesc const x145f0[] = {
+	{ ARG_REPLACE, { (void *)20 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { yBMOVE_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)22 } },
+	{ ARG_PUSH, { x144ff } },
+	{ ARG_PUSH, { yACHAR_args } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x144ef[] = {
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_POP, { 0 } },
+	{ 249, { (void *)33 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yOPEN_args[] = {
+	{ ARG_CALL_FUNC, { (void *)f13d5a } },
+	{ ARG_PUSH, { x145f0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)18 } },
+	{ ARG_PUSH, { x14570 } },
+	{ ARG_PUSH, { x144ef } },
+	{ ARG_PUSH, { x144f6 } },
+	{ ARG_PUSH, { x144ef } },
+	{ ARG_PUSH, { x14570 } },
+	{ ARG_PUSH, { x14b90 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x1481f[] = {
+	{ 76, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 159, { 0 } },
+	{ ARG_REPLACE, { (void *)76 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14816[] = {
+	{ ARG_PUSH, { x1480d } },
+	{ -6, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f15444 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x148ca[] = {
+	{ ARG_CALL_FUNC, { (void *)f15444 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f15444 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x148ca } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yON_args[] = {
+	{ -6, { 0 } },
+	{ ARG_REPLACE, { (void *)1 } },
+	{ 249, { (void *)0 } },
+	{ 151, { 0 } },
+	{ -6, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)4 } },
+	{ 153, { 0 } },
+	{ -6, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)6 } },
+	{ 153, { 0 } },
+	{ -6, { 0 } },
+	{ 154, { 0 } },
+	{ -6, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)2 } },
+	{ 151, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_PUSH, { x14816 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)8 } },
+	{ 153, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_PUSH, { x14816 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)10 } },
+	{ 167, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_PUSH, { x1481f } },
+	{ ARG_PUSH, { x14816+1 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)12 } },
+	{ 167, { 0 } },
+	{ -6, { 0 } },
+	{ 174, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_PUSH, { x14816 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)14 } },
+	{ 167, { 0 } },
+	{ -6, { 0 } },
+	{ 170, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_PUSH, { x14816 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)16 } },
+	{ 167, { 0 } },
+	{ -6, { 0 } },
+	{ 171, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_PUSH, { x1503c } },
+	{ ARG_PUSH, { x14825 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)220 } },
+	{ 167, { 0 } },
+	{ -6, { 0 } },
+	{ 172, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_PUSH, { x15036 } },
+	{ ARG_PUSH, { x14825 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)222 } },
+	{ 167, { 0 } },
+	{ -6, { 0 } },
+	{ 173, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_PUSH, { x15036 } },
+	{ ARG_PUSH, { x14825 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)20 } },
+	{ 167, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)18 } },
+	{ 167, { 0 } },
+	{ -6, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_REPLACE, { (void *)0 } },
+	{ 249, { (void *)252 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x1480d } },
+	{ ARG_PUSH, { x148ca } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x147e0[] = {
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x147e0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yOUT_args[] = {
+	{ ARG_PUSH, { yOUT_args+11 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ TOK_CHANNEL, { 0 } },
+	{ ARG_PUSH, { yOUT_args+11 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13de4 } },
+	{ TOK_CHANNEL, { 0 } },
+	{ ARG_PUSH, { yOUT_args+11 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13de4 } },
+	/* x147d8 */
+	{ ARG_PUSH, { x1503f } },
+	{ ARG_PUSH, { x147e0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yOPTION_args[] = {
-};
-
-static struct argdesc const x14475[] = {
-	{ ARG_PUSH, { x14b96 } },
-	{ 33, { 0 } },
-	{ ARG_END, { 0 } },
-	{ ARG_PUSH, { x14475 } }
+	{ TOK_BASE, { 0 } },
+	{ TOK_CONST_ZERO, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ TOK_BASE, { 0 } },
+	{ TOK_CONST_ONE, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yOB_TEXTs_args[] = {
-	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { iexp_comma } },
 	{ ARG_PUSH, { x14b96 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ -6, { 0 } },
-	{ 19, { 0 } },
+	{ TOK_EQ, { 0 } },
 	{ ARG_REPLACE, { (void *)TOK_ARRAY_ASS } },
 	{ ARG_PUSH, { yCHDIR_args } },
 	{ ARG_END, { 0 } }
 };
 
-static struct argdesc const yPLOT_args[] = {
-};
-
-static struct argdesc const yPSET_args[] = {
-};
-
-static struct argdesc const yPOKE_args[] = {
+static struct argdesc const x1491e[] = {
+	{ 35, { 0 } },
+	{ -6, { 0 } },
+	{ ARG_PUSH, { x14926 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yPROCEDURE_args[] = {
+	{ ARG_CALL_FUNC, { (void *)f15444 } },
+	{ ARG_PUSH, { x1491e } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yPUT_args[] = {
-};
-
-static struct argdesc const yPBOX_args[] = {
-};
-
-static struct argdesc const yPRBOX_args[] = {
-};
-
-static struct argdesc const yPCIRCLE_args[] = {
-};
-
-static struct argdesc const yPELLIPSE_args[] = {
-};
-
-static struct argdesc const yPAUSE_args[] = {
+	{ ARG_PUSH, { x1503f } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x143ec } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)10 } },
+	{ ARG_PUSH, { x1503f } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x143ec } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)12 } },
+	{ ARG_PUSH, { x144f6 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)14 } },
+	{ ARG_PUSH, { x144f6 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yPOLYLINE_args[] = {
@@ -1276,15 +2168,6 @@ static struct argdesc const yPOLYFILL_args[] = {
 };
 
 static struct argdesc const yPOLYMARK_args[] = {
-};
-
-static struct argdesc const yPSAVE_args[] = {
-};
-
-static struct argdesc const yPALGET_args[] = {
-};
-
-static struct argdesc const yPALSET_args[] = {
 };
 
 static struct argdesc const yPIXEL32_args[] = {
@@ -1297,27 +2180,6 @@ static struct argdesc const yPIXEL16_args[] = {
 };
 
 static struct argdesc const yPIXEL15_args[] = {
-};
-
-static struct argdesc const yPIXEL8C_args[] = {
-};
-
-static struct argdesc const yPIXEL8P_args[] = {
-};
-
-static struct argdesc const yPIXEL4P_args[] = {
-};
-
-static struct argdesc const yPIXEL2P_args[] = {
-};
-
-static struct argdesc const yPIXEL1M_args[] = {
-};
-
-static struct argdesc const yPBAR_args[] = {
-};
-
-static struct argdesc const yPRBAR_args[] = {
 };
 
 static struct argdesc const yQUIT_args[] = {
@@ -1351,7 +2213,7 @@ static struct argdesc const x1405a[] = {
 static struct argdesc const x1404d[] = {
 	{ 114, { 0 } },
 	{ ARG_PUSH, { x1405a } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ ARG_END, { 0 } }
 };
@@ -1362,21 +2224,21 @@ static struct argdesc const x14039[] = {
 	{ ARG_PUSH, { x14054 } },
 	{ ARG_PUSH, { x1404d } },
 	{ ARG_POP, { 0 } },
-	{ ARG_PUSH, { x1436a } },
+	{ ARG_PUSH, { expect_any_arr+2 } },
 	{ ARG_PUSH, { x14076 } },
 	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x1406f[] = {
-	{ 33, { 0 } },
+	{ TOK_COMMA, { 0 } },
 	{ ARG_CALL_FUNC, { (void *)expect_int_arr } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14066[] = {
-	{ 33, { 0 } },
+	{ TOK_COMMA, { 0 } },
 	{ ARG_PUSH, { x14b96 } },
 	{ ARG_PUSH, { x1406f } },
 	{ ARG_POP, { 0 } },
@@ -1390,10 +2252,12 @@ static struct argdesc const yQSORT_args[] = {
 	{ ARG_END, { 0 } }
 };
 
-static struct argdesc const yREPEAT_args[] = {
-};
-
 static struct argdesc const yRESTORE_args[] = {
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f15448 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yRETURN_args[] = {
@@ -1408,37 +2272,46 @@ static struct argdesc const yRETURN_args[] = {
 	{ ARG_END, { 0 } }
 };
 
-static struct argdesc const yRELSEEK_args[] = {
-};
-
 static struct argdesc const yRESERVE_args[] = {
 };
 
 static struct argdesc const yRANDOMIZE_args[] = {
 };
 
-static struct argdesc const yRBOX_args[] = {
-};
-
-static struct argdesc const yRMDIR_args[] = {
-};
-
-static struct argdesc const yRENAME_args[] = {
-};
-
 static struct argdesc const yRCALL_args[] = {
 };
 
 static struct argdesc const yRESUME_args[] = {
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 168, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ ARG_CALL_FUNC, { (void *)f15448 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yREAD_args[] = {
 };
 
 static struct argdesc const yRECORD_args[] = {
+	{ ARG_PUSH, { x144f6 } },
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yRUN_args[] = {
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ ARG_PUSH, { x14139 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d1c } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yRECALL_args[] = {
@@ -1453,9 +2326,6 @@ static struct argdesc const yRC_REDRAW_args[] = {
 static struct argdesc const yRGB_args[] = {
 };
 
-static struct argdesc const yRBAR_args[] = {
-};
-
 static struct argdesc const ySWITCH_args[] = {
 	{ ARG_CALL_FUNC, { (void *)f13b62 } },
 	{ ARG_PUSH, { yCLEARW_args } },
@@ -1467,38 +2337,95 @@ static struct argdesc const ySWITCH_args[] = {
 };
 
 static struct argdesc const ySWAP_args[] = {
-};
-
-static struct argdesc const x143cb[] = {
-	{ ARG_CALL_FUNC, { (void *)expect_float } },
+	{ ARG_PUSH, { x143cb } },
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { x143cb } },
+	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x143d6 } },
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { x143d6 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x143e1 } },
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { x143e1 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x143ec } },
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { x143ec } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x143f7 } },
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { x143f7 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x14402 } },
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { x14402 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
 	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
-	{ ARG_PUSH, { x1519e } },
+	{ TOK_RPAREN, { 0 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
+	{ TOK_RPAREN, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_int_arr } },
+	{ TOK_RPAREN, { 0 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_int_arr } },
+	{ TOK_RPAREN, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_bool_arr } },
+	{ TOK_RPAREN, { 0 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_bool_arr } },
+	{ TOK_RPAREN, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
+	{ TOK_RPAREN, { 0 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
+	{ TOK_RPAREN, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_word_arr } },
+	{ TOK_RPAREN, { 0 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_word_arr } },
+	{ TOK_RPAREN, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_byte_arr } },
+	{ TOK_RPAREN, { 0 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)expect_byte_arr } },
+	{ TOK_RPAREN, { 0 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ TOK_MUL, { 0 } },
+	{ ARG_PUSH, { x14386 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x143ad } },
+	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14311[] = {
-	{ 33, { 0 } },
+	{ TOK_COMMA, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ 5, { 0 } },
-	{ 19, { 0 } },
+	{ TOK_EQ, { 0 } },
 	{ -6, { 0 } },
 	{ ARG_REPLACE, { (void *)33 } },
-	{ ARG_END, { 0 } }
-};
-
-static struct argdesc const x14336[] = {
-	{ ARG_PUSH, { x143ec } },
-	{ ARG_POP, { 0 } },
-	{ ARG_PUSH, { x143e1 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_PUSH, { x14402 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_PUSH, { x143f7 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_PUSH, { x143d6 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_PUSH, { x143cb } },
 	{ ARG_END, { 0 } }
 };
 
@@ -1519,22 +2446,26 @@ static struct argdesc const ySUB_args[] = {
 	{ ARG_END, { 0 } }
 };
 
-static struct argdesc const ySPOKE_args[] = {
-};
-
-static struct argdesc const ySDPOKE_args[] = {
-};
-
-static struct argdesc const ySLPOKE_args[] = {
-};
-
 static struct argdesc const ySETCOLOR_args[] = {
 };
 
 static struct argdesc const ySEEK_args[] = {
+	{ ARG_PUSH, { x144ff } },
+	{ ARG_PUSH, { yBMIRROR_args } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x145ce[] = {
+	{ ARG_PUSH, { x14570 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const ySETTIME_args[] = {
+	{ ARG_PUSH, { x145ce } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { yCHDIR_args } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const ySPUT_args[] = {
@@ -1543,28 +2474,35 @@ static struct argdesc const ySPUT_args[] = {
 	{ ARG_END, { 0 } }
 };
 
-static struct argdesc const ySHOWM_args[] = {
-};
-
-static struct argdesc const ySTOP_args[] = {
-};
-
 static struct argdesc const ySYSTEM_args[] = {
 };
 
-static struct argdesc const ySTICK_args[] = {
-};
-
 static struct argdesc const ySOUND_args[] = {
+	{ ARG_PUSH, { x1503f } },
+	{ ARG_PUSH, { x144eb } },
+	{ TOK_CHANNEL, { 0 } },
+	{ ARG_PUSH, { ySOUND_args+13 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { yVGET_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { yBOX_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { yBMOVE_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { no_args } },
+	{ ARG_POP, { 0 } },
+	/* x147b9 */
+	{ ARG_PUSH, { yBMIRROR_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const ySETMOUSE_args[] = {
-};
-
-static struct argdesc const ySAVE_args[] = {
-};
-
-static struct argdesc const ySETDRAW_args[] = {
+	{ ARG_PUSH, { yBMOVE_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { yBMIRROR_args } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const ySTORE_args[] = {
@@ -1573,55 +2511,10 @@ static struct argdesc const ySTORE_args[] = {
 static struct argdesc const ySPRITE_args[] = {
 };
 
-static struct argdesc const ySFILL_args[] = {
-};
-
-static struct argdesc const ySUPER_args[] = {
-};
-
 static struct argdesc const ySLEEP_args[] = {
 };
 
-static struct argdesc const ySCREEN_args[] = {
-};
-
-static struct argdesc const ySNDH_args[] = {
-};
-
 static struct argdesc const ySCALL_args[] = {
-};
-
-static struct argdesc const ySET_MFDB_args[] = {
-};
-
-static struct argdesc const ySET_MENU_args[] = {
-};
-
-static struct argdesc const ySET_SXYXY_args[] = {
-};
-
-static struct argdesc const ySET_DXYXY_args[] = {
-};
-
-static struct argdesc const ySET_SXYWH_args[] = {
-};
-
-static struct argdesc const ySET_DXYWH_args[] = {
-};
-
-static struct argdesc const ySET_PXYWH_args[] = {
-};
-
-static struct argdesc const ySET_RXYWH_args[] = {
-};
-
-static struct argdesc const ySET_PXYXY_args[] = {
-};
-
-static struct argdesc const ySET_GCBITMAP_args[] = {
-};
-
-static struct argdesc const ySET_SOCKADDR_IN_args[] = {
 };
 
 static struct argdesc const ySTRARRAYFILL_args[] = {
@@ -1631,36 +2524,34 @@ static struct argdesc const yTEXT_args[] = {
 };
 
 static struct argdesc const yTRON_args[] = {
-};
-
-static struct argdesc const yTROFF_args[] = {
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ TOK_CHANNEL, { 0 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_CALL_FUNC, { (void *)f13d64 } },
+	{ ARG_CALL_FUNC, { (void *)f15444 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yTOPW_args[] = {
-};
-
-static struct argdesc const yTITLEW_args[] = {
-};
-
-static struct argdesc const yTOUCH_args[] = {
+	{ ARG_PUSH, { x144ff } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yTPUT_args[] = {
 };
 
-static struct argdesc const yTBITBLT_args[] = {
-};
-
-static struct argdesc const yTMOUSE_args[] = {
-};
-
 static struct argdesc const yUSERBLK_args[] = {
-	{ ARG_PUSH, { x14475 } },
-	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
 	{ ARG_PUSH, { x14b96 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ -6, { 0 } },
-	{ 19, { 0 } },
+	{ TOK_EQ, { 0 } },
 	{ ARG_REPLACE, { (void *)TOK_ARRAY_ASS } },
 	{ ARG_PUSH, { yCLEARW_args } },
 	{ ARG_END, { 0 } }
@@ -1675,90 +2566,59 @@ static struct argdesc const yVOID_args[] = {
 	{ ARG_END, { 0 } }
 };
 
-static struct argdesc const yVSYNC_args[] = {
-};
-
-static struct argdesc const yVTAB_args[] = {
-};
-
-static struct argdesc const yV_H_args[] = {
-};
-
 static struct argdesc const yVSETCOLOR_args[] = {
+	{ ARG_PUSH, { yBOX_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { yBMIRROR_args } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yVRC_COPY_args[] = {
 };
 
-static struct argdesc const yVCURVE_args[] = {
-};
-
 static struct argdesc const yVCLS_args[] = {
 };
 
-static struct argdesc const yVGET_args[] = {
-};
-
 static struct argdesc const yVPUT_args[] = {
-};
-
-static struct argdesc const yVSGET_args[] = {
-};
-
-static struct argdesc const yVSPUT_args[] = {
-};
-
-static struct argdesc const yVPLOT_args[] = {
-};
-
-static struct argdesc const yVLINE_args[] = {
-};
-
-static struct argdesc const yVBOX_args[] = {
-};
-
-static struct argdesc const yVPALGET_args[] = {
-};
-
-static struct argdesc const yVPALSET_args[] = {
-};
-
-static struct argdesc const yVPBAR_args[] = {
+	{ ARG_PUSH, { x1503c } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)218 } },
+	{ ARG_PUSH, { x15039 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yVER2STR_args[] = {
 };
 
 static struct argdesc const yWAVE_args[] = {
+	{ ARG_PUSH, { yVGET_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { yBOX_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { yBMOVE_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { no_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { yBMIRROR_args } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { yCLEARW_args } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yWINDTAB_args[] = {
-	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { iexp_comma } },
 	{ ARG_PUSH, { x14b96 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ -6, { 0 } },
-	{ 19, { 0 } },
+	{ TOK_EQ, { 0 } },
 	{ ARG_REPLACE, { (void *)TOK_ARRAY_ASS } },
 	{ ARG_PUSH, { yCLEARW_args } },
 	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const yWRITE_args[] = {
-};
-
-static struct argdesc const yWAITVBL_args[] = {
-};
-
-static struct argdesc const yWARMBOOT_args[] = {
-};
-
-static struct argdesc const y_GLOBAL_args[] = {
-};
-
-static struct argdesc const y_DATA_args[] = {
-};
-
-static struct argdesc const yspecvar_args[] = {
 };
 
 static struct argdesc const yFORM_INPUT_args[] = {
@@ -1771,81 +2631,10 @@ static struct argdesc const yFORM_INPUT_args[] = {
 	{ ARG_END, { 0 } }
 };
 
-static struct argdesc const yLINE_INPUT_args[] = {
-};
-
-static struct argdesc const yEND_args[] = {
-};
-
-static struct argdesc const yDO_WHILE_args[] = {
-};
-
-static struct argdesc const yDO_UNTIL_args[] = {
-};
-
-static struct argdesc const yLOOP_WHILE_args[] = {
-};
-
-static struct argdesc const yLOOP_UNTIL_args[] = {
-};
-
-static struct argdesc const yON_ERROR_args[] = {
-};
-
-static struct argdesc const yON_ERROR_GOSUB_args[] = {
-};
-
-static struct argdesc const yON_BREAK_args[] = {
-};
-
-static struct argdesc const yON_BREAK_CONT_args[] = {
-};
-
-static struct argdesc const yON_BREAK_GOSUB_args[] = {
-};
-
-static struct argdesc const yON_MENU_GOSUB_args[] = {
-};
-
-static struct argdesc const yON_MENU_MESSAGE_GOSUB_args[] = {
-};
-
-static struct argdesc const yON_MENU_KEY_GOSUB_args[] = {
-};
-
-static struct argdesc const yON_MENU_BUTTON_args[] = {
-};
-
-static struct argdesc const yON_MENU_args[] = {
-};
-
-static struct argdesc const yON_MENU_IBOX_args[] = {
-};
-
-static struct argdesc const yON_MENU_OBOX_args[] = {
-};
-
-static struct argdesc const yMENU_OFF_args[] = {
-};
-
-static struct argdesc const yMENU_KILL_args[] = {
-};
-
-static struct argdesc const yOPENW_args[] = {
-};
-
-static struct argdesc const yCLOSEW_args[] = {
-};
-
-static struct argdesc const yPROCEDURE_flapped_args[] = {
-};
-
-static struct argdesc const yFUNCTION_flapped_args[] = {
-};
 
 static struct argdesc const x13fd3[] = {
 	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_END, { 0 } }
 };
@@ -1868,28 +2657,7 @@ static struct argdesc const x15176[] = {
 };
 
 
-struct argdesc const x144eb[] = {
-	{ 33, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ 34, { 0 } },
-	{ ARG_END, { 0 } }
-};
-
-struct argdesc const x144ff[] = {
-	{ TOK_CHANNEL, { 0 } },
-	{ -6, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_END, { 0 } }
-};
-
-struct argdesc const x144f6[] = {
-	{ ARG_PUSH, { x144ff } },
-	{ 249, { (void *)77 } },
-	{ ARG_PUSH, { x14b96 } },
-	{ ARG_END, { 0 } }
-};
-
-struct argdesc const x15060[] = {
+static struct argdesc const x15060[] = {
 	{ 117, { 0 } },
 	{ ARG_REPLACE, { (void *)118 } },
 	{ ARG_POP, { 0 } },
@@ -1898,157 +2666,45 @@ struct argdesc const x15060[] = {
 	{ ARG_END, { 0 } }
 };
 
-struct argdesc const x1516b[] = {
-	{ ARG_PUSH, { x144eb } },
-	{ ARG_PUSH, { x15068 } },
-	{ ARG_PUSH, { x1516b } },
-	{ ARG_POP, { 0 } },
-	{ ARG_END, { 0 } }
-};
-
-struct argdesc const x15164[] = {
-	{ ARG_PUSH, { x15068 } },
-	{ ARG_PUSH, { x1516b } },
-	{ ARG_END, { 0 } }
-};
-
-struct argdesc const x14fa6[] = {
-	{ ARG_PUSH, { x15068 } },
-	{ 33, { 0 } },
-	{ ARG_PUSH, { x15068 } },
-	{ ARG_END, { 0 } }
-};
-
-
-struct argdesc const x1502d[] = {
-	{ ARG_PUSH, { x14475 } },
-	{ ARG_PUSH, { x14475 } },
-	{ ARG_PUSH, { x14475 } },
-	{ ARG_PUSH, { x14475 } },
-	{ ARG_PUSH, { x14475 } },
-	{ ARG_PUSH, { x14475 } },
-	{ ARG_PUSH, { x14475 } },
-	{ ARG_PUSH, { x14b96 } },
-	{ ARG_END, { 0 } }
-};
-
-struct argdesc const x15036[] = {
-	{ ARG_PUSH, { x14475 } },
-	{ ARG_PUSH, { x14475 } },
-	{ ARG_PUSH, { x14475 } },
-	{ ARG_PUSH, { x14475 } },
-	{ ARG_PUSH, { x14b96 } },
-	{ ARG_END, { 0 } }
-};
-
-struct argdesc const x15039[] = {
-	{ ARG_PUSH, { x14475 } },
-	{ ARG_PUSH, { x14475 } },
-	{ ARG_PUSH, { x14475 } },
-	{ ARG_PUSH, { x14b96 } },
-	{ ARG_END, { 0 } }
-};
-
-struct argdesc const x1503c[] = {
-	{ ARG_PUSH, { x14475 } },
-	{ ARG_PUSH, { x14475 } },
-	{ ARG_PUSH, { x14b96 } },
-	{ ARG_END, { 0 } }
-};
-
-struct argdesc const x1503f[] = {
-	{ ARG_PUSH, { x14475 } },
-	{ ARG_PUSH, { x14b96 } },
-	{ ARG_END, { 0 } }
-};
-
-struct argdesc const x1512d[] = {
-	{ ARG_PUSH, { x14c92 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_REPLACE, { (void *)191 } },
-	{ ARG_PUSH, { x1503f } },
-	{ 32, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_REPLACE, { (void *)192 } },
-	{ ARG_PUSH, { x1503c } },
-	{ 32, { 0 } },
-	{ ARG_END, { 0 } }
-};
-
-struct argdesc const x1513f[] = {
-	{ ARG_PUSH, { x14c92 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_REPLACE, { (void *)194 } },
-	{ ARG_PUSH, { x1503f } },
-	{ 32, { 0 } },
-	{ ARG_END, { 0 } }
-};
-
-struct argdesc const x1514a[] = {
-	{ ARG_PUSH, { x14c92 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_REPLACE, { (void *)196 } },
-	{ ARG_PUSH, { x1503f } },
-	{ 32, { 0 } },
-	{ ARG_END, { 0 } }
-};
-
-struct argdesc const x15155[] = {
-	{ ARG_PUSH, { x14c92 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_REPLACE, { (void *)116 } },
-	{ ARG_PUSH, { x1503f } },
-	{ 32, { 0 } },
-	{ ARG_END, { 0 } }
-};
-
-struct argdesc const x143ec[] = {
-	{ ARG_CALL_FUNC, { (void *)expect_string } },
-	{ ARG_POP, { 0 } },
-	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
-	{ ARG_PUSH, { x1519e } },
-	{ ARG_END, { 0 } }
-};
-
-struct argdesc const x1506f[] = {
+static struct argdesc const x1506f[] = {
 	{ ARG_CALL_FUNC, { (void *)f13d22 } },
 	{ ARG_POP, { 0 } },
 	{ ARG_CALL_FUNC, { (void *)f13696 } },
 	{ ARG_POP, { 0 } },
 	{ 135, { 0 } },
 	{ ARG_PUSH, { x15068 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ 58, { 0 } },
 	{ ARG_PUSH, { x15068 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ 58, { 0 } },
 	{ ARG_REPLACE, { (void *)59 } },
 	{ ARG_PUSH, { x15068 } },
-	{ 33, { 0 } },
+	{ TOK_COMMA, { 0 } },
 	{ ARG_PUSH, { x14c92 } },
 	{ ARG_POP, { 0 } },
 	{ 60, { 0 } },
 	{ ARG_PUSH, { x15068 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ 60, { 0 } },
 	{ ARG_REPLACE, { (void *)61 } },
 	{ ARG_PUSH, { x15068 } },
-	{ 33, { 0 } },
+	{ TOK_COMMA, { 0 } },
 	{ ARG_PUSH, { x14c92 } },
 	{ ARG_POP, { 0 } },
 	{ 62, { 0 } },
 	{ ARG_PUSH, { x15068 } },
-	{ 33, { 0 } },
+	{ TOK_COMMA, { 0 } },
 	{ ARG_PUSH, { x14c92 } },
 	{ ARG_POP, { 0 } },
 	{ 62, { 0 } },
 	{ ARG_REPLACE, { (void *)63 } },
 	{ ARG_PUSH, { x15068 } },
-	{ 33, { 0 } },
-	{ ARG_PUSH, { x14475 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { iexp_comma } },
 	{ ARG_PUSH, { x14c92 } },
 	{ ARG_POP, { 0 } },
 	{ ARG_CALL_FUNC, { (void *)f1369e } },
@@ -2062,57 +2718,57 @@ struct argdesc const x1506f[] = {
 	{ ARG_PUSH, { x14b96 } },
 	{ ARG_PUSH, { x144eb } },
 	{ ARG_PUSH, { x144f6 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ ARG_PUSH, { x15060 } },
 	{ ARG_PUSH, { x15164 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ 127, { 0 } },
 	{ ARG_PUSH, { x15068 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 #if GBE > 0
 	{ 148, { 0 } },
 	{ ARG_PUSH, { x15068 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ 160, { 0 } },
 	{ ARG_PUSH, { x15068 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ 144, { 0 } },
 	{ ARG_PUSH, { x15068 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ 145, { 0 } },
 	{ ARG_PUSH, { x15068 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ 150, { 0 } },
 	{ ARG_PUSH, { x15068 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ 146, { 0 } },
 	{ ARG_PUSH, { x15068 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ 147, { 0 } },
 	{ ARG_PUSH, { x15068 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ 142, { 0 } },
 	{ ARG_PUSH, { x15068 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ 177, { 0 } },
 	{ ARG_PUSH, { x15068 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ 166, { 0 } },
-	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { iexp_comma } },
 	{ ARG_PUSH, { x15068 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ 164, { 0 } },
 	{ ARG_PUSH, { x14c92 } },
@@ -2121,7 +2777,7 @@ struct argdesc const x1506f[] = {
 	{ ARG_PUSH, { x14c92 } },
 	{ ARG_POP, { 0 } },
 	{ 149, { 0 } },
-	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { iexp_comma } },
 	{ ARG_PUSH, { x14c92 } },
 	{ ARG_POP, { 0 } },
 #if GBE >= 373
@@ -2129,41 +2785,41 @@ struct argdesc const x1506f[] = {
 #else
 	{ 169, { 0 } },
 #endif
-	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { iexp_comma } },
 	{ ARG_PUSH, { x14c92 } },
 	{ ARG_POP, { 0 } },
 #if GBE >= 373
 	{ 169, { 0 } },
-	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { iexp_comma } },
 	{ ARG_PUSH, { x14c92 } },
 	{ ARG_POP, { 0 } },
 #endif
 	{ 178, { 0 } },
 	{ ARG_PUSH, { x15068 } },
-	{ 33, { 0 } },
+	{ TOK_COMMA, { 0 } },
 	{ ARG_PUSH, { x15068 } },
-	{ 33, { 0 } },
+	{ TOK_COMMA, { 0 } },
 	{ ARG_PUSH, { x15068 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ 179, { 0 } },
 	{ ARG_PUSH, { x14fa6 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ 180, { 0 } },
 	{ ARG_PUSH, { x14fa6 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 #endif
 	{ 129, { 0 } },
-	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { iexp_comma } },
 	{ ARG_PUSH, { x14c92 } },
 	{ ARG_POP, { 0 } },
 	{ 129, { 0 } },
 	{ ARG_REPLACE, { (void *)130 } },
-	{ ARG_PUSH, { x14475 } },
+	{ ARG_PUSH, { iexp_comma } },
 	{ ARG_PUSH, { x15068 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ ARG_PUSH, { x15160 } },
 	{ ARG_CALL_FUNC, { (void *)f154da } },
@@ -2173,13 +2829,13 @@ struct argdesc const x1506f[] = {
 	{ -6, { 0 } },
 	{ ARG_REPLACE, { (void *)131 } },
 	{ ARG_PUSH, { x15068 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ TOK_SUBFUNC_208, { (void *)97 } },
 	{ -6, { 0 } },
 	{ ARG_REPLACE, { (void *)133 } },
 	{ ARG_PUSH, { x15068 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ 190, { 0 } },
 	{ ARG_PUSH, { x1512d } },
@@ -2208,38 +2864,87 @@ struct argdesc const x15068[] = {
 };
 
 
-static struct argdesc const x143ad[] = {
+static struct argdesc const x1516b[] = {
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { x15068 } },
+	{ ARG_PUSH, { x1516b } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+struct argdesc const x15164[] = {
+	{ ARG_PUSH, { x15068 } },
+	{ ARG_PUSH, { x1516b } },
+	{ ARG_END, { 0 } }
+};
+
+struct argdesc const x14fa6[] = {
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ ARG_END, { 0 } }
+};
+
+
+struct argdesc const x1512d[] = {
+	{ ARG_PUSH, { x14c92 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)191 } },
+	{ ARG_PUSH, { x1503f } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)192 } },
+	{ ARG_PUSH, { x1503c } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+struct argdesc const x1513f[] = {
+	{ ARG_PUSH, { x14c92 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)194 } },
+	{ ARG_PUSH, { x1503f } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+struct argdesc const x1514a[] = {
+	{ ARG_PUSH, { x14c92 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)196 } },
+	{ ARG_PUSH, { x1503f } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+struct argdesc const x15155[] = {
+	{ ARG_PUSH, { x14c92 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_REPLACE, { (void *)116 } },
+	{ ARG_PUSH, { x1503f } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+struct argdesc const x143ec[] = {
+	{ ARG_CALL_FUNC, { (void *)expect_string } },
+	{ ARG_POP, { 0 } },
 	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
-	{ 32, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_CALL_FUNC, { (void *)expect_bool_arr } },
-	{ 32, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_CALL_FUNC, { (void *)expect_byte_arr } },
-	{ 32, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_CALL_FUNC, { (void *)expect_word_arr } },
-	{ 32, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
-	{ 32, { 0 } },
-	{ ARG_POP, { 0 } },
-	{ ARG_CALL_FUNC, { (void *)expect_int_arr } },
-	{ 32, { 0 } },
+	{ ARG_PUSH, { x1519e } },
 	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14982[] = {
-	{ 33, { 0 } },
+	{ TOK_COMMA, { 0 } },
 	{ ARG_PUSH, { x14b96 } },
 	{ ARG_PUSH, { x14982 } },
 	{ ARG_POP, { 0 } },
-	{ 33, { 0 } },
+	{ TOK_COMMA, { 0 } },
 	{ ARG_REPLACE, { (void *)156 } },
 	{ ARG_PUSH, { x15068 } },
 	{ ARG_PUSH, { x14982 } },
 	{ ARG_POP, { 0 } },
-	{ 33, { 0 } },
+	{ TOK_COMMA, { 0 } },
 	{ ARG_PUSH, { x143ad } },
 	{ ARG_REPLACE, { (void *)51 } },
 	{ ARG_PUSH, { x14982 } },
@@ -2252,19 +2957,19 @@ struct argdesc const x14962[] = {
 	{ 35, { 0 } },
 	{ ARG_PUSH, { x14b96 } },
 	{ ARG_PUSH, { x14982 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ 35, { 0 } },
 	{ ARG_REPLACE, { (void *)157 } },
 	{ ARG_PUSH, { x15068 } },
 	{ ARG_PUSH, { x14982 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ 35, { 0 } },
 	{ ARG_PUSH, { x143ad } },
 	{ ARG_REPLACE, { (void *)51 } },
 	{ ARG_PUSH, { x14982 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ ARG_END, { 0 } }
 };
@@ -2302,16 +3007,8 @@ struct argdesc const x1517e[] = {
 	{ 18, { 0 } },
 	{ ARG_REPLACE, { (void *)26 } },
 	{ ARG_POP, { 0 } },
-	{ 19, { 0 } },
+	{ TOK_EQ, { 0 } },
 	{ ARG_REPLACE, { (void *)27 } },
-	{ ARG_END, { 0 } }
-};
-
-static struct argdesc const x143e1[] = {
-	{ ARG_CALL_FUNC, { (void *)expect_bool } },
-	{ ARG_POP, { 0 } },
-	{ ARG_CALL_FUNC, { (void *)expect_bool_arr } },
-	{ ARG_PUSH, { x1519e } },
 	{ ARG_END, { 0 } }
 };
 
@@ -2338,17 +3035,17 @@ struct argdesc const x14bc8[] = {
 
 
 static struct argdesc const x13eec[] = {
-	{ 19, { 0 } },
+	{ TOK_EQ, { 0 } },
 	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ 6, { 0 } },
 	{ ARG_PUSH, { x13fd3 } },
 	{ ARG_POP, { 0 } },
-	{ 33, { 0 } },
+	{ TOK_COMMA, { 0 } },
 	{ ARG_PUSH, { x13fd3 } },
 	{ ARG_POP, { 0 } },
 	{ ARG_CALL_FUNC, { (void *)f13d64 } },
-	{ 33, { 0 } },
+	{ TOK_COMMA, { 0 } },
 	{ ARG_PUSH, { x14b9a } },
 	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_END, { 0 } }
@@ -2357,7 +3054,7 @@ static struct argdesc const x13eec[] = {
 static struct argdesc const ymat_ADD_args[] = {
 	{ ARG_REPLACE, { (void *)80 } },
 	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_PUSH, { x13eec } },
 	{ ARG_END, { 0 } }
 };
@@ -2384,7 +3081,7 @@ static struct argdesc const ymat_BASE_args[] = {
 };
 
 static struct argdesc const x13faa[] = {
-	{ 33, { 0 } },
+	{ TOK_COMMA, { 0 } },
 	{ ARG_PUSH, { x1503f } },
 	{ ARG_POP, { 0 } },
 	{ ARG_END, { 0 } }
@@ -2394,11 +3091,11 @@ static struct argdesc const ymat_CPY_args[] = {
 	{ ARG_REPLACE, { (void *)88 } },
 	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
 	{ ARG_PUSH, { x13faa+1 } },
-	{ 32, { 0 } },
-	{ 19, { 0 } },
+	{ TOK_RPAREN, { 0 } },
+	{ TOK_EQ, { 0 } },
 	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
 	{ ARG_PUSH, { x13faa+1 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_PUSH, { x13faa } },
 	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_END, { 0 } }
@@ -2418,18 +3115,18 @@ static struct argdesc const ymat_CLR_args[] = {
 
 static struct argdesc const x13f77[] = {
 	{ ARG_PUSH, { x1503f } },
-	{ 32, { 0 } },
-	{ 33, { 0 } },
+	{ TOK_RPAREN, { 0 } },
+	{ TOK_COMMA, { 0 } },
 	{ ARG_PUSH, { x14b96 } },
 	{ ARG_POP, { 0 } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const ymat_DET_args[] = {
 	{ ARG_REPLACE, { (void *)92 } },
 	{ ARG_CALL_FUNC, { (void *)expect_float } },
-	{ 19, { 0 } },
+	{ TOK_EQ, { 0 } },
 	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
 	{ ARG_PUSH, { x13f77 } },
 	{ TOK_LINE_COMMENT, { 0 } },
@@ -2445,8 +3142,8 @@ static struct argdesc const ymat_QDET_args[] = {
 static struct argdesc const ymat_INV_args[] = {
 	{ ARG_REPLACE, { (void *)128 } },
 	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
-	{ 32, { 0 } },
-	{ 19, { 0 } },
+	{ TOK_RPAREN, { 0 } },
+	{ TOK_EQ, { 0 } },
 	{ ARG_PUSH, { x13fd3 } },
 	{ ARG_END, { 0 } }
 };
@@ -2454,16 +3151,8 @@ static struct argdesc const ymat_INV_args[] = {
 static struct argdesc const ymat_READ_args[] = {
 	{ ARG_REPLACE, { (void *)100 } },
 	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ TOK_LINE_COMMENT, { 0 } },
-	{ ARG_END, { 0 } }
-};
-
-static struct argdesc const print_channel_args[] = {
-	{ TOK_CHANNEL, { 0 } },
-	{ ARG_PUSH, { x14b96 } },
-	{ ARG_PUSH, { x144eb } },
-	{ ARG_POP, { 0 } },
 	{ ARG_END, { 0 } }
 };
 
@@ -2477,36 +3166,36 @@ static struct argdesc const ymat_INPUT_args[] = {
 static struct argdesc const x13f2a[] = {
 	{ ARG_REPLACE, { (void *)120 } },
 	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
-	{ 32, { 0 } },
-	{ 19, { 0 } },
+	{ TOK_RPAREN, { 0 } },
+	{ TOK_EQ, { 0 } },
 	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
-	{ 32, { 0 } },
-	{ 7, { 0 } },
+	{ TOK_RPAREN, { 0 } },
+	{ TOK_MUL, { 0 } },
 	{ ARG_PUSH, { ymat_READ_args+1 } },
 	{ ARG_POP, { 0 } },
 	{ ARG_REPLACE, { (void *)122 } },
 	{ ARG_CALL_FUNC, { (void *)expect_float } },
-	{ 19, { 0 } },
+	{ TOK_EQ, { 0 } },
 	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
-	{ 32, { 0 } },
-	{ 7, { 0 } },
+	{ TOK_RPAREN, { 0 } },
+	{ TOK_MUL, { 0 } },
 	{ ARG_PUSH, { ymat_READ_args+1 } },
 	{ ARG_POP, { 0 } },
 	{ ARG_REPLACE, { (void *)124 } },
 	{ ARG_CALL_FUNC, { (void *)expect_float } },
-	{ 19, { 0 } },
+	{ TOK_EQ, { 0 } },
 	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
-	{ 32, { 0 } },
-	{ 7, { 0 } },
+	{ TOK_RPAREN, { 0 } },
+	{ TOK_MUL, { 0 } },
 	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
-	{ 32, { 0 } },
-	{ 7, { 0 } },
+	{ TOK_RPAREN, { 0 } },
+	{ TOK_MUL, { 0 } },
 	{ ARG_PUSH, { ymat_READ_args+1 } },
 	{ ARG_POP, { 0 } },
 	{ ARG_REPLACE, { (void *)126 } },
 	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
-	{ 32, { 0 } },
-	{ 33, { 0 } },
+	{ TOK_RPAREN, { 0 } },
+	{ TOK_COMMA, { 0 } },
 	{ ARG_PUSH, { x14b9a } },
 	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_END, { 0 } }
@@ -2520,8 +3209,8 @@ static struct argdesc const ymat_MUL_args[] = {
 static struct argdesc const ymat_NORM_args[] = {
 	{ ARG_REPLACE, { (void *)98 } },
 	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
-	{ 32, { 0 } },
-	{ 33, { 0 } },
+	{ TOK_RPAREN, { 0 } },
+	{ TOK_COMMA, { 0 } },
 	{ ARG_PUSH, { yCLEARW_args } },
 	{ ARG_END, { 0 } }
 };
@@ -2539,9 +3228,9 @@ static struct argdesc const ymat_ONE_args[] = {
 };
 
 static struct argdesc const x13fbe[] = {
-	{ 33, { 0 } },
+	{ TOK_COMMA, { 0 } },
 	{ ARG_PUSH, { x14b96 } },
-	{ 33, { 0 } },
+	{ TOK_COMMA, { 0 } },
 	{ ARG_PUSH, { x14b96 } },
 	{ ARG_POP, { 0 } },
 	{ ARG_END, { 0 } }
@@ -2551,7 +3240,7 @@ static struct argdesc const ymat_PRINT_args[] = {
 	{ ARG_REPLACE, { (void *)102 } },
 	{ ARG_PUSH, { print_channel_args } },
 	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_PUSH, { x13fbe } },
 	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_END, { 0 } }
@@ -2564,17 +3253,17 @@ static struct argdesc const ymat_RANG_args[] = {
 };
 
 static struct argdesc const x13f0e[] = {
-	{ 19, { 0 } },
+	{ TOK_EQ, { 0 } },
 	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ 5, { 0 } },
 	{ ARG_PUSH, { ymat_READ_args+1 } },
 	{ ARG_POP, { 0 } },
-	{ 33, { 0 } },
+	{ TOK_COMMA, { 0 } },
 	{ ARG_PUSH, { ymat_READ_args+1 } },
 	{ ARG_POP, { 0 } },
 	{ ARG_CALL_FUNC, { (void *)f13d64 } },
-	{ 33, { 0 } },
+	{ TOK_COMMA, { 0 } },
 	{ ARG_PUSH, { x14b9a } },
 	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_END, { 0 } }
@@ -2583,7 +3272,7 @@ static struct argdesc const x13f0e[] = {
 static struct argdesc const ymat_SUB_args[] = {
 	{ ARG_REPLACE, { (void *)84 } },
 	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_PUSH, { x13f0e } },
 	{ ARG_END, { 0 } }
 };
@@ -2591,17 +3280,17 @@ static struct argdesc const ymat_SUB_args[] = {
 static struct argdesc const ymat_SET_args[] = {
 	{ ARG_REPLACE, { (void *)108 } },
 	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
-	{ 32, { 0 } },
-	{ 19, { 0 } },
+	{ TOK_RPAREN, { 0 } },
+	{ TOK_EQ, { 0 } },
 	{ ARG_PUSH, { x14b9a } },
 	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x13fe4[] = {
-	{ 19, { 0 } },
+	{ TOK_EQ, { 0 } },
 	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ ARG_END, { 0 } }
 };
@@ -2609,7 +3298,7 @@ static struct argdesc const x13fe4[] = {
 static struct argdesc const ymat_TRANS_args[] = {
 	{ ARG_REPLACE, { (void *)104 } },
 	{ ARG_CALL_FUNC, { (void *)expect_float_arr } },
-	{ 32, { 0 } },
+	{ TOK_RPAREN, { 0 } },
 	{ ARG_PUSH, { x13fe4 } },
 	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_END, { 0 } }
@@ -2658,28 +3347,28 @@ struct cmdname const cmd_table[] = {
 	{ 6, "ARRAY&(", 682, yWINDTAB_args, TARGET_VER373, 0 },
 	{ 6, "ARRAY%(", 683, yWINDTAB_args, TARGET_VER373, 0 },
 	{ 5, "ARRAY(", 684, yWINDTAB_args, TARGET_VER373, 0 },
-	{ 5, "AMOUSE", 474, yAMOUSE_args, TARGET_VER370, 0 },
+	{ 5, "AMOUSE", 474, yCLEARW_args, TARGET_VER370, 0 },
 	{ 10, "AVERAGE_RGB", 473, yAVERAGE_RGB_args, TARGET_VER371, 0 },
 	{ 4, "BMOVE", 213, yBMOVE_args, TARGET_VER36, 0 },
 	{ 4, "BYTE{", 234, yWORD_args, TARGET_VER36, 0 },
 	{ 2, "BOX", 287, yBOX_args, TARGET_VER36, 0 },
 	{ 3, "BGET", 111, yBGET_args, TARGET_VER36, 0 },
 	{ 3, "BPUT", 112, yBPUT_args, TARGET_VER36, 0 },
-	{ 7, "BOUNDARY", 387, yBOUNDARY_args, TARGET_VER36, 0 },
+	{ 7, "BOUNDARY", 387, yCLEARW_args, TARGET_VER36, 0 },
 	{ 5, "BITBLT", 399, yBITBLT_args, TARGET_VER36, 0 },
 	{ 4, "BSAVE", 404, yBSAVE_args, TARGET_VER36, 0 },
 	{ 4, "BLOAD", 405, yBLOAD_args, TARGET_VER36, 0 },
 	{ 6, "BITBLK(", 545, yUSERBLK_args, TARGET_VER371, TARGET_VER371 },
 	{ 8, "BFOBSPEC(", 544, yUSERBLK_args, TARGET_VER371, TARGET_VER371 },
-	{ 3, "BEXG", 638, yBEXG_args, TARGET_VER372, 0 },
+	{ 3, "BEXG", 638, yBMOVE_args, TARGET_VER372, 0 },
 	{ 6, "BMIRROR", 544, yBMIRROR_args, TARGET_VER372, 0 },
-	{ 4, "BZERO", 462, yBZERO_args, TARGET_VER371, 0 },
-	{ 5, "BCLEAR", 462, yBZERO_args, TARGET_VER370, TARGET_VER370 },
-	{ 4, "BFILL", 463, yBFILL_args, TARGET_VER370, 0 },
-	{ 3, "BEEP", 465, yBEEP_args, TARGET_VER370, 0 },
+	{ 4, "BZERO", 462, yBMIRROR_args, TARGET_VER371, 0 },
+	{ 5, "BCLEAR", 462, yBMIRROR_args, TARGET_VER370, TARGET_VER370 },
+	{ 4, "BFILL", 463, yBMOVE_args, TARGET_VER370, 0 },
+	{ 3, "BEEP", 465, no_args, TARGET_VER370, 0 },
 	{ 5, "BCRYPT", 477, yBCRYPT_args, TARGET_VER370, 0 },
 	{ 5, "BXLATE", 464, yBXLATE_args, TARGET_VER370, 0 },
-	{ 7, "BREPLACE", 535, yBREPLACE_args, TARGET_VER371, 0 },
+	{ 7, "BREPLACE", 535, yBOX_args, TARGET_VER371, 0 },
 	{ 9, "BF_OBSPEC(", 582, yWINDTAB_args, TARGET_VER372, 0 },
 	{ 12, "BF_CHARACTER(", 583, yWINDTAB_args, TARGET_VER372, 0 },
 	{ 12, "BF_FRAMESIZE(", 584, yWINDTAB_args, TARGET_VER372, 0 },
@@ -2694,14 +3383,14 @@ struct cmdname const cmd_table[] = {
 	{ 4, "BI_X(", 593, yWINDTAB_args, TARGET_VER372, 0 },
 	{ 4, "BI_Y(", 594, yWINDTAB_args, TARGET_VER372, 0 },
 	{ 8, "BI_COLOR(", 595, yWINDTAB_args, TARGET_VER372, 0 },
-	{ 2, "BAR", 648, yBAR_args, TARGET_VER373, 0 },
-	{ 4, "COLOR", 96, yCOLOR_args, TARGET_VER36, 0 },
+	{ 2, "BAR", 648, yBOX_args, TARGET_VER373, 0 },
+	{ 4, "COLOR", 96, yCLEARW_args, TARGET_VER36, 0 },
 	{ 3, "CASE", 56, yCASE_args, TARGET_VER36, 0 },
 	{ 3, "CONT", 317, yCONT_args, TARGET_VER36, 0 },
 	{ 6, "CONTRL(", 228, yINTIN_args, TARGET_VER36, 0 },
 	{ 4, "CARD{", 233, yWORD_args, TARGET_VER36, 0 },
 	{ 4, "CHAR{", 235, yCHAR_args, TARGET_VER36, 0 },
-	{ 4, "CHAR$", 494, ySTRPOKE_args, TARGET_VER370, TARGET_VER370 },
+	{ 4, "CHAR$", 494, yINFOW_args, TARGET_VER370, TARGET_VER370 },
 	{ 4, "CLOSE", 268, yCLOSE_args, TARGET_VER36, 0 },
 	{ 4, "CLEAR", 271, yCLEAR_args, TARGET_VER36, 0 },
 	{ 5, "CIRCLE", 291, yCIRCLE_args, TARGET_VER36, 0 },
@@ -2710,14 +3399,14 @@ struct cmdname const cmd_table[] = {
 	{ 2, "CLR", 314, yCLR_args, TARGET_VER36, 0 },
 	{ 2, "CLS", 315, yCLS_args, TARGET_VER36, 0 },
 	{ 3, "CLIP", 356, yCLIP_args, TARGET_VER36, 0 },
-	{ 4, "CHAIN", 392, yCHAIN_args, TARGET_VER36, 0 },
+	{ 4, "CHAIN", 392, yCHDIR_args, TARGET_VER36, 0 },
 	{ 3, "CALL", 152, yCALL_args, TARGET_VER36, 0 },
-	{ 4, "CURVE", 422, yCURVE_args, TARGET_VER36, 0 },
+	{ 4, "CURVE", 422, yARECT_args, TARGET_VER36, 0 },
 	{ 8, "CICONBLK(", 548, yUSERBLK_args, TARGET_VER371, TARGET_VER371 },
-	{ 2, "C2P", 507, yC2P_args, TARGET_VER372, 0 },
-	{ 6, "CRASTER", 675, yCRASTER_args, TARGET_VER373, 0 },
-	{ 7, "CPUFLUSH", 476, yCPUFLUSH_args, TARGET_VER370, 0 },
-	{ 7, "COLDBOOT", 543, yCOLDBOOT_args, TARGET_VER371, 0 },
+	{ 2, "C2P", 507, yBOX_args, TARGET_VER372, 0 },
+	{ 6, "CRASTER", 675, yACHAR_args, TARGET_VER373, 0 },
+	{ 7, "CPUFLUSH", 476, no_args, TARGET_VER370, 0 },
+	{ 7, "COLDBOOT", 543, no_args, TARGET_VER371, 0 },
 	{ 11, "CI_MAINLIST(", 631, yWINDTAB_args, TARGET_VER372, 0 },
 	{ 13, "CI_NUM_PLANES(", 632, yWINDTAB_args, TARGET_VER372, 0 },
 	{ 11, "CI_COL_DATA(", 633, yWINDTAB_args, TARGET_VER372, 0 },
@@ -2725,41 +3414,41 @@ struct cmdname const cmd_table[] = {
 	{ 11, "CI_SEL_DATA(", 635, yWINDTAB_args, TARGET_VER372, 0 },
 	{ 11, "CI_SEL_MASK(", 636, yWINDTAB_args, TARGET_VER372, 0 },
 	{ 11, "CI_NEXT_RES(", 637, yWINDTAB_args, TARGET_VER372, 0 },
-	{ 3, "DATA", 117, yDATA_args, TARGET_VER36, 0 },
+	{ 3, "DATA", 117, REM_args, TARGET_VER36, 0 },
 	{ 1, "DO", 0, yDO_args, TARGET_VER36, 0 },
 	{ 6, "DEFLINE", 277, yDEFLINE_args, TARGET_VER36, 0 },
 	{ 7, "DEFMOUSE", 279, yDEFMOUSE_args, TARGET_VER36, 0 },
-	{ 6, "DEFLIST", 281, yDEFLIST_args, TARGET_VER36, 0 },
+	{ 6, "DEFLIST", 281, yCLEARW_args, TARGET_VER36, 0 },
 	{ 6, "DEFMARK", 282, yDEFMARK_args, TARGET_VER36, 0 },
-	{ 5, "DEFNUM", 283, yDEFNUM_args, TARGET_VER36, 0 },
+	{ 5, "DEFNUM", 283, yCLEARW_args, TARGET_VER36, 0 },
 	{ 6, "DEFTEXT", 284, yDEFTEXT_args, TARGET_VER36, 0 },
 	{ 6, "DEFFILL", 285, yDEFFILL_args, TARGET_VER36, 0 },
 	{ 4, "DEFFN", 57, yDEFFN_args, TARGET_VER36, 0 },
 	{ 6, "DEFAULT", 15, yDEFAULT_args, TARGET_VER36, 0 },
 	{ 2, "DEC", 168, yDEC_args, TARGET_VER36, 0 },
 	{ 2, "DIV", 200, yDIV_args, TARGET_VER36, 0 },
-	{ 4, "DPOKE", 98, yDPOKE_args, TARGET_VER36, 0 },
+	{ 4, "DPOKE", 98, yBMIRROR_args, TARGET_VER36, 0 },
 	{ 2, "DIM", 210, yDIM_args, TARGET_VER36, 0 },
 	{ 7, "DMASOUND", 450, yDMASOUND_args, TARGET_VER36, 0 },
-	{ 9, "DMACONTROL", 451, yDMACONTROL_args, TARGET_VER36, 0 },
+	{ 9, "DMACONTROL", 451, yCLEARW_args, TARGET_VER36, 0 },
 	{ 6, "DOUBLE{", 237, yWORD_args, TARGET_VER36, 0 },
 	{ 2, "DIR", 319, yDIR_args, TARGET_VER36, 0 },
 	{ 5, "DELETE", 351, yDELETE_args, TARGET_VER36, 0 },
 	{ 3, "DRAW", 370, yDRAW_args, TARGET_VER36, 0 },
-	{ 4, "DELAY", 110, yDELAY_args, TARGET_VER36, 0 },
+	{ 4, "DELAY", 110, yCLEARW_args, TARGET_VER36, 0 },
 	{ 5, "DEFINT", 381, yDEFINT_args, TARGET_VER36, 0 },
-	{ 5, "DEFBYT", 383, yDEFBYT_args, TARGET_VER36, 0 },
-	{ 5, "DEFWRD", 384, yDEFWRD_args, TARGET_VER36, 0 },
-	{ 5, "DEFBIT", 385, yDEFBIT_args, TARGET_VER36, 0 },
-	{ 5, "DEFSTR", 386, yDEFSTR_args, TARGET_VER36, 0 },
-	{ 5, "DEFSNG", 382, yDEFSNG_args, TARGET_VER36, 0 },
-	{ 5, "DEFDBL", 382, yDEFDBL_args, TARGET_VER36, 0 },
-	{ 5, "DEFFLT", 382, yDEFFLT_args, TARGET_VER36, 0 },
-	{ 3, "DUMP", 398, yDUMP_args, TARGET_VER36, 0 },
+	{ 5, "DEFBYT", 383, yDEFINT_args, TARGET_VER36, 0 },
+	{ 5, "DEFWRD", 384, yDEFINT_args, TARGET_VER36, 0 },
+	{ 5, "DEFBIT", 385, yDEFINT_args, TARGET_VER36, 0 },
+	{ 5, "DEFSTR", 386, yDEFINT_args, TARGET_VER36, 0 },
+	{ 5, "DEFSNG", 382, yDEFINT_args, TARGET_VER36, 0 },
+	{ 5, "DEFDBL", 382, yDEFINT_args, TARGET_VER36, 0 },
+	{ 5, "DEFFLT", 382, yDEFINT_args, TARGET_VER36, 0 },
+	{ 3, "DUMP", 398, yDIR_args, TARGET_VER36, 0 },
 	{ 5, "DATE$=", 408, yCHDIR_args, TARGET_VER36, 0 },
 	{ 3, "ELSE", 14, yELSE_args, TARGET_VER36, 0 },
-	{ 4, "ENDIF", 9, yENDIF_args, TARGET_VER36, 0 },
-	{ 6, "ENDFUNC", 11, yENDFUNC_args, TARGET_VER36, 0 },
+	{ 4, "ENDIF", 9, no_args, TARGET_VER36, 0 },
+	{ 6, "ENDFUNC", 11, no_args, TARGET_VER36, 0 },
 	{ 8, "ENDSWITCH", 13, yENDSWITCH_args, TARGET_VER36, 0 },
 	{ 8, "ENDSELECT", 13, yENDSWITCH_args, TARGET_VER36, 0 },
 	{ 7, "ENDWHILE", 5, yENDWHILE_args, TARGET_VER36, 0 },
@@ -2771,12 +3460,12 @@ struct cmdname const cmd_table[] = {
 	{ 6, "EXIT IF", 43, yEXIT_IF_args, TARGET_VER36, 0 },
 	{ 6, "EXIT IF", 55, yEXIT_IF_args, TARGET_VER36, 0 },
 	{ 6, "ELLIPSE", 295, yELLIPSE_args, TARGET_VER36, 0 },
-	{ 4, "ERROR", 299, yERROR_args, TARGET_VER36, 0 },
-	{ 3, "EDIT", 328, yEDIT_args, TARGET_VER36, 0 },
+	{ 4, "ERROR", 299, yCLEARW_args, TARGET_VER36, 0 },
+	{ 3, "EDIT", 328, yCLEARW_args, TARGET_VER36, 0 },
 	{ 4, "ERASE", 322, yERASE_args, TARGET_VER36, 0 },
 	{ 3, "EXEC", 323, yEXEC_args, TARGET_VER36, 0 },
-	{ 4, "EVERY", 362, yEVERY_args, TARGET_VER36, 0 },
-	{ 6, "ENDSEEK", 520, yENDSEEK_args, TARGET_VER371, 0 },
+	{ 4, "EVERY", 362, yAFTER_args, TARGET_VER36, 0 },
+	{ 6, "ENDSEEK", 520, ySEEK_args, TARGET_VER371, 0 },
 	{ 6, "ENVIRON", 538, yENVIRON_args, TARGET_VER371, 0 },
 	{ 2, "FOR", 19, yFOR_args, TARGET_VER36, 0 },
 	{ 7, "FUNCTION", 10, yFUNCTION_args, TARGET_VER36, 0 },
@@ -2784,7 +3473,7 @@ struct cmdname const cmd_table[] = {
 	{ 3, "FILL", 300, yFILL_args, TARGET_VER36, 0 },
 	{ 4, "FIELD", 324, yFIELD_args, TARGET_VER36, 0 },
 	{ 4, "FILES", 325, yFILES_args, TARGET_VER36, 0 },
-	{ 9, "FILESELECT", 329, yFILESELECT_args, TARGET_VER36, 0 },
+	{ 9, "FILESELECT", 329, yFILES_args, TARGET_VER36, 0 },
 	{ 4, "FULLW", 361, yFULLW_args, TARGET_VER36, 0 },
 	{ 4, "GOSUB", 61, yGOSUB_args, TARGET_VER36, 0 },
 	{ 3, "GOTO", 58, yGOTO_args, TARGET_VER36, 0 },
@@ -2793,17 +3482,17 @@ struct cmdname const cmd_table[] = {
 	{ 7, "GINTOUT(", 227, yINTIN_args, TARGET_VER36, 0 },
 	{ 7, "GCONTRL(", 229, yINTIN_args, TARGET_VER36, 0 },
 	{ 2, "GET", 257, yGET_args, TARGET_VER36, 0 },
-	{ 8, "GRAPHMODE", 278, yGRAPHMODE_args, TARGET_VER36, 0 },
-	{ 5, "GSTICK", 478, yGSTICK_args, TARGET_VER370, 0 },
-	{ 5, "GHIDEM", 466, yGHIDEM_args, TARGET_VER370, 0 },
-	{ 5, "GSHOWM", 467, yGSHOWM_args, TARGET_VER370, 0 },
-	{ 5, "GMOUSE", 468, yGMOUSE_args, TARGET_VER370, 0 },
-	{ 7, "HARDCOPY", 343, yHARDCOPY_args, TARGET_VER36, 0 },
-	{ 4, "HIDEM", 302, yHIDEM_args, TARGET_VER36, 0 },
-	{ 4, "HLINE", 91, yHLINE_args, TARGET_VER36, 0 },
-	{ 3, "HTAB", 320, yHTAB_args, TARGET_VER36, 0 },
+	{ 8, "GRAPHMODE", 278, yCLEARW_args, TARGET_VER36, 0 },
+	{ 5, "GSTICK", 478, yCLEARW_args, TARGET_VER370, 0 },
+	{ 5, "GHIDEM", 466, no_args, TARGET_VER370, 0 },
+	{ 5, "GSHOWM", 467, no_args, TARGET_VER370, 0 },
+	{ 5, "GMOUSE", 468, yMOUSE_args, TARGET_VER370, 0 },
+	{ 7, "HARDCOPY", 343, no_args, TARGET_VER36, 0 },
+	{ 4, "HIDEM", 302, no_args, TARGET_VER36, 0 },
+	{ 4, "HLINE", 91, yALINE_args, TARGET_VER36, 0 },
+	{ 3, "HTAB", 320, yCLEARW_args, TARGET_VER36, 0 },
 	{ 1, "IF", 8, yIF_args, TARGET_VER36, 0 },
-	{ 2, "INC", 160, yINC_args, TARGET_VER36, 0 },
+	{ 2, "INC", 160, yDEC_args, TARGET_VER36, 0 },
 	{ 5, "INTIN(", 222, yINTIN_args, TARGET_VER36, 0 },
 	{ 6, "INTOUT(", 223, yINTIN_args, TARGET_VER36, 0 },
 	{ 3, "INT{", 232, yWORD_args, TARGET_VER36, 0 },
@@ -2812,7 +3501,7 @@ struct cmdname const cmd_table[] = {
 	{ 5, "INSERT", 350, yINSERT_args, TARGET_VER36, 0 },
 	{ 4, "INPUT", 368, yINPUT_args, TARGET_VER36, 0 },
 	{ 5, "INLINE", 417, yINLINE_args, TARGET_VER36, 0 },
-	{ 3, "IKBD", 668, yIKBD_args, TARGET_VER373, 0 },
+	{ 3, "IKBD", 668, yCLEARW_args, TARGET_VER373, 0 },
 	{ 7, "ICONBLK(", 547, yUSERBLK_args, TARGET_VER371, TARGET_VER371 },
 	{ 8, "IB_PMASK(", 614, yWINDTAB_args, TARGET_VER372, 0 },
 	{ 8, "IB_PDATA(", 615, yWINDTAB_args, TARGET_VER372, 0 },
@@ -2831,70 +3520,70 @@ struct cmdname const cmd_table[] = {
 	{ 9, "IB_FCOLOR(", 628, yWINDTAB_args, TARGET_VER372, 0 },
 	{ 9, "IB_BCOLOR(", 629, yWINDTAB_args, TARGET_VER372, 0 },
 	{ 9, "IB_LETTER(", 630, yWINDTAB_args, TARGET_VER372, 0 },
-	{ 5, "JOYPAD", 513, yJOYPAD_args, TARGET_VER371, 0 },
-	{ 5, "KEYPAD", 375, yKEYPAD_args, TARGET_VER36, 0 },
+	{ 5, "JOYPAD", 513, yCLEARW_args, TARGET_VER371, 0 },
+	{ 5, "KEYPAD", 375, yCLEARW_args, TARGET_VER36, 0 },
 	{ 6, "KEYTEST", 376, yKEYTEST_args, TARGET_VER36, 0 },
-	{ 5, "KEYGET", 377, yKEYGET_args, TARGET_VER36, 0 },
-	{ 6, "KEYLOOK", 378, yKEYLOOK_args, TARGET_VER36, 0 },
-	{ 7, "KEYPRESS", 379, yKEYPRESS_args, TARGET_VER36, 0 },
+	{ 5, "KEYGET", 377, yKEYTEST_args, TARGET_VER36, 0 },
+	{ 6, "KEYLOOK", 378, yKEYTEST_args, TARGET_VER36, 0 },
+	{ 7, "KEYPRESS", 379, yCLEARW_args, TARGET_VER36, 0 },
 	{ 5, "KEYDEF", 380, yKEYDEF_args, TARGET_VER36, 0 },
-	{ 3, "KILL", 333, yKILL_args, TARGET_VER36, 0 },
+	{ 3, "KILL", 333, yCHDIR_args, TARGET_VER36, 0 },
 	{ 3, "LOOP", 1, yLOOP_args, TARGET_VER36, 0 },
 	{ 2, "LET", 64, yLET_args, TARGET_VER36, 0 },
 	{ 3, "LINE", 155, yLINE_args, TARGET_VER36, 0 },
-	{ 4, "LPOKE", 99, yLPOKE_args, TARGET_VER36, 0 },
+	{ 4, "LPOKE", 99, yBMIRROR_args, TARGET_VER36, 0 },
 	{ 4, "LONG{", 231, yWORD_args, TARGET_VER36, 0 },
-	{ 4, "LOCAL", 53, yLOCAL_args, TARGET_VER36, 0 },
+	{ 4, "LOCAL", 53, yCLR_args, TARGET_VER36, 0 },
 	{ 5, "LPRINT", 303, yLPRINT_args, TARGET_VER36, 0 },
 	{ 3, "LSET", 304, yRSET_args, TARGET_VER36, 0 },
-	{ 5, "LOCATE", 125, yLOCATE_args, TARGET_VER36, 0 },
-	{ 3, "LIST", 388, yLIST_args, TARGET_VER36, 0 },
-	{ 4, "LLIST", 389, yLLIST_args, TARGET_VER36, 0 },
-	{ 3, "LOAD", 395, yLOAD_args, TARGET_VER36, 0 },
-	{ 6, "LOG_MSG", 484, yLOG_MSG_args, TARGET_VER370, 0 },
-	{ 6, "LOG_SET", 485, yLOG_SET_args, TARGET_VER370, 0 },
-	{ 7, "LOG_FILE", 486, yLOG_FILE_args, TARGET_VER370, 0 },
-	{ 7, "LOG_KILL", 487, yLOG_KILL_args, TARGET_VER370, 0 },
+	{ 5, "LOCATE", 125, yBMIRROR_args, TARGET_VER36, 0 },
+	{ 3, "LIST", 388, yCHDIR_args, TARGET_VER36, 0 },
+	{ 4, "LLIST", 389, yCHDIR_args, TARGET_VER36, 0 },
+	{ 3, "LOAD", 395, yCHDIR_args, TARGET_VER36, 0 },
+	{ 6, "LOG_MSG", 484, yCHDIR_args, TARGET_VER370, 0 },
+	{ 6, "LOG_SET", 485, yCLEARW_args, TARGET_VER370, 0 },
+	{ 7, "LOG_FILE", 486, yCHDIR_args, TARGET_VER370, 0 },
+	{ 7, "LOG_KILL", 487, no_args, TARGET_VER370, 0 },
 	{ 2, "MAT", 424, yMAT_args, TARGET_VER36, 0 },
 	{ 6, "MONITOR", 48, yMONITOR_args, TARGET_VER36, 0 },
 	{ 2, "MUL", 192, yMUL_args, TARGET_VER36, 0 },
 	{ 3, "MENU", 139, yMENU_args, TARGET_VER36, 0 },
 	{ 4, "MID$(", 305, yMIDs_args, TARGET_VER36, 0 },
-	{ 4, "MKDIR", 331, yMKDIR_args, TARGET_VER36, 0 },
+	{ 4, "MKDIR", 331, yCHDIR_args, TARGET_VER36, 0 },
 	{ 4, "MOUSE", 332, yMOUSE_args, TARGET_VER36, 0 },
-	{ 3, "MODE", 414, yMODE_args, TARGET_VER36, 0 },
-	{ 5, "MW_OUT", 452, yMW_OUT_args, TARGET_VER36, 0 },
-	{ 6, "MEMEXG&", 548, yMEMEXG_args, TARGET_VER372, 0 },
-	{ 6, "MEMEXG%", 549, yMEMEXG_args, TARGET_VER372, 0 },
-	{ 7, "MEMBSET|", 525, yMEMBSET_args, TARGET_VER371, 0 },
-	{ 7, "MEMBSET&", 526, yMEMBSET_args, TARGET_VER371, 0 },
-	{ 7, "MEMBSET%", 527, yMEMBSET_args, TARGET_VER371, 0 },
-	{ 7, "MEMBCLR|", 528, yMEMBCLR_args, TARGET_VER371, 0 },
-	{ 7, "MEMBCLR&", 529, yMEMBCLR_args, TARGET_VER371, 0 },
-	{ 7, "MEMBCLR%", 530, yMEMBCLR_args, TARGET_VER371, 0 },
-	{ 7, "MEMBCHG|", 531, yMEMBCHG_args, TARGET_VER371, 0 },
-	{ 7, "MEMBCHG&", 532, yMEMBCHG_args, TARGET_VER371, 0 },
-	{ 7, "MEMBCHG%", 533, yMEMBCHG_args, TARGET_VER371, 0 },
-	{ 4, "MEMOR", 523, yMEMOR_args, TARGET_VER371, 0 },
-	{ 5, "MEMAND", 522, yMEMAND_args, TARGET_VER371, 0 },
-	{ 5, "MEMXOR", 524, yMEMXOR_args, TARGET_VER371, 0 },
-	{ 7, "MEMSWAP&", 498, yMEMSWAP_args, TARGET_VER371, 0 },
-	{ 7, "MEMSWAP%", 499, yMEMSWAP_args, TARGET_VER371, 0 },
-	{ 7, "MEMFILL&", 500, yMEMFILL_args, TARGET_VER371, 0 },
-	{ 7, "MEMFILL%", 501, yMEMFILL_args, TARGET_VER371, 0 },
-	{ 7, "MEMZERO&", 515, yMEMZERO_args, TARGET_VER371, 0 },
-	{ 7, "MEMZERO%", 516, yMEMZERO_args, TARGET_VER371, 0 },
-	{ 10, "MEMREPLACE&", 539, yMEMREPLACE_args, TARGET_VER371, 0 },
-	{ 10, "MEMREPLACE%", 540, yMEMREPLACE_args, TARGET_VER371, 0 },
-	{ 9, "MEMMIRROR&", 545, yMEMMIRROR_args, TARGET_VER372, 0 },
-	{ 9, "MEMMIRROR%", 546, yMEMMIRROR_args, TARGET_VER372, 0 },
-	{ 9, "MEMMIRROR3", 547, yMEMMIRROR3_args, TARGET_VER372, 0 },
-	{ 5, "MDPOKE", 664, yMDPOKE_args, TARGET_VER373, 0 },
-	{ 5, "MLPOKE", 665, yMLPOKE_args, TARGET_VER373, 0 },
+	{ 3, "MODE", 414, yCLEARW_args, TARGET_VER36, 0 },
+	{ 5, "MW_OUT", 452, yBMIRROR_args, TARGET_VER36, 0 },
+	{ 6, "MEMEXG&", 548, yBMOVE_args, TARGET_VER372, 0 },
+	{ 6, "MEMEXG%", 549, yBMOVE_args, TARGET_VER372, 0 },
+	{ 7, "MEMBSET|", 525, yBMIRROR_args, TARGET_VER371, 0 },
+	{ 7, "MEMBSET&", 526, yBMIRROR_args, TARGET_VER371, 0 },
+	{ 7, "MEMBSET%", 527, yBMIRROR_args, TARGET_VER371, 0 },
+	{ 7, "MEMBCLR|", 528, yBMIRROR_args, TARGET_VER371, 0 },
+	{ 7, "MEMBCLR&", 529, yBMIRROR_args, TARGET_VER371, 0 },
+	{ 7, "MEMBCLR%", 530, yBMIRROR_args, TARGET_VER371, 0 },
+	{ 7, "MEMBCHG|", 531, yBMIRROR_args, TARGET_VER371, 0 },
+	{ 7, "MEMBCHG&", 532, yBMIRROR_args, TARGET_VER371, 0 },
+	{ 7, "MEMBCHG%", 533, yBMIRROR_args, TARGET_VER371, 0 },
+	{ 4, "MEMOR", 523, yBMOVE_args, TARGET_VER371, 0 },
+	{ 5, "MEMAND", 522, yBMOVE_args, TARGET_VER371, 0 },
+	{ 5, "MEMXOR", 524, yBMOVE_args, TARGET_VER371, 0 },
+	{ 7, "MEMSWAP&", 498, yBMIRROR_args, TARGET_VER371, 0 },
+	{ 7, "MEMSWAP%", 499, yBMIRROR_args, TARGET_VER371, 0 },
+	{ 7, "MEMFILL&", 500, yBMOVE_args, TARGET_VER371, 0 },
+	{ 7, "MEMFILL%", 501, yBMOVE_args, TARGET_VER371, 0 },
+	{ 7, "MEMZERO&", 515, yBMIRROR_args, TARGET_VER371, 0 },
+	{ 7, "MEMZERO%", 516, yBMIRROR_args, TARGET_VER371, 0 },
+	{ 10, "MEMREPLACE&", 539, yBOX_args, TARGET_VER371, 0 },
+	{ 10, "MEMREPLACE%", 540, yBOX_args, TARGET_VER371, 0 },
+	{ 9, "MEMMIRROR&", 545, yBMIRROR_args, TARGET_VER372, 0 },
+	{ 9, "MEMMIRROR%", 546, yBMIRROR_args, TARGET_VER372, 0 },
+	{ 9, "MEMMIRROR3", 547, yBMIRROR_args, TARGET_VER372, 0 },
+	{ 5, "MDPOKE", 664, yBMIRROR_args, TARGET_VER373, 0 },
+	{ 5, "MLPOKE", 665, yBMIRROR_args, TARGET_VER373, 0 },
 	{ 3, "MNAM", 666, ySPUT_args, TARGET_VER373, 0 },
  	{ 3, "NEXT", 31, yNEXT_args, TARGET_VER36, 0 },
  	{ 3, "NAME", 330, yNAME_args, TARGET_VER36, 0 },
- 	{ 2, "NEW", 306, yNEW_args, TARGET_VER36, 0 },
+ 	{ 2, "NEW", 306, no_args, TARGET_VER36, 0 },
  	{ 3, "OPEN", 265, yOPEN_args, TARGET_VER36, 0 },
  	{ 1, "ON", 126, yON_args, TARGET_VER36, 0 },
  	{ 7, "OB_NEXT(", 242, yWINDTAB_args, TARGET_VER36, 0 },
@@ -2951,51 +3640,51 @@ struct cmdname const cmd_table[] = {
  	{ 10, "OB_SUBMENU(", 579, yWINDTAB_args, TARGET_VER372, 0 },
  	{ 10, "OB_FL3DBAK(", 581, yWINDTAB_args, TARGET_VER372, 0 },
  	{ 4, "PRINT", 147, yPRINT_args, TARGET_VER36, 0 },
- 	{ 3, "PLOT", 88, yPLOT_args, TARGET_VER36, 0 },
- 	{ 3, "PSET", 89, yPSET_args, TARGET_VER36, 0 },
- 	{ 3, "POKE", 97, yPOKE_args, TARGET_VER36, 0 },
+ 	{ 3, "PLOT", 88, yBMIRROR_args, TARGET_VER36, 0 },
+ 	{ 3, "PSET", 89, yBMOVE_args, TARGET_VER36, 0 },
+ 	{ 3, "POKE", 97, yBMIRROR_args, TARGET_VER36, 0 },
  	{ 5, "PTSIN(", 220, yINTIN_args, TARGET_VER36, 0 },
  	{ 6, "PTSOUT(", 221, yINTIN_args, TARGET_VER36, 0 },
  	{ 8, "PROCEDURE", 6, yPROCEDURE_args, TARGET_VER36, 0 },
  	{ 2, "PUT", 260, yPUT_args, TARGET_VER36, 0 },
- 	{ 3, "PBOX", 288, yPBOX_args, TARGET_VER36, 0 },
- 	{ 4, "PRBOX", 290, yPRBOX_args, TARGET_VER36, 0 },
- 	{ 6, "PCIRCLE", 293, yPCIRCLE_args, TARGET_VER36, 0 },
- 	{ 7, "PELLIPSE", 297, yPELLIPSE_args, TARGET_VER36, 0 },
- 	{ 4, "PAUSE", 344, yPAUSE_args, TARGET_VER36, 0 },
+ 	{ 3, "PBOX", 288, yBOX_args, TARGET_VER36, 0 },
+ 	{ 4, "PRBOX", 290, yBOX_args, TARGET_VER36, 0 },
+ 	{ 6, "PCIRCLE", 293, yCIRCLE_args, TARGET_VER36, 0 },
+ 	{ 7, "PELLIPSE", 297, yELLIPSE_args, TARGET_VER36, 0 },
+ 	{ 4, "PAUSE", 344, yCLEARW_args, TARGET_VER36, 0 },
  	{ 7, "POLYLINE", 347, yPOLYLINE_args, TARGET_VER36, 0 },
  	{ 7, "POLYFILL", 348, yPOLYFILL_args, TARGET_VER36, 0 },
  	{ 7, "POLYMARK", 349, yPOLYMARK_args, TARGET_VER36, 0 },
- 	{ 4, "PSAVE", 391, yPSAVE_args, TARGET_VER36, 0 },
- 	{ 5, "PALGET", 482, yPALGET_args, TARGET_VER370, TARGET_VER370 },
- 	{ 5, "PALGET", 502, yPALGET_args, TARGET_VER371, 0 },
- 	{ 5, "PALSET", 483, yPALSET_args, TARGET_VER370, TARGET_VER370 },
- 	{ 5, "PALSET", 503, yPALSET_args, TARGET_VER371, 0 },
+ 	{ 4, "PSAVE", 391, yCHDIR_args, TARGET_VER36, 0 },
+ 	{ 5, "PALGET", 482, yCLEARW_args, TARGET_VER370, TARGET_VER370 },
+ 	{ 5, "PALGET", 502, yCLEARW_args, TARGET_VER371, 0 },
+ 	{ 5, "PALSET", 483, yCLEARW_args, TARGET_VER370, TARGET_VER370 },
+ 	{ 5, "PALSET", 503, yCLEARW_args, TARGET_VER371, 0 },
  	{ 6, "PIXEL32", 642, yPIXEL32_args, TARGET_VER372, 0 },
  	{ 6, "PIXEL24", 640, yPIXEL24_args, TARGET_VER372, 0 },
  	{ 6, "PIXEL16", 644, yPIXEL16_args, TARGET_VER372, 0 },
  	{ 6, "PIXEL15", 646, yPIXEL15_args, TARGET_VER372, 0 },
- 	{ 6, "PIXEL8C", 655, yPIXEL8C_args, TARGET_VER372, 0 },
- 	{ 6, "PIXEL8P", 653, yPIXEL8P_args, TARGET_VER372, 0 },
- 	{ 6, "PIXEL4P", 662, yPIXEL4P_args, TARGET_VER372, 0 },
- 	{ 6, "PIXEL2P", 663, yPIXEL2P_args, TARGET_VER372, 0 },
- 	{ 6, "PIXEL1M", 654, yPIXEL1M_args, TARGET_VER372, 0 },
- 	{ 3, "PBAR", 649, yPBAR_args, TARGET_VER373, 0 },
- 	{ 4, "PRBAR", 651, yPRBAR_args, TARGET_VER373, 0 },
+ 	{ 6, "PIXEL8C", 655, yVGET_args, TARGET_VER372, 0 },
+ 	{ 6, "PIXEL8P", 653, yVGET_args, TARGET_VER372, 0 },
+ 	{ 6, "PIXEL4P", 662, yVGET_args, TARGET_VER372, 0 },
+ 	{ 6, "PIXEL2P", 663, yVGET_args, TARGET_VER372, 0 },
+ 	{ 6, "PIXEL1M", 654, yVGET_args, TARGET_VER372, 0 },
+ 	{ 3, "PBAR", 649, yBOX_args, TARGET_VER373, 0 },
+ 	{ 4, "PRBAR", 651, yBOX_args, TARGET_VER373, 0 },
  	{ 3, "QUIT", 309, yQUIT_args, TARGET_VER36, 0 },
  	{ 4, "QSORT", 345, yQSORT_args, TARGET_VER36, 0 },
  	{ 2, "REM", 114, REM_args, TARGET_VER36, 0 },
- 	{ 5, "REPEAT", 2, yREPEAT_args, TARGET_VER36, 0 },
+ 	{ 5, "REPEAT", 2, no_args, TARGET_VER36, 0 },
  	{ 6, "RESTORE", 59, yRESTORE_args, TARGET_VER36, 0 },
  	{ 5, "RETURN", 7, yRETURN_args, TARGET_VER36, 0 },
  	{ 5, "RETURN", 17, yRETURN_args, TARGET_VER36, 0 },
- 	{ 6, "RELSEEK", 209, yRELSEEK_args, TARGET_VER36, 0 },
+ 	{ 6, "RELSEEK", 209, ySEEK_args, TARGET_VER36, 0 },
  	{ 6, "RESERVE", 103, yRESERVE_args, TARGET_VER36, 0 },
  	{ 8, "RANDOMIZE", 255, yRANDOMIZE_args, TARGET_VER36, 0 },
- 	{ 3, "RBOX", 289, yRBOX_args, TARGET_VER36, 0 },
- 	{ 4, "RMDIR", 334, yRMDIR_args, TARGET_VER36, 0 },
+ 	{ 3, "RBOX", 289, yBOX_args, TARGET_VER36, 0 },
+ 	{ 4, "RMDIR", 334, yCHDIR_args, TARGET_VER36, 0 },
  	{ 3, "RSET", 335, yRSET_args, TARGET_VER36, 0 },
- 	{ 5, "RENAME", 352, yRENAME_args, TARGET_VER36, 0 },
+ 	{ 5, "RENAME", 352, yNAME_args, TARGET_VER36, 0 },
  	{ 4, "RCALL", 151, yRCALL_args, TARGET_VER36, 0 },
  	{ 5, "RESUME", 105, yRESUME_args, TARGET_VER36, 0 },
  	{ 3, "READ", 372, yREAD_args, TARGET_VER36, 0 },
@@ -3005,69 +3694,69 @@ struct cmdname const cmd_table[] = {
  	{ 6, "RC_COPY", 413, yRC_COPY_args, TARGET_VER36, 0 },
  	{ 8, "RC_REDRAW", 676, yRC_REDRAW_args, TARGET_VER373, 0 },
  	{ 2, "RGB", 536, yRGB_args, TARGET_VER371, 0 },
- 	{ 3, "RBAR", 650, yRBAR_args, TARGET_VER373, 0 },
+ 	{ 3, "RBAR", 650, yBOX_args, TARGET_VER373, 0 },
  	{ 5, "SWITCH", 12, ySWITCH_args, TARGET_VER36, 0 },
  	{ 5, "SELECT", 12, ySWITCH_args, TARGET_VER36, 0 },
  	{ 3, "SWAP", 118, ySWAP_args, TARGET_VER36, 0 },
  	{ 2, "SUB", 184, ySUB_args, TARGET_VER36, 0 },
- 	{ 4, "SPOKE", 100, ySPOKE_args, TARGET_VER36, 0 },
- 	{ 5, "SDPOKE", 101, ySDPOKE_args, TARGET_VER36, 0 },
- 	{ 5, "SLPOKE", 102, ySLPOKE_args, TARGET_VER36, 0 },
+ 	{ 4, "SPOKE", 100, yBMIRROR_args, TARGET_VER36, 0 },
+ 	{ 5, "SDPOKE", 101, yBMIRROR_args, TARGET_VER36, 0 },
+ 	{ 5, "SLPOKE", 102, yBMIRROR_args, TARGET_VER36, 0 },
  	{ 7, "SETCOLOR", 211, ySETCOLOR_args, TARGET_VER36, 0 },
  	{ 3, "SEEK", 208, ySEEK_args, TARGET_VER36, 0 },
  	{ 6, "SETTIME", 336, ySETTIME_args, TARGET_VER36, 0 },
  	{ 3, "SGET", 337, ySPUT_args, TARGET_VER36, 0 },
  	{ 3, "SPUT", 339, ySPUT_args, TARGET_VER36, 0 },
- 	{ 4, "SHOWM", 338, ySHOWM_args, TARGET_VER36, 0 },
- 	{ 3, "STOP", 340, ySTOP_args, TARGET_VER36, 0 },
+ 	{ 4, "SHOWM", 338, no_args, TARGET_VER36, 0 },
+ 	{ 3, "STOP", 340, no_args, TARGET_VER36, 0 },
  	{ 5, "SYSTEM", 341, ySYSTEM_args, TARGET_VER36, 0 },
  	{ 4, "SSORT", 346, yQSORT_args, TARGET_VER36, 0 },
- 	{ 4, "STICK", 353, ySTICK_args, TARGET_VER36, 0 },
+ 	{ 4, "STICK", 353, yCLEARW_args, TARGET_VER36, 0 },
  	{ 4, "SOUND", 354, ySOUND_args, TARGET_VER36, 0 },
  	{ 6, "SINGLE{", 123, yWORD_args, TARGET_VER36, 0 },
  	{ 7, "SETMOUSE", 374, ySETMOUSE_args, TARGET_VER36, 0 },
- 	{ 3, "SAVE", 390, ySAVE_args, TARGET_VER36, 0 },
- 	{ 6, "SETDRAW", 396, ySETDRAW_args, TARGET_VER36, 0 },
+ 	{ 3, "SAVE", 390, yCHDIR_args, TARGET_VER36, 0 },
+ 	{ 6, "SETDRAW", 396, yBMOVE_args, TARGET_VER36, 0 },
  	{ 4, "STORE", 402, ySTORE_args, TARGET_VER36, 0 },
  	{ 5, "SPRITE", 409, ySPRITE_args, TARGET_VER36, 0 },
- 	{ 4, "SFILL", 670, ySFILL_args, TARGET_VER373, 0 },
+ 	{ 4, "SFILL", 670, yALINE_args, TARGET_VER373, 0 },
  	{ 6, "STRUCT(", 661, yWINDTAB_args, TARGET_VER373, 0 },
  	{ 7, "STRUCT!(", 657, yWINDTAB_args, TARGET_VER373, 0 },
  	{ 7, "STRUCT|(", 658, yWINDTAB_args, TARGET_VER373, 0 },
  	{ 7, "STRUCT&(", 659, yWINDTAB_args, TARGET_VER373, 0 },
  	{ 7, "STRUCT%(", 660, yWINDTAB_args, TARGET_VER373, 0 },
  	{ 7, "STRUCT$(", 656, yOB_TEXTs_args, TARGET_VER373, 0 },
- 	{ 4, "SUPER", 639, ySUPER_args, TARGET_VER373, 0 },
+ 	{ 4, "SUPER", 639, yCLEARW_args, TARGET_VER373, 0 },
  	{ 4, "SLEEP", 514, ySLEEP_args, TARGET_VER371, 0 },
  	{ 5, "SBYTE{", 506, yWORD_args, TARGET_VER371, 0 },
- 	{ 5, "SCREEN", 534, ySCREEN_args, TARGET_VER371, 0 },
- 	{ 3, "SNDH", 497, ySNDH_args, TARGET_VER371, 0 },
+ 	{ 5, "SCREEN", 534, yCLEARW_args, TARGET_VER371, 0 },
+ 	{ 3, "SNDH", 497, yBMOVE_args, TARGET_VER371, 0 },
  	{ 4, "SCALL", 491, ySCALL_args, TARGET_VER370, 0 },
- 	{ 6, "STRPOKE", 494, ySTRPOKE_args, TARGET_VER371, 0 },
- 	{ 7, "SET.MFDB", 460, ySET_MFDB_args, TARGET_VER370, 0 },
- 	{ 7, "SET.MENU", 541, ySET_MENU_args, TARGET_VER371, 0 },
- 	{ 8, "SET.SXYXY", 517, ySET_SXYXY_args, TARGET_VER372, 0 },
- 	{ 8, "SET.DXYXY", 518, ySET_DXYXY_args, TARGET_VER372, 0 },
- 	{ 8, "SET.SXYWH", 508, ySET_SXYWH_args, TARGET_VER372, 0 },
- 	{ 8, "SET.DXYWH", 509, ySET_DXYWH_args, TARGET_VER372, 0 },
- 	{ 8, "SET.PXYWH", 461, ySET_PXYWH_args, TARGET_VER370, 0 },
- 	{ 8, "SET.RXYWH", 519, ySET_RXYWH_args, TARGET_VER372, 0 },
- 	{ 8, "SET.PXYXY", 488, ySET_PXYXY_args, TARGET_VER370, 0 },
- 	{ 11, "SET.GCBITMAP", 521, ySET_GCBITMAP_args, TARGET_VER370, 0 },
- 	{ 14, "SET.SOCKADDR_IN", 495, ySET_SOCKADDR_IN_args, TARGET_VER371, 0 },
- 	{ 11, "SET.SOCKADDR", 495, ySET_SOCKADDR_IN_args, TARGET_VER370, TARGET_VER370 },
+ 	{ 6, "STRPOKE", 494, yINFOW_args, TARGET_VER371, 0 },
+ 	{ 7, "SET.MFDB", 460, yACHAR_args, TARGET_VER370, 0 },
+ 	{ 7, "SET.MENU", 541, yACHAR_args, TARGET_VER371, 0 },
+ 	{ 8, "SET.SXYXY", 517, yBOX_args, TARGET_VER372, 0 },
+ 	{ 8, "SET.DXYXY", 518, yBOX_args, TARGET_VER372, 0 },
+ 	{ 8, "SET.SXYWH", 508, yBOX_args, TARGET_VER372, 0 },
+ 	{ 8, "SET.DXYWH", 509, yBOX_args, TARGET_VER372, 0 },
+ 	{ 8, "SET.PXYWH", 461, yACHAR_args, TARGET_VER370, 0 },
+ 	{ 8, "SET.RXYWH", 519, yARECT_args, TARGET_VER372, 0 },
+ 	{ 8, "SET.PXYXY", 488, yARECT_args, TARGET_VER370, 0 },
+ 	{ 11, "SET.GCBITMAP", 521, yALINE_args, TARGET_VER370, 0 },
+ 	{ 14, "SET.SOCKADDR_IN", 495, yBOX_args, TARGET_VER371, 0 },
+ 	{ 11, "SET.SOCKADDR", 495, yBOX_args, TARGET_VER370, TARGET_VER370 },
  	{ 11, "STRARRAYFILL", 537, ySTRARRAYFILL_args, TARGET_VER371, 0 },
  	{ 3, "TEXT", 149, yTEXT_args, TARGET_VER36, 0 },
  	{ 3, "TRON", 143, yTRON_args, TARGET_VER36, 0 },
- 	{ 4, "TROFF", 146, yTROFF_args, TARGET_VER36, 0 },
+ 	{ 4, "TROFF", 146, no_args, TARGET_VER36, 0 },
  	{ 3, "TOPW", 274, yTOPW_args, TARGET_VER36, 0 },
- 	{ 5, "TITLEW", 275, yTITLEW_args, TARGET_VER36, 0 },
- 	{ 4, "TOUCH", 326, yTOUCH_args, TARGET_VER36, 0 },
+ 	{ 5, "TITLEW", 275, yINFOW_args, TARGET_VER36, 0 },
+ 	{ 4, "TOUCH", 326, yTOPW_args, TARGET_VER36, 0 },
  	{ 5, "TIME$=", 407, yCHDIR_args, TARGET_VER36, 0 },
  	{ 8, "TIMESTAMP", 473, yTIMESTAMP_args, TARGET_VER370, TARGET_VER370 },
  	{ 7, "TEDINFO(", 546, yUSERBLK_args, TARGET_VER371, TARGET_VER371 },
  	{ 3, "TPUT", 496, yTPUT_args, TARGET_VER371, 0 },
- 	{ 6, "TBITBLT", 490, yTBITBLT_args, TARGET_VER371, 0 },
+ 	{ 6, "TBITBLT", 490, yBMOVE_args, TARGET_VER371, 0 },
  	{ 8, "TE_PTEXT(", 598, yWINDTAB_args, TARGET_VER372, 0 },
  	{ 9, "TE_PTMPLT(", 599, yWINDTAB_args, TARGET_VER372, 0 },
  	{ 9, "TE_PVALID(", 600, yWINDTAB_args, TARGET_VER372, 0 },
@@ -3084,7 +3773,7 @@ struct cmdname const cmd_table[] = {
  	{ 11, "TE_TEXTMODE(", 611, yWINDTAB_args, TARGET_VER372, 0 },
  	{ 14, "TE_FILLPATTERN(", 612, yWINDTAB_args, TARGET_VER372, 0 },
  	{ 14, "TE_INTERIORCOL(", 613, yWINDTAB_args, TARGET_VER372, 0 },
- 	{ 5, "TMOUSE", 474, yTMOUSE_args, TARGET_VER373, 0 },
+ 	{ 5, "TMOUSE", 474, yCLEARW_args, TARGET_VER373, 0 },
  	{ 4, "UNTIL", 3, yENDREPEAT_args, TARGET_VER36, 0 },
  	{ 7, "USERBLK(", 549, yUSERBLK_args, TARGET_VER371, TARGET_VER371 },
  	{ 7, "UB_CODE(", 596, yWINDTAB_args, TARGET_VER372, 0 },
@@ -3095,86 +3784,86 @@ struct cmdname const cmd_table[] = {
  	{ 8, "USERDEF%(", 674, yINTIN_args, TARGET_VER373, 0 },
  	{ 5, "VDISYS", 214, yVDISYS_args, TARGET_VER36, 0 },
  	{ 3, "VOID", 240, yVOID_args, TARGET_VER36, 0 },
- 	{ 4, "VSYNC", 342, yVSYNC_args, TARGET_VER36, 0 },
- 	{ 3, "VTAB", 321, yVTAB_args, TARGET_VER36, 0 },
- 	{ 3, "V~H=", 406, yV_H_args, TARGET_VER36, 0 },
+ 	{ 4, "VSYNC", 342, no_args, TARGET_VER36, 0 },
+ 	{ 3, "VTAB", 321, yCLEARW_args, TARGET_VER36, 0 },
+ 	{ 3, "V~H=", 406, yCLEARW_args, TARGET_VER36, 0 },
  	{ 8, "VSETCOLOR", 419, yVSETCOLOR_args, TARGET_VER36, 0 },
  	{ 7, "VRC_COPY", 470, yVRC_COPY_args, TARGET_VER370, 0 },
- 	{ 5, "VCURVE", 469, yVCURVE_args, TARGET_VER370, 0 },
+ 	{ 5, "VCURVE", 469, yARECT_args, TARGET_VER370, 0 },
  	{ 3, "VCLS", 481, yVCLS_args, TARGET_VER370, 0 },
  	{ 3, "VGET", 471, yVGET_args, TARGET_VER370, 0 },
  	{ 3, "VPUT", 492, yVPUT_args, TARGET_VER370, 0 },
- 	{ 4, "VSGET", 479, yVSGET_args, TARGET_VER370, 0 },
- 	{ 4, "VSPUT", 480, yVSPUT_args, TARGET_VER370, 0 },
- 	{ 4, "VPLOT", 472, yVPLOT_args, TARGET_VER370, 0 },
- 	{ 4, "VLINE", 475, yVLINE_args, TARGET_VER370, 0 },
- 	{ 3, "VBOX", 489, yVBOX_args, TARGET_VER370, 0 },
- 	{ 6, "VPALGET", 482, yVPALGET_args, TARGET_VER371, 0 },
- 	{ 6, "VPALSET", 483, yVPALSET_args, TARGET_VER371, 0 },
- 	{ 4, "VPBAR", 652, yVPBAR_args, TARGET_VER373, 0 },
+ 	{ 4, "VSGET", 479, yCLEARW_args, TARGET_VER370, 0 },
+ 	{ 4, "VSPUT", 480, yCLEARW_args, TARGET_VER370, 0 },
+ 	{ 4, "VPLOT", 472, yBMIRROR_args, TARGET_VER370, 0 },
+ 	{ 4, "VLINE", 475, yBOX_args, TARGET_VER370, 0 },
+ 	{ 3, "VBOX", 489, yBOX_args, TARGET_VER370, 0 },
+ 	{ 6, "VPALGET", 482, yCLEARW_args, TARGET_VER371, 0 },
+ 	{ 6, "VPALSET", 483, yCLEARW_args, TARGET_VER371, 0 },
+ 	{ 4, "VPBAR", 652, yBOX_args, TARGET_VER373, 0 },
  	{ 6, "VER2STR", 667, yVER2STR_args, TARGET_VER373, 0 },
- 	{ 6, "VBITBLT", 490, yTBITBLT_args, TARGET_VER370, TARGET_VER370 },
+ 	{ 6, "VBITBLT", 490, yBMOVE_args, TARGET_VER370, TARGET_VER370 },
  	{ 4, "WHILE", 4, yENDREPEAT_args, TARGET_VER36, 0 },
  	{ 3, "WEND", 5, yENDWHILE_args, TARGET_VER36, 0 },
  	{ 3, "WAVE", 355, yWAVE_args, TARGET_VER36, 0 },
  	{ 7, "WINDTAB(", 412, yWINDTAB_args, TARGET_VER36, 0 },
  	{ 4, "WRITE", 416, yWRITE_args, TARGET_VER36, 0 },
  	{ 4, "WORD{", 418, yWORD_args, TARGET_VER36, 0 },
- 	{ 6, "WAITVBL", 542, yWAITVBL_args, TARGET_VER371, 0 },
- 	{ 7, "WARMBOOT", 512, yWARMBOOT_args, TARGET_VER371, 0 },
- 	{ 7, "_GLOBAL=", 669, y_GLOBAL_args, TARGET_VER373, 0 },
- 	{ 5, "_DATA=", 423, y_DATA_args, TARGET_VER36, 0 },
- 	{ 2, "_0=", 550, yspecvar_args, TARGET_VER371, 0 },
- 	{ 2, "_1=", 551, yspecvar_args, TARGET_VER371, 0 },
- 	{ 2, "_2=", 552, yspecvar_args, TARGET_VER371, 0 },
- 	{ 2, "_3=", 553, yspecvar_args, TARGET_VER371, 0 },
- 	{ 2, "_4=", 554, yspecvar_args, TARGET_VER371, 0 },
- 	{ 2, "_5=", 555, yspecvar_args, TARGET_VER371, 0 },
- 	{ 2, "_6=", 556, yspecvar_args, TARGET_VER371, 0 },
- 	{ 2, "_7=", 557, yspecvar_args, TARGET_VER371, 0 },
- 	{ 2, "_8=", 558, yspecvar_args, TARGET_VER371, 0 },
- 	{ 2, "_9=", 559, yspecvar_args, TARGET_VER371, 0 },
+ 	{ 6, "WAITVBL", 542, no_args, TARGET_VER371, 0 },
+ 	{ 7, "WARMBOOT", 512, no_args, TARGET_VER371, 0 },
+ 	{ 7, "_GLOBAL=", 669, yCLEARW_args, TARGET_VER373, 0 },
+ 	{ 5, "_DATA=", 423, yCLEARW_args, TARGET_VER36, 0 },
+ 	{ 2, "_0=", 550, yCLEARW_args, TARGET_VER371, 0 },
+ 	{ 2, "_1=", 551, yCLEARW_args, TARGET_VER371, 0 },
+ 	{ 2, "_2=", 552, yCLEARW_args, TARGET_VER371, 0 },
+ 	{ 2, "_3=", 553, yCLEARW_args, TARGET_VER371, 0 },
+ 	{ 2, "_4=", 554, yCLEARW_args, TARGET_VER371, 0 },
+ 	{ 2, "_5=", 555, yCLEARW_args, TARGET_VER371, 0 },
+ 	{ 2, "_6=", 556, yCLEARW_args, TARGET_VER371, 0 },
+ 	{ 2, "_7=", 557, yCLEARW_args, TARGET_VER371, 0 },
+ 	{ 2, "_8=", 558, yCLEARW_args, TARGET_VER371, 0 },
+ 	{ 2, "_9=", 559, yCLEARW_args, TARGET_VER371, 0 },
  	{ 0, "{", 230, yWORD_args, TARGET_VER36, 0 },
- 	{ 0, "~", 241, yBOUNDARY_args, TARGET_VER36, 0 },
+ 	{ 0, "~", 241, yCLEARW_args, TARGET_VER36, 0 },
  	{ 9, "FORM INPUT", 153, yFORM_INPUT_args, TARGET_VER36, 0 },
- 	{ 9, "LINE INPUT", 154, yLINE_INPUT_args, TARGET_VER36, 0 },
+ 	{ 9, "LINE INPUT", 154, yLINE_args, TARGET_VER36, 0 },
  	{ 6, "ELSE IF", 16, yELSE_args, TARGET_VER36, 0 },
- 	{ 2, "END", 124, yEND_args, TARGET_VER36, 0 },
- 	{ 7, "DO WHILE", 49, yDO_WHILE_args, TARGET_VER36, 0 },
- 	{ 7, "DO UNTIL", 50, yDO_UNTIL_args, TARGET_VER36, 0 },
- 	{ 9, "LOOP WHILE", 51, yLOOP_WHILE_args, TARGET_VER36, 0 },
- 	{ 9, "LOOP UNTIL", 52, yLOOP_UNTIL_args, TARGET_VER36, 0 },
- 	{ 7, "ON ERROR", 128, yON_ERROR_args, TARGET_VER36, 0 },
- 	{ 13, "ON ERROR GOSUB", 129, yON_ERROR_GOSUB_args, TARGET_VER36, 0 },
- 	{ 7, "ON BREAK", 130, yON_BREAK_args, TARGET_VER36, 0 },
- 	{ 12, "ON BREAK CONT", 131, yON_BREAK_CONT_args, TARGET_VER36, 0 },
- 	{ 13, "ON BREAK GOSUB", 132, yON_BREAK_GOSUB_args, TARGET_VER36, 0 },
- 	{ 12, "ON MENU GOSUB", 133, yON_MENU_GOSUB_args, TARGET_VER36, 0 },
- 	{ 20, "ON MENU MESSAGE GOSUB", 134, yON_MENU_MESSAGE_GOSUB_args, TARGET_VER36, 0 },
- 	{ 16, "ON MENU KEY GOSUB", 135, yON_MENU_KEY_GOSUB_args, TARGET_VER36, 0 },
- 	{ 13, "ON MENU BUTTON", 136, yON_MENU_BUTTON_args, TARGET_VER36, 0 },
- 	{ 6, "ON MENU", 137, yON_MENU_args, TARGET_VER36, 0 },
- 	{ 11, "ON MENU IBOX", 238, yON_MENU_IBOX_args, TARGET_VER36, 0 },
- 	{ 11, "ON MENU OBOX", 239, yON_MENU_OBOX_args, TARGET_VER36, 0 },
- 	{ 7, "MENU OFF", 140, yMENU_OFF_args, TARGET_VER36, 0 },
- 	{ 8, "MENU KILL", 141, yMENU_KILL_args, TARGET_VER36, 0 },
+ 	{ 2, "END", 124, no_args, TARGET_VER36, 0 },
+ 	{ 7, "DO WHILE", 49, no_args, TARGET_VER36, 0 },
+ 	{ 7, "DO UNTIL", 50, no_args, TARGET_VER36, 0 },
+ 	{ 9, "LOOP WHILE", 51, no_args, TARGET_VER36, 0 },
+ 	{ 9, "LOOP UNTIL", 52, no_args, TARGET_VER36, 0 },
+ 	{ 7, "ON ERROR", 128, yON_args, TARGET_VER36, 0 },
+ 	{ 13, "ON ERROR GOSUB", 129, yON_args, TARGET_VER36, 0 },
+ 	{ 7, "ON BREAK", 130, yON_args, TARGET_VER36, 0 },
+ 	{ 12, "ON BREAK CONT", 131, yON_args, TARGET_VER36, 0 },
+ 	{ 13, "ON BREAK GOSUB", 132, yON_args, TARGET_VER36, 0 },
+ 	{ 12, "ON MENU GOSUB", 133, yON_args, TARGET_VER36, 0 },
+ 	{ 20, "ON MENU MESSAGE GOSUB", 134, yON_args, TARGET_VER36, 0 },
+ 	{ 16, "ON MENU KEY GOSUB", 135, yON_args, TARGET_VER36, 0 },
+ 	{ 13, "ON MENU BUTTON", 136, yON_args, TARGET_VER36, 0 },
+ 	{ 6, "ON MENU", 137, yON_args, TARGET_VER36, 0 },
+ 	{ 11, "ON MENU IBOX", 238, yON_args, TARGET_VER36, 0 },
+ 	{ 11, "ON MENU OBOX", 239, yON_args, TARGET_VER36, 0 },
+ 	{ 7, "MENU OFF", 140, yMENU_args, TARGET_VER36, 0 },
+ 	{ 8, "MENU KILL", 141, yMENU_args, TARGET_VER36, 0 },
  	{ 3, "MENU", 142, yMENU_args, TARGET_VER36, 0 },
- 	{ 4, "OPENW", 266, yOPENW_args, TARGET_VER36, 0 },
- 	{ 6, "OPENW #", 267, yOPENW_args, TARGET_VER36, 0 },
- 	{ 5, "CLOSEW", 269, yCLOSEW_args, TARGET_VER36, 0 },
- 	{ 7, "CLOSEW #", 270, yCLOSEW_args, TARGET_VER36, 0 },
+ 	{ 4, "OPENW", 266, yCLEARW_args, TARGET_VER36, 0 },
+ 	{ 6, "OPENW #", 267, yCLEARW_args, TARGET_VER36, 0 },
+ 	{ 5, "CLOSEW", 269, yCLEARW_args, TARGET_VER36, 0 },
+ 	{ 7, "CLOSEW #", 270, yCLEARW_args, TARGET_VER36, 0 },
  	{ 5, "CLEARW", 272, yCLEARW_args, TARGET_VER36, 0 },
  	{ 7, "CLEARW #", 273, yCLEARW_args, TARGET_VER36, 0 },
- 	{ 10, "> PROCEDURE", 54, yPROCEDURE_flapped_args, TARGET_VER36, 0 },
- 	{ 9, "> FUNCTION", 449, yFUNCTION_flapped_args, TARGET_VER36, 0 },
- 	{ 8, "RELSEEK #", 209, yRELSEEK_args, TARGET_VER36, 0 },
+ 	{ 10, "> PROCEDURE", 54, no_args, TARGET_VER36, 0 },
+ 	{ 9, "> FUNCTION", 449, no_args, TARGET_VER36, 0 },
+ 	{ 8, "RELSEEK #", 209, ySEEK_args, TARGET_VER36, 0 },
  	{ 5, "SEEK #", 208, ySEEK_args, TARGET_VER36, 0 },
  	{ 5, "TOPW #", 274, yTOPW_args, TARGET_VER36, 0 },
- 	{ 7, "TITLEW #", 275, yTITLEW_args, TARGET_VER36, 0 },
- 	{ 6, "TOUCH #", 326, yTOUCH_args, TARGET_VER36, 0 },
- 	{ 8, "ENDSEEK #", 520, yENDSEEK_args, TARGET_VER371, 0 },
+ 	{ 7, "TITLEW #", 275, yINFOW_args, TARGET_VER36, 0 },
+ 	{ 6, "TOUCH #", 326, yTOPW_args, TARGET_VER36, 0 },
+ 	{ 8, "ENDSEEK #", 520, ySEEK_args, TARGET_VER371, 0 },
  	{ 6, "DEFAULT", 15, yDEFAULT_args, TARGET_VER36, 0 },
- 	{ 5, "SELECT", 44, ySELECT_args, TARGET_VER36, 0 },
+ 	{ 5, "SELECT", 44, no_args, TARGET_VER36, 0 },
  	{ 6, "MAT ADD", 424, yMAT_args, TARGET_VER36, 0 },
  	{ 6, "MAT SUB", 426, yMAT_args, TARGET_VER36, 0 },
  	{ 6, "MAT CPY", 428, yMAT_args, TARGET_VER36, 0 },
