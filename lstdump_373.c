@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "tables.h"
 
 FILE *out;
 struct label {
@@ -11,6 +12,7 @@ struct label *used[1048576];
 int funcused[1048576];
 int label;
 int funclabel;
+static int offset_table[256];
 
 #define jmpbase 0x57e10
 
@@ -120,6 +122,7 @@ static void dump_table(FILE *fp, int offset, int end)
 	int c2;
 	int dst;
 
+	fprintf(out, "x%05x:\n", offset);
 	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
 	while (offset < end)
 	{
@@ -223,7 +226,7 @@ static void dump_table(FILE *fp, int offset, int end)
 			offset += 2;
 			break;
 		case 32:
-			fprintf(out, "\t\t.dc.b TOK_RPAREN\n")
+			fprintf(out, "\t\t.dc.b TOK_RPAREN\n");
 			offset += 1;
 			break;
 		case 33:
@@ -698,6 +701,8 @@ int main(void)
 	scan_table(fp, 0x595be, 0x596bf);
 	scan_table(fp, 0x59bca, 0x5a18e);
 
+	i = 0;
+	fprintf(out, "offset_table:\n");
 	offset = 0x594e4;
 	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
 	while (offset < 0x595be)
@@ -707,6 +712,10 @@ int main(void)
 		c = c * 256 + c2;
 		c = (short)c;
 		dst = jmpbase + c;
+		if (c != 0)
+		{
+			offset_table[i] = dst;
+		}
 		if (used[dst])
 		{
 			fprintf(out, "\t\t.dc.w %s-jmpbase\n", used[dst]->name);
@@ -719,8 +728,89 @@ int main(void)
 			fprintf(out, "\t\t.dc.w %s-jmpbase\n", used[dst]->name);
 		}
 		offset += 2;
+		i++;
 	}
 	fprintf(out, "offset = %05x\n", offset);
+	fprintf(out, "\n");
+
+	fprintf(out, "offset_table_pf:\n");
+	offset = 0x596bf;
+	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
+	i = 0;
+	while (offset < 0x59bca)
+	{
+		const char *func;
+		
+		c = getc(fp);
+		dst = offset_table[c >> 1];
+		func = NULL;
+		if (i < 197)
+		{
+			func = gfapft[i].name;
+			c = i;
+		} else
+		{
+			c = i - 197;
+			if (c < 256)
+			{
+				func = gfasft_208[c].name;
+			} else
+			{
+				c -= 256;
+				if (c < 256)
+				{
+					func = gfasft_209[c].name;
+				} else
+				{
+					c -= 256;
+					if (c < 256)
+					{
+						func = gfasft_210[c].name;
+					} else
+					{
+						c -= 256;
+						if (c < 256)
+						{
+							func = gfasft_211[c].name;
+						} else
+						{
+							c -= 256;
+							if (c < 256)
+							{
+								func = gfasft_212[c].name;
+							} else
+							{
+								c -= 256;
+								if (c < 256)
+								{
+									func = gfasft_213[c].name;
+								} else
+								{
+									c -= 256;
+									if (c < 256)
+									{
+										func = gfasft_214[c].name;
+									} else
+									{
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		if (dst && used[dst])
+		{
+			fprintf(out, "\t\t.dc.w %s-jmpbase", used[dst]->name);
+		} else
+		{
+			fprintf(out, "\t\t.dc.w 0             ");
+		}
+		fprintf(out, " /* %3d %s */\n", c, func ? func : "");
+		offset += 1;
+		i++;
+	}
 	fprintf(out, "\n");
 
 	dump_table(fp, 0x58654, 0x58857);

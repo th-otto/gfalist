@@ -11257,7 +11257,7 @@ offset_table_pf:
 	.IF GBE>=372
 		.dc.b 0    /* 142 ENVIRON$( */
 	.ELSE
-		.dc.b 0x0c /* 142 ENVIRON$(*/
+		.dc.b 0x0c /* 142 ENVIRON$( */
 	.ENDC
 		.dc.b 0x04 /* 143 VARIAT( */
 		.dc.b 0    /* 144 LTRIM$( */
