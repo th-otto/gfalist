@@ -642,7 +642,7 @@ int main(void)
 	if (1)
 	{
 	scan_table(fp, 0x5674c, 0x5694f);
-	scan_table(fp, 0x56990, 0x56e06);
+	scan_table(fp, 0x56990, 0x56e08);
 	scan_table(fp, 0x56e56, 0x574f4);
 	scan_table(fp, 0x5764e, 0x57751);
 	scan_table(fp, 0x57b1c, 0x5807e);
@@ -677,7 +677,7 @@ int main(void)
 
 	dump_table(fp, 0x5674c, 0x5694f);
 	fprintf(out, "\n");
-	dump_table(fp, 0x56990, 0x56e06);
+	dump_table(fp, 0x56990, 0x56e08);
 	fprintf(out, "\n");
 	dump_table(fp, 0x56e56, 0x574f4);
 	fprintf(out, "\n");

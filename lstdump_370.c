@@ -12,7 +12,7 @@ int funcused[1048576];
 int label;
 int funclabel;
 
-#define jmpbase 0x13696
+#define jmpbase 0x53c6c
 
 static int maptable[500];
 
@@ -324,10 +324,10 @@ int main(void)
 	fprintf(out, "offset = %05x\n", offset);
 	fprintf(out, "\n");
 
-	if (0)
+	if (1)
 	{
 	/* mat cmd table */
-	offset = 0x13e02;
+	offset = 0x543e0;
 	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
 	for (;;)
 	{
@@ -373,9 +373,9 @@ int main(void)
 	}
 	fprintf(out, "\n");
 
-	offset = 0x14c16;
+	offset = 0x55256;
 	fseek(fp, offset - 0x10000 + 28, SEEK_SET);
-	while (offset < 0x14c8e)
+	while (offset < 0x552f8)
 	{
 		c = getc(fp);
 		c2 = getc(fp);
@@ -390,81 +390,22 @@ int main(void)
 
 	for (i = 0; i < (int)(sizeof(maptable) / sizeof(maptable[0])); i++)
 		maptable[i] = i;
-	maptable[182] = 191;
-	maptable[181] = 190;
-	maptable[180] = 189;
-	maptable[179] = 188;
-	maptable[178] = 187;
-	maptable[177] = 186;
-	maptable[176] = 185;
-	maptable[175] = 184;
-	maptable[174] = 183;
-	maptable[173] = 182;
-	maptable[172] = 181;
-	maptable[171] = 180;
-	maptable[170] = 179;
-	maptable[169] = 9169;
-	maptable[168] = 178;
-	maptable[167] = 177;
-	maptable[166] = 176;
-	maptable[165] = 175;
-	maptable[164] = 174;
-	maptable[163] = 173;
-	maptable[162] = 172;
-	maptable[161] = 171;
-	maptable[160] = 170;
-	maptable[159] = 169;
-	maptable[158] = 168;
-	maptable[157] = 167;
-	maptable[156] = 166;
-	maptable[155] = 165;
-	maptable[153] = 163;
-	maptable[152] = 162;
-	maptable[151] = 161;
-	maptable[150] = 160;
-	maptable[149] = 159;
-	maptable[148] = 158;
-	maptable[147] = 157;
-	maptable[146] = 156;
-	maptable[145] = 155;
-	maptable[144] = 154;
-	maptable[143] = 153;
-	maptable[142] = 152;
-	maptable[141] = 151;
-	maptable[140] = 147;
-	maptable[139] = 146;
-	maptable[138] = 145;
-	maptable[137] = 144;
-	maptable[136] = 143;
-	maptable[79] = 78;
-	maptable[78] = 77;
-	maptable[77] = 76;
-	maptable[76] = 75;
-	maptable[75] = 74;
-	maptable[74] = 73;
-	maptable[73] = 72;
-	maptable[72] = 71;
-	maptable[71] = 70;
-	maptable[70] = 69;
-	maptable[69] = 68;
-	maptable[68] = 67;
-	maptable[67] = 66;
 	
-	scan_table(fp, 0x13ed2, 0x140d6);
-	scan_table(fp, 0x14116, 0x14578);
-	scan_table(fp, 0x145c6, 0x14bde);
-	scan_table(fp, 0x14c8e, 0x14d34);
-	scan_table(fp, 0x14ee8, 0x152e4);
+	scan_table(fp, 0x544b0, 0x546b2);
+	scan_table(fp, 0x546f4, 0x54b6c);
+	scan_table(fp, 0x54bba, 0x551fe);
+	scan_table(fp, 0x552f8, 0x553d4);
+	scan_table(fp, 0x55714, 0x55b86);
 	
-	dump_table(fp, 0x13ed2, 0x140d6);
+	dump_table(fp, 0x544b0, 0x546b2);
 	fprintf(out, "\n");
-	dump_table(fp, 0x14116, 0x14578);
+	dump_table(fp, 0x546f4, 0x54b6c);
 	fprintf(out, "\n");
-	dump_table(fp, 0x145c6, 0x14bde);
+	dump_table(fp, 0x54bba, 0x551fe);
 	fprintf(out, "\n");
-	dump_table(fp, 0x14c8e, 0x14d34);
+	dump_table(fp, 0x552f8, 0x553d4);
 	fprintf(out, "\n");
-	dump_table(fp, 0x14ee8, 0x152e4);
+	dump_table(fp, 0x55714, 0x55b86);
 	fprintf(out, "\n");
 	}
 

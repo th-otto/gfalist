@@ -470,7 +470,7 @@ static struct argdesc const x14b96[] = {
 	{ ARG_END, { 0 } }
 };
 
-static struct argdesc const x14c92[] = {
+static struct argdesc const iexp_rparen[] = {
 	{ ARG_PUSH, { x14b96 } },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
@@ -531,7 +531,7 @@ static struct argdesc const x1525b[] = {
 	{ ARG_PUSH, { x1525b } },
 	{ ARG_POP, { 0 } },
 	{ ARG_PUSH, { x15297 } },
-	{ ARG_PUSH, { x14c92 } },
+	{ ARG_PUSH, { iexp_rparen } },
 	{ ARG_CALL_FUNC, { (void *)f15310 } },
 	{ ARG_PUSH, { x1525b } },
 	{ ARG_POP, { 0 } },
@@ -903,10 +903,6 @@ static struct argdesc const yAVERAGE_RGB_args[] = {
 	{ ARG_PUSH, { x14336+2 } },
 	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_END, { 0 } }
-};
-
-static struct argdesc const yTIMESTAMP_args[] = {
-	/* TODO */
 };
 
 static struct argdesc const yBMOVE_args[] = {
@@ -1511,7 +1507,7 @@ static struct argdesc const yDIR_args[] = {
 
 static struct argdesc const yDELETE_args[] = {
 	{ ARG_PUSH, { expect_any_arr+2 } },
-	{ ARG_PUSH, { x14c92 } },
+	{ ARG_PUSH, { iexp_rparen } },
 	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_END, { 0 } }
 };
@@ -1782,7 +1778,7 @@ static struct argdesc const x146f8[] = {
 	{ ARG_PUSH, { x14695 } },
 	{ 89, { 0 } },
 	{ ARG_REPLACE, { (void *)122 } },
-	{ ARG_PUSH, { x14c92 } },
+	{ ARG_PUSH, { iexp_rparen } },
 	{ ARG_END, { 0 } }
 };
 
@@ -3091,7 +3087,7 @@ static struct argdesc const x1506f[] = {
 	{ ARG_REPLACE, { (void *)59 } },
 	{ ARG_PUSH, { x15068 } },
 	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x14c92 } },
+	{ ARG_PUSH, { iexp_rparen } },
 	{ ARG_POP, { 0 } },
 	{ TOK_RIGHT1, { 0 } },
 	{ ARG_PUSH, { x15068 } },
@@ -3101,25 +3097,25 @@ static struct argdesc const x1506f[] = {
 	{ ARG_REPLACE, { (void *)61 } },
 	{ ARG_PUSH, { x15068 } },
 	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x14c92 } },
+	{ ARG_PUSH, { iexp_rparen } },
 	{ ARG_POP, { 0 } },
 	{ TOK_MID2, { 0 } },
 	{ ARG_PUSH, { x15068 } },
 	{ TOK_COMMA, { 0 } },
-	{ ARG_PUSH, { x14c92 } },
+	{ ARG_PUSH, { iexp_rparen } },
 	{ ARG_POP, { 0 } },
 	{ TOK_MID2, { 0 } },
 	{ ARG_REPLACE, { (void *)63 } },
 	{ ARG_PUSH, { x15068 } },
 	{ TOK_COMMA, { 0 } },
 	{ ARG_PUSH, { iexp_comma } },
-	{ ARG_PUSH, { x14c92 } },
+	{ ARG_PUSH, { iexp_rparen } },
 	{ ARG_POP, { 0 } },
 	{ ARG_CALL_FUNC, { (void *)f1369e } },
-	{ ARG_PUSH, { x14c92 } },
+	{ ARG_PUSH, { iexp_rparen } },
 	{ ARG_POP, { 0 } },
 	{ TOK_INPUT1, { 0 } },
-	{ ARG_PUSH, { x14c92 } },
+	{ ARG_PUSH, { iexp_rparen } },
 	{ ARG_POP, { 0 } },
 	{ TOK_INPUT1, { 0 } },
 	{ ARG_REPLACE, { (void *)95 } },
@@ -3179,24 +3175,24 @@ static struct argdesc const x1506f[] = {
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP, { 0 } },
 	{ TOK_DATE1, { 0 } },
-	{ ARG_PUSH, { x14c92 } },
+	{ ARG_PUSH, { iexp_rparen } },
 	{ ARG_POP, { 0 } },
 	{ TOK_TIME1, { 0 } },
-	{ ARG_PUSH, { x14c92 } },
+	{ ARG_PUSH, { iexp_rparen } },
 	{ ARG_POP, { 0 } },
 	{ TOK_OB_TEXT, { 0 } },
 	{ ARG_PUSH, { iexp_comma } },
-	{ ARG_PUSH, { x14c92 } },
+	{ ARG_PUSH, { iexp_rparen } },
 	{ ARG_POP, { 0 } },
 #if GBE >= 373
 	{ TOK_STRUCTSTR, { 0 } },
 	{ ARG_PUSH, { iexp_comma } },
-	{ ARG_PUSH, { x14c92 } },
+	{ ARG_PUSH, { iexp_rparen } },
 	{ ARG_POP, { 0 } },
 #endif
 	{ TOK_CHAR, { 0 } },
 	{ ARG_PUSH, { iexp_comma } },
-	{ ARG_PUSH, { x14c92 } },
+	{ ARG_PUSH, { iexp_rparen } },
 	{ ARG_POP, { 0 } },
 	{ TOK_REPLACE, { 0 } },
 	{ ARG_PUSH, { x15068 } },
@@ -3218,7 +3214,54 @@ static struct argdesc const x1506f[] = {
 	/* 150de */
 	{ TOK_STRING_CODE, { 0 } },
 	{ ARG_PUSH, { iexp_comma } },
-	{ ARG_PUSH, { x14c92 } },
+	{ ARG_PUSH, { iexp_rparen } },
+	{ ARG_POP, { 0 } },
+	{ TOK_STRING_CODE, { 0 } },
+	{ ARG_REPLACE, { (void *)130 } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x15160 } },
+	{ ARG_CALL_FUNC, { (void *)f154da } },
+	{ ARG_PUSH, { x14962 } },
+	{ ARG_POP, { 0 } },
+	{ TOK_SUBFUNC_208, { (void *)96 } }, /* SUCC( */
+	{ -6, { 0 } },
+	{ ARG_REPLACE, { (void *)131 } },
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ TOK_SUBFUNC_208, { (void *)97 } }, /* PRED( */
+	{ -6, { 0 } },
+	{ ARG_REPLACE, { (void *)133 } },
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ TOK_STR1, { 0 } },
+	{ ARG_PUSH, { x1512d } },
+	{ ARG_POP, { 0 } },
+	{ TOK_HEX1, { 0 } },
+	{ ARG_PUSH, { x1513f } },
+	{ ARG_POP, { 0 } },
+	{ TOK_OCT1, { 0 } },
+	{ ARG_PUSH, { x1514a } },
+	{ ARG_POP, { 0 } },
+	{ TOK_BIN1, { 0 } },
+	{ ARG_PUSH, { x15155 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x143ec } },
+	{ ARG_POP, { 0 } },
+	{ TOK_CHAR_REF, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ TOK_RBRACE, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+struct argdesc const x150de[] = {
+	{ TOK_STRING_CODE, { 0 } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_rparen } },
 	{ ARG_POP, { 0 } },
 	{ TOK_STRING_CODE, { 0 } },
 	{ ARG_REPLACE, { (void *)130 } },
@@ -3292,7 +3335,7 @@ struct argdesc const x14fa6[] = {
 
 
 struct argdesc const x1512d[] = {
-	{ ARG_PUSH, { x14c92 } },
+	{ ARG_PUSH, { iexp_rparen } },
 	{ ARG_POP, { 0 } },
 	{ ARG_REPLACE, { (void *)191 } },
 	{ ARG_PUSH, { x1503f } },
@@ -3305,7 +3348,7 @@ struct argdesc const x1512d[] = {
 };
 
 struct argdesc const x1513f[] = {
-	{ ARG_PUSH, { x14c92 } },
+	{ ARG_PUSH, { iexp_rparen } },
 	{ ARG_POP, { 0 } },
 	{ ARG_REPLACE, { (void *)194 } },
 	{ ARG_PUSH, { x1503f } },
@@ -3314,7 +3357,7 @@ struct argdesc const x1513f[] = {
 };
 
 struct argdesc const x1514a[] = {
-	{ ARG_PUSH, { x14c92 } },
+	{ ARG_PUSH, { iexp_rparen } },
 	{ ARG_POP, { 0 } },
 	{ ARG_REPLACE, { (void *)196 } },
 	{ ARG_PUSH, { x1503f } },
@@ -3323,7 +3366,7 @@ struct argdesc const x1514a[] = {
 };
 
 struct argdesc const x15155[] = {
-	{ ARG_PUSH, { x14c92 } },
+	{ ARG_PUSH, { iexp_rparen } },
 	{ ARG_POP, { 0 } },
 	{ ARG_REPLACE, { (void *)116 } },
 	{ ARG_PUSH, { x1503f } },
@@ -4158,7 +4201,7 @@ struct cmdname const cmd_table[] = {
  	{ 5, "TITLEW", 275, yINFOW_args, TARGET_VER36, 0 },
  	{ 4, "TOUCH", 326, yTOPW_args, TARGET_VER36, 0 },
  	{ 5, "TIME$=", 407, yCHDIR_args, TARGET_VER36, 0 },
- 	{ 8, "TIMESTAMP", 473, yTIMESTAMP_args, TARGET_VER370, TARGET_VER370 },
+ 	{ 8, "TIMESTAMP", 473, yCHDIR_args, TARGET_VER370, TARGET_VER370 },
  	{ 7, "TEDINFO(", 546, yUSERBLK_args, TARGET_VER371, TARGET_VER371 },
  	{ 3, "TPUT", 496, yTPUT_args, TARGET_VER371, 0 },
  	{ 6, "TBITBLT", 490, yBMOVE_args, TARGET_VER371, 0 },
@@ -5592,325 +5635,1011 @@ struct funcname const func_table[] = {
 };
 
 
+static struct argdesc const x1439e[] = {
+	{ ARG_PUSH, { x143ec } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x143ec } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14f9b[] = {
+	{ ARG_PUSH, { x14fa6 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_END, { 0 } }
+};
+
 static struct argdesc const x14d00[] = {
+	{ ARG_PUSH, { iexp_rparen } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14cfd[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_rparen } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14cfa[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_rparen } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14cf7[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_rparen } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14cf4[] = {
-};
-
-static struct argdesc const x14d04[] = {
-};
-
-static struct argdesc const x14d09[] = {
-};
-
-static struct argdesc const x14d03[] = {
-};
-
-static struct argdesc const x14d0e[] = {
-};
-
-static struct argdesc const x14ee8[] = {
-};
-
-static struct argdesc const x14f3c[] = {
-};
-
-static struct argdesc const x14f41[] = {
-};
-
-static struct argdesc const x14f4a[] = {
-};
-
-static struct argdesc const x14f55[] = {
-};
-
-static struct argdesc const x14f4d[] = {
-};
-
-static struct argdesc const x14f5d[] = {
-};
-
-static struct argdesc const x14f52[] = {
-};
-
-static struct argdesc const x14cee[] = {
-};
-
-static struct argdesc const x14f6e[] = {
-};
-
-static struct argdesc const x14f76[] = {
-};
-
-static struct argdesc const x14ce8[] = {
-};
-
-static struct argdesc const x14f8a[] = {
-};
-
-static struct argdesc const x14f6a[] = {
-};
-
-static struct argdesc const x14f7a[] = {
-};
-
-static struct argdesc const x14f66[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_rparen } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14cf1[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_rparen } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14cee[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_rparen } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14ceb[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_rparen } },
+	{ ARG_END, { 0 } }
 };
 
-static struct argdesc const x14f23[] = {
+static struct argdesc const x14ce8[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_rparen } },
+	{ ARG_END, { 0 } }
 };
 
-static struct argdesc const x14f87[] = {
+static struct argdesc const x14d04[] = {
+	{ ARG_PUSH, { x14b9a } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14d09[] = {
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14d03[] = {
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14d0e[] = {
+	{ ARG_PUSH, { x14b96 } },
+	{ 88, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x1440d[] = {
+	{ ARG_PUSH, { x14336+6 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14336+6 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14336+6 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14336+6 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14f15[] = {
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x1440d+4 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x1440d+4 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x1440d } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14ee8[] = {
+	{ ARG_PUSH, { x1502d } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x1502d } },
+	{ ARG_PUSH, { x14f15+2 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14f3c[] = {
+	{ ARG_PUSH, { x1439e } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14f41[] = {
+	{ ARG_PUSH, { x1503c } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14fa6 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14f4a[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x143ec } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14f52[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14f55[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14f4d[] = {
+	{ ARG_PUSH, { x143ec } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14f5d[] = {
+	{ ARG_PUSH, { x14336+8 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14f28[] = {
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x1440d+4 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14f66[] = {
+	{ ARG_PUSH, { x15039 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x1503f } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x1503f } },
+	{ ARG_PUSH, { x14f28 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14f6a[] = {
+	{ ARG_PUSH, { x1503f } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x1503f } },
+	{ ARG_PUSH, { x14f28 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14f6e[] = {
+	{ ARG_PUSH, { x1503f } },
+	{ ARG_PUSH, { x14f28 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14f76[] = {
+	{ ARG_PUSH, { x1503f } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x1503c } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14336+6 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14f7a[] = {
+	{ ARG_PUSH, { x1503c } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14336+6 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14f83[] = {
+	{ ARG_PUSH, { x15039 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x14f15+4 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14f87[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x14f15+4 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14f8a[] = {
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x14f15+4 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14f23[] = {
+	{ ARG_PUSH, { x14f15+5 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14f92[] = {
+	{ ARG_PUSH, { x1503f } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14336+8 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14fa3[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x14336+8 } },
+	{ TOK_LINE_COMMENT, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14fae[] = {
+	{ ARG_PUSH, { x14fa6 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ TOK_SUBFUNC_208, { (void *)68 } },
+	{ ARG_REPLACE, { (void *)69 } },
+	{ ARG_PUSH, { x14fa3 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ TOK_SUBFUNC_208, { (void *)68 } },
+	{ ARG_REPLACE, { (void *)70 } },
+	{ ARG_PUSH, { x14f9b } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14d2b[] = {
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ ARG_PUSH, { x14d2b } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14d23[] = {
-};
-
-static struct argdesc const x14fdc[] = {
+	{ ARG_PUSH, { x14b9a } },
+	{ ARG_PUSH, { x14d2b } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14fe1[] = {
+	{ ARG_PUSH, { x14336 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14fdc[] = {
+	{ ARG_PUSH, { x14fe1 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14fe9[] = {
+	{ ARG_PUSH, { x1434e } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x143ad } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14fe5[] = {
+	{ ARG_PUSH, { x14fe9 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x1501f[] = {
+	{ ARG_PUSH, { x143ad } },
+	{ ARG_POP, { 0 } },
+	{ ARG_PUSH, { x1434e } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14ff3[] = {
+	{ ARG_REPLACE, { (void *)208 } },
+	{ 249, { (void *)189 } },
+	{ ARG_PUSH, { x1501f } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14fee[] = {
+	{ ARG_PUSH, { x143ad } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x1505b[] = {
+	{ 138, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 139, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x1504d[] = {
+	{ ARG_PUSH, { x144eb } },
+	{ ARG_PUSH, { x1505b } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x1504d } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x15046[] = {
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x1504d } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14ffb[] = {
+	{ ARG_PUSH, { x15046 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x15000[] = {
+	{ ARG_PUSH, { x144dd } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x15005[] = {
+	{ ARG_CALL_FUNC, { (void *)f154aa } },
+	{ 35, { 0 } },
+	{ ARG_REPLACE, { (void *)157 } },
+	{ ARG_PUSH, { x1504d+1 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x15010[] = {
+	{ ARG_PUSH, { x14b90+1 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14ca9[] = {
+	{ ARG_REPLACE, { (void *)208 } },
+	{ 35, { 0 } },
+	{ ARG_REPLACE, { (void *)1 } },
+	{ ARG_PUSH, { x14cfd } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14cb2[] = {
+	{ ARG_REPLACE, { (void *)208 } },
+	{ 35, { 0 } },
+	{ ARG_REPLACE, { (void *)4 } },
+	{ ARG_PUSH, { x14cfd } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14cbb[] = {
+	{ ARG_REPLACE, { (void *)208 } },
+	{ 35, { 0 } },
+	{ ARG_REPLACE, { (void *)5 } },
+	{ ARG_PUSH, { x14cfd } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14cc4[] = {
+	{ ARG_REPLACE, { (void *)208 } },
+	{ 35, { 0 } },
+	{ ARG_REPLACE, { (void *)6 } },
+	{ ARG_PUSH, { x14cfd } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14ccd[] = {
+	{ ARG_REPLACE, { (void *)208 } },
+	{ 35, { 0 } },
+	{ ARG_REPLACE, { (void *)7 } },
+	{ ARG_PUSH, { x14cfd } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14cd6[] = {
+	{ ARG_REPLACE, { (void *)208 } },
+	{ 35, { 0 } },
+	{ ARG_REPLACE, { (void *)8 } },
+	{ ARG_PUSH, { x14cfd } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14cdf[] = {
+	{ ARG_REPLACE, { (void *)208 } },
+	{ 35, { 0 } },
+	{ ARG_REPLACE, { (void *)9 } },
+	{ ARG_PUSH, { x14cfd } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14d13[] = {
+	{ ARG_PUSH, { x14b9a } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ 112, { 0 } },
+	{ ARG_REPLACE, { (void *)113 } },
+	{ ARG_PUSH, { x14b9a } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { iexp_rparen } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14f05[] = {
+	{ ARG_PUSH, { x1503c } },
+	{ ARG_PUSH, { x14f15+4 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14f0d[] = {
+	{ ARG_PUSH, { x15036 } },
+	{ ARG_PUSH, { x14f15+4 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14fc5[] = {
+	{ ARG_PUSH, { x14fa6 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ TOK_SUBFUNC_208, { (void *)209 } },
+	{ ARG_REPLACE, { (void *)210 } },
+	{ ARG_PUSH, { x14fa3 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_POP, { 0 } },
+	{ TOK_SUBFUNC_208, { (void *)209 } },
+	{ ARG_REPLACE, { (void *)211 } },
+	{ ARG_PUSH, { x14f9b } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14f2e[] = {
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14336+6 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14f34[] = {
+	{ ARG_PUSH, { x1439e } },
+	{ ARG_PUSH, { x14f2e } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14c9f[] = {
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x15036 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x15036 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14c97[] = {
-};
-
-static struct argdesc const x14efd[] = {
-};
-
-static struct argdesc const x14ef4[] = {
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x14c9f } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x14c8e[] = {
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x14c9f } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14efd[] = {
+	{ ARG_PUSH, { x15068 } },
+	{ ARG_PUSH, { x14f15 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x14ef4[] = {
+	{ ARG_PUSH, { x15039 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x1440d } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x58d60[] = {
+	{ ARG_PUSH, { x14336+8 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x58d5a[] = {
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x58d60 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x58d52[] = {
-};
-
-static struct argdesc const x58d64[] = {
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x58d5a } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x58dd0[] = {
+	{ ARG_PUSH, { x1439e } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14336+6 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x58d64[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x1440d+2 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x58d67[] = {
-};
-
-static struct argdesc const x58edd[] = {
-};
-
-static struct argdesc const x58478[] = {
-};
-
-static struct argdesc const x58480[] = {
-};
-
-static struct argdesc const x58e05[] = {
-};
-
-static struct argdesc const x587a9[] = {
-};
-
-static struct argdesc const x58ed8[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x1440d+2 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x58d6a[] = {
+	{ ARG_PUSH, { x1440d+2 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x58edd[] = {
+	{ ARG_PUSH, { x14fa6 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x58478[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x14336+2 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x58e05[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x143ec } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x587a9[] = {
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x58ed8[] = {
+	{ ARG_PUSH, { x14fa3 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x58480[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x14336+6 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x58483[] = {
-};
-
-static struct argdesc const x58ea8[] = {
-};
-
-static struct argdesc const x58e23[] = {
-};
-
-static struct argdesc const x58488[] = {
+	{ ARG_PUSH, { x14336+6 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x58ea0[] = {
+	{ ARG_PUSH, { x14b96 } },
+	{ ARG_PUSH, { x14f28 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
-static struct argdesc const x57fbe[] = {
+static struct argdesc const x58ea8[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x143ec } },
+	{ ARG_PUSH, { x14f28 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x58e23[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_rparen } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x58488[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x57fc3[] = {
+	{ ARG_CALL_FUNC, { (void *)f15444 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x57fbe[] = {
+	{ ARG_PUSH, { x57fc3 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x58848[] = {
+	{ ARG_PUSH, { x14cf7 } },
+	{ ARG_POP, { 0 } },
+	{ TOK_SUBFUNC_208, { (void *)239 } },
+	{ ARG_REPLACE, { (void *)240 } },
+	{ ARG_PUSH, { x14cf4 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const y132[] = {
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x58854[] = {
+	{ ARG_PUSH, { x14cfd } },
+	{ ARG_POP, { 0 } },
+	{ TOK_SUBFUNC_210, { (void *)91 } },
+	{ ARG_REPLACE, { (void *)92 } },
+	{ ARG_PUSH, { x14cf7 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x58f03[] = {
+	{ ARG_PUSH, { x14f9b } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14336+8 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14336+8 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x58efa[] = {
-};
-
-static struct argdesc const x58f10[] = {
-};
-
-static struct argdesc const x58df3[] = {
-};
-
-static struct argdesc const x58d41[] = {
-};
-
-static struct argdesc const x58d44[] = {
-};
-
-static struct argdesc const x58524[] = {
-};
-
-static struct argdesc const x58531[] = {
-};
-
-static struct argdesc const x58541[] = {
-};
-
-static struct argdesc const x587b6[] = {
-};
-
-static struct argdesc const x5855f[] = {
-};
-
-static struct argdesc const x58e37[] = {
-};
-
-static struct argdesc const x58567[] = {
-};
-
-static struct argdesc const x58e48[] = {
-};
-
-static struct argdesc const x58550[] = {
-};
-
-static struct argdesc const x58860[] = {
-};
-
-static struct argdesc const x5886c[] = {
+	{ ARG_PUSH, { x14336+8 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14336+8 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x58efe[] = {
+	{ ARG_PUSH, { x14336+8 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x58f10[] = {
+	{ ARG_PUSH, { x14f9b } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x58df3[] = {
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x143ec } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x58524[] = {
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
+	{ TOK_RPAREN, { 0 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x58531[] = {
+	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
+	{ TOK_RPAREN, { 0 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x143ec } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x58541[] = {
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x143ec } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x587b6[] = {
+	{ ARG_PUSH, { x14b96 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14b96 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x5855f[] = {
+	{ ARG_PUSH, { x143ec } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { iexp_rparen } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x58e37[] = {
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x58567[] = {
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_CALL_FUNC, { (void *)expect_string_arr } },
+	{ TOK_RPAREN, { 0 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x58e48[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x143ec } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x58550[] = {
+	{ ARG_PUSH, { x143ec } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x58860[] = {
+	{ ARG_PUSH, { x14d00 } },
+	{ ARG_POP, { 0 } },
+	{ TOK_SUBFUNC_210, { (void *)254 } },
+	{ ARG_REPLACE, { (void *)255 } },
+	{ ARG_PUSH, { x14cfa } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x5886c[] = {
+	{ ARG_PUSH, { x14cfd } },
+	{ ARG_POP, { 0 } },
+	{ TOK_SUBFUNC_211, { (void *)1 } },
+	{ ARG_REPLACE, { (void *)2 } },
+	{ ARG_PUSH, { x14cf7 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x58e70[] = {
-};
-
-static struct argdesc const x584a6[] = {
-};
-
-static struct argdesc const x584a3[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x143ec } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x58497[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x14336+6 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14336+6 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14336+6 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14336+6 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x58d41[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x14336+8 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x58d44[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x14336+8 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x58d4a[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x14336+8 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x58d35[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x14336+8 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14336+6 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x58e60[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x15068 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14336+4 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+};
+
+static struct argdesc const x59d88[] = {
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x1440d+2 } },
+	{ ARG_POP, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x59d80[] = {
+	{ ARG_PUSH, { x15039 } },
+	{ ARG_PUSH, { x59d88 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x59be7[] = {
+	{ ARG_PUSH, { x14336+4 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14336+4 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 static struct argdesc const x59c1f[] = {
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x14336+8 } },
+	{ TOK_COMMA, { 0 } },
+	{ ARG_PUSH, { x14336+8 } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
 };
 
 
@@ -6903,7 +7632,7 @@ const struct argdesc *const arg_table_210[256] = {
 	x14d00, /* 207 V_CTAB_IDX2VALUE( */
 	x14cfd, /* 208 VQ_DFLT_CTAB( */
 	x58497, /* 209 V_COLOR2NEAREST( */
-	x584a3, /* 210 V_VALUE2COLOR( */
+	x58497+4, /* 210 V_VALUE2COLOR( */
 	x14cf4, /* 211 V_COLOR2VALUE( */
 	x14cf4, /* 212 NEAREST_RGB( */
 	x14cf7, /* 213 GRAYSCALE( */
@@ -7014,29 +7743,29 @@ const struct argdesc *const arg_table_211[256] = {
 	x14cf4, /*  59 VSL_FG_COLOR( */
 	x14cf4, /*  60 VSM_FG_COLOR( */
 	x14cf4, /*  61 VSR_FG_COLOR( */
-	x584a6, /*  62 VQT_FG_COLOR( */
-	x584a6, /*  63 VQF_FG_COLOR( */
-	x584a6, /*  64 VQL_FG_COLOR( */
-	x584a6, /*  65 VQM_FG_COLOR( */
-	x584a6, /*  66 VQR_FG_COLOR( */
+	x58497+5, /*  62 VQT_FG_COLOR( */
+	x58497+5, /*  63 VQF_FG_COLOR( */
+	x58497+5, /*  64 VQL_FG_COLOR( */
+	x58497+5, /*  65 VQM_FG_COLOR( */
+	x58497+5, /*  66 VQR_FG_COLOR( */
 	x14cf4, /*  67 VST_BG_COLOR( */
 	x14cf4, /*  68 VSF_BG_COLOR( */
 	x14cf4, /*  69 VSL_BG_COLOR( */
 	x14cf4, /*  70 VSM_BG_COLOR( */
 	x14cf4, /*  71 VSR_BG_COLOR( */
-	x584a6, /*  72 VQT_BG_COLOR( */
-	x584a6, /*  73 VQF_BG_COLOR( */
-	x584a6, /*  74 VQL_BG_COLOR( */
-	x584a6, /*  75 VQM_BG_COLOR( */
-	x584a6, /*  76 VQR_BG_COLOR( */
+	x58497+5, /*  72 VQT_BG_COLOR( */
+	x58497+5, /*  73 VQF_BG_COLOR( */
+	x58497+5, /*  74 VQL_BG_COLOR( */
+	x58497+5, /*  75 VQM_BG_COLOR( */
+	x58497+5, /*  76 VQR_BG_COLOR( */
 	x14cf4, /*  77 VS_HILITE_COLOR( */
 	x14cf4, /*  78 VS_MIN_COLOR( */
 	x14cf4, /*  79 VS_MAX_COLOR( */
 	x14cf4, /*  80 VS_WEIGHT_COLOR( */
-	x584a6, /*  81 VQ_HILITE_COLOR( */
-	x584a6, /*  82 VQ_MIN_COLOR( */
-	x584a6, /*  83 VQ_MAX_COLOR( */
-	x584a6, /*  84 VQ_WEIGHT_COLOR( */
+	x58497+5, /*  81 VQ_HILITE_COLOR( */
+	x58497+5, /*  82 VQ_MIN_COLOR( */
+	x58497+5, /*  83 VQ_MAX_COLOR( */
+	x58497+5, /*  84 VQ_WEIGHT_COLOR( */
 	x14cf7, /*  85 V_SETRGB( */
 	x14d00, /*  86 SUPERSCALAR( */
 	x14cf7, /*  87 VQT_XFNTINFO( */
@@ -7120,7 +7849,7 @@ const struct argdesc *const arg_table_211[256] = {
 	x14cfd, /* 165 CI_NEXT_RES( */
 	x14d00, /* 166 V_CTAB_IDX2VDI( */
 	x14d03, /* 167 VQ_CTAB_ID() */
-	x584a3, /* 168 VQ_CTAB_ENTRY( */
+	x58497+4, /* 168 VQ_CTAB_ENTRY( */
 	x14cfd, /* 169 VQ_CTAB( */
 	x14d03, /* 170 VS_DFLT_CTAB() */
 	x14cf1, /* 171 VS_CTAB_ENTRY( */
