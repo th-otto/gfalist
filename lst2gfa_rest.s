@@ -2877,6 +2877,7 @@ x58dae_373:
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
 x57fc3_372:
+x58db3_373:
 	{ ARG_CALL_FUNC, { (void *)f15444 } },
 	{ ARG_END, { 0 } }
 #endif
@@ -3048,132 +3049,6 @@ f14bde_1:
 		addq.l     #4,a7
 		bra        x1395a_1
 
-/* 371: 5758c */
-/* 372: 586c4 */
-/* 373: 594e4 */
-x14c16:
-		.dc.w 0
-		.dc.w x14d00-jmpbase
-		.dc.w x14cfd-jmpbase
-		.dc.w x14cfa-jmpbase
-		.dc.w x14cf7-jmpbase
-		.dc.w x14cf4-jmpbase
-		.dc.w x14d04-jmpbase
-		.dc.w x14d09-jmpbase
-		.dc.w x14d03-jmpbase
-		.dc.w x14d0e-jmpbase
-		.dc.w x14ee8-jmpbase
-		.dc.w x14f3c-jmpbase
-		.dc.w x14f41-jmpbase
-#if GBE >= 372
-		.dc.w x58e08_372-jmpbase
-#else
-		.dc.w x14f4a-jmpbase
-#endif
-		.dc.w x14f55-jmpbase
-#if GBE >= 372
-		.dc.w x58e0b_372-jmpbase
-#else
-		.dc.w x14f4d-jmpbase
-#endif
-		.dc.w x14f5d-jmpbase
-		.dc.w x14f52-jmpbase
-		.dc.w x14cee-jmpbase
-		.dc.w x14f6e-jmpbase
-		.dc.w x14f76-jmpbase
-		.dc.w x14ce8-jmpbase
-		.dc.w x14f8a-jmpbase
-		.dc.w x14f6a-jmpbase
-		.dc.w x14f7a-jmpbase
-		.dc.w x14f66-jmpbase
-		.dc.w x14cf1-jmpbase
-		.dc.w x14ceb-jmpbase
-		.dc.w x14f23-jmpbase
-		.dc.w x14f87-jmpbase
-		.dc.w x14f83-jmpbase
-		.dc.w x14f92-jmpbase
-		.dc.w x14fae-jmpbase
-		.dc.w x14d23-jmpbase
-		.dc.w x14fdc-jmpbase
-		.dc.w x14fe1-jmpbase
-		.dc.w x14fe5-jmpbase
-		.dc.w x14ff3-jmpbase
-		.dc.w x14fee-jmpbase
-		.dc.w x14ffb-jmpbase
-		.dc.w x15000-jmpbase
-		.dc.w x15005-jmpbase
-		.dc.w x15010-jmpbase
-		.dc.w x14ca9-jmpbase
-		.dc.w x14cb2-jmpbase
-		.dc.w x14cbb-jmpbase
-		.dc.w x14cc4-jmpbase
-		.dc.w x14ccd-jmpbase
-		.dc.w x14cd6-jmpbase
-		.dc.w x14cdf-jmpbase
-		.dc.w x14d13-jmpbase
-		.dc.w x14f05-jmpbase
-		.dc.w x14f0d-jmpbase
-		.dc.w x14fc5-jmpbase
-		.dc.w x14f34-jmpbase
-		.dc.w x14c97-jmpbase
-		.dc.w x14efd-jmpbase
-		.dc.w x14ef4-jmpbase
-		.dc.w x14c8e-jmpbase
-#if GBE >= 372
-		.dc.w x58d52_372-jmpbase
-		.dc.w x58d64_372-jmpbase
-		.dc.w x58dd0_372-jmpbase
-		.dc.w x58d67_372-jmpbase
-		.dc.w x58edd_372-jmpbase
-		.dc.w x58478_372-jmpbase
-		.dc.w x58480_372-jmpbase
-		.dc.w x58e05_372-jmpbase
-		.dc.w x587a9_372-jmpbase
-		.dc.w x58ed8_372-jmpbase
-		.dc.w x58d6a_372-jmpbase
-		.dc.w x58483_372-jmpbase
-		.dc.w x58ea8_372-jmpbase
-		.dc.w x58e23_372-jmpbase
-		.dc.w x58488_372-jmpbase
-		.dc.w x58ea0_372-jmpbase
-		.dc.w x57fbe_372-jmpbase
-		.dc.w x57fc3_372-jmpbase
-		.dc.w x58848_372-jmpbase
-		.dc.w y132-jmpbase
-		.dc.w x58854_372-jmpbase
-		.dc.w x58f03_372-jmpbase
-		.dc.w x58efa_372-jmpbase
-		.dc.w x58f10_372-jmpbase
-		.dc.w x58df3_372-jmpbase
-		.dc.w x58d41_372-jmpbase
-		.dc.w x58d44_372-jmpbase
-		.dc.w x58524_372-jmpbase
-		.dc.w x58531_372-jmpbase
-		.dc.w x58541_372-jmpbase
-		.dc.w x587b6_372-jmpbase
-		.dc.w x5855f_372-jmpbase
-		.dc.w x58e37_372-jmpbase
-		.dc.w x58567_372-jmpbase
-		.dc.w x58e48_372-jmpbase
-		.dc.w x58550_372-jmpbase
-		.dc.w x58860_372-jmpbase
-		.dc.w x5886c_372-jmpbase
-		.dc.w x58efe_372-jmpbase
-		.dc.w x58e70_372-jmpbase
-		.dc.w x584a6_372-jmpbase
-		.dc.w x584a3_372-jmpbase
-		.dc.w x58497_372-jmpbase
-		.dc.w x58d4a_372-jmpbase
-		.dc.w x58d35_372-jmpbase
-		.dc.w x58e60_372-jmpbase
-#endif
-#if GBE >= 373
-		.dc.w x59d80_373-jmpbase
-		.dc.w x59be7_373-jmpbase
-		.dc.w x59c1f_373-jmpbase
-#endif
-		.dc.w 0
-
 /* 371: 5764e */
 /* 372: 58798 */
 /* 373: 595be */
@@ -3188,6 +3063,7 @@ y132:
 	{ ARG_PUSH, { x14b96 } },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
+
 x587a9_372:
 	{ ARG_PUSH, { x15068 } },
 	{ TOK_COMMA, { 0 } },
@@ -4862,14 +4738,15 @@ x14f41:
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_END, { 0 } }
 
-#if GBE >= 372
+x14f4a:
+	{ ARG_PUSH, { iexp_comma } },
+	{ ARG_PUSH, { x143ec } },
+	{ TOK_RPAREN, { 0 } },
+	{ ARG_END, { 0 } }
+
 x58df3_372:
 	{ ARG_PUSH, { x15068 } },
 	{ TOK_COMMA, { 0 } },
-#else
-x14f4a:
-	{ ARG_PUSH, { iexp_comma } },
-#endif
 x14f4d:
 	{ ARG_PUSH, { x143ec } },
 	{ TOK_RPAREN, { 0 } },

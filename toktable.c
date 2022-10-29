@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include "tables.h"
 #include "globals.h"
+#include "parse.h"
 
 #define GBE 373
 
@@ -5588,4 +5589,2400 @@ struct funcname const func_table[] = {
 	{ 4, "SUCC(", TOK_SUCC, TARGET_VER36, 0 },
 	{ 4, "PRED(", TOK_PRED, TARGET_VER36, 0 },
 	{ 0, "/", TOK_DIVIDE, TARGET_VER36, 6 }
+};
+
+
+static struct argdesc const x14d00[] = {
+};
+
+static struct argdesc const x14cfd[] = {
+};
+
+static struct argdesc const x14cfa[] = {
+};
+
+static struct argdesc const x14cf7[] = {
+};
+
+static struct argdesc const x14cf4[] = {
+};
+
+static struct argdesc const x14d04[] = {
+};
+
+static struct argdesc const x14d09[] = {
+};
+
+static struct argdesc const x14d03[] = {
+};
+
+static struct argdesc const x14d0e[] = {
+};
+
+static struct argdesc const x14ee8[] = {
+};
+
+static struct argdesc const x14f3c[] = {
+};
+
+static struct argdesc const x14f41[] = {
+};
+
+static struct argdesc const x14f4a[] = {
+};
+
+static struct argdesc const x14f55[] = {
+};
+
+static struct argdesc const x14f4d[] = {
+};
+
+static struct argdesc const x14f5d[] = {
+};
+
+static struct argdesc const x14f52[] = {
+};
+
+static struct argdesc const x14cee[] = {
+};
+
+static struct argdesc const x14f6e[] = {
+};
+
+static struct argdesc const x14f76[] = {
+};
+
+static struct argdesc const x14ce8[] = {
+};
+
+static struct argdesc const x14f8a[] = {
+};
+
+static struct argdesc const x14f6a[] = {
+};
+
+static struct argdesc const x14f7a[] = {
+};
+
+static struct argdesc const x14f66[] = {
+};
+
+static struct argdesc const x14cf1[] = {
+};
+
+static struct argdesc const x14ceb[] = {
+};
+
+static struct argdesc const x14f23[] = {
+};
+
+static struct argdesc const x14f87[] = {
+};
+
+static struct argdesc const x14f83[] = {
+};
+
+static struct argdesc const x14f92[] = {
+};
+
+static struct argdesc const x14fae[] = {
+};
+
+static struct argdesc const x14d23[] = {
+};
+
+static struct argdesc const x14fdc[] = {
+};
+
+static struct argdesc const x14fe1[] = {
+};
+
+static struct argdesc const x14fe5[] = {
+};
+
+static struct argdesc const x14ff3[] = {
+};
+
+static struct argdesc const x14fee[] = {
+};
+
+static struct argdesc const x14ffb[] = {
+};
+
+static struct argdesc const x15000[] = {
+};
+
+static struct argdesc const x15005[] = {
+};
+
+static struct argdesc const x15010[] = {
+};
+
+static struct argdesc const x14ca9[] = {
+};
+
+static struct argdesc const x14cb2[] = {
+};
+
+static struct argdesc const x14cbb[] = {
+};
+
+static struct argdesc const x14cc4[] = {
+};
+
+static struct argdesc const x14ccd[] = {
+};
+
+static struct argdesc const x14cd6[] = {
+};
+
+static struct argdesc const x14cdf[] = {
+};
+
+static struct argdesc const x14d13[] = {
+};
+
+static struct argdesc const x14f05[] = {
+};
+
+static struct argdesc const x14f0d[] = {
+};
+
+static struct argdesc const x14fc5[] = {
+};
+
+static struct argdesc const x14f34[] = {
+};
+
+static struct argdesc const x14c97[] = {
+};
+
+static struct argdesc const x14efd[] = {
+};
+
+static struct argdesc const x14ef4[] = {
+};
+
+static struct argdesc const x14c8e[] = {
+};
+
+static struct argdesc const x58d52[] = {
+};
+
+static struct argdesc const x58d64[] = {
+};
+
+static struct argdesc const x58dd0[] = {
+};
+
+static struct argdesc const x58d67[] = {
+};
+
+static struct argdesc const x58edd[] = {
+};
+
+static struct argdesc const x58478[] = {
+};
+
+static struct argdesc const x58480[] = {
+};
+
+static struct argdesc const x58e05[] = {
+};
+
+static struct argdesc const x587a9[] = {
+};
+
+static struct argdesc const x58ed8[] = {
+};
+
+static struct argdesc const x58d6a[] = {
+};
+
+static struct argdesc const x58483[] = {
+};
+
+static struct argdesc const x58ea8[] = {
+};
+
+static struct argdesc const x58e23[] = {
+};
+
+static struct argdesc const x58488[] = {
+};
+
+static struct argdesc const x58ea0[] = {
+};
+
+static struct argdesc const x57fbe[] = {
+};
+
+static struct argdesc const x57fc3[] = {
+};
+
+static struct argdesc const x58848[] = {
+};
+
+static struct argdesc const y132[] = {
+};
+
+static struct argdesc const x58854[] = {
+};
+
+static struct argdesc const x58f03[] = {
+};
+
+static struct argdesc const x58efa[] = {
+};
+
+static struct argdesc const x58f10[] = {
+};
+
+static struct argdesc const x58df3[] = {
+};
+
+static struct argdesc const x58d41[] = {
+};
+
+static struct argdesc const x58d44[] = {
+};
+
+static struct argdesc const x58524[] = {
+};
+
+static struct argdesc const x58531[] = {
+};
+
+static struct argdesc const x58541[] = {
+};
+
+static struct argdesc const x587b6[] = {
+};
+
+static struct argdesc const x5855f[] = {
+};
+
+static struct argdesc const x58e37[] = {
+};
+
+static struct argdesc const x58567[] = {
+};
+
+static struct argdesc const x58e48[] = {
+};
+
+static struct argdesc const x58550[] = {
+};
+
+static struct argdesc const x58860[] = {
+};
+
+static struct argdesc const x5886c[] = {
+};
+
+static struct argdesc const x58efe[] = {
+};
+
+static struct argdesc const x58e70[] = {
+};
+
+static struct argdesc const x584a6[] = {
+};
+
+static struct argdesc const x584a3[] = {
+};
+
+static struct argdesc const x58497[] = {
+};
+
+static struct argdesc const x58d4a[] = {
+};
+
+static struct argdesc const x58d35[] = {
+};
+
+static struct argdesc const x58e60[] = {
+};
+
+static struct argdesc const x59d80[] = {
+};
+
+static struct argdesc const x59be7[] = {
+};
+
+static struct argdesc const x59c1f[] = {
+};
+
+
+
+const struct argdesc *const arg_table_pf[256] = {
+	x14cbb, /*   0  AND  */
+	x14cc4, /*   1  OR  */
+	x14ccd, /*   2  XOR  */
+	x14cdf, /*   3  IMP  */
+	x14cd6, /*   4  EQV  */
+	NULL,   /*   5 - */
+	NULL,   /*   6 + */
+	x14ff3, /*   7 * */
+	NULL,   /*   8 / */
+	NULL,   /*   9 ^ */
+	x14cb2, /*  10  MOD  */
+	x14ca9, /*  11  DIV  */
+	NULL,   /*  12 <> */
+	NULL,   /*  13 <= */
+	NULL,   /*  14 =< */
+	NULL,   /*  15 >= */
+	NULL,   /*  16 => */
+	NULL,   /*  17 < */
+	NULL,   /*  18 > */
+	NULL,   /*  19 = */
+	NULL,   /*  20 <> */
+	NULL,   /*  21 <= */
+	NULL,   /*  22 =< */
+	NULL,   /*  23 >= */
+	NULL,   /*  24 => */
+	NULL,   /*  25 < */
+	NULL,   /*  26 > */
+	NULL,   /*  27 = */
+	NULL,   /*  28 + */
+	NULL,   /*  29 + */
+	NULL,   /*  30 - */
+	NULL,   /*  31 NOT  */
+	NULL,   /*  32 ) */
+	NULL,   /*  33 , */
+	NULL,   /*  34 ; */
+	x14d04, /*  35 ( */
+	NULL,   /*  36 ERR$( */
+	x14d04, /*  37 INT( */
+	x14d04, /*  38 TRUNC( */
+	x14d04, /*  39 FRAC( */
+	x14d04, /*  40 ABS( */
+	x14d04, /*  41 SIN( */
+	x14d04, /*  42 COS( */
+	x14d04, /*  43 TAN( */
+	x14d04, /*  44 ATN( */
+	NULL,   /*  45 == */
+	NULL,   /*  46 ( */
+	x14d04, /*  47 EXP( */
+	x14d04, /*  48 LOG( */
+	x14d04, /*  49 LOG10( */
+	NULL,   /*  50 VAR  */
+	NULL,   /*  51 ) */
+	NULL,   /*  52 INPAUX$ */
+	x14d09, /*  53 VAL( */
+	NULL,   /*  54 INPMID$ */
+	NULL,   /*  55  */
+	NULL,   /*  56 TIME$ */
+	x14d03, /*  57 )= */
+	NULL,   /*  58 LEFT$( */
+	NULL,   /*  59 LEFT$( */
+	NULL,   /*  60 RIGHT$( */
+	NULL,   /*  61 RIGHT$( */
+	NULL,   /*  62 MID$( */
+	NULL,   /*  63 MID$( */
+	NULL,   /*  64 , */
+	x14d04, /*  65 ASIN( */
+	NULL,   /*  66 CHR$( */
+	NULL,   /*  67 }= */
+	NULL,   /*  68 ]= */
+	NULL,   /*  69 = */
+	NULL,   /*  70  */
+	NULL,   /*  71  TO  */
+	NULL,   /*  72  STEP  */
+	NULL,   /*  73  DOWNTO  */
+	NULL,   /*  74  THEN */
+	NULL,   /*  75  GOTO  */
+	NULL,   /*  76  GOSUB  */
+	NULL,   /*  77 # */
+	x14d04, /*  78 SQR( */
+	x14d03, /*  79 PI */
+	NULL,   /*  80 [ */
+	NULL,   /*  81 ] */
+	x14d04, /*  82 ACOS( */
+	NULL,   /*  83 INKEY$ */
+	x14d04, /*  84 RND( */
+	x14d03, /*  85 RND */
+	x14d04, /*  86 RANDOM( */
+	NULL,   /*  87 ' */
+	NULL,   /*  88 } */
+	NULL,   /*  89 AT( */
+	NULL,   /*  90 IF */
+	NULL,   /*  91 \ */
+	x14d0e, /*  92 FLOAT{ */
+	x14d0e, /*  93 DOUBLE{ */
+	NULL,   /*  94 INPUT$( */
+	NULL,   /*  95 INPUT$( */
+	NULL,   /*  96 INPUT */
+	NULL,   /*  97 CHAR{ */
+	NULL,   /*  98 MKI$( */
+	NULL,   /*  99 MKL$( */
+	NULL,   /* 100 MKS$( */
+	NULL,   /* 101 MKF$( */
+	NULL,   /* 102 MKD$( */
+	x14d04, /* 103 DEG( */
+	x14d04, /* 104 RAD( */
+	x14d09, /* 105 CVS( */
+	x14d09, /* 106 CVF( */
+	x14d09, /* 107 CVD( */
+	NULL,   /* 108  AS  */
+	NULL,   /* 109  OFFSET  */
+	x14d04, /* 110 CFLOAT( */
+	NULL,   /* 111 TRACE$ */
+	x14d13, /* 112 ROUND( */
+	NULL,   /* 113 ROUND( */
+	NULL,   /* 114  WITH  */
+	NULL,   /* 115 BIN$( */
+	NULL,   /* 116 BIN$( */
+	x14d23, /* 117 MIN( */
+	x14d23, /* 118 MIN( */
+	x14d23, /* 119 MAX( */
+	x14d23, /* 120 MAX( */
+	x14d0e, /* 121 SINGLE{ */
+	NULL,   /* 122  AT( */
+	x14d04, /* 123 SINQ( */
+	NULL,   /* 124 : */
+	x14d04, /* 125 COSQ( */
+	NULL,   /* 126 DATE$ */
+	NULL,   /* 127 UPPER$( */
+	NULL,   /* 128 SPACE$( */
+	NULL,   /* 129 STRING$( */
+	NULL,   /* 130 STRING$( */
+	NULL,   /* 131 SUCC( */
+	NULL,   /* 132 DIR$( */
+	NULL,   /* 133 PRED( */
+	x14d00, /* 134 DRAW( */
+	NULL,   /* 135 TRIM$( */
+	NULL,   /* 136 CMDLINE$ */
+	NULL,   /* 137 CURDIR$ */
+	NULL,   /* 138 L: */
+	NULL,   /* 139 W: */
+	x14d00, /* 140 FACT( */
+	x14cfd, /* 141 COMBIN( */
+	NULL,   /* 142 ENVIRON$( */
+	x14cfd, /* 143 VARIAT( */
+	NULL,   /* 144 LTRIM$( */
+	NULL,   /* 145 RTRIM$( */
+	NULL,   /* 146 LCASE$( */
+	NULL,   /* 147 UCASE$( */
+	NULL,   /* 148 LOWER$( */
+	NULL,   /* 149 OB_TEXT$( */
+	NULL,   /* 150 ZTRIM$( */
+	NULL,   /* 151 ERROR */
+	NULL,   /* 152 STOP */
+	NULL,   /* 153 BREAK */
+	NULL,   /* 154  CONT */
+	x14d04, /* 155 FIX( */
+	NULL,   /* 156 , */
+	NULL,   /* 157 ( */
+	NULL,   /* 158 FN  */
+	NULL,   /* 159 @ */
+	NULL,   /* 160 MIRROR$( */
+	NULL,   /* 161 TAB( */
+	NULL,   /* 162 SPC( */
+	NULL,   /* 163 USING  */
+	NULL,   /* 164 CHAR$( */
+	NULL,   /* 165 TIME$( */
+	NULL,   /* 166 TIMESTAMP$( */
+	NULL,   /* 167 MENU */
+	NULL,   /* 168 NEXT */
+	NULL,   /* 169 STRPEEK$( */
+	NULL,   /* 170 KEY */
+	NULL,   /* 171 BUTTON */
+	NULL,   /* 172 IBOX */
+	NULL,   /* 173 OBOX */
+	NULL,   /* 174 MESSAGE */
+	NULL,   /* 175 OFF */
+	NULL,   /* 176 KILL */
+	NULL,   /* 177 DIGITAL$( */
+	NULL,   /* 178 REPLACE$( */
+	NULL,   /* 179 CRYPT$( */
+	NULL,   /* 180 XLATE$( */
+	NULL,   /* 181 STRUCT$( */
+	NULL,   /* 182 BASE  */
+	x14d03, /* 183 NULL */
+	NULL,   /* 184 0 */
+	NULL,   /* 185 1 */
+	NULL,   /* 186 2 */
+	NULL,   /* 187 3 */
+	x14d03, /* 188 TRUE */
+	x14d03, /* 189 FALSE */
+	NULL,   /* 190 STR$( */
+	NULL,   /* 191 STR$( */
+	NULL,   /* 192 STR$( */
+	NULL,   /* 193 HEX$( */
+	NULL,   /* 194 HEX$( */
+	NULL,   /* 195 OCT$( */
+	NULL,   /* 196 OCT$( */
+	NULL,   /* 197 */
+	NULL,   /* 198 */
+	NULL,   /* 199 */
+	NULL,   /* 200 */
+	NULL,   /* 201 */
+	NULL,   /* 202 */
+	NULL,   /* 203 */
+	NULL,   /* 204 */
+	NULL,   /* 205 */
+	NULL,   /* 206 */
+	NULL,   /* 207 */
+	NULL,   /* 208 */
+	NULL,   /* 209 */
+	NULL,   /* 210 */
+	NULL,   /* 211 */
+	NULL,   /* 212 */
+	NULL,   /* 213 */
+	NULL,   /* 214 */
+	NULL,   /* 215 */
+	NULL,   /* 216 */
+	NULL,   /* 217 */
+	NULL,   /* 218 */
+	NULL,   /* 219 */
+	NULL,   /* 220 */
+	NULL,   /* 221 */
+	NULL,   /* 222 */
+	NULL,   /* 223 */
+	NULL,   /* 224 */
+	NULL,   /* 225 */
+	NULL,   /* 226 */
+	NULL,   /* 227 */
+	NULL,   /* 228 */
+	NULL,   /* 229 */
+	NULL,   /* 230 */
+	NULL,   /* 231 */
+	NULL,   /* 232 */
+	NULL,   /* 233 */
+	NULL,   /* 234 */
+	NULL,   /* 235 */
+	NULL,   /* 236 */
+	NULL,   /* 237 */
+	NULL,   /* 238 */
+	NULL,   /* 239 */
+	NULL,   /* 240 */
+	NULL,   /* 241 */
+	NULL,   /* 242 */
+	NULL,   /* 243 */
+	NULL,   /* 244 */
+	NULL,   /* 245 */
+	NULL,   /* 246 */
+	NULL,   /* 247 */
+	NULL,   /* 248 */
+	NULL,   /* 249 */
+	NULL,   /* 250 */
+	NULL,   /* 251 */
+	NULL,   /* 252 */
+	NULL,   /* 253 */
+	NULL,   /* 254 */
+	NULL,   /* 255 */
+};
+
+const struct argdesc *const arg_table_208[256] = {
+	x14cfd, /*   0 MUL( */
+	x14cfd, /*   1 DIV( */
+	x14cfd, /*   2 ADD( */
+	x14cfd, /*   3 SUB( */
+	x14cfd, /*   4 MOD( */
+	x14cfd, /*   5 AND( */
+	x14cfd, /*   6 OR( */
+	x14cfd, /*   7 XOR( */
+	x14cfd, /*   8 EQV( */
+	x14cfd, /*   9 IMP( */
+	x14cfd, /*  10 SHL( */
+	x14cfd, /*  11 SHR( */
+	x14cfd, /*  12 ROL( */
+	x14cfd, /*  13 ROR( */
+	x14d00, /*  14 WORD( */
+	x14d00, /*  15 CARD( */
+	x14d00, /*  16 BYTE( */
+	x14d00, /*  17 SWAP( */
+	x14d00, /*  18 ADDRIN( */
+	x14d03, /*  19 ADDRIN */
+	x14d00, /*  20 ADDROUT( */
+	x14d03, /*  21 ADDROUT */
+	x14d00, /*  22 CONTRL( */
+	x14d03, /*  23 CONTRL */
+	x14d00, /*  24 GCONTRL( */
+	x14d03, /*  25 GCONTRL */
+	x14d00, /*  26 GINTIN( */
+	x14d03, /*  27 GINTIN */
+	x14d00, /*  28 GINTOUT( */
+	x14d03, /*  29 GINTOUT */
+	x14d03, /*  30 HIMEM */
+	x14d03, /*  31 BASEPAGE */
+	x14d00, /*  32 INTIN( */
+	x14d03, /*  33 INTIN */
+	x14d00, /*  34 INTOUT( */
+	x14d03, /*  35 INTOUT */
+	x14d00, /*  36 PTSIN( */
+	x14d03, /*  37 PTSIN */
+	x14d00, /*  38 PTSOUT( */
+	x14d03, /*  39 PTSOUT */
+	x14d03, /*  40 VDIBASE */
+	x14cfd, /*  41 WINDTAB( */
+	x14d03, /*  42 WINDTAB */
+	x14cfd, /*  43 PTST( */
+	x14cfd, /*  44 BTST( */
+	x14cfd, /*  45 BSET( */
+	x14cfd, /*  46 BCLR( */
+	x14cfd, /*  47 BCHG( */
+	x14cfd, /*  48 SHL&( */
+	x14cfd, /*  49 SHR&( */
+	x14cfd, /*  50 ROL&( */
+	x14cfd, /*  51 ROR&( */
+	x14cfd, /*  52 SHL|( */
+	x14cfd, /*  53 SHR|( */
+	x14cfd, /*  54 ROL|( */
+	x14cfd, /*  55 ROR|( */
+	x14d03, /*  56 CRSLIN */
+	x14d03, /*  57 CRSCOL */
+	x14d03, /*  58 MOUSEX */
+	x14d03, /*  59 MOUSEY */
+	x14d03, /*  60 MOUSEK */
+	x14d03, /*  61 GB */
+	x14d03, /*  62 TIMER */
+	x14d00, /*  63 PEEK( */
+	x14d00, /*  64 DPEEK( */
+	x14d00, /*  65 LPEEK( */
+	x14d09, /*  66 LEN( */
+	x14d09, /*  67 ASC( */
+	x14fae, /*  68 INSTR( */
+	x14fae, /*  69 INSTR( */
+	x14fae, /*  70 INSTR( */
+	x15010, /*  71 FRE( */
+	x14cfd, /*  72 POINT( */
+	x14d09, /*  73 VAL?( */
+	x14d00, /*  74 INP( */
+	x14d09, /*  75 CVI( */
+	x14d09, /*  76 CVL( */
+	x14d00, /*  77 INP(# */
+	x14d00, /*  78 EOF(# */
+	x14d00, /*  79 LOF(# */
+	x14d00, /*  80 LOC(# */
+	x14fee, /*  81 DIM?( */
+	x14d00, /*  82 RAND( */
+	x14d00, /*  83 DFREE( */
+	x14d09, /*  84 EXIST( */
+	x14ffb, /*  85 BIOS( */
+	x14ffb, /*  86 XBIOS( */
+	x14ffb, /*  87 GEMDOS( */
+	x14d03, /*  88 ERR */
+	x14d03, /*  89 FATAL */
+	x14d00, /*  90 POS( */
+	x14d00, /*  91 LPOS( */
+	x14d00, /*  92 MENU( */
+	x14d00, /*  93 INP?( */
+	x14d00, /*  94 OUT?( */
+	x15000, /*  95 EXEC( */
+	x14d00, /*  96 SUCC( */
+	x14d00, /*  97 PRED( */
+	x14d00, /*  98 W_HAND(# */
+	x14d00, /*  99 W_INDEX(# */
+	x14d04, /* 100 SGN( */
+	x14d04, /* 101 EVEN( */
+	x14d04, /* 102 ODD( */
+	x14d00, /* 103 CINT( */
+	x14d03, /* 104 GDOS? */
+	x14c97, /* 105 V_OPNWK( */
+	x14d03, /* 106 V_CLSWK() */
+	x14c97, /* 107 V_OPNVWK( */
+	x14d03, /* 108 V_CLSVWK() */
+	x14d03, /* 109 V_UPDWK() */
+	x14d00, /* 110 VST_LOAD_FONTS( */
+	x14d00, /* 111 VST_UNLOAD_FONTS( */
+	x14d0e, /* 112 { */
+	x14d0e, /* 113 LONG{ */
+	x14d0e, /* 114 INT{ */
+	x14d0e, /* 115 CARD{ */
+	x14d0e, /* 116 BYTE{ */
+	x15005, /* 117 C: */
+	x14d03, /* 118 EVNT_KEYBD() */
+	x14f05, /* 119 EVNT_BUTTON( */
+	x14f0d, /* 120 EVNT_MOUSE( */
+	x14d00, /* 121 EVNT_MESAG( */
+	x14d00, /* 122 EVNT_TIMER( */
+	x14ee8, /* 123 EVNT_MULTI( */
+	x14d09, /* 124 RSRC_LOAD( */
+	x14d03, /* 125 RSRC_FREE() */
+	x14f92, /* 126 RSRC_GADDR( */
+	x14cfa, /* 127 RSRC_SADDR( */
+	x14cfd, /* 128 RSRC_OBFIX( */
+	x14f3c, /* 129 SHEL_READ( */
+	x14f41, /* 130 SHEL_WRITE( */
+	x14f4a, /* 131 SHEL_GET( */
+	x14f55, /* 132 SHEL_PUT( */
+	x14f4d, /* 133 SHEL_FIND( */
+	x14f5d, /* 134 SHEL_ENVRN( */
+	x14d03, /* 135 APPL_INIT() */
+	x14cfa, /* 136 APPL_READ( */
+	x14cfa, /* 137 APPL_WRITE( */
+	x14d09, /* 138 APPL_FIND( */
+	x14cfa, /* 139 APPL_TPLAY( */
+	x14cfd, /* 140 APPL_TRECORD( */
+	x14d03, /* 141 APPL_EXIT() */
+	x14cfd, /* 142 EVNT_DCLICK( */
+	x14cfd, /* 143 MENU_BAR( */
+	x14cfa, /* 144 MENU_ICHECK( */
+	x14cfa, /* 145 MENU_IENABLE( */
+	x14cfa, /* 146 MENU_TNORMAL( */
+	x14f52, /* 147 MENU_TEXT( */
+	x14f55, /* 148 MENU_REGISTER( */
+	x14cfa, /* 149 OBJC_ADD( */
+	x14cfd, /* 150 OBJC_DELETE( */
+	x14cee, /* 151 OBJC_DRAW( */
+	x14cf4, /* 152 OBJC_FIND( */
+	x14f6e, /* 153 OBJC_OFFSET( */
+	x14cfa, /* 154 OBJC_ORDER( */
+	x14f76, /* 155 OBJC_EDIT( */
+	x14ce8, /* 156 OBJC_CHANGE( */
+	x14cfd, /* 157 FORM_DO( */
+	x14ce8, /* 158 FORM_DIAL( */
+	x14f55, /* 159 FORM_ALERT( */
+	x14d00, /* 160 FORM_ERROR( */
+	x14f8a, /* 161 FORM_CENTER( */
+	x14f6a, /* 162 GRAF_RUBBERBOX( */
+	x14f66, /* 163 GRAF_DRAGBOX( */
+	x14cf1, /* 164 GRAF_MOVEBOX( */
+	x14ceb, /* 165 GRAF_GROWBOX( */
+	x14ceb, /* 166 GRAF_SHRINKBOX( */
+	x14cf7, /* 167 GRAF_WATCHBOX( */
+	x14cf7, /* 168 GRAF_SLIDEBOX( */
+	x14f23, /* 169 GRAF_HANDLE( */
+	x14cfd, /* 170 GRAF_MOUSE( */
+	x14f23, /* 171 GRAF_MKSTATE( */
+	x14f4d, /* 172 SCRP_READ( */
+	x14d09, /* 173 SCRP_WRITE( */
+	x14f34, /* 174 FSEL_INPUT( */
+	x14cf4, /* 175 WIND_CREATE( */
+	x14cf4, /* 176 WIND_OPEN( */
+	x14d00, /* 177 WIND_CLOSE( */
+	x14d00, /* 178 WIND_DELETE( */
+	x14f87, /* 179 WIND_GET( */
+	x14cf1, /* 180 WIND_SET( */
+	x14cfd, /* 181 WIND_FIND( */
+	x14d00, /* 182 WIND_UPDATE( */
+	x14f83, /* 183 WIND_CALC( */
+	x14d00, /* 184 MALLOC( */
+	x14d00, /* 185 MFREE( */
+	x14cfd, /* 186 MSHRINK( */
+	x14fdc, /* 187 VARPTR( */
+	x14fe5, /* 188 ARRPTR( */
+	x14ff3, /* 189 * */
+	x14d00, /* 190 TYPE( */
+	x14cfd, /* 191 OB_ADR( */
+	x14cfd, /* 192 OB_NEXT( */
+	x14cfd, /* 193 OB_HEAD( */
+	x14cfd, /* 194 OB_TAIL( */
+	x14cfd, /* 195 OB_TYPE( */
+	x14cfd, /* 196 OB_FLAGS( */
+	x14cfd, /* 197 OB_STATE( */
+	x14cfd, /* 198 OB_SPEC( */
+	x14cfd, /* 199 OB_X( */
+	x14cfd, /* 200 OB_Y( */
+	x14cfd, /* 201 OB_W( */
+	x14cfd, /* 202 OB_H( */
+	x14fe1, /* 203 V: */
+	x14f6a, /* 204 FORM_KEYBD( */
+	x14f7a, /* 205 FORM_BUTTON( */
+	x14d00, /* 206 STICK( */
+	x14d00, /* 207 STRIG( */
+	x14d00, /* 208 WORK_OUT( */
+	x14fc5, /* 209 RINSTR( */
+	x14fc5, /* 210 RINSTR( */
+	x14fc5, /* 211 RINSTR( */
+	x14d03, /* 212 L~A */
+	x14d03, /* 213 V~H */
+	x14d03, /* 214 V_CLRWK() */
+	x14f4a, /* 215 VQT_NAME( */
+	x14efd, /* 216 VQT_EXTENT( */
+	x14ef4, /* 217 RC_INTERSECT( */
+	x14c8e, /* 218 FSFIRST( */
+	x14d03, /* 219 FSNEXT() */
+	x14d00, /* 220 FSETDTA( */
+	x14d03, /* 221 FGETDTA() */
+	x14d0e, /* 222 WORD{ */
+	x14d00, /* 223 INP&( */
+	x14d00, /* 224 INP&(# */
+	x14d00, /* 225 INP%( */
+	x14d00, /* 226 INP%(# */
+	x14d03, /* 227 _DATA */
+	x14d00, /* 228 PADX( */
+	x14d00, /* 229 PADY( */
+	x14d00, /* 230 PADT( */
+	x14d03, /* 231 LPENX */
+	x14d03, /* 232 LPENY */
+	x14d03, /* 233 STE? */
+	x14d03, /* 234 TT? */
+	x14cfa, /* 235 SCALE( */
+	x14d03, /* 236 _X */
+	x14d03, /* 237 _Y */
+	x14d03, /* 238 _C */
+	x58848, /* 239 GETSIZE( */
+	x58848, /* 240 GETSIZE( */
+	x14d03, /* 241 _B */
+	x14d03, /* 242 _AES */
+	x14d03, /* 243 _TOS */
+	x14d03, /* 244 A~I */
+	x14d03, /* 245 CPU020() */
+	x14d03, /* 246 FPU882() */
+	x14d03, /* 247 GMOUSEK */
+	x14d03, /* 248 GMOUSEX */
+	x14d03, /* 249 GMOUSEY */
+	x14d00, /* 250 GLOBAL( */
+	x14d03, /* 251 GLOBAL */
+	x58d52, /* 252 GETCOOKIE( */
+	x14cf7, /* 253 VS_COLOR( */
+	x14d03, /* 254 EJP? */
+	x14d03, /* 255 _P */
+};
+
+const struct argdesc *const arg_table_209[256] = {
+	x58d64, /*   0 VQ_COLOR( */
+	x14d03, /*   1 _MINT */
+	x14d03, /*   2 _SW */
+	x14d03, /*   3 _SH */
+	x14cfa, /*   4 VRO_CPYFM( */
+	x14cf4, /*   5 VRT_CPYFM( */
+	x14cfd, /*   6 V_OPNBM( */
+	x14d03, /*   7 V_CLSBM( */
+	x14d00, /*   8 DOSOUND( */
+	x14cfd, /*   9 MXALLOC( */
+	x14d00, /*  10 KBSHIFT( */
+	x14d03, /*  11 DGETDRV( */
+	x14d00, /*  12 SYSCONF( */
+	x14cfa, /*  13 SSYSTEM( */
+	x14d03, /*  14 VQ_VGDOS() */
+	x14f6e, /*  15 VST_ALIGNMENT( */
+	x14cf7, /*  16 PEXEC( */
+	x14d00, /*  17 PDOMAIN( */
+	x14d03, /*  18 _GEMDOS */
+	x14d03, /*  19 TGETDATE() */
+	x14d03, /*  20 TGETTIME() */
+	x14f8a, /*  21 VST_POINT( */
+	x14f8a, /*  22 APPL_GETINFO( */
+	x14f92, /*  23 APPL_CONTROL( */
+	x14f6a, /*  24 OBJC_SYSVAR( */
+	x58dd0, /*  25 FSEL_EXINPUT( */
+	x14cfa, /*  26 KEYTBL( */
+	x14d03, /*  27 LOCKSND() */
+	x14d03, /*  28 UNLOCKSND() */
+	x14cfd, /*  29 SOUNDCMD( */
+	x14cfa, /*  30 SETBUFFER( */
+	x14d00, /*  31 SETMODE( */
+	x14cfd, /*  32 SETTRACKS( */
+	x14d00, /*  33 SETMONTRACKS( */
+	x14cfd, /*  34 SETINTERRUPT( */
+	x14d00, /*  35 BUFFOPER( */
+	x14cfd, /*  36 DSPTRISTATE( */
+	x14cfd, /*  37 GPIO( */
+	x14cf4, /*  38 DEVCONNECT( */
+	x14d00, /*  39 SNDSTATUS( */
+	x14d00, /*  40 BUFFPTR( */
+	x58d67, /*  41 VQT_WIDTH( */
+	x58d6a, /*  42 VQT_FONTINFO( */
+	x14c8e, /*  43 FOPEN( */
+	x14d00, /*  44 FCLOSE( */
+	x14cfa, /*  45 FREAD( */
+	x14cfa, /*  46 FWRITE( */
+	x14c8e, /*  47 FCREATE( */
+	x14cfa, /*  48 FSEEK( */
+	x14d09, /*  49 FDELETE( */
+	x14d00, /*  50 SUPER( */
+	x14cfa, /*  51 F_BGET( */
+	x14cfa, /*  52 F_BPUT( */
+	x14d00, /*  53 F_EOF( */
+	x14d00, /*  54 F_LOC( */
+	x14d00, /*  55 F_LOF( */
+	x14d03, /*  56 DTA */
+	x14d03, /*  57 _CPU */
+	x14d03, /*  58 SND? */
+	x58edd, /*  59 F_OPEN( */
+	x14cfd, /*  60 F_OUT( */
+	x14cfd, /*  61 F_OUT&( */
+	x14cfd, /*  62 F_OUT%( */
+	x58478, /*  63 F_INP( */
+	x58480, /*  64 F_INP&( */
+	x58d4a, /*  65 F_INP%( */
+	x14cfa, /*  66 ALLOC( */
+	x14f55, /*  67 F_LINE_OUTPUT( */
+	x14f4a, /*  68 F_LINE_INPUT( */
+	x14c8e, /*  69 F_BLOAD( */
+	x587a9, /*  70 F_BSAVE( */
+	x14cfd, /*  71 F_SEEK( */
+	x14cfd, /*  72 F_RELSEEK( */
+	x14f6e, /*  73 V_GET_PIXEL( */
+	x14d03, /*  74 GSTICK() */
+	x14d03, /*  75 GSTRIG() */
+	x14d00, /*  76 BLITMODE( */
+	x14cfd, /*  77 CACHECTRL( */
+	x14d00, /*  78 CT60_CACHE( */
+	x14d03, /*  79 CT60_FLUSH_CACHE() */
+	x14d00, /*  80 CT60_READ_CORE_TEMPERATURE( */
+	x14cfa, /*  81 CT60_RW_PARAMETER( */
+	x14cfd, /*  82 CT60_VMALLOC( */
+	x14cfd, /*  83 FGETCHAR( */
+	x14cfa, /*  84 FPUTCHAR( */
+	x14d03, /*  85 WIND_NEW() */
+	x14d03, /*  86 APPL_YIELD() */
+	x14d03, /*  87 V_SHOW_C() */
+	x14d03, /*  88 V_HIDE_C() */
+	x14f55, /*  89 F_INPUT( */
+	x58e05, /*  90 F_OUTPUT( */
+	x14f55, /*  91 PREAD( */
+	x14f4a, /*  92 PWRITE( */
+	x14d00, /*  93 JOYPAD( */
+	x14cfd, /*  94 UNPACK( */
+	x14f52, /*  95 BINSTR( */
+	x14cfa, /*  96 BFIND( */
+	x14cfa, /*  97 BCOUNT( */
+	x14d09, /*  98 ISASCII( */
+	x14d00, /*  99 BSWAP&( */
+	x14d00, /* 100 BSWAP( */
+	x14d09, /* 101 CCONWS( */
+	x14d00, /* 102 DSETDRV( */
+	x14d09, /* 103 DCREATE( */
+	x14d09, /* 104 DDELETE( */
+	x14d00, /* 105 TSETDATE( */
+	x14d00, /* 106 TSETTIME( */
+	x5855f, /* 107 DGETPATH( */
+	x14d09, /* 108 DSETPATH( */
+	x14d03, /* 109 GETTIME() */
+	x14d00, /* 110 SETTIME( */
+	x58ed8, /* 111 FRENAME( */
+	x14d03, /* 112 DRVMAP() */
+	x14cfa, /* 113 FDATIME( */
+	x14c8e, /* 114 DPATHCONF( */
+	x587a9, /* 115 FATTRIB( */
+	x14cfd, /* 116 DFREE%( */
+	x14d03, /* 117 RANDOM%() */
+	x14d03, /* 118 GETREZ() */
+	x14d03, /* 119 LOGBASE() */
+	x14d03, /* 120 PHYSBASE() */
+	x14d09, /* 121 V_CURTEXT( */
+	x14d00, /* 122 VST_COLOR( */
+	x14d00, /* 123 VST_EFFECTS( */
+	x14d00, /* 124 VST_ROTATION( */
+	x14f8a, /* 125 VST_HEIGHT( */
+	x14d00, /* 126 VST_FONT( */
+	x14d03, /* 127 VQF_ATTRIBUTES() */
+	x14d03, /* 128 VQL_ATTRIBUTES() */
+	x14d03, /* 129 VQM_ATTRIBUTES() */
+	x14d03, /* 130 VQT_ATTRIBUTES() */
+	x14cfd, /* 131 VR_TRNFM( */
+	x14d00, /* 132 VQ_EXTND( */
+	x14d00, /* 133 VQ_SCRNINFO( */
+	x58ea0, /* 134 V_BEZ( */
+	x58480, /* 135 V_BEZ_QUAL( */
+	x58d6a, /* 136 VQ_MOUSE( */
+	x14d00, /* 137 VSL_TYPE( */
+	x14d00, /* 138 VSL_WIDTH( */
+	x14cfd, /* 139 VSL_ENDS( */
+	x14d00, /* 140 VSL_UDSTY( */
+	x14d00, /* 141 VSL_COLOR( */
+	x14d00, /* 142 VSM_COLOR( */
+	x14d00, /* 143 VSM_HEIGHT( */
+	x14d00, /* 144 VSM_TYPE( */
+	x14d00, /* 145 VSWR_MODE( */
+	x14d00, /* 146 VSF_COLOR( */
+	x14d00, /* 147 VSF_INTERIOR( */
+	x14d00, /* 148 VSF_PERIMETER( */
+	x14d00, /* 149 VSF_STYLE( */
+	x14d00, /* 150 VSF_UDPAT( */
+	x14d00, /* 151 BCONIN( */
+	x14cfd, /* 152 BCONOUT( */
+	x14d00, /* 153 BCOSTAT( */
+	x14d00, /* 154 BCONSTAT( */
+	x14cfd, /* 155 SETEXC( */
+	x14d03, /* 156 TICKCAL( */
+	x14d00, /* 157 MEDIACH( */
+	x14d00, /* 158 GETBPB( */
+	x14cf4, /* 159 RWABS( */
+	x14cfa, /* 160 FORM_POPUP( */
+	x14cf7, /* 161 MENU_ATTACH( */
+	x14cf7, /* 162 MENU_ISTART( */
+	x14cf7, /* 163 MENU_POPUP( */
+	x14cfd, /* 164 MENU_SETTINGS( */
+	x14cf4, /* 165 OBJC_XFIND( */
+	x14d00, /* 166 RSRC_RCFIX( */
+	x58ea8, /* 167 APPL_SEARCH( */
+	x14f66, /* 168 GRAF_MULTIRUBBER( */
+	x14cf4, /* 169 VS_CLIP( */
+	x14d03, /* 170 VSC_FORM() */
+	x14d00, /* 171 FDUP( */
+	x14cfd, /* 172 FFORCE( */
+	x14cf7, /* 173 FLOCK( */
+	x14d03, /* 174 SYIELD() */
+	x14d00, /* 175 FINSTAT( */
+	x14d00, /* 176 FOUTSTAT( */
+	x14cfa, /* 177 FCNTL( */
+	x14cf7, /* 178 FSELECT( */
+	x14d00, /* 179 SHUTDOWN( */
+	x14cf1, /* 180 PSYSCTL( */
+	x14cf7, /* 181 V_BAR( */
+	x14cf7, /* 182 V_RBOX( */
+	x14cf7, /* 183 V_RFBOX( */
+	x14cf7, /* 184 VR_RECFL( */
+	x14cf4, /* 185 V_ARC( */
+	x14cfa, /* 186 V_CIRCLE( */
+	x14cf1, /* 187 V_ELLARC( */
+	x14cf1, /* 188 V_ELLPIE( */
+	x14cf7, /* 189 V_ELLIPSE( */
+	x14cf4, /* 190 V_PIESLICE( */
+	x14cfa, /* 191 V_CONTOURFILL( */
+	x14f52, /* 192 V_GTEXT( */
+	x14d00, /* 193 V_PLINE( */
+	x14d00, /* 194 V_PMARKER( */
+	x14d00, /* 195 V_FILLAREA( */
+	x58e23, /* 196 V_JUSTIFIED( */
+	x58483, /* 197 VQ_KEY_S( */
+	x58ea0, /* 198 V_BEZ_FILL( */
+	x14cfd, /* 199 SETCOLOR( */
+	x14cfa, /* 200 SETSCREEN( */
+	x14d00, /* 201 SETPALETTE( */
+	x14d00, /* 202 SUPEXEC( */
+	x14cfd, /* 203 KBRATE( */
+	x14cf1, /* 204 RSCONF( */
+	x14cfd, /* 205 CURSCONF( */
+	x14d00, /* 206 BCONMAP( */
+	x14d03, /* 207 KBDVBASE() */
+	x14cf7, /* 208 NVMACCESS( */
+	x14d00, /* 209 IOREC( */
+	x14cfd, /* 210 IKBDWS( */
+	x14cfd, /* 211 MIDIWS( */
+	x14cfd, /* 212 GIACCESS( */
+	x14cee, /* 213 FLOPRD( */
+	x14cee, /* 214 FLOPWR( */
+	x14ce8, /* 215 FLOPFMT( */
+	x14cee, /* 216 FLOPVER( */
+	x14cfd, /* 217 FLOPRATE( */
+	x14cf7, /* 218 DMAREAD( */
+	x14cf7, /* 219 DMAWRITE( */
+	x14d00, /* 220 ONGIBIT( */
+	x14d00, /* 221 OFFGIBIT( */
+	x14d03, /* 222 BIOSKEYS() */
+	x14d00, /* 223 SETPRT( */
+	x14d00, /* 224 JDISINT( */
+	x14d00, /* 225 JENABINT( */
+	x14cf7, /* 226 PROTOBT( */
+	x14d00, /* 227 WAKETIME( */
+	x14d00, /* 228 PRTBLK( */
+	x14d03, /* 229 VGETMONITOR() */
+	x14d00, /* 230 VGETSIZE( */
+	x14d00, /* 231 VSETMODE( */
+	x14d00, /* 232 VCHECKMODE( */
+	x14cf7, /* 233 VSETSCREEN( */
+	x14cfa, /* 234 VGETRGB( */
+	x14cfa, /* 235 VSETRGB( */
+	x14cfa, /* 236 VSETMASK( */
+	x14d00, /* 237 VSETSYNC( */
+	x14d03, /* 238 EGETSHIFT() */
+	x14d00, /* 239 ESETSHIFT( */
+	x14d00, /* 240 ESETBANK( */
+	x14cfd, /* 241 ESETCOLOR( */
+	x14d00, /* 242 ESETGRAY( */
+	x14d00, /* 243 ESETSMEAR( */
+	x14cfa, /* 244 EGETPALETTE( */
+	x14cfa, /* 245 ESETPALETTE( */
+	x14cfd, /* 246 CRC16( */
+	x14cfd, /* 247 CRC32( */
+	x14f52, /* 248 WF_NAME( */
+	x14f52, /* 249 WF_INFO( */
+	x58488, /* 250 ALERT( */
+	x14cf1, /* 251 LRWABS( */
+	x14cee, /* 252 AP_SEND( */
+	x14d09, /* 253 SALERT( */
+	x14c8e, /* 254 FCHMOD( */
+	x14cfd, /* 255 PTERMRES( */
+};
+
+const struct argdesc *const arg_table_210[256] = {
+	x57fbe, /*   0 SUBPTR( */
+	x57fc3, /*   1 S: */
+	x14d03, /*   2 ERL */
+	x14d00, /*   3 SYSTAB( */
+	x14d03, /*   4 SYSTAB */
+	x14d03, /*   5 FREEFILE() */
+	x14cfa, /*   6 MENU.TEXT( */
+	x14cf4, /*   7 SHEL.WRITE( */
+	x14d03, /*   8 SYSTAB? */
+	x14cfd, /*   9 MROUND( */
+	x14d00, /*  10 BSWAP3( */
+	x14d00, /*  11 MIRROR|( */
+	x14d00, /*  12 MIRROR&( */
+	x14d00, /*  13 MIRROR( */
+	x14d00, /*  14 MIRROR3( */
+	x14d03, /*  15 PCR? */
+	x14d00, /*  16 CONTERM( */
+	x14d00, /*  17 _PCR */
+	x14d09, /*  18 LOADMEM( */
+	x14cfa, /*  19 OB.STATE( */
+	x14cfa, /*  20 OB.FLAGS( */
+	x58550, /*  21 SETSTR( */
+	x58e48, /*  22 INPUTBOX( */
+	x14cfa, /*  23 BCOUNT&( */
+	x14cfa, /*  24 BCOUNT(% */
+	x14cfd, /*  25 C_VDI(# */
+	x14cfd, /*  26 C_XBIOS(# */
+	x14d03, /*  27 NETWORK? */
+	x14d00, /*  28 SBYTE( */
+	x14d0e, /*  29 SBYTE{ */
+	x14fee, /*  30 INDEXCOUNT( */
+	x14cfd, /*  31 CALLOC( */
+	x14fee, /*  32 ARRAYSIZE( */
+	x14cfa, /*  33 OB_RADIO( */
+	x14cfd, /*  34 CHECKSUM( */
+	x14cfa, /*  35 FSOCKET( */
+	x14cf7, /*  36 FSOCKETPAIR( */
+	x14cfa, /*  37 FACCEPT( */
+	x14cfa, /*  38 FCONNECT( */
+	x14cfa, /*  39 FBIND( */
+	x14cfd, /*  40 FRECVMSG( */
+	x14cfa, /*  41 FSENDMSG( */
+	x14cfa, /*  42 FLISTEN( */
+	x14cf1, /*  43 FRECVFROM( */
+	x14cf1, /*  44 FSENDTO( */
+	x14cf4, /*  45 FSETSOCKOPT( */
+	x14cf4, /*  46 FGETSOCKOPT( */
+	x14cfa, /*  47 FGETPEERNAME( */
+	x14cfa, /*  48 FGETSOCKNAME( */
+	x14cfd, /*  49 FSHUTDOWN( */
+	x14d03, /*  50 LDG_INIT() */
+	x14d09, /*  51 LDG_OPEN( */
+	x14c8e, /*  52 LDG_FIND( */
+	x14d00, /*  53 LDG_CLOSE( */
+	x14f4d, /*  54 LDG_LIBPATH( */
+	x14d03, /*  55 LDG_ERROR() */
+	x58efa, /*  56 STIK_INIT( */
+	NULL,   /*  57 STIK_INIT( */
+	x14d00, /*  58 STIK_KRFREE( */
+	x14d00, /*  59 STIK_KRGETFREE( */
+	NULL,   /*  60 STIK_KRGETFREE( */
+	x14d00, /*  61 STIK_GET_ERR_TEXT( */
+	x14d09, /*  62 STIK_GETVSTR( */
+	NULL,   /*  63 STIK_GETVSTR( */
+	x14cf7, /*  64 STIK_TCP_OPEN( */
+	x14cfd, /*  65 STIK_TCP_CLOSE( */
+	x14cfa, /*  66 STIK_TCP_SEND( */
+	x14cfa, /*  67 STIK_TCP_WAIT_STATE( */
+	NULL,   /*  68 STIK_TCP_WAIT_STATE( */
+	NULL,   /*  69 STIK_TCP_WAIT_STATE( */
+	NULL,   /*  70 STIK_TCP_WAIT_STATE( */
+	NULL,   /*  71 STIK_TCP_WAIT_STATE( */
+	x14d00, /*  72 STIK_CNKICK( */
+	x14d00, /*  73 STIK_CNBYTE_COUNT( */
+	x14d00, /*  74 STIK_CNGET_CHAR( */
+	NULL,   /*  75  */
+	x14cfa, /*  76 STIK_CNGET_BLOCK( */
+	NULL,   /*  77  */
+	y132  , /*  78 STIK_RESOLVE( */
+	NULL,   /*  79  */
+	NULL,   /*  80  */
+	NULL,   /*  81  */
+	NULL,   /*  82  */
+	x14d00, /*  83 STIK_CNGETINFO( */
+	NULL,   /*  84  */
+	NULL,   /*  85  */
+	NULL,   /*  86  */
+	NULL,   /*  87  */
+	NULL,   /*  88  */
+	x14d03, /*  89 FONT_INIT() */
+	x14cf4, /*  90 FONT_SELECT( */
+	x58854, /*  91 WEEKDAY( */
+	x58854, /*  92  */
+	x14d03, /*  93 AV_INIT() */
+	x14f55, /*  94 AV_PROTOKOLL( */
+	NULL,   /*  95  */
+	NULL,   /*  96  */
+	x14cfd, /*  97 AV_SENDKEY( */
+	NULL,   /*  98  */
+	NULL,   /*  99  */
+	x58edd, /* 100 AV_OPENWIND( */
+	x58f10, /* 101 AV_STARTPROG( */
+	x14d00, /* 102 AV_ACCWINDOPEN( */
+	x14d00, /* 103 AV_ACCWINDCLOSED( */
+	NULL,   /* 104  */
+	x14d09, /* 105 AV_PATH_UPDATE( */
+	x14cfd, /* 106 AV_WHAT_IZIT( */
+	NULL,   /* 107 AV_WHAT_IZIT( */
+	x14d03, /* 108 AV_EXIT() */
+	x14d00, /* 109 AV_STARTED( */
+	x58f10, /* 110 AV_XWIND( */
+	NULL,   /* 111  */
+	x14d09, /* 112 AV_FILEINFO( */
+	x58f10, /* 113 AV_COPYFILE( */
+	x14d09, /* 114 AV_DELFILE( */
+	x14d09, /* 115 VA_START( */
+	x14cfd, /* 116 MAKE&( */
+	x14cfd, /* 117 MAKE%( */
+	x14cfd, /* 118 MAKE|( */
+	x14d00, /* 119 F_CLOSE( */
+	x14d00, /* 120 APPL.FIND( */
+	x14d03, /* 121 ENVIRON */
+	x58f03, /* 122 SLBOPEN( */
+	x14d00, /* 123 SLBCLOSE( */
+	x14cfd, /* 124 F_ENDSEEK( */
+	y132  , /* 125 POPUP( */
+	x14cfa, /* 126 FPOLL( */
+	x14d09, /* 127 FILELEN( */
+	x14d03, /* 128 PGETPID() */
+	x14d03, /* 129 P~I */
+	x14d00, /* 130 SWAP|( */
+	x14cfa, /* 131 BROUND( */
+	x14cfa, /* 132 BCOMPARE( */
+	x14d03, /* 133 SCRDMP() */
+	x14d00, /* 134 FPIPE( */
+	x14d00, /* 135 PRUSAGE( */
+	x14cfd, /* 136 SUPTIME( */
+	x14cfa, /* 137 FMIDIPIPE( */
+	x14cfa, /* 138 CONSTRAIN( */
+	x14d00, /* 139 NYBLE( */
+	x14cfd, /* 140 MAKE( */
+	x14cfd, /* 141 MEMBTST|( */
+	x14cfd, /* 142 MEMBTST&( */
+	x14cfd, /* 143 MEMBTST%( */
+	x587a9, /* 144 FCHOWN( */
+	x14d00, /* 145 PNICE( */
+	x14cfd, /* 146 PRENICE( */
+	x14d03, /* 147 PGETPPID() */
+	x14cfd, /* 148 DLOCK( */
+	x14cfd, /* 149 PGETPRIORITY( */
+	x14cfa, /* 150 PSETPRIORITY( */
+	x14d03, /* 151 VSYNC() */
+	x58edd, /* 152 FILECOPY( */
+	x14d09, /* 153 ISBLANK( */
+	x14d09, /* 154 ISCNTRL( */
+	x14d09, /* 155 ISPRINT( */
+	x14d09, /* 156 ISSPACE( */
+	x14cf7, /* 157 RGB( */
+	x14cfd, /* 158 RGB256( */
+	x14cfd, /* 159 RGB1000( */
+	x14d00, /* 160 WF_TOP( */
+	x14d00, /* 161 PUSRVAL( */
+	x14cfd, /* 162 PSETLIMIT( */
+	x58edd, /* 163 DWRITELABEL( */
+	x58df3, /* 164 DREADLABEL( */
+	x14f4a, /* 165 DGETCWD( */
+	x14d00, /* 166 DCLOSEDIR( */
+	x14d00, /* 167 DREWINDDIR( */
+	x14c8e, /* 168 DOPENDIR( */
+	x14cfa, /* 169 DREADDIR( */
+	x58d41, /* 170 DXREADDIR( */
+	x587b6, /* 171 FXATTR( */
+	x14cfa, /* 172 MACCESS( */
+	x58d44, /* 173 MVALIDATE( */
+	x14cfa, /* 174 BFIND& */
+	x14cfa, /* 175 BFIND% */
+	x14d09, /* 176 FEXIST( */
+	x58524, /* 177 SPLIT( */
+	x58531, /* 178 JOIN( */
+	x58541, /* 179 GETSTR( */
+	x14cfa, /* 180 BCOMPARE&( */
+	x14cfa, /* 181 BCOMPARE%( */
+	x58e05, /* 182 WIND_SGET( */
+	x58ed8, /* 183 SHEL_HELP( */
+	x58edd, /* 184 SHEL_WDEF( */
+	x14f3c, /* 185 SHEL_RDEF( */
+	x14cfd, /* 186 PKILL( */
+	x14d03, /* 187 DHST_INIT() */
+	x58e37, /* 188 DHST_ADD( */
+	NULL,   /* 189  */
+	x14cfd, /* 190 PSIGNAL( */
+	x58df3, /* 191 LOADSTR( */
+	x58567, /* 192 FILES( */
+	x14d00, /* 193 MSG( */
+	x14d03, /* 194 MSG */
+	x14d00, /* 195 HINYBLE( */
+	x14d00, /* 196 HIBYTE( */
+	x14d00, /* 197 HIWORD( */
+	x14d00, /* 198 HICARD( */
+	NULL,   /* 199  */
+	NULL,   /* 200  */
+	NULL,   /* 201  */
+	NULL,   /* 202  */
+	x14cfd, /* 203 SETCOOKIE( */
+	x14d00, /* 204 DELCOOKIE( */
+	x14f6a, /* 205 FORM.KEYBD( */
+	x14d00, /* 206 V_CTAB_VDI2IDX( */
+	x14d00, /* 207 V_CTAB_IDX2VALUE( */
+	x14cfd, /* 208 VQ_DFLT_CTAB( */
+	x58497, /* 209 V_COLOR2NEAREST( */
+	x584a3, /* 210 V_VALUE2COLOR( */
+	x14cf4, /* 211 V_COLOR2VALUE( */
+	x14cf4, /* 212 NEAREST_RGB( */
+	x14cf7, /* 213 GRAYSCALE( */
+	x14cfa, /* 214 DATE( */
+	x14d00, /* 215 YEAR( */
+	x14d00, /* 216 MONTH( */
+	x14d00, /* 217 DAY( */
+	x14d00, /* 218 HOUR24( */
+	x14d00, /* 219 MINUTE( */
+	x14d00, /* 220 SECOND( */
+	x14cfa, /* 221 TIME( */
+	x14d03, /* 222 _FPU */
+	x14d03, /* 223 _MCH */
+	x14d03, /* 224 _CPUID */
+	x14d03, /* 225 COMPILED? */
+	x14d03, /* 226 M68K? */
+	x14d03, /* 227 _VERSION */
+	x14d03, /* 228 _CW */
+	x14d03, /* 229 _CH */
+	x14d03, /* 230 _0 */
+	x14d03, /* 231 _1 */
+	x14d03, /* 232 _2 */
+	x14d03, /* 233 _3 */
+	x14d03, /* 234 _4 */
+	x14d03, /* 235 _5 */
+	x14d03, /* 236 _6 */
+	x14d03, /* 237 _7 */
+	x14d03, /* 238 _8 */
+	x14d03, /* 239 _9 */
+	x14d03, /* 240 _BUILDINFO */
+	x14d03, /* 241 _CF_ */
+	x14d03, /* 242 G~H */
+	x14d03, /* 243 G~R */
+	x14cfa, /* 244 BMPSIZE( */
+	x14d03, /* 245 _DX */
+	x14d03, /* 246 _DY */
+	x14d03, /* 247 _DW */
+	x14d03, /* 248 _DH */
+	x14d03, /* 249 ACC? */
+	x14d03, /* 250 AUTO? */
+	x14d03, /* 251 FPU? */
+	x14d03, /* 252 CPU020? */
+	x14d03, /* 253 DMASND? */
+	x58860, /* 254 DAYNO( */
+	x58860, /* 255  */
+};
+
+const struct argdesc *const arg_table_211[256] = {
+	x14d00, /*   0 LEAP( */
+	x5886c, /*   1 WEEK( */
+	x5886c, /*   2  */
+	x14d00, /*   3 HOUR12( */
+	x14d00, /*   4 MERIDIEM( */
+	x14d03, /*   5 JPEGD_INIT() */
+	x14d00, /*   6 JPEGD_OPENDRIVER( */
+	x14d00, /*   7 JPEGD_CLOSEDRIVER( */
+	x14d03, /*   8 JPEGD_GETSTRUCTSIZE() */
+	x14d00, /*   9 JPEGD_GETIMAGEINFO( */
+	x14d00, /*  10 JPEGD_GETIMAGESIZE( */
+	x14d00, /*  11 JPEGD_DECODEIMAGE( */
+	x14cf7, /*  12 DSP_DOBLOCK( */
+	x14cf7, /*  13 DSP_BLKHANDSHAKE( */
+	x14cf7, /*  14 DSP_BLKUNPACKED( */
+	x14cf7, /*  15 DSP_INSTREAM( */
+	x14cf7, /*  16 DSP_OUTSTREAM( */
+	x14cf1, /*  17 DSP_IOSTREAM( */
+	x14d00, /*  18 DSP_REMOVEINTERRUPTS( */
+	x14d03, /*  19 DSP_GETWORDSIZE() */
+	x14d03, /*  20 DSP_LOCK() */
+	x14d03, /*  21 DSP_UNLOCK() */
+	x58efa, /*  22 DSP_AVAILABLE( */
+	x14cfd, /*  23 DSP_RESERVE( */
+	x587a9, /*  24 DSP_LOADPROG( */
+	x14cfa, /*  25 DSP_EXECPROG( */
+	x14cfa, /*  26 DSP_EXECBOOT( */
+	x14c8e, /*  27 DSP_LODTOBINARY( */
+	x14d00, /*  28 DSP_TRIGGERHC( */
+	x14d03, /*  29 DSP_REQUESTUNIQUEABILITY() */
+	x14d03, /*  30 DSP_GETPROGABILITY() */
+	x14d03, /*  31 DSP_FLUSHSUBROUTINES() */
+	x14cfa, /*  32 DSP_LOADSUBROUTINE( */
+	x14d00, /*  33 DSP_INQSUBRABILITY( */
+	x14d00, /*  34 DSP_RUNSUBROUTINE( */
+	x14d00, /*  35 DSP_HF0( */
+	x14d00, /*  36 DSP_HF1( */
+	x14d03, /*  37 DSP_HF2() */
+	x14d03, /*  38 DSP_HF3() */
+	x14cf7, /*  39 DSP_BLKWORDS( */
+	x14cf7, /*  40 DSP_BLKBYTES( */
+	x14d03, /*  41 DSP_HSTAT() */
+	x14cfd, /*  42 DSP_SETVECTORS( */
+	x14cf7, /*  43 DSP_MULTBLOCKS( */
+	x14cfa, /*  44 VR_TRANSFER_BITS( */
+	x14cfd, /*  45 V_CREATE_CTAB( */
+	x14d00, /*  46 V_DELETE_CTAB( */
+	x14cfd, /*  47 V_CREATE_ITAB( */
+	x14d00, /*  48 V_DELETE_ITAB( */
+	x58efe, /*  49 VQ_PX_FORMAT( */
+	x14d03, /*  50 V_GET_CTAB_ID() */
+	x58ea8, /*  51 VQT_EXT_NAME( */
+	x14cf1, /*  52 V_OPEN_BM( */
+	x14cf7, /*  53 V_RESIZE_BM( */
+	x14d03, /*  54 V_HARDCOPY() */
+	x58e70, /*  55 VST_NAME( */
+	x58e70, /*  56 VQT_NAME_AND_ID( */
+	x14cf4, /*  57 VST_FG_COLOR( */
+	x14cf4, /*  58 VSF_FG_COLOR( */
+	x14cf4, /*  59 VSL_FG_COLOR( */
+	x14cf4, /*  60 VSM_FG_COLOR( */
+	x14cf4, /*  61 VSR_FG_COLOR( */
+	x584a6, /*  62 VQT_FG_COLOR( */
+	x584a6, /*  63 VQF_FG_COLOR( */
+	x584a6, /*  64 VQL_FG_COLOR( */
+	x584a6, /*  65 VQM_FG_COLOR( */
+	x584a6, /*  66 VQR_FG_COLOR( */
+	x14cf4, /*  67 VST_BG_COLOR( */
+	x14cf4, /*  68 VSF_BG_COLOR( */
+	x14cf4, /*  69 VSL_BG_COLOR( */
+	x14cf4, /*  70 VSM_BG_COLOR( */
+	x14cf4, /*  71 VSR_BG_COLOR( */
+	x584a6, /*  72 VQT_BG_COLOR( */
+	x584a6, /*  73 VQF_BG_COLOR( */
+	x584a6, /*  74 VQL_BG_COLOR( */
+	x584a6, /*  75 VQM_BG_COLOR( */
+	x584a6, /*  76 VQR_BG_COLOR( */
+	x14cf4, /*  77 VS_HILITE_COLOR( */
+	x14cf4, /*  78 VS_MIN_COLOR( */
+	x14cf4, /*  79 VS_MAX_COLOR( */
+	x14cf4, /*  80 VS_WEIGHT_COLOR( */
+	x584a6, /*  81 VQ_HILITE_COLOR( */
+	x584a6, /*  82 VQ_MIN_COLOR( */
+	x584a6, /*  83 VQ_MAX_COLOR( */
+	x584a6, /*  84 VQ_WEIGHT_COLOR( */
+	x14cf7, /*  85 V_SETRGB( */
+	x14d00, /*  86 SUPERSCALAR( */
+	x14cf7, /*  87 VQT_XFNTINFO( */
+	x14cfd, /*  88 OB_SELECTED( */
+	x14cfd, /*  89 OB_CROSSED( */
+	x14cfd, /*  90 OB_CHECKED( */
+	x14cfd, /*  91 OB_DISABLED( */
+	x14cfd, /*  92 OB_OUTLINED( */
+	x14cfd, /*  93 OB_SHADOWED( */
+	x14cfd, /*  94 OB_WHITEBAK( */
+	NULL,   /*  95  */
+	x14cfd, /*  96 OB_SELECTABLE( */
+	x14cfd, /*  97 OB_DEFAULT( */
+	x14cfd, /*  98 OB_EXIT( */
+	x14cfd, /*  99 OB_EDITABLE( */
+	x14cfd, /* 100 OB_RBUTTON( */
+	x14cfd, /* 101 OB_LASTOB( */
+	x14cfd, /* 102 OB_TOUCHEXIT( */
+	x14cfd, /* 103 OB_HIDETREE( */
+	x14cfd, /* 104 OB_INDIRECT( */
+	x14cfd, /* 105 OB_FL3DIND( */
+	x14cfd, /* 106 OB_FL3DACT( */
+	x14cfd, /* 107 OB_SUBMENU( */
+	NULL,   /* 108  */
+	x14cfd, /* 109 OB_FL3DBAK( */
+	x14cfd, /* 110 BF_OBSPEC( */
+	x14cfd, /* 111 BF_CHARACTER( */
+	x14cfd, /* 112 BF_FRAMESIZE( */
+	x14cfd, /* 113 BF_FRAMECOL( */
+	x14cfd, /* 114 BF_TEXTCOL( */
+	x14cfd, /* 115 BF_TEXTMODE( */
+	x14cfd, /* 116 BF_FILLPATTERN( */
+	x14cfd, /* 117 BF_INTERIORCOL( */
+	x14cfd, /* 118 BI_PDATA( */
+	x14cfd, /* 119 BI_WB( */
+	x14cfd, /* 120 BI_HL( */
+	x14cfd, /* 121 BI_X( */
+	x14cfd, /* 122 BI_Y( */
+	x14cfd, /* 123 BI_COLOR( */
+	x14cfd, /* 124 UB_CODE( */
+	x14cfd, /* 125 UB_PARM( */
+	x14cfd, /* 126 TE_PTEXT( */
+	x14cfd, /* 127 TE_PTMPLT( */
+	x14cfd, /* 128 TE_PVALID( */
+	x14cfd, /* 129 TE_FONT( */
+	x14cfd, /* 130 TE_FONTID( */
+	x14cfd, /* 131 TE_JUST( */
+	x14cfd, /* 132 TE_COLOR( */
+	x14cfd, /* 133 TE_FONTSIZE( */
+	x14cfd, /* 134 TE_THICKNESS( */
+	x14cfd, /* 135 TE_TXTLEN( */
+	x14cfd, /* 136 TE_TMPLEN( */
+	x14cfd, /* 137 TE_FRAMECOL( */
+	x14cfd, /* 138 TE_TEXTCOL( */
+	x14cfd, /* 139 TE_TEXTMODE( */
+	x14cfd, /* 140 TE_FILLPATTERN( */
+	x14cfd, /* 141 TE_INTERIORCOL( */
+	x14cfd, /* 142 IB_PMASK( */
+	x14cfd, /* 143 IB_PDATA( */
+	x14cfd, /* 144 IB_PTEXT( */
+	x14cfd, /* 145 IB_CHAR( */
+	x14cfd, /* 146 IB_XCHAR( */
+	x14cfd, /* 147 IB_YCHAR( */
+	x14cfd, /* 148 IB_XICON( */
+	x14cfd, /* 149 IB_YICON( */
+	x14cfd, /* 150 IB_WICON( */
+	x14cfd, /* 151 IB_HICON( */
+	x14cfd, /* 152 IB_XTEXT( */
+	x14cfd, /* 153 IB_YTEXT( */
+	x14cfd, /* 154 IB_WTEXT( */
+	x14cfd, /* 155 IB_HTEXT( */
+	x14cfd, /* 156 IB_FCOLOR( */
+	x14cfd, /* 157 IB_BCOLOR( */
+	x14cfd, /* 158 IB_LETTER( */
+	x14cfd, /* 159 CI_MAINLIST( */
+	x14cfd, /* 160 CI_NUM_PLANES( */
+	x14cfd, /* 161 CI_COL_DATA( */
+	x14cfd, /* 162 CI_COL_MASK( */
+	x14cfd, /* 163 CI_SEL_DATA( */
+	x14cfd, /* 164 CI_SEL_MASK( */
+	x14cfd, /* 165 CI_NEXT_RES( */
+	x14d00, /* 166 V_CTAB_IDX2VDI( */
+	x14d03, /* 167 VQ_CTAB_ID() */
+	x584a3, /* 168 VQ_CTAB_ENTRY( */
+	x14cfd, /* 169 VQ_CTAB( */
+	x14d03, /* 170 VS_DFLT_CTAB() */
+	x14cf1, /* 171 VS_CTAB_ENTRY( */
+	x14d00, /* 172 VS_CTAB( */
+	x14d03, /* 173 VR_CLIP_RECTS_BY_DST() */
+	x14d03, /* 174 VR_CLIP_RECTS_BY_SRC() */
+	x14f4a, /* 175 VQT_FONTHEADER( */
+	x14f8a, /* 176 VST_WIDTH( */
+	x14d03, /* 177 V_CLEAR_DISP_LIST() */
+	x58d35, /* 178 VEX_TIMV( */
+	x58d4a, /* 179 VEX_BUTV( */
+	x58d4a, /* 180 VEX_MOTV( */
+	x58d4a, /* 181 VEX_CURV( */
+	x14cfa, /* 182 INITMOUS( */
+	x58df3, /* 183 FREADLINK( */
+	x58e60, /* 184 INPUTRADIO( */
+	x59d80, /* 185 PIXEL24( */
+	x14f55, /* 186 CWRITE( */
+	x14f4a, /* 187 CREAD( */
+	x14d03, /* 188 SUPER? */
+	x59d80, /* 189 PIXEL32( */
+	x59d80, /* 190 PIXEL16( */
+	x14d03, /* 191 V_BEZ_ON() */
+	x14d03, /* 192 V_BEZ_OFF() */
+	x59be7, /* 193 VQ_CHCELLS( */
+	x14ceb, /* 194 RC_EQUAL( */
+	x14f87, /* 195 OB_XYWH( */
+	x59d80, /* 196 PIXEL15( */
+	x14d00, /* 197 PUMASK( */
+	x58edd, /* 198 FLINK( */
+	x58edd, /* 199 FSYMLINK( */
+	x14d03, /* 200 _BOOTDEV */
+	x14cfd, /* 201 STRUCT!( */
+	x14cfd, /* 202 STRUCT|( */
+	x14cfd, /* 203 STRUCT&( */
+	x14cfd, /* 204 STRUCT%( */
+	x14cfd, /* 205 STRUCT( */
+	x14cf7, /* 206 PIXEL8C( */
+	x14cf7, /* 207 PIXEL1M( */
+	x14cf7, /* 208 PIXEL8P( */
+	x14cf7, /* 209 PIXEL4P( */
+	x14cf7, /* 210 PIXEL2P( */
+	x14d00, /* 211 MDPEEK( */
+	x14d00, /* 212 MLPEEK( */
+	x14d03, /* 213 _GLOBAL */
+	x14d03, /* 214 MULTITASK? */
+	x14d00, /* 215 USERDEF|( */
+	x14d03, /* 216 USERDEFBYT */
+	x14d00, /* 217 USERDEF&( */
+	x14d03, /* 218 USERDEFWRD */
+	x14d00, /* 219 USERDEF%( */
+	x14d03, /* 220 USERDEFLNG */
+	x14d00, /* 221 USERDEF!( */
+	x14d03, /* 222 USERDEFBIT */
+	x14d03, /* 223 _BMPSIZE */
+	x14d00, /* 224 PSIGBLOCK( */
+	x14d00, /* 225 PSIGSETMASK( */
+	x14d00, /* 226 TALARM( */
+	x14d00, /* 227 TMALARM( */
+	x14d03, /* 228 PAUSE() */
+	x14d03, /* 229 PSIGPENDING() */
+	x14d00, /* 230 PSIGPAUSE( */
+	x14cfa, /* 231 PSIGACTION( */
+	x14cf7, /* 232 PTRACE( */
+	x14d03, /* 233 SYNC() */
+	x14d00, /* 234 FSYNC( */
+	x14d00, /* 235 SREALLOC( */
+	x14cfa, /* 236 PMSG( */
+	x14d03, /* 237 PFORK() */
+	x14d03, /* 238 PVFORK() */
+	x14d03, /* 239 PWAIT() */
+	x14cfd, /* 240 PWAIT3( */
+	x14cfa, /* 241 PWAITPID( */
+	x14d03, /* 242 PGETGID() */
+	x14d00, /* 243 PSETGID( */
+	x14d03, /* 244 PGETUID() */
+	x14d00, /* 245 PSETUID( */
+	x14cfd, /* 246 ARRAY!( */
+	x14cfd, /* 247 ARRAY|( */
+	x14cfd, /* 248 ARRAY&( */
+	x14cfd, /* 249 ARRAY%( */
+	x14cfd, /* 250 ARRAY( */
+	x14d03, /* 251 _A3 */
+	x14d03, /* 252 _A4 */
+	x14d03, /* 253 _A5 */
+	x14d03, /* 254 _A6 */
+	x14d03, /* 255 _A7 */
+};
+
+const struct argdesc *const arg_table_212[256] = {
+	x14d00, /*   0 GETMPB( */
+	x14cfd, /*   1 MADDALT( */
+	x14cfd, /*   2 MFPINT( */
+	x14cf7, /*   3 XBTIMER( */
+	x14d03, /*   4 PUNTAES() */
+	x14d00, /*   5 SSBRK( */
+	x14f52, /*   6 DBMSG( */
+	x14cfd, /*   7 FFCHMOD( */
+	x14cfa, /*   8 FFCHOWN( */
+	x14d03, /*   9 SVERSION() */
+	x587b6, /*  10 DCNTL( */
+	x14d03, /*  11 CCONIN() */
+	x14d00, /*  12 CCONOUT( */
+	x14d03, /*  13 CAUXIN() */
+	x14d00, /*  14 CAUXOUT( */
+	x14d00, /*  15 CPRNOUT( */
+	x14d00, /*  16 CRAWIO( */
+	x14d03, /*  17 CRAWCIN() */
+	x14d03, /*  18 CNECIN() */
+	x14d03, /*  19 CCONIS() */
+	x14d03, /*  20 CCONOS() */
+	x14d03, /*  21 CAUXIS() */
+	x14d03, /*  22 CAUXOS() */
+	x14d03, /*  23 CPRNOS() */
+	x14f4d, /*  24 CCONRS( */
+	x14d03, /*  25 PGETPGRP() */
+	x14cfd, /*  26 PSETPGRP( */
+	x14cfd, /*  27 PGETGROUPS( */
+	x14cfd, /*  28 PSETGROUPS( */
+	x14d03, /*  29 PGETAUID() */
+	x14d00, /*  30 PSETAUID( */
+	x14d03, /*  31 PGETEUID() */
+	x14d00, /*  32 PSETEUID( */
+	x14d03, /*  33 PGETEGID() */
+	x14d00, /*  34 PSETEGID( */
+	x14cfd, /*  35 PSETREUID( */
+	x14cfd, /*  36 PSETREGID( */
+	x14cfa, /*  37 PSEMAPHORE( */
+	x59c1f, /*  38 TSETITIMER( */
+	x14cfd, /*  39 TADJTIME( */
+	x14cfd, /*  40 TGETTIMEOFDAY( */
+	x14cfd, /*  41 TSETTIMEOFDAY( */
+	x14d03, /*  42 PTERM0() */
+	x14d00, /*  43 PTERM( */
+	x14cfa, /*  44 FREADV( */
+	x14cfa, /*  45 FWRITEV( */
+	x14d09, /*  46 DCHROOT( */
+	x587b6, /*  47 FSTAT64( */
+	x14cfd, /*  48 FFSTAT64( */
+	y132  , /*  49 FCHOWN16( */
+	x14d00, /*  50 FCHDIR( */
+	x14d00, /*  51 FFDOPENDIR( */
+	x14d00, /*  52 FDIRFD( */
+	x14cfa, /*  53 REALLOC( */
+	x59be7, /*  54 VQ_CURADDRESS( */
+	x14cfd, /*  55 V_CURADDRESS( */
+	x14d03, /*  56 V_RVON() */
+	x14d03, /*  57 V_RVOFF() */
+	x14d03, /*  58 V_EXIT_CUR() */
+	x14d03, /*  59 V_ENTER_CUR() */
+	x14d03, /*  60 V_CURUP() */
+	x14d03, /*  61 V_CURDOWN() */
+	x14d03, /*  62 V_CURRIGHT() */
+	x14d03, /*  63 V_CURLEFT() */
+	x14d03, /*  64 V_CURHOME() */
+	x14d03, /*  65 VQ_TABSTATUS() */
+	x14d03, /*  66 V_EEOL() */
+	x14d03, /*  67 V_EEOS() */
+	x14d03, /*  68 V_RMCUR() */
+	x14cfd, /*  69 V_DSPCUR( */
+	NULL,   /*  70 */
+	NULL,   /*  71 */
+	NULL,   /*  72 */
+	NULL,   /*  73 */
+	NULL,   /*  74 */
+	NULL,   /*  75 */
+	NULL,   /*  76 */
+	NULL,   /*  77 */
+	NULL,   /*  78 */
+	NULL,   /*  79 */
+	NULL,   /*  80 */
+	NULL,   /*  81 */
+	NULL,   /*  82 */
+	NULL,   /*  83 */
+	NULL,   /*  84 */
+	NULL,   /*  85 */
+	NULL,   /*  86 */
+	NULL,   /*  87 */
+	NULL,   /*  88 */
+	NULL,   /*  89 */
+	NULL,   /*  90 */
+	NULL,   /*  91 */
+	NULL,   /*  92 */
+	NULL,   /*  93 */
+	NULL,   /*  94 */
+	NULL,   /*  95 */
+	NULL,   /*  96 */
+	NULL,   /*  97 */
+	NULL,   /*  98 */
+	NULL,   /*  99 */
+	NULL,   /* 100 */
+	NULL,   /* 101 */
+	NULL,   /* 102 */
+	NULL,   /* 103 */
+	NULL,   /* 104 */
+	NULL,   /* 105 */
+	NULL,   /* 106 */
+	NULL,   /* 107 */
+	NULL,   /* 108 */
+	NULL,   /* 109 */
+	NULL,   /* 110 */
+	NULL,   /* 111 */
+	NULL,   /* 112 */
+	NULL,   /* 113 */
+	NULL,   /* 114 */
+	NULL,   /* 115 */
+	NULL,   /* 116 */
+	NULL,   /* 117 */
+	NULL,   /* 118 */
+	NULL,   /* 119 */
+	NULL,   /* 120 */
+	NULL,   /* 121 */
+	NULL,   /* 122 */
+	NULL,   /* 123 */
+	NULL,   /* 124 */
+	NULL,   /* 125 */
+	NULL,   /* 126 */
+	NULL,   /* 127 */
+	NULL,   /* 128 */
+	NULL,   /* 129 */
+	NULL,   /* 130 */
+	NULL,   /* 131 */
+	NULL,   /* 132 */
+	NULL,   /* 133 */
+	NULL,   /* 134 */
+	NULL,   /* 135 */
+	NULL,   /* 136 */
+	NULL,   /* 137 */
+	NULL,   /* 138 */
+	NULL,   /* 139 */
+	NULL,   /* 140 */
+	NULL,   /* 141 */
+	NULL,   /* 142 */
+	NULL,   /* 143 */
+	NULL,   /* 144 */
+	NULL,   /* 145 */
+	NULL,   /* 146 */
+	NULL,   /* 147 */
+	NULL,   /* 148 */
+	NULL,   /* 149 */
+	NULL,   /* 150 */
+	NULL,   /* 151 */
+	NULL,   /* 152 */
+	NULL,   /* 153 */
+	NULL,   /* 154 */
+	NULL,   /* 155 */
+	NULL,   /* 156 */
+	NULL,   /* 157 */
+	NULL,   /* 158 */
+	NULL,   /* 159 */
+	NULL,   /* 160 */
+	NULL,   /* 161 */
+	NULL,   /* 162 */
+	NULL,   /* 163 */
+	NULL,   /* 164 */
+	NULL,   /* 165 */
+	NULL,   /* 166 */
+	NULL,   /* 167 */
+	NULL,   /* 168 */
+	NULL,   /* 169 */
+	NULL,   /* 170 */
+	NULL,   /* 171 */
+	NULL,   /* 172 */
+	NULL,   /* 173 */
+	NULL,   /* 174 */
+	NULL,   /* 175 */
+	NULL,   /* 176 */
+	NULL,   /* 177 */
+	NULL,   /* 178 */
+	NULL,   /* 179 */
+	NULL,   /* 180 */
+	NULL,   /* 181 */
+	NULL,   /* 182 */
+	NULL,   /* 183 */
+	NULL,   /* 184 */
+	NULL,   /* 185 */
+	NULL,   /* 186 */
+	NULL,   /* 187 */
+	NULL,   /* 188 */
+	NULL,   /* 189 */
+	NULL,   /* 190 */
+	NULL,   /* 191 */
+	NULL,   /* 192 */
+	NULL,   /* 193 */
+	NULL,   /* 194 */
+	NULL,   /* 195 */
+	NULL,   /* 196 */
+	NULL,   /* 197 */
+	NULL,   /* 198 */
+	NULL,   /* 199 */
+	NULL,   /* 200 */
+	NULL,   /* 201 */
+	NULL,   /* 202 */
+	NULL,   /* 203 */
+	NULL,   /* 204 */
+	NULL,   /* 205 */
+	NULL,   /* 206 */
+	NULL,   /* 207 */
+	NULL,   /* 208 */
+	NULL,   /* 209 */
+	NULL,   /* 210 */
+	NULL,   /* 211 */
+	NULL,   /* 212 */
+	NULL,   /* 213 */
+	NULL,   /* 214 */
+	NULL,   /* 215 */
+	NULL,   /* 216 */
+	NULL,   /* 217 */
+	NULL,   /* 218 */
+	NULL,   /* 219 */
+	NULL,   /* 220 */
+	NULL,   /* 221 */
+	NULL,   /* 222 */
+	NULL,   /* 223 */
+	NULL,   /* 224 */
+	NULL,   /* 225 */
+	NULL,   /* 226 */
+	NULL,   /* 227 */
+	NULL,   /* 228 */
+	NULL,   /* 229 */
+	NULL,   /* 230 */
+	NULL,   /* 231 */
+	NULL,   /* 232 */
+	NULL,   /* 233 */
+	NULL,   /* 234 */
+	NULL,   /* 235 */
+	NULL,   /* 236 */
+	NULL,   /* 237 */
+	NULL,   /* 238 */
+	NULL,   /* 239 */
+	NULL,   /* 240 */
+	NULL,   /* 241 */
+	NULL,   /* 242 */
+	NULL,   /* 243 */
+	NULL,   /* 244 */
+	NULL,   /* 245 */
+	NULL,   /* 246 */
+	NULL,   /* 247 */
+	NULL,   /* 248 */
+	NULL,   /* 249 */
+	NULL,   /* 250 */
+	NULL,   /* 251 */
+	NULL,   /* 252 */
+	NULL,   /* 253 */
+	NULL,   /* 254 */
+	NULL,   /* 255 */
+};
+
+const struct argdesc *const arg_table_213[256] = {
+	NULL,   /*   0 */
+	NULL,   /*   1 */
+	NULL,   /*   2 */
+	NULL,   /*   3 */
+	NULL,   /*   4 */
+	NULL,   /*   5 */
+	NULL,   /*   6 */
+	NULL,   /*   7 */
+	NULL,   /*   8 */
+	NULL,   /*   9 */
+	NULL,   /*  10 */
+	NULL,   /*  11 */
+	NULL,   /*  12 */
+	NULL,   /*  13 */
+	NULL,   /*  14 */
+	NULL,   /*  15 */
+	NULL,   /*  16 */
+	NULL,   /*  17 */
+	NULL,   /*  18 */
+	NULL,   /*  19 */
+	NULL,   /*  20 */
+	NULL,   /*  21 */
+	NULL,   /*  22 */
+	NULL,   /*  23 */
+	NULL,   /*  24 */
+	NULL,   /*  25 */
+	NULL,   /*  26 */
+	NULL,   /*  27 */
+	NULL,   /*  28 */
+	NULL,   /*  29 */
+	NULL,   /*  30 */
+	NULL,   /*  31 */
+	NULL,   /*  32 */
+	NULL,   /*  33 */
+	NULL,   /*  34 */
+	NULL,   /*  35 */
+	NULL,   /*  36 */
+	NULL,   /*  37 */
+	NULL,   /*  38 */
+	NULL,   /*  39 */
+	NULL,   /*  40 */
+	NULL,   /*  41 */
+	NULL,   /*  42 */
+	NULL,   /*  43 */
+	NULL,   /*  44 */
+	NULL,   /*  45 */
+	NULL,   /*  46 */
+	NULL,   /*  47 */
+	NULL,   /*  48 */
+	NULL,   /*  49 */
+	NULL,   /*  50 */
+	NULL,   /*  51 */
+	NULL,   /*  52 */
+	NULL,   /*  53 */
+	NULL,   /*  54 */
+	NULL,   /*  55 */
+	NULL,   /*  56 */
+	NULL,   /*  57 */
+	NULL,   /*  58 */
+	NULL,   /*  59 */
+	NULL,   /*  60 */
+	NULL,   /*  61 */
+	NULL,   /*  62 */
+	NULL,   /*  63 */
+	NULL,   /*  64 */
+	NULL,   /*  65 */
+	NULL,   /*  66 */
+	NULL,   /*  67 */
+	NULL,   /*  68 */
+	NULL,   /*  69 */
+	NULL,   /*  70 */
+	NULL,   /*  71 */
+	NULL,   /*  72 */
+	NULL,   /*  73 */
+	NULL,   /*  74 */
+	NULL,   /*  75 */
+	NULL,   /*  76 */
+	NULL,   /*  77 */
+	NULL,   /*  78 */
+	NULL,   /*  79 */
+	NULL,   /*  80 */
+	NULL,   /*  81 */
+	NULL,   /*  82 */
+	NULL,   /*  83 */
+	NULL,   /*  84 */
+	NULL,   /*  85 */
+	NULL,   /*  86 */
+	NULL,   /*  87 */
+	NULL,   /*  88 */
+	NULL,   /*  89 */
+	NULL,   /*  90 */
+	NULL,   /*  91 */
+	NULL,   /*  92 */
+	NULL,   /*  93 */
+	NULL,   /*  94 */
+	NULL,   /*  95 */
+	NULL,   /*  96 */
+	NULL,   /*  97 */
+	NULL,   /*  98 */
+	NULL,   /*  99 */
+	NULL,   /* 100 */
+	NULL,   /* 101 */
+	NULL,   /* 102 */
+	NULL,   /* 103 */
+	NULL,   /* 104 */
+	NULL,   /* 105 */
+	NULL,   /* 106 */
+	NULL,   /* 107 */
+	NULL,   /* 108 */
+	NULL,   /* 109 */
+	NULL,   /* 110 */
+	NULL,   /* 111 */
+	NULL,   /* 112 */
+	NULL,   /* 113 */
+	NULL,   /* 114 */
+	NULL,   /* 115 */
+	NULL,   /* 116 */
+	NULL,   /* 117 */
+	NULL,   /* 118 */
+	NULL,   /* 119 */
+	NULL,   /* 120 */
+	NULL,   /* 121 */
+	NULL,   /* 122 */
+	NULL,   /* 123 */
+	NULL,   /* 124 */
+	NULL,   /* 125 */
+	NULL,   /* 126 */
+	NULL,   /* 127 */
+	NULL,   /* 128 */
+	NULL,   /* 129 */
+	NULL,   /* 130 */
+	NULL,   /* 131 */
+	NULL,   /* 132 */
+	NULL,   /* 133 */
+	NULL,   /* 134 */
+	NULL,   /* 135 */
+	NULL,   /* 136 */
+	NULL,   /* 137 */
+	NULL,   /* 138 */
+	NULL,   /* 139 */
+	NULL,   /* 140 */
+	NULL,   /* 141 */
+	NULL,   /* 142 */
+	NULL,   /* 143 */
+	NULL,   /* 144 */
+	NULL,   /* 145 */
+	NULL,   /* 146 */
+	NULL,   /* 147 */
+	NULL,   /* 148 */
+	NULL,   /* 149 */
+	NULL,   /* 150 */
+	NULL,   /* 151 */
+	NULL,   /* 152 */
+	NULL,   /* 153 */
+	NULL,   /* 154 */
+	NULL,   /* 155 */
+	NULL,   /* 156 */
+	NULL,   /* 157 */
+	NULL,   /* 158 */
+	NULL,   /* 159 */
+	NULL,   /* 160 */
+	NULL,   /* 161 */
+	NULL,   /* 162 */
+	NULL,   /* 163 */
+	NULL,   /* 164 */
+	NULL,   /* 165 */
+	NULL,   /* 166 */
+	NULL,   /* 167 */
+	NULL,   /* 168 */
+	NULL,   /* 169 */
+	NULL,   /* 170 */
+	NULL,   /* 171 */
+	NULL,   /* 172 */
+	NULL,   /* 173 */
+	NULL,   /* 174 */
+	NULL,   /* 175 */
+	NULL,   /* 176 */
+	NULL,   /* 177 */
+	NULL,   /* 178 */
+	NULL,   /* 179 */
+	NULL,   /* 180 */
+	NULL,   /* 181 */
+	NULL,   /* 182 */
+	NULL,   /* 183 */
+	NULL,   /* 184 */
+	NULL,   /* 185 */
+	NULL,   /* 186 */
+	NULL,   /* 187 */
+	NULL,   /* 188 */
+	NULL,   /* 189 */
+	NULL,   /* 190 */
+	NULL,   /* 191 */
+	NULL,   /* 192 */
+	NULL,   /* 193 */
+	NULL,   /* 194 */
+	NULL,   /* 195 */
+	NULL,   /* 196 */
+	NULL,   /* 197 */
+	NULL,   /* 198 */
+	NULL,   /* 199 */
+	NULL,   /* 200 */
+	NULL,   /* 201 */
+	NULL,   /* 202 */
+	NULL,   /* 203 */
+	NULL,   /* 204 */
+	NULL,   /* 205 */
+	NULL,   /* 206 */
+	NULL,   /* 207 */
+	NULL,   /* 208 */
+	NULL,   /* 209 */
+	NULL,   /* 210 */
+	NULL,   /* 211 */
+	NULL,   /* 212 */
+	NULL,   /* 213 */
+	NULL,   /* 214 */
+	NULL,   /* 215 */
+	NULL,   /* 216 */
+	NULL,   /* 217 */
+	NULL,   /* 218 */
+	NULL,   /* 219 */
+	NULL,   /* 220 */
+	NULL,   /* 221 */
+	NULL,   /* 222 */
+	NULL,   /* 223 */
+	NULL,   /* 224 */
+	NULL,   /* 225 */
+	NULL,   /* 226 */
+	NULL,   /* 227 */
+	NULL,   /* 228 */
+	NULL,   /* 229 */
+	NULL,   /* 230 */
+	NULL,   /* 231 */
+	NULL,   /* 232 */
+	NULL,   /* 233 */
+	NULL,   /* 234 */
+	NULL,   /* 235 */
+	NULL,   /* 236 */
+	NULL,   /* 237 */
+	NULL,   /* 238 */
+	NULL,   /* 239 */
+	NULL,   /* 240 */
+	NULL,   /* 241 */
+	NULL,   /* 242 */
+	NULL,   /* 243 */
+	NULL,   /* 244 */
+	NULL,   /* 245 */
+	NULL,   /* 246 */
+	NULL,   /* 247 */
+	NULL,   /* 248 */
+	NULL,   /* 249 */
+	NULL,   /* 250 */
+	NULL,   /* 251 */
+	NULL,   /* 252 */
+	NULL,   /* 253 */
+	NULL,   /* 254 */
+	NULL,   /* 255 */
+};
+
+const struct argdesc *const arg_table_214[256] = {
+	NULL,   /*   0 */
+	NULL,   /*   1 */
+	NULL,   /*   2 */
+	NULL,   /*   3 */
+	NULL,   /*   4 */
+	NULL,   /*   5 */
+	NULL,   /*   6 */
+	NULL,   /*   7 */
+	NULL,   /*   8 */
+	NULL,   /*   9 */
+	NULL,   /*  10 */
+	NULL,   /*  11 */
+	NULL,   /*  12 */
+	NULL,   /*  13 */
+	NULL,   /*  14 */
+	NULL,   /*  15 */
+	NULL,   /*  16 */
+	NULL,   /*  17 */
+	NULL,   /*  18 */
+	NULL,   /*  19 */
+	NULL,   /*  20 */
+	NULL,   /*  21 */
+	NULL,   /*  22 */
+	NULL,   /*  23 */
+	NULL,   /*  24 */
+	NULL,   /*  25 */
+	NULL,   /*  26 */
+	NULL,   /*  27 */
+	NULL,   /*  28 */
+	NULL,   /*  29 */
+	NULL,   /*  30 */
+	NULL,   /*  31 */
+	NULL,   /*  32 */
+	NULL,   /*  33 */
+	NULL,   /*  34 */
+	NULL,   /*  35 */
+	NULL,   /*  36 */
+	NULL,   /*  37 */
+	NULL,   /*  38 */
+	NULL,   /*  39 */
+	NULL,   /*  40 */
+	NULL,   /*  41 */
+	NULL,   /*  42 */
+	NULL,   /*  43 */
+	NULL,   /*  44 */
+	NULL,   /*  45 */
+	NULL,   /*  46 */
+	NULL,   /*  47 */
+	NULL,   /*  48 */
+	NULL,   /*  49 */
+	NULL,   /*  50 */
+	NULL,   /*  51 */
+	NULL,   /*  52 */
+	NULL,   /*  53 */
+	NULL,   /*  54 */
+	NULL,   /*  55 */
+	NULL,   /*  56 */
+	NULL,   /*  57 */
+	NULL,   /*  58 */
+	NULL,   /*  59 */
+	NULL,   /*  60 */
+	NULL,   /*  61 */
+	NULL,   /*  62 */
+	NULL,   /*  63 */
+	NULL,   /*  64 */
+	NULL,   /*  65 */
+	NULL,   /*  66 */
+	NULL,   /*  67 */
+	NULL,   /*  68 */
+	NULL,   /*  69 */
+	NULL,   /*  70 */
+	NULL,   /*  71 */
+	NULL,   /*  72 */
+	NULL,   /*  73 */
+	NULL,   /*  74 */
+	NULL,   /*  75 */
+	NULL,   /*  76 */
+	NULL,   /*  77 */
+	NULL,   /*  78 */
+	NULL,   /*  79 */
+	NULL,   /*  80 */
+	NULL,   /*  81 */
+	NULL,   /*  82 */
+	NULL,   /*  83 */
+	NULL,   /*  84 */
+	NULL,   /*  85 */
+	NULL,   /*  86 */
+	NULL,   /*  87 */
+	NULL,   /*  88 */
+	NULL,   /*  89 */
+	NULL,   /*  90 */
+	NULL,   /*  91 */
+	NULL,   /*  92 */
+	NULL,   /*  93 */
+	NULL,   /*  94 */
+	NULL,   /*  95 */
+	NULL,   /*  96 */
+	NULL,   /*  97 */
+	NULL,   /*  98 */
+	NULL,   /*  99 */
+	NULL,   /* 100 */
+	NULL,   /* 101 */
+	NULL,   /* 102 */
+	NULL,   /* 103 */
+	NULL,   /* 104 */
+	NULL,   /* 105 */
+	NULL,   /* 106 */
+	NULL,   /* 107 */
+	NULL,   /* 108 */
+	NULL,   /* 109 */
+	NULL,   /* 110 */
+	NULL,   /* 111 */
+	NULL,   /* 112 */
+	NULL,   /* 113 */
+	NULL,   /* 114 */
+	NULL,   /* 115 */
+	NULL,   /* 116 */
+	NULL,   /* 117 */
+	NULL,   /* 118 */
+	NULL,   /* 119 */
+	NULL,   /* 120 */
+	NULL,   /* 121 */
+	NULL,   /* 122 */
+	NULL,   /* 123 */
+	NULL,   /* 124 */
+	NULL,   /* 125 */
+	NULL,   /* 126 */
+	NULL,   /* 127 */
+	NULL,   /* 128 */
+	NULL,   /* 129 */
+	NULL,   /* 130 */
+	NULL,   /* 131 */
+	NULL,   /* 132 */
+	NULL,   /* 133 */
+	NULL,   /* 134 */
+	NULL,   /* 135 */
+	NULL,   /* 136 */
+	NULL,   /* 137 */
+	NULL,   /* 138 */
+	NULL,   /* 139 */
+	NULL,   /* 140 */
+	NULL,   /* 141 */
+	NULL,   /* 142 */
+	NULL,   /* 143 */
+	NULL,   /* 144 */
+	NULL,   /* 145 */
+	NULL,   /* 146 */
+	NULL,   /* 147 */
+	NULL,   /* 148 */
+	NULL,   /* 149 */
+	NULL,   /* 150 */
+	NULL,   /* 151 */
+	NULL,   /* 152 */
+	NULL,   /* 153 */
+	NULL,   /* 154 */
+	NULL,   /* 155 */
+	NULL,   /* 156 */
+	NULL,   /* 157 */
+	NULL,   /* 158 */
+	NULL,   /* 159 */
+	NULL,   /* 160 */
+	NULL,   /* 161 */
+	NULL,   /* 162 */
+	NULL,   /* 163 */
+	NULL,   /* 164 */
+	NULL,   /* 165 */
+	NULL,   /* 166 */
+	NULL,   /* 167 */
+	NULL,   /* 168 */
+	NULL,   /* 169 */
+	NULL,   /* 170 */
+	NULL,   /* 171 */
+	NULL,   /* 172 */
+	NULL,   /* 173 */
+	NULL,   /* 174 */
+	NULL,   /* 175 */
+	NULL,   /* 176 */
+	NULL,   /* 177 */
+	NULL,   /* 178 */
+	NULL,   /* 179 */
+	NULL,   /* 180 */
+	NULL,   /* 181 */
+	NULL,   /* 182 */
+	NULL,   /* 183 */
+	NULL,   /* 184 */
+	NULL,   /* 185 */
+	NULL,   /* 186 */
+	NULL,   /* 187 */
+	NULL,   /* 188 */
+	NULL,   /* 189 */
+	NULL,   /* 190 */
+	NULL,   /* 191 */
+	NULL,   /* 192 */
+	NULL,   /* 193 */
+	NULL,   /* 194 */
+	NULL,   /* 195 */
+	NULL,   /* 196 */
+	NULL,   /* 197 */
+	NULL,   /* 198 */
+	NULL,   /* 199 */
+	NULL,   /* 200 */
+	NULL,   /* 201 */
+	NULL,   /* 202 */
+	NULL,   /* 203 */
+	NULL,   /* 204 */
+	NULL,   /* 205 */
+	NULL,   /* 206 */
+	NULL,   /* 207 */
+	NULL,   /* 208 */
+	NULL,   /* 209 */
+	NULL,   /* 210 */
+	NULL,   /* 211 */
+	NULL,   /* 212 */
+	NULL,   /* 213 */
+	NULL,   /* 214 */
+	NULL,   /* 215 */
+	NULL,   /* 216 */
+	NULL,   /* 217 */
+	NULL,   /* 218 */
+	NULL,   /* 219 */
+	NULL,   /* 220 */
+	NULL,   /* 221 */
+	NULL,   /* 222 */
+	NULL,   /* 223 */
+	NULL,   /* 224 */
+	NULL,   /* 225 */
+	NULL,   /* 226 */
+	NULL,   /* 227 */
+	NULL,   /* 228 */
+	NULL,   /* 229 */
+	NULL,   /* 230 */
+	NULL,   /* 231 */
+	NULL,   /* 232 */
+	NULL,   /* 233 */
+	NULL,   /* 234 */
+	NULL,   /* 235 */
+	NULL,   /* 236 */
+	NULL,   /* 237 */
+	NULL,   /* 238 */
+	NULL,   /* 239 */
+	NULL,   /* 240 */
+	NULL,   /* 241 */
+	NULL,   /* 242 */
+	NULL,   /* 243 */
+	NULL,   /* 244 */
+	NULL,   /* 245 */
+	NULL,   /* 246 */
+	NULL,   /* 247 */
+	NULL,   /* 248 */
+	NULL,   /* 249 */
+	NULL,   /* 250 */
+	NULL,   /* 251 */
+	NULL,   /* 252 */
+	NULL,   /* 253 */
+	NULL,   /* 254 */
+	NULL,   /* 255 */
 };

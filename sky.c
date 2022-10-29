@@ -1195,6 +1195,16 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 			src++;
 			break;
 
+		case 213: /* currently unused; maybe later assigned to new function tables */
+			retcode &= subfunc_table(gi, gl, pft, src, gfasft_213);
+			src++;
+			break;
+
+		case 214: /* currently unused; maybe later assigned to new function tables */
+			retcode &= subfunc_table(gi, gl, pft, src, gfasft_214);
+			src++;
+			break;
+
 		case TOK_OCT_DBL_CONST_PAD:
 			src++; /* skip filler byte at odd address */
 			/* FALLTROUGH */
@@ -1309,8 +1319,6 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 		case 55:                                      /* NUMBER: */
 			break;
 
-		case 213: /* currently unused; maybe later assigned to new function tables */
-		case 214: /* currently unused; maybe later assigned to new function tables */
 		case 46: /* unknown */
 		case 64: /* unknown */
 		case 68: /* unknown */

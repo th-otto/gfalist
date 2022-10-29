@@ -16,12 +16,6 @@ struct funcparse {
 	int stackdepth;
 };
 
-struct nameversion {
-	const char *name;
-	int old_ver;
-	const char *old_name;
-};
-
 struct globals;
 
 struct argdesc {
