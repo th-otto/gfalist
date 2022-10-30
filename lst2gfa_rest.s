@@ -1881,62 +1881,6 @@ x136d0:
 x136d0_end:
 		.even
 
-cmd_index_table:
-		.dc.w cmd_a_table-jmpbase
-		.dc.w cmd_b_table-jmpbase
-		.dc.w cmd_c_table-jmpbase
-		.dc.w cmd_d_table-jmpbase
-		.dc.w cmd_e_table-jmpbase
-		.dc.w cmd_f_table-jmpbase
-		.dc.w cmd_g_table-jmpbase
-		.dc.w cmd_h_table-jmpbase
-		.dc.w cmd_i_table-jmpbase
-		.dc.w cmd_j_table-jmpbase
-		.dc.w cmd_k_table-jmpbase
-		.dc.w cmd_l_table-jmpbase
-		.dc.w cmd_m_table-jmpbase
-		.dc.w cmd_n_table-jmpbase
-		.dc.w cmd_o_table-jmpbase
-		.dc.w cmd_p_table-jmpbase
-		.dc.w cmd_q_table-jmpbase
-		.dc.w cmd_r_table-jmpbase
-		.dc.w cmd_s_table-jmpbase
-		.dc.w cmd_t_table-jmpbase
-		.dc.w cmd_u_table-jmpbase
-		.dc.w cmd_v_table-jmpbase
-		.dc.w cmd_w_table-jmpbase
-		.dc.w cmd_x_table-jmpbase
-		.dc.w cmd_y_table-jmpbase
-		.dc.w cmd_z_table-jmpbase
-
-func_index_table:
-		.dc.w func_a_table-jmpbase
-		.dc.w func_b_table-jmpbase
-		.dc.w func_c_table-jmpbase
-		.dc.w func_d_table-jmpbase
-		.dc.w func_e_table-jmpbase
-		.dc.w func_f_table-jmpbase
-		.dc.w func_g_table-jmpbase
-		.dc.w func_h_table-jmpbase
-		.dc.w func_i_table-jmpbase
-		.dc.w func_j_table-jmpbase
-		.dc.w func_k_table-jmpbase
-		.dc.w func_l_table-jmpbase
-		.dc.w func_m_table-jmpbase
-		.dc.w func_n_table-jmpbase
-		.dc.w func_o_table-jmpbase
-		.dc.w func_p_table-jmpbase
-		.dc.w func_q_table-jmpbase
-		.dc.w func_r_table-jmpbase
-		.dc.w func_s_table-jmpbase
-		.dc.w func_t_table-jmpbase
-		.dc.w func_u_table-jmpbase
-		.dc.w func_v_table-jmpbase
-		.dc.w func_w_table-jmpbase
-		.dc.w func_x_table-jmpbase
-		.dc.w func_y_table-jmpbase
-		.dc.w func_z_table-jmpbase
-
 x1377c:
 		lea.l      o850(a6),a4
 		lea.l      o1106(a6),a5
@@ -1976,7 +1920,7 @@ x137c0:
 		lea.l      o1364(a6),a1
 		move.w     d0,(a1)+
 		movea.l    x137bc(pc),a0
-		bsr        x1395a
+		bsr        parse_cmd_args
 		move.l     a1,d0
 		rts
 
@@ -1990,7 +1934,7 @@ x137d2:
 		bsr.s      skip_spaces
 		move.l     a0,x137bc
 		bsr        x1389c
-		bsr        x1395a
+		bsr        parse_cmd_args
 		move.l     a1,d0
 		bne.s      x137d2_1
 		lea.l      yLET_args(pc),a2
@@ -2141,123 +2085,6 @@ ARG_END       = 252
 ARG_REPLACE   = 251
 ARG_BACK      = 250
 
-/* gfa: 22f7e */
-/* 371: 561ce */
-/* 372: 572e6 */
-/* 373: 580d6 */
-x1395a:
-		clr.l      x137b4
-		pea.l      (0).w
-		pea.l      (a1)
-		pea.l      (a0)
-		clr.l      8438(a6)
-x1395a_1:
-		moveq.l    #0,d7
-		moveq.l    #0,d0
-		move.b     (a2)+,d0
-		cmpi.b     #240,d0
-		bhi.s      x1395a_5
-		cmpi.b     #TOK_SUBFUNC_208,d0 /* secondary function table? */
-		bcs.s      x1395a_2
-		cmpi.b     #TOK_SUBFUNC_214,d0
-		bhi.s      x1395a_2
-		asl.w      #8,d0
-		move.b     (a2)+,d0
-x1395a_2:
-		bsr        handle_function
-		tst.b      d7
-		beq.s      x1395a_1
-		bra.s      x1395a_11
-/* handle 0xfc & 0xfd */
-x1395a_3:
-		addq.l     #8,a7
-		movea.l    (a7)+,a2
-		move.l     a2,d0
-		bne.s      x1395a_1
-		move.l     a1,d0
-		sub.l      a6,d0
-		cmpi.l     #o1842,d0 /* maybe bug here in GBE: same value as in GFA */
-		bcs.s      x1395a_4
-		lea.l      (-1).w,a1
-x1395a_4:
-		rts
-
-/* gfa: 22fca */
-/* 371: 56220 */
-/* 372: 57338 */
-/* 373: 58128 */
-/* XXX */
-x1395a_5:
-		addq.b     #2,d0
-		bgt.s      x1395a_8
-		beq.s      x1395a_9
-		addq.b     #2,d0
-		bpl.s      x1395a_3
-		addq.b     #2,d0
-		bgt.s      x1395a_7
-		beq.s      x1395a_6
-		move.b     (a2)+,(a1)+
-		bra.s      x1395a_1
-/* handle 0xfa */
-x1395a_6:
-		subq.l     #1,a1
-		bra.s      x1395a_1
-/* handle 0xfb */
-x1395a_7:
-		move.b     (a2)+,-1(a1)
-		bra.s      x1395a_1
-
-/* handle 0xff */
-x1395a_8:
-		move.b     (a2)+,-(a7)
-		move.w     (a7)+,d0
-		move.b     (a2)+,d0 /* d0.w = *((short *)a2++) now */
-		pea.l      (a2)
-		pea.l      (a1)
-		pea.l      (a0)
-		lea.l      jmpbase(pc),a2
-		adda.w     d0,a2
-		bra.s      x1395a_1
-
-/* handle 0xfe */
-x1395a_9:
-		move.b     (a2)+,-(a7)
-		move.w     (a7)+,d0
-		move.b     (a2)+,d0 /* d0.w = *((short *)a2++) now */
-		pea.l      (a2)
-		pea.l      (a1)
-		pea.l      (a0)
-		lea.l      jmpbase(pc),a2
-		jsr        0(a2,d0.w)
-		tst.b      d7 /* does not come back here in call to f14bde */
-		beq.s      x1395a_3
-/* error */
-x1395a_10:
-		addq.l     #8,a7
-		movea.l    (a7)+,a2
-		move.l     a2,d0
-		beq.s      x1395a_14
-
-x1395a_11:
-		move.b     (a2)+,d0
-		cmpi.b     #249,d0
-		beq.s      x1395a_12
-		cmpi.b     #ARG_END,d0
-		beq.s      x1395a_10
-		cmpi.b     #ARG_POP,d0
-		beq.s      x1395a_13
-		bcs.s      x1395a_11
-		addq.l     #1,a2
-x1395a_12:
-		addq.l     #1,a2
-		bra.s      x1395a_11
-x1395a_13:
-		movea.l    (a7),a0
-		movea.l    4(a7),a1
-		bra        x1395a_1
-x1395a_14:
-		suba.l     a1,a1
-		rts
 
 /*
  * function code in d0.w
@@ -2308,102 +2135,6 @@ handle_function_8:
 		move.w     d0,d6
 		move.l     a0,x137b4
 		bra.s      handle_function_1
-handle_function_9:
-		lea.l      func_misc_table(pc),a3
-		cmpi.b     #238,d6
-		beq.s      handle_function_10
-		moveq.l    #64,d6
-		bra.s      find_function_1
-handle_function_10:
-		cmpi.b     #'/',1(a0)
-		beq.s      handle_function_11
-		cmpi.b     #'*',1(a0)
-		beq.s      handle_function_11
-		moveq.l    #8,d6
-		addq.l     #1,a0
-		bra.s      find_function_7
-handle_function_11:
-		movea.l    a0,a5
-		moveq.l    #-1,d6
-		rts
-handle_function_12:
-		lea.l      func_other_table(pc),a3
-		moveq.l    #127,d6
-		bra.s      find_function_1
-
-/*
- * find a function name in table
- * return code in d6 (bits 8-15: secondary table code)
- */
-find_function:
-		cmpa.l     8438(a6),a0
-		beq.s      find_function_5
-		move.l     a0,8438(a6)
-		bsr        skip_spaces
-		moveq.l    #0,d6
-		move.b     (a0),d6
-		subi.w     #'A',d6
-		bmi.s      handle_function_9
-		cmpi.w     #25,d6
-		bhi.s      handle_function_12
-		lea.l      func_index_table(pc),a3
-		add.w      d6,d6
-		move.w     0(a3,d6.w),d6
-		lea.l      jmpbase(pc),a3
-		adda.w     d6,a3
-		move.b     (a0),d6
-find_function_1:
-		movea.l    a0,a4
-find_function_2:
-		moveq.l    #0,d1
-		move.b     (a3)+,d1
-		bmi.s      find_function_4
-		lea.l      3(a3,d1.w),a5
-		cmp.b      (a3),d6
-		bcs.s      find_function_4
-find_function_3:
-		cmpm.b     (a0)+,(a3)+
-		dbne       d1,find_function_3
-		beq.s      find_function_6
-		movea.l    a5,a3
-		movea.l    a4,a0
-		bra.s      find_function_2
-find_function_4:
-		moveq.l    #-1,d6
-		movea.l    a0,a5
-		rts
-find_function_5:
-		movea.l    a5,a0
-		rts
-find_function_6:
-		move.b     -2(a5),-(a7)
-		move.w     (a7)+,d6
-		move.b     -1(a5),d6
-find_function_7:
-		movea.l    a0,a5
-		cmpi.b     #'A',-1(a0)
-		bcs.s      find_function_9
-		cmpi.b     #'Z',-1(a0)
-		bhi.s      find_function_9
-		cmpi.b     #TOK_GE2_STR,d6 /* wtf? why .b? */
-		bls.s      find_function_9
-		move.b     (a0),d1
-		cmpi.b     #'_',d1
-		beq.s      find_function_8
-		cmpi.b     #'.',d1
-		beq.s      find_function_8
-		cmpi.b     #'0',d1
-		bcs.s      find_function_9
-		cmpi.b     #'9',d1
-		bls.s      find_function_8
-		cmpi.b     #'A',d1
-		bcs.s      find_function_9
-		cmpi.b     #'Z',d1
-		bhi.s      find_function_9
-find_function_8:
-		moveq.l    #-1,d6
-find_function_9:
-		rts
 
 f13b62:
 		moveq.l    #0,d7
@@ -2842,14 +2573,6 @@ f14578_6:
 		moveq.l    #-1,d7
 		rts
 
-zzz
-
-/* 371: 56e56 */
-/* 372: 57f6e */
-/* 373: 58d5e */
-
-	.even
-
 /* 371: 574f4 */
 /* 372: 5862c */
 /* 373: 5944c */
@@ -2917,15 +2640,7 @@ f14bde_1:
 		lea.l      jmpbase(pc),a2
 		adda.w     x14c16(pc,d0.w),a2
 		addq.l     #4,a7
-		bra        x1395a_1
-
-zzz
-
-/* 371: 57b1c */
-/* 372: 58d18 */
-/* 373: 59bca */
-
-	.even
+		bra        parse_cmd_args0
 
 /* 371: 5807e */
 /* 372: 592a8 */
@@ -4427,83 +4142,7 @@ x1607a:
 x1607a_1:
 		clr.w      (a0)+
 		dbf        d0,x1607a_1
-		lea.l      func_table_offsets(a6),a0
-		lea.l      func_misc_table(pc),a1
-		moveq.l    #0,d0
-x1607a_2:
-		move.b     (a1),d0
-		bmi.s      x1607a_4
-		moveq.l    #0,d1
-		move.b     3(a1,d0.w),d1
-		move.b     2(a1,d0.w),d2
-		beq.s      x1607a_3
-#if GBE > 0
-		addi.w     #256,d1
-		cmp.b      #TOK_SUBFUNC_208,d2
-		beq.s      x1607a_3
-		addi.w     #256,d1
-		cmp.b      #TOK_SUBFUNC_209,d2
-		beq.s      x1607a_3
-		addi.w     #256,d1
-		cmp.b      #TOK_SUBFUNC_210,d2
-		beq.s      x1607a_3
-		addi.w     #256,d1
-		cmp.b      #TOK_SUBFUNC_211,d2
-		beq.s      x1607a_3
-		addi.w     #256,d1
-		cmp.b      #TOK_SUBFUNC_212,d2
-		beq.s      x1607a_3
-		addi.w     #256,d1
-		cmp.b      #TOK_SUBFUNC_213,d2
-		beq.s      x1607a_3
-		addi.w     #256,d1
-#else
-		addi.w     #TOK_REF_FLOAT_SHORT,d1
-#endif
-x1607a_3:
-		add.w      d1,d1
-		move.l     a1,d2
-		subi.l     #jmpbase,d2
-		move.w     d2,0(a0,d1.w)
-		lea.l      4(a1,d0.w),a1
-		bra.s      x1607a_2
-x1607a_4:
-		lea.l      cmd_table_offsets(a6),a0
-#if GBE >= 373
-		lea.l      cmd_table,a1
-#else
-		lea.l      cmd_table(pc),a1
-	.ENDIF
-		moveq.l    #0,d0
-x1607a_5:
-		move.b     (a1),d0
-		bmi.s      x1607a_6
-		moveq.l    #0,d1
-		move.b     2(a1,d0.w),d1
-		asl.w      #8,d1
-		move.b     3(a1,d0.w),d1
-		move.l     a1,d2
-		subi.l     #jmpbase,d2
-		move.w     d2,0(a0,d1.w)
-		lea.l      6(a1,d0.w),a1
-		bra.s      x1607a_5
-x1607a_6:
-		lea.l      func_table_offsets(a6),a0
-		move.w     #MAX_FUNCS-1,d0
-x1607a_7:
-		move.w     (a0)+,d1
-		bne.s      x1607a_8
-		move.w     -4(a0),-2(a0)
-x1607a_8:
-		dbf        d0,x1607a_7
-		lea.l      cmd_table_offsets(a6),a0
-		move.w     #MAX_CMDS-1,d0
-x1607a_9:
-		move.w     (a0)+,d1
-		bne.s      x1607a_10
-		move.w     -4(a0),-2(a0)
-x1607a_10:
-		dbf        d0,x1607a_9
+
 		lea.l      cmd_table_offsets(a6),a0
 		clr.w      TOK_CMD_LABEL*2(a0)
 		clr.w      TOK_CMD_GOSUB_IMP*2(a0)
@@ -4744,7 +4383,7 @@ x162ac_cont:
 		moveq.l    #0,d0
 		move.b     (a1)+,d0
 		addi.w     #224,d0
-	.ENDIF
+#endif
 		add.w      d0,d0
 		lea.l      func_table_offsets(a6),a3
 		move.w     0(a3,d0.w),d1

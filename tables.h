@@ -1,6 +1,8 @@
 #ifndef TABLES_H
 #define TABLES_H
 
+#define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
+
 #define TARGET_VER36    0
 #define TARGET_VER370   370
 #define TARGET_VER371   371

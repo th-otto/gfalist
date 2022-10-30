@@ -701,7 +701,7 @@ struct nameversion const gfalct[] = {
 	/* 683 */ { "ARRAY%(", 0, NULL },
 	/* 684 */ { "ARRAY(", 0, NULL },
 };
-unsigned int const size_lct = sizeof(gfalct) / sizeof(gfalct[0]);
+unsigned int const size_lct = (unsigned int)ARRAY_SIZE(gfalct);
 
 /* Primary function text */
 struct nameversion const gfapft[256] = {
