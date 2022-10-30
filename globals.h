@@ -10,5 +10,9 @@ struct globals {
 	const char *function_find_last;
 	uint16_t function_find_token;
 	char general_buffer[256];
+	struct {
+		unsigned short cmd;
+		unsigned char buffer[256];
+	} token_buffer;
 	unsigned char first_ident_char;
 };

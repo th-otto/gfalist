@@ -105,8 +105,11 @@ extern struct gfaversinfo const gfarecl[71];
 #define TOK_CMD_COMMENT            115
 #define TOK_CMD_SYNERR             116
 #define TOK_CMD_DATA               117
+#define TOK_CMD_DEREF              121
+#define TOK_CMD_DEREF_STR          122
 #define TOK_CMD_END                124
 #define TOK_CMD_PRINT              147
+#define TOK_CMD_PRINT_CHANNEL      148
 #define TOK_CMD_FORM_INPUT         153
 #define TOK_CMD_INC_FLOAT          160
 #define TOK_CMD_ADD_FLOAT          176
@@ -115,6 +118,7 @@ extern struct gfaversinfo const gfarecl[71];
 #define TOK_CMD_DIV_FLOAT          200
 #define TOK_CMD_DIV_BYTE_ARR       207
 #define TOK_CMD_SEEK               208
+#define TOK_CMD_ADDRIN             224
 #define TOK_CMD_ADDROUT            225
 #define TOK_CMD_CONTRL             228
 #define TOK_CMD_DOUBLE_REF         237

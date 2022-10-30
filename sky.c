@@ -631,7 +631,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	pop16b(lcp, src);
 	lct = lcp / 4;
 
-	/* fprintf(stderr, "%lu lcp: %u %u\n", gl->lineno, lcp, lct); */
+	fprintf(stderr, "%lu lcp: %u %u\n", gl->lineno, lcp, lct);
 	/*
 	 * handle indentation changes
 	 */

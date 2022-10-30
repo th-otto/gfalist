@@ -402,9 +402,9 @@ struct nameversion const gfalct[] = {
 	/* 396 */ { "SETDRAW ", 0, NULL },
 	/* 397 */ { "ARRAYFILL ", 0, NULL },
 	/* 398 */ { "DUMP", 0, NULL },
-	/* 399 */ { "BITBLT ", 0, NULL },
-	/* 400 */ { "BITBLT ", 0, NULL },					/* todo */
-	/* 401 */ { "BITBLT ", 0, NULL },					/* todo */
+	/* 399 */ { "BITBLT ", 0, NULL },					/* BITBLT src%(),dst%(),par%() */
+	/* 400 */ { "BITBLT ", 0, NULL },					/* BITBLT src%() */
+	/* 401 */ { "BITBLT ", 0, NULL },					/* BITBLT src% */
 	/* 402 */ { "STORE ", 0, NULL },
 	/* 403 */ { "RECALL ", 0, NULL },
 	/* 404 */ { "BSAVE ", 0, NULL },

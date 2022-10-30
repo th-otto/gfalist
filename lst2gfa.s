@@ -58,8 +58,11 @@ TOK_CMD_REM                = 114
 TOK_CMD_COMMENT            = 115
 TOK_CMD_SYNERR             = 116
 TOK_CMD_DATA               = 117
+TOK_CMD_DEREF              = 121
+TOK_CMD_DEREF_STR          = 122
 TOK_CMD_END                = 124
 TOK_CMD_PRINT              = 147
+TOK_CMD_PRINT_CHANNEL      = 148
 TOK_CMD_FORM_INPUT         = 153
 TOK_CMD_INC_FLOAT          = 160
 TOK_CMD_ADD_FLOAT          = 176
@@ -458,7 +461,7 @@ o850:               ds.b 182       /*  324 */
 o2314:              ds.b 74        /*  506 */
 general_buffer:     ds.b 256       /*  580 */
 o1362:              ds.w 1         /*  836 */
-o1364:              ds.b 26        /*  838 */
+o1364:              ds.b 126       /*  838 */
 o2772:              ds.b 214       /*  964 */
 func_table_offsets: ds.w MAX_FUNCS /* 1178 */
 cmd_table_offsets:  ds.w MAX_CMDS  /* 5274 */
@@ -8088,7 +8091,7 @@ x13eec:
 		.dc.b TOK_EQ
 		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
 		.dc.b TOK_RPAREN
-		.dc.b 6
+		.dc.b TOK_ADD
 		.dc.b ARG_PUSH,((x13fd3-jmpbase)>>8)&255,(x13fd3-jmpbase)&255
 		.dc.b ARG_POP
 		.dc.b TOK_COMMA
@@ -8111,7 +8114,7 @@ x13f0e:
 		.dc.b TOK_EQ
 		.dc.b ARG_CALL_FUNC,((expect_float_arr-jmpbase)>>8)&255,(expect_float_arr-jmpbase)&255
 		.dc.b TOK_RPAREN
-		.dc.b 5
+		.dc.b TOK_SUB
 		.dc.b ARG_PUSH,((x13fd3-jmpbase)>>8)&255,(x13fd3-jmpbase)&255
 		.dc.b ARG_POP
 		.dc.b TOK_COMMA
@@ -8344,7 +8347,7 @@ x1404d:
 		.dc.b ARG_END
 
 x14054:
-		.dc.b 109
+		.dc.b TOK_OFFSET
 		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
 		.dc.b ARG_POP
 		.dc.b ARG_END
@@ -8368,11 +8371,12 @@ x1406f:
 		.dc.b TOK_RPAREN
 		.dc.b ARG_POP
 		.dc.b ARG_END
+
 x14076:
-		.dc.b 5
+		.dc.b TOK_SUB
 		.dc.b TOK_RPAREN
 		.dc.b ARG_POP
-		.dc.b 6
+		.dc.b TOK_ADD
 		.dc.b TOK_RPAREN
 		.dc.b ARG_POP
 		.dc.b TOK_RPAREN
@@ -8396,12 +8400,12 @@ yLET_args:
 		.dc.b TOK_LINE_COMMENT
 		.dc.b ARG_POP
 		.dc.b ARG_PUSH,((x1438e-jmpbase)>>8)&255,(x1438e-jmpbase)&255
-		.dc.b 5
+		.dc.b TOK_SUB
 		.dc.b TOK_EQ
 		.dc.b ARG_CALL_FUNC,((f140e2-jmpbase)>>8)&255,(f140e2-jmpbase)&255
 		.dc.b ARG_POP
 		.dc.b ARG_PUSH,((x1438e-jmpbase)>>8)&255,(x1438e-jmpbase)&255
-		.dc.b 6
+		.dc.b TOK_ADD
 		.dc.b TOK_EQ
 		.dc.b ARG_CALL_FUNC,((f140d6-jmpbase)>>8)&255,(f140d6-jmpbase)&255
 		.dc.b ARG_POP
@@ -8782,7 +8786,7 @@ x14217:
 		.dc.b ARG_POP
 		.dc.b 108
 		.dc.b ARG_POP
-		.dc.b 34
+		.dc.b TOK_SEMI
 		.dc.b ARG_REPLACE,33
 		.dc.b ARG_END
 x1421f:
@@ -8930,19 +8934,21 @@ yDIV_args:
 x14311:
 		.dc.b TOK_COMMA
 		.dc.b ARG_POP
-		.dc.b 5
+		.dc.b TOK_SUB
 		.dc.b TOK_EQ
 		.dc.b ARG_BACK
 		.dc.b ARG_REPLACE,33
 		.dc.b ARG_END
+
 x14319:
 		.dc.b TOK_COMMA
 		.dc.b ARG_POP
-		.dc.b 6
+		.dc.b TOK_ADD
 		.dc.b TOK_EQ
 		.dc.b ARG_BACK
 		.dc.b ARG_REPLACE,33
 		.dc.b ARG_END
+
 x14321:
 		.dc.b TOK_COMMA
 		.dc.b ARG_POP
@@ -9380,7 +9386,7 @@ x144e6:
 x144eb:
 		.dc.b TOK_COMMA
 		.dc.b ARG_POP
-		.dc.b 34
+		.dc.b TOK_SEMI
 		.dc.b ARG_END
 x144ef:
 		.dc.b ARG_PUSH,((x144eb-jmpbase)>>8)&255,(x144eb-jmpbase)&255
@@ -9430,15 +9436,15 @@ yDIR_args:
 		.dc.b TOK_LINE_COMMENT
 		.dc.b ARG_END
 x14532:
-		.dc.b 71
+		.dc.b TOK_TO
 		.dc.b ARG_POP
 		.dc.b TOK_COMMA
-		.dc.b ARG_REPLACE,71
+		.dc.b ARG_REPLACE,TOK_TO
 		.dc.b ARG_POP
-		.dc.b 34
-		.dc.b ARG_REPLACE,71
+		.dc.b TOK_SEMI
+		.dc.b ARG_REPLACE,TOK_TO
 		.dc.b ARG_POP
-		.dc.b 249,71
+		.dc.b 249,TOK_TO
 		.dc.b ARG_END
 
 yOPTION_args:
@@ -9721,7 +9727,7 @@ x146b4:
 x146c0:
 		.dc.b TOK_COMMA
 		.dc.b ARG_POP
-		.dc.b 34
+		.dc.b TOK_SEMI
 		.dc.b ARG_POP
 		.dc.b 87
 		.dc.b ARG_POP
@@ -9853,7 +9859,7 @@ yCLIP_args:
 		.dc.b TOK_LINE_COMMENT
 		.dc.b ARG_POP
 		.dc.b ARG_CALL_FUNC,((f13d64-jmpbase)>>8)&255,(f13d64-jmpbase)&255
-		.dc.b 109
+		.dc.b TOK_OFFSET
 		.dc.b ARG_PUSH,((x1503f-jmpbase)>>8)&255,(x1503f-jmpbase)&255
 		.dc.b TOK_LINE_COMMENT
 		.dc.b ARG_END
@@ -10374,7 +10380,7 @@ yPOLYLINE_args:
 		.dc.b TOK_LINE_COMMENT
 		.dc.b ARG_END
 x14aa3:
-		.dc.b 109
+		.dc.b TOK_OFFSET
 		.dc.b ARG_PUSH,((x1503f-jmpbase)>>8)&255,(x1503f-jmpbase)&255
 		.dc.b ARG_POP
 		.dc.b ARG_END
@@ -10699,10 +10705,10 @@ x585e8:
 		.dc.b ARG_END
 
 x14ba8:
-		.dc.b 6
+		.dc.b TOK_ADD
 		.dc.b ARG_REPLACE,29
 		.dc.b ARG_POP
-		.dc.b 5
+		.dc.b TOK_SUB
 		.dc.b ARG_REPLACE,30
 		.dc.b ARG_POP
 		.dc.b 31
@@ -13229,7 +13235,7 @@ x1516b:
 		.dc.b ARG_POP
 		.dc.b ARG_END
 x15176:
-		.dc.b 6
+		.dc.b TOK_ADD
 		.dc.b ARG_REPLACE,28
 		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
 		.dc.b ARG_POP
@@ -13340,15 +13346,15 @@ x1521b:
 		.dc.b ARG_PUSH,((x1529b-jmpbase)>>8)&255,(x1529b-jmpbase)&255
 		.dc.b ARG_PUSH,((x1521b-jmpbase)>>8)&255,(x1521b-jmpbase)&255
 		.dc.b ARG_POP
-		.dc.b 34
+		.dc.b TOK_SEMI
 		.dc.b ARG_POP
 		.dc.b ARG_END
 
 x15228:
 		.dc.b TOK_COMMA
 		.dc.b ARG_POP
-		.dc.b 34
-		.dc.b ARG_REPLACE,33
+		.dc.b TOK_SEMI
+		.dc.b ARG_REPLACE,TOK_COMMA
 		.dc.b ARG_END
 
 yPRINT_args:
