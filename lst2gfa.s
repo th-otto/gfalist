@@ -422,7 +422,7 @@ fstr_outbuf:        ds.b 30        /*  512 */
 decimal_digits:     ds.w 1         /*  542 */
                     ds.b 306
 o850:               ds.b 256       /*  850 */
-o1106:              ds.b 256       /* 1106 */
+general_buffer:     ds.b 256       /* 1106 */
 o1362:              ds.w 1         /* 1362 */
 o1364:              ds.b 478       /* 1364 */
 o1842:              ds.b 472       /* 1842 */
@@ -456,7 +456,7 @@ fstr_outbuf:        ds.b 30        /*  292 */
 decimal_digits:     ds.w 1         /*  322 */
 o850:               ds.b 182       /*  324 */
 o2314:              ds.b 74        /*  506 */
-o1106:              ds.b 256       /*  580 */
+general_buffer:     ds.b 256       /*  580 */
 o1362:              ds.w 1         /*  836 */
 o1364:              ds.b 26        /*  838 */
 o2772:              ds.b 214       /*  964 */
@@ -525,7 +525,7 @@ x1007a:
 		bsr        x1022c
 		bsr        x11ae8
 		move.l     #ERROR,error_jmp+4(a6)
-		lea.l      o1106(a6),a0
+		lea.l      general_buffer(a6),a0
 		movea.l    baspag(a6),a1
 		lea.l      128(a1),a1
 		tst.b      (a1)+
@@ -750,7 +750,7 @@ x101d0_1:
 		bra        exit
 
 x101f0:
-		lea.l      o1106(a6),a0
+		lea.l      general_buffer(a6),a0
 		clr.w      -(a7)
 		move.l     a0,-(a7)
 		move.w     #61,-(a7) /* Fopen */
@@ -916,7 +916,7 @@ x1030a:
 x1030a_1:
 		movem.l    d0/a0,-(a7)
 		lea.l      8(a7),a2
-		lea.l      o1106(a6),a0
+		lea.l      general_buffer(a6),a0
 		bsr        copy32b
 		cmpi.l     #0x494E4C49,d0 /* 'INLI' */
 		bne        x1030a_12
@@ -1059,7 +1059,7 @@ x1030a_12:
 		lea.l      not_inline_msg(pc),a0
 	.ENDC
 		bsr        printstr
-		lea.l      o1106(a6),a0
+		lea.l      general_buffer(a6),a0
 x1030a_13:
 		move.b     (a0)+,d0
 		cmpi.b     #EOL,d0
@@ -2307,7 +2307,7 @@ main_11:
 		tst.b      (a0)+
 		beq        x10194
 		moveq.l    #0,d7
-		lea.l      o1106(a6),a1
+		lea.l      general_buffer(a6),a1
 main_12:
 		cmpi.b     #' ',(a0)+
 		beq.s      main_12
@@ -2621,7 +2621,7 @@ x11162:
 
 /* gfa: 000157be */
 putcstdout:
-		lea.l      o1106(a6),a1
+		lea.l      general_buffer(a6),a1
 		move.b     d0,(a1)
 		moveq.l    #1,d0
 putcstdout_1:
@@ -2633,10 +2633,10 @@ putcstdout_1:
 		rts
 
 x1117e:
-		lea.l      o1106(a6),a1
+		lea.l      general_buffer(a6),a1
 		moveq.l    #1,d0
 		bsr.s      readstdin
-		move.b     o1106(a6),d0
+		move.b     general_buffer(a6),d0
 		rts
 
 readstdin:
@@ -3115,7 +3115,7 @@ x11578:
 		bsr        x1134c
 		lea.l      ptr_table(a6),a0
 		lea.l      ptr_table+38*4(a6),a1
-		lea.l      o1106(a6),a2
+		lea.l      general_buffer(a6),a2
 		move.l     (a0),d0
 		tst.b      x1156c
 		bpl.s      x11578_1
@@ -3129,7 +3129,7 @@ x11578_2:
 		move.l     d1,(a2)+
 		cmpa.l     a0,a1
 		bne.s      x11578_1
-		lea.l      o1106(a6),a1
+		lea.l      general_buffer(a6),a1
 		move.l     #152,d0 /* write the offsets */
 		bsr        x1134c
 		movea.l    ptr_table(a6),a1
@@ -3373,7 +3373,7 @@ x117bc_8:
 		clr.b      (a1)
 x117bc_9:
 		movea.l    a1,a0
-		lea.l      o1106(a6),a1
+		lea.l      general_buffer(a6),a1
 		rts
 
 x1181a:
@@ -7143,7 +7143,7 @@ func_index_table:
 
 x1377c:
 		lea.l      o850(a6),a4
-		lea.l      o1106(a6),a5
+		lea.l      general_buffer(a6),a5
 x1377c_1:
 		move.b     (a4)+,d0
 		bne.s      x1377c_2
@@ -7158,7 +7158,7 @@ x1377c_3:
 		move.b     d0,(a5)+
 		cmpi.b     #CR,d0 /* FIXME: handle also LF */
 		bne.s      x1377c_1
-		lea.l      o1106(a6),a0
+		lea.l      general_buffer(a6),a0
 		rts
 
 skip_spaces_0:
@@ -7180,7 +7180,7 @@ x137c0:
 		lea.l      o1364(a6),a1
 		move.w     d0,(a1)+
 		movea.l    x137bc(pc),a0
-		bsr        x1395a
+		bsr        parse_cmd_args
 		move.l     a1,d0
 		rts
 
@@ -7194,7 +7194,7 @@ x137d2:
 		bsr.s      skip_spaces
 		move.l     a0,x137bc
 		bsr        x1389c
-		bsr        x1395a
+		bsr        parse_cmd_args
 		move.l     a1,d0
 		bne.s      x137d2_1
 		lea.l      yLET_args(pc),a2
@@ -7350,12 +7350,13 @@ ARG_BACK      = 250
 /* 372: 572e6 */
 /* 373: 580d6 */
 x1395a:
+parse_cmd_args:
 		clr.l      x137b4
 		pea.l      (0).w
 		pea.l      (a1)
 		pea.l      (a0)
 		clr.l      8438(a6)
-x1395a_1:
+parse_cmd_args0:
 		moveq.l    #0,d7
 		moveq.l    #0,d0
 		move.b     (a2)+,d0
@@ -7375,14 +7376,14 @@ x1395a_1:
 x1395a_2:
 		bsr        handle_function
 		tst.b      d7
-		beq.s      x1395a_1
+		beq.s      parse_cmd_args0
 		bra.s      x1395a_11
 /* handle 0xfc & 0xfd */
 x1395a_3:
 		addq.l     #8,a7
 		movea.l    (a7)+,a2
 		move.l     a2,d0
-		bne.s      x1395a_1
+		bne.s      parse_cmd_args0
 		move.l     a1,d0
 		sub.l      a6,d0
 		cmpi.l     #o1842,d0 /* maybe bug here in GBE: same value as in GFA */
@@ -7406,15 +7407,15 @@ x1395a_5:
 		bgt.s      x1395a_7
 		beq.s      x1395a_6
 		move.b     (a2)+,(a1)+
-		bra.s      x1395a_1
+		bra.s      parse_cmd_args0
 /* handle 0xfa */
 x1395a_6:
 		subq.l     #1,a1
-		bra.s      x1395a_1
+		bra.s      parse_cmd_args0
 /* handle 0xfb */
 x1395a_7:
 		move.b     (a2)+,-1(a1)
-		bra.s      x1395a_1
+		bra.s      parse_cmd_args0
 
 /* handle 0xff */
 x1395a_8:
@@ -7426,7 +7427,7 @@ x1395a_8:
 		pea.l      (a0)
 		lea.l      jmpbase(pc),a2
 		adda.w     d0,a2
-		bra.s      x1395a_1
+		bra.s      parse_cmd_args0
 
 /* handle 0xfe */
 x1395a_9:
@@ -7463,7 +7464,7 @@ x1395a_12:
 x1395a_13:
 		movea.l    (a7),a0
 		movea.l    4(a7),a1
-		bra        x1395a_1
+		bra        parse_cmd_args0
 x1395a_14:
 		suba.l     a1,a1
 		rts
@@ -7905,7 +7906,7 @@ f13da6:
 		move.w     #TOK_CMD_CONTRL*2,o1364(a6)
 		lea.l      cmd_contrl(pc),a2
 f13da6_1:
-		lea.l      o1106(a6),a0
+		lea.l      general_buffer(a6),a0
 		moveq.l    #0,d1
 		move.b     (a2)+,d1
 		bsr        skip_spaces
@@ -8445,7 +8446,7 @@ f140fa:
 		move.w     #TOK_CMD_DIV_FLOAT*2,d0
 		lea.l      yDIV_args.l,a2
 f140fa_1:
-		lea.l      o1106(a6),a0
+		lea.l      general_buffer(a6),a0
 		lea.l      o1364(a6),a1
 		move.w     d0,(a1)+
 		movem.l    a0-a2,4(a7)
@@ -8496,7 +8497,7 @@ x14147:
 	.IFNE GBE
 ySTRUCTs_args:
 yOB_TEXTs_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
 		.dc.b TOK_RPAREN
 		.dc.b ARG_BACK
@@ -8514,7 +8515,7 @@ yBITBLK_args:
 yOB_RADIO_args:
 yOB_dot_FLAGS_args:
 yOB_dot_STATE_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 	.ENDC
 
 yWINDTAB_args:
@@ -8607,7 +8608,7 @@ yBF_FRAMESIZE_args:
 yBF_CHARACTER_args:
 yBF_OBSPEC_args:
 yARRAY_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 yUSERDEF_args:
 yPTSOUT_args:
 yPTSIN_args:
@@ -9170,7 +9171,7 @@ yC2P_args:
 yBAR_args:
 yBREPLACE_args:
 yBOX_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 
 yTBITBLT_args:
 ySNDH_args:
@@ -9184,7 +9185,7 @@ yMEMEXG_args:
 yBFILL_args:
 yBEXG_args:
 yBMOVE_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 
 yVPLOT_args:
 ySLPOKE_args:
@@ -9207,7 +9208,7 @@ yLPOKE_args:
 yDPOKE_args:
 yBZERO_args:
 yBMIRROR_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 
 yCLEARW_args:
 yCLOSEW_args:
@@ -9283,12 +9284,12 @@ yINLINE_args:
 		.dc.b ARG_CALL_FUNC,((f158f8-jmpbase)>>8)&255,(f158f8-jmpbase)&255
 		.dc.b TOK_LINE_COMMENT
 		.dc.b ARG_END
-x14475:
+iexp_comma:
 		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
 		.dc.b TOK_COMMA
 		.dc.b ARG_END
 	.IFNE GBE
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 	.ENDC
 
 yVCURVE_args:
@@ -9296,25 +9297,25 @@ ySET_PXYXY_args:
 ySET_RXYWH_args:
 yCURVE_args:
 yARECT_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 ySET_GCBITMAP_args:
 ySFILL_args:
 yHLINE_args:
 yALINE_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 ySET_PXYWH_args:
 ySET_MENU_args:
 ySET_MFDB_args:
 yCRASTER_args:
 yACHAR_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 yVGET_args:
 yPIXEL1M_args:
 yPIXEL2P_args:
 yPIXEL4P_args:
 yPIXEL8P_args:
 yPIXEL8C_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((yVBOX_args-jmpbase)>>8)&255,(yVBOX_args-jmpbase)&255
 		.dc.b ARG_END
 yAPOLY_args:
@@ -9654,7 +9655,7 @@ yTITLEW_args:
 ySTRPOKE_args:
 yINFOW_args:
 		.dc.b ARG_PUSH,((x144ff-jmpbase)>>8)&255,(x144ff-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((yCHDIR_args-jmpbase)>>8)&255,(yCHDIR_args-jmpbase)&255
 		.dc.b ARG_END
 REM_args:
@@ -10342,7 +10343,7 @@ yARRAYFILL_args:
 		.dc.b ARG_END
 
 yRCALL_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_CALL_FUNC,((expect_int_arr-jmpbase)>>8)&255,(expect_int_arr-jmpbase)&255
 		.dc.b TOK_RPAREN
 		.dc.b TOK_LINE_COMMENT
@@ -10365,7 +10366,7 @@ yBITBLT_args:
 yPOLYMARK_args:
 yPOLYFILL_args:
 yPOLYLINE_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x143bc-jmpbase)>>8)&255,(x143bc-jmpbase)&255
 		.dc.b TOK_COMMA
 		.dc.b ARG_PUSH,((x143bc-jmpbase)>>8)&255,(x143bc-jmpbase)&255
@@ -10404,31 +10405,31 @@ yKEYTEST_args:
 
 	.IFNE GBE
 x58478_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x1433a-jmpbase)>>8)&255,(x1433a-jmpbase)&255
 		.dc.b TOK_RPAREN
 		.dc.b ARG_END
 x58480_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 x58483_372:
 		.dc.b ARG_PUSH,((x14342-jmpbase)>>8)&255,(x14342-jmpbase)&255
 		.dc.b TOK_RPAREN
 		.dc.b ARG_END
 x58488_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
 		.dc.b TOK_COMMA
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
 		.dc.b TOK_RPAREN
 		.dc.b ARG_END
 x58497_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 x584a3_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 x584a6_372:
 		.dc.b ARG_PUSH,((x14342-jmpbase)>>8)&255,(x14342-jmpbase)&255
 		.dc.b TOK_COMMA
@@ -10442,10 +10443,10 @@ x584a6_372:
 	.ENDC
 
 yALERT_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
 		.dc.b TOK_COMMA
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
 		.dc.b TOK_COMMA
 		.dc.b ARG_PUSH,((x1433a-jmpbase)>>8)&255,(x1433a-jmpbase)&255
@@ -10453,7 +10454,7 @@ yALERT_args:
 		.dc.b ARG_END
 
 yKEYDEF_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x14139-jmpbase)>>8)&255,(x14139-jmpbase)&255
 		.dc.b ARG_END
 
@@ -10530,7 +10531,7 @@ ySTRARRAYFILL_args:
 x58524_372:
 		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
 		.dc.b TOK_COMMA
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_CALL_FUNC,((expect_string_arr-jmpbase)>>8)&255,(expect_string_arr-jmpbase)&255
 		.dc.b TOK_RPAREN
 		.dc.b TOK_RPAREN
@@ -10539,24 +10540,24 @@ x58531_372:
 		.dc.b ARG_CALL_FUNC,((expect_string_arr-jmpbase)>>8)&255,(expect_string_arr-jmpbase)&255
 		.dc.b TOK_RPAREN
 		.dc.b TOK_COMMA
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
 		.dc.b TOK_RPAREN
 		.dc.b ARG_END
 x58541_372:
 		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
 		.dc.b TOK_COMMA
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
 		.dc.b TOK_RPAREN
 		.dc.b ARG_END
 x58550_372:
 		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
 		.dc.b TOK_COMMA
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
 		.dc.b TOK_RPAREN
 		.dc.b ARG_END
@@ -10568,7 +10569,7 @@ x5855f_372:
 x58567_372:
 		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
 		.dc.b TOK_COMMA
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_CALL_FUNC,((expect_string_arr-jmpbase)>>8)&255,(expect_string_arr-jmpbase)&255
 		.dc.b TOK_RPAREN
 		.dc.b TOK_RPAREN
@@ -10802,7 +10803,7 @@ f14bde_1:
 		lea.l      jmpbase(pc),a2
 		adda.w     x14c16(pc,d0.w),a2
 		addq.l     #4,a7
-		bra        x1395a_1
+		bra        parse_cmd_args0
 
 /* 370: 55256 */
 /* 371: 5758c */
@@ -11032,21 +11033,21 @@ x14cdf:
 		.dc.b ARG_END
 
 x14ce8:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 x14ceb:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 x14cee:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 x14cf1:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 x14cf4:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 x14cf7:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 x14cfa:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 x14cfd:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 x14d00:
 		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
 x14d03:
@@ -12506,19 +12507,19 @@ x59be7_373:
 		.dc.b ARG_END
 	.ENDC
 x58d35_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x14346-jmpbase)>>8)&255,(x14346-jmpbase)&255
 		.dc.b TOK_COMMA
 		.dc.b ARG_PUSH,((x14342-jmpbase)>>8)&255,(x14342-jmpbase)&255
 		.dc.b TOK_RPAREN
 		.dc.b ARG_END
 x58d41_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 x58d44_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 x58d4a_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x14346-jmpbase)>>8)&255,(x14346-jmpbase)&255
 		.dc.b TOK_RPAREN
 		.dc.b ARG_END
@@ -12537,9 +12538,9 @@ x58d60_372:
 		.dc.b ARG_END
 	.IF GBE>=373
 x59c1f_373:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x14346-jmpbase)>>8)&255,(x14346-jmpbase)&255
 		.dc.b TOK_COMMA
 		.dc.b ARG_PUSH,((x14346-jmpbase)>>8)&255,(x14346-jmpbase)&255
@@ -12547,16 +12548,16 @@ x59c1f_373:
 		.dc.b ARG_END
 	.ENDC
 x58d64_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 x58d67_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 x58d6a_372:
 		.dc.b ARG_PUSH,((x14411-jmpbase)>>8)&255,(x14411-jmpbase)&255
 		.dc.b TOK_RPAREN
 		.dc.b ARG_END
 yRGB_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x1433e-jmpbase)>>8)&255,(x1433e-jmpbase)&255
 		.dc.b TOK_COMMA
 		.dc.b ARG_PUSH,((x1433e-jmpbase)>>8)&255,(x1433e-jmpbase)&255
@@ -12565,12 +12566,12 @@ yRGB_args:
 		.dc.b TOK_LINE_COMMENT
 		.dc.b ARG_END
 yAVERAGE_RGB_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x1433a-jmpbase)>>8)&255,(x1433a-jmpbase)&255
 		.dc.b TOK_COMMA
 		.dc.b ARG_PUSH,((x1433a-jmpbase)>>8)&255,(x1433a-jmpbase)&255
@@ -12651,7 +12652,7 @@ x58df3_372:
 		.dc.b TOK_COMMA
 	.ELSE
 x14f4a:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 	.ENDC
 x14f4d:
 		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
@@ -12667,33 +12668,33 @@ yTPUT_args:
 		.dc.b TOK_LINE_COMMENT
 		.dc.b ARG_END
 x58e05_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 x58e08_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 x58e0b_372:
 		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
 		.dc.b TOK_RPAREN
 		.dc.b ARG_END
 yVER2STR_args:
 yENVIRON_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
 		.dc.b TOK_LINE_COMMENT
 		.dc.b ARG_END
 yBXLATE_args:
 yBCRYPT_args:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
 		.dc.b TOK_LINE_COMMENT
 		.dc.b ARG_END
 x58e23_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
 		.dc.b TOK_COMMA
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
 		.dc.b ARG_END
 x58e37_372:
@@ -12707,7 +12708,7 @@ x58e37_372:
 		.dc.b TOK_RPAREN
 		.dc.b ARG_END
 x58e48_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
 		.dc.b TOK_COMMA
 		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
@@ -12720,7 +12721,7 @@ x58e48_372:
 		.dc.b TOK_RPAREN
 		.dc.b ARG_END
 x58e60_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
 		.dc.b TOK_COMMA
 		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
@@ -12729,7 +12730,7 @@ x58e60_372:
 		.dc.b TOK_RPAREN
 		.dc.b ARG_END
 x58e70_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
 		.dc.b TOK_COMMA
 		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
@@ -12738,9 +12739,9 @@ x58e70_372:
 	.ENDC
 
 x14f52:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 x14f55:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
 		.dc.b TOK_RPAREN
 		.dc.b ARG_END
@@ -12768,7 +12769,7 @@ x58ea0_372:
 		.dc.b TOK_RPAREN
 		.dc.b ARG_END
 x58ea8_372:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x143ec-jmpbase)>>8)&255,(x143ec-jmpbase)&255
 		.dc.b ARG_PUSH,((x14f28-jmpbase)>>8)&255,(x14f28-jmpbase)&255
 		.dc.b TOK_RPAREN
@@ -12799,7 +12800,7 @@ x14f83:
 		.dc.b ARG_PUSH,((x15039-jmpbase)>>8)&255,(x15039-jmpbase)&255
 		.dc.b TOK_COMMA
 x14f87:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 x14f8a:
 		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
 		.dc.b ARG_PUSH,((x14f1d-jmpbase)>>8)&255,(x14f1d-jmpbase)&255
@@ -12829,7 +12830,7 @@ x14f9b:
 		.dc.b ARG_END
 
 x14fa3:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 
 x14fa6:
 		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
@@ -12951,17 +12952,17 @@ x15027:
 		.dc.b ARG_REPLACE,33
 		.dc.b ARG_END
 x1502d:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 x15036:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 x15039:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 x1503c:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 x1503f:
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x14b96-jmpbase)>>8)&255,(x14b96-jmpbase)&255
 		.dc.b ARG_END
 x15046:
@@ -13031,7 +13032,7 @@ x1506f:
 		.dc.b ARG_REPLACE,63
 		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
 		.dc.b TOK_COMMA
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
 		.dc.b ARG_POP
 		.dc.b ARG_CALL_FUNC,((f1369e-jmpbase)>>8)&255,(f1369e-jmpbase)&255
@@ -13093,7 +13094,7 @@ x1506f:
 		.dc.b TOK_RPAREN
 		.dc.b ARG_POP
 		.dc.b TOK_TIMESTAMP
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
 		.dc.b TOK_RPAREN
 		.dc.b ARG_POP
@@ -13104,17 +13105,17 @@ x1506f:
 		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
 		.dc.b ARG_POP
 		.dc.b TOK_OB_TEXT
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
 		.dc.b ARG_POP
 	.IF GBE>=373
 		.dc.b TOK_STRUCTSTR
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
 		.dc.b ARG_POP
 	.ENDC
 		.dc.b TOK_CHAR
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
 		.dc.b ARG_POP
 		.dc.b TOK_REPLACE
@@ -13136,12 +13137,12 @@ x1506f:
 .ENDC
 x150de:
 		.dc.b TOK_STRING_CODE
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x14c92-jmpbase)>>8)&255,(x14c92-jmpbase)&255
 		.dc.b ARG_POP
 		.dc.b TOK_STRING_CODE
 		.dc.b ARG_REPLACE,130
-		.dc.b ARG_PUSH,((x14475-jmpbase)>>8)&255,(x14475-jmpbase)&255
+		.dc.b ARG_PUSH,((iexp_comma-jmpbase)>>8)&255,(iexp_comma-jmpbase)&255
 		.dc.b ARG_PUSH,((x15068-jmpbase)>>8)&255,(x15068-jmpbase)&255
 		.dc.b TOK_RPAREN
 		.dc.b ARG_POP
@@ -13530,7 +13531,7 @@ f15310_3:
 x15352:
 		bsr        skip_spaces
 		move.l     a0,d1
-		subi.l     #o1106,d1 /* ??? */
+		subi.l     #general_buffer,d1 /* ??? */
 		sub.l      a6,d1
 		move.b     (a0)+,d0
 		move.b     d0,8401(a6)
@@ -13620,7 +13621,7 @@ x15352_12:
 x15424:
 		bsr        skip_spaces
 		move.l     a0,d1
-		subi.l     #o1106,d1
+		subi.l     #general_buffer,d1
 		sub.l      a6,d1
 		cmpi.b     #'9',(a0)
 		bhi        x15352
@@ -13629,11 +13630,11 @@ x15424:
 		bra.s      x15352_12
 
 f15444:
-		moveq.l    #-5,d7
+		moveq.l    #TOK_REF_PROCEDURE-256,d7
 		bra.s      f15448_1
 
 f15448:
-		moveq.l    #-6,d7
+		moveq.l    #TOK_REF_LABEL-256,d7
 f15448_1:
 		bsr.s      x15424
 		bclr       #2,d2
@@ -13837,7 +13838,7 @@ x154f0_15:
 x154f0_16:
 		moveq.l    #0,d1
 		move.b     (a0)+,d1
-		lea.l      o1106(a6),a2
+		lea.l      general_buffer(a6),a2
 		adda.w     d1,a2
 		move.b     (a0)+,d1
 		andi.w     #15,d0

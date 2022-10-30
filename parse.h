@@ -4,6 +4,11 @@
 #define UNUSED(x) ((void)(x))
 #endif
 
+#ifndef FALSE
+# define FALSE 0
+# define TRUE 1
+#endif
+
 struct argstack {
 	const char *src;
 	uint8_t *dst;
@@ -17,6 +22,7 @@ struct funcparse {
 	struct argstack stack[PARSE_STACK_DEPTH];
 	int stackptr;
 	int d7;
+	int parse_cmd_continue_search;
 };
 
 struct globals;

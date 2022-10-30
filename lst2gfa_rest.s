@@ -48,7 +48,7 @@ x1007a:
 		bsr        x1022c
 		bsr        x11ae8
 		move.l     #ERROR,error_jmp+4(a6)
-		lea.l      o1106(a6),a0
+		lea.l      general_buffer(a6),a0
 		movea.l    baspag(a6),a1
 		lea.l      128(a1),a1
 		tst.b      (a1)+
@@ -149,7 +149,7 @@ x1007a_9:
 		cmpi.w     #0x2000,d1
 		blt.s      x1007a_6
 x1007a_10:
-		bra.s      x101d0
+		bra.s      errexit
 
 ERROR:
 		lea.l      error_str,a0
@@ -164,8 +164,6 @@ stackoverflow:
 x10194_1:
 		bsr        x1022c
 		bra.s      failure
-x10194_2:
-		lea.l      notalst_msg,a0
 x101aa:
 		lea.l      open_err_msg,a0
 		bra.s      failure
@@ -183,25 +181,17 @@ failure_1:
 failure_2:
 		bsr        printstr
 		move.l     (a7)+,d0
-		beq.s      x101d0
+		beq.s      errexit
 		movea.l    d0,a0
 		bsr.w      printstr
 
-x101d0:
+errexit:
 		bsr.w      printnl
-		move.w     mtask,d0
-		bne.s      x101d0_1
-		lea.l      waitkey_msg,a0
-		bsr.w      printstr
-		move.w     #7,-(a7) /* Crawcin */
-		trap       #1
-		addq.l     #2,a7
-x101d0_1:
 		moveq.l    #-1,d0
 		bra        exit
 
 x101f0:
-		lea.l      o1106(a6),a0
+		lea.l      general_buffer(a6),a0
 		clr.w      -(a7)
 		move.l     a0,-(a7)
 		move.w     #61,-(a7) /* Fopen */
@@ -249,7 +239,7 @@ x1030a:
 x1030a_1:
 		movem.l    d0/a0,-(a7)
 		lea.l      8(a7),a2
-		lea.l      o1106(a6),a0
+		lea.l      general_buffer(a6),a0
 		bsr        copy32b
 		cmpi.l     #0x494E4C49,d0 /* 'INLI' */
 		bne        x1030a_12
@@ -356,7 +346,7 @@ x1030a_12:
 		addq.l     #8,a7
 		lea.l      not_inline_msg,a0
 		bsr        printstr
-		lea.l      o1106(a6),a0
+		lea.l      general_buffer(a6),a0
 x1030a_13:
 		move.b     (a0)+,d0
 		cmpi.b     #EOL,d0
@@ -395,77 +385,6 @@ x1047e:
 		.dc.w       0x0000
 
 startup:
-		pea.l      find_mtask
-		move.w     #38,-(a7) /* Supexec */
-		trap       #14
-		addq.l     #6,a7
-		move.w     mtask,d0
-		beq.s      startup_5
-		lea.l      _entry-212(pc),a0 /* get environment ptr from basepage */
-		move.l     (a0),d0
-		beq.s      startup_5
-		movea.l    d0,a0
-		tst.b      (a0)
-		beq.s      startup_5
-startup_1:
-		cmpi.b     #'C',(a0)
-		bne.s      startup_3
-		cmpi.b     #'O',1(a0)
-		bne.s      startup_3
-		cmpi.b     #'L',2(a0)
-		bne.s      startup_3
-		cmpi.b     #'U',3(a0)
-		bne.s      startup_3
-		cmpi.b     #'M',4(a0)
-		bne.s      startup_3
-		cmpi.b     #'N',5(a0)
-		bne.s      startup_3
-		cmpi.b     #'S',6(a0)
-		bne.s      startup_3
-		cmpi.b     #'=',7(a0)
-		bne.s      startup_3
-		addq.l     #8,a0
-		moveq.l    #0,d0
-		moveq.l    #0,d1
-startup_2:
-		move.b     (a0)+,d0
-		beq.s      startup_4
-		subi.w     #'0',d0
-		bmi.s      startup_2
-		cmpi.b     #9,d0
-		bgt.s      startup_2
-		lsl.l      #1,d1
-		move.l     d1,-(a7)
-		lsl.l      #2,d1
-		add.l      (a7)+,d1
-		add.l      d0,d1
-		bra.s      startup_2
-startup_3:
-		tst.b      (a0)+
-		bne.s      startup_3
-		tst.b      (a0)
-		beq.s      startup_5
-		bra.s      startup_1
-startup_4:
-		move.l     d1,d0
-		bne.s      startup_6
-startup_5:
-		.dc.w 0xa000 /* ALINE      #0 */
-		movea.l    d0,a0
-		move.w     -44(a0),d0
-		addq.w     #1,d0
-startup_6:
-		cmpi.w     #256,d0
-		bgt.s      startup_7
-		cmpi.w     #40,d0
-		bge.s      startup_8
-		moveq.l    #40,d0
-		bra.s      startup_8
-startup_7:
-		moveq.l    #80,d0
-startup_8:
-		lea.l      columns,a0
-		move.w     d0,(a0)
 		lea.l      x16768,a0
 		move.l     #0x40ACEAD6,d0 /* d0 = 2056756B ' Vuk' */
 		ror.l      #1,d0
@@ -494,34 +413,6 @@ FFTOI:
 mem_end: .dc.l 0
 x10cae: .dc.l 0
 
-x10cb2:
-		.dc.l dummy_rts /* primary_expr */
-		.dc.l dummy_rts /* get_2expr */
-		.dc.l dummy_rts /* get_3expr */
-		.dc.l dummy_rts /* get_4expr */
-		.dc.l dummy_rts /* get_5expr */
-		.dc.l dummy_rts /* get_6expr */
-		.dc.l dummy_rts /* get_7expr */
-		.dc.l dummy_rts /* get_8expr */
-		.dc.l dummy_rts
-		.dc.l dummy_rts
-		.dc.l dummy_rts
-		.dc.l Screat
-		.dc.l dummy_rts
-		.dc.l GarColl
-		.dc.l FADD
-		.dc.l FSUB
-		.dc.l dummy_rts /* FMUL */
-		.dc.l FDIV
-		.dc.l FITOF
-		.dc.l dummy_rts /* FFTOI */
-		.dc.l dummy_rts /* FSIN */
-		.dc.l dummy_rts /* FCOS */
-		.dc.l dummy_rts /* FTAN */
-		.dc.l dummy_rts /* FATN */
-		.dc.l dummy_rts /* FEXP */
-		.dc.l dummy_rts /* FLOG */
-
 main:
 		movea.l    4(a7),a5
 		lea.l      bss_end,a6
@@ -541,13 +432,7 @@ main_1:
 		movea.l    a6,a0
 		adda.l     #36820,a0
 		move.l     a6,mem_end
-		lea.l      x10cb2(pc),a1
-		lea.l      extjmp_table(a6),a2
-		moveq.l    #26-1,d0
-main_2:
-		move.w     #0x4EF9,(a2)+ /* jmp.l opcode */
-		move.l     (a1)+,(a2)+
-		dbf        d0,main_2
+
 		move.w     #13,decimal_digits(a6)
 		move.b     612(a6),d0
 		ori.b      #'.',d0
@@ -653,7 +538,7 @@ main_11:
 		tst.b      (a0)+
 		beq        x10194
 		moveq.l    #0,d7
-		lea.l      o1106(a6),a1
+		lea.l      general_buffer(a6),a1
 main_12:
 		cmpi.b     #' ',(a0)+
 		beq.s      main_12
@@ -722,12 +607,8 @@ ALLOT_5:
 		dbf        d1,ALLOT_4
 		rts
 ALLOT_2:
-		moveq.l    #8,d0
-	.IFNE FOR_LIB
-		bra        ERROR
-	.ELSE
+		moveq.l    #8,d0 /* out of memory */
 		jmp        error_jmp(a6) /* ERROR */
-	.ENDC
 
 Lddre:
 		movem.l    d1-d7/a2-a6,-(a7)
@@ -866,12 +747,8 @@ STcreat:
 		suba.l     d1,a1
 		cmpa.l     168(a6),a1
 		bcc.s      STcreat_4
-		moveq.l    #8,d0
-	.IFNE FOR_LIB
-		bra        ERROR
-	.ELSE
+		moveq.l    #8,d0 /* out of memory */
 		jmp        error_jmp(a6) /* ERROR */
-	.ENDC
 
 GarColl:
 		movem.l    d0/a0-a3,-(a7)
@@ -1196,7 +1073,7 @@ x11578:
 		bsr        x1134c
 		lea.l      ptr_table(a6),a0
 		lea.l      ptr_table+38*4(a6),a1
-		lea.l      o1106(a6),a2
+		lea.l      general_buffer(a6),a2
 		move.l     (a0),d0
 		tst.b      x1156c
 		bpl.s      x11578_1
@@ -1210,7 +1087,7 @@ x11578_2:
 		move.l     d1,(a2)+
 		cmpa.l     a0,a1
 		bne.s      x11578_1
-		lea.l      o1106(a6),a1
+		lea.l      general_buffer(a6),a1
 		move.l     #152,d0 /* write the offsets */
 		bsr        x1134c
 		movea.l    ptr_table(a6),a1
@@ -1446,7 +1323,7 @@ x117bc_8:
 		clr.b      (a1)
 x117bc_9:
 		movea.l    a1,a0
-		lea.l      o1106(a6),a1
+		lea.l      general_buffer(a6),a1
 		rts
 
 x1181a:
@@ -1881,9 +1758,13 @@ x136d0:
 x136d0_end:
 		.even
 
-x1377c:
+/*
+ * copy input line to general_buffer,
+ * making everything uppercase, and terminate it with EOL
+ */
+copy_input:
 		lea.l      o850(a6),a4
-		lea.l      o1106(a6),a5
+		lea.l      general_buffer(a6),a5
 x1377c_1:
 		move.b     (a4)+,d0
 		bne.s      x1377c_2
@@ -1898,7 +1779,7 @@ x1377c_3:
 		move.b     d0,(a5)+
 		cmpi.b     #CR,d0 /* FIXME: handle also LF */
 		bne.s      x1377c_1
-		lea.l      o1106(a6),a0
+		lea.l      general_buffer(a6),a0
 		rts
 
 skip_spaces_0:
@@ -1930,7 +1811,7 @@ x137d2:
 		move.l     a0,longest_match
 		lea.l      o1364(a6),a1
 		clr.l      (a1)
-		bsr.s      x1377c
+		bsr.s      copy_input
 		bsr.s      skip_spaces
 		move.l     a0,x137bc
 		bsr        x1389c
@@ -2328,9 +2209,11 @@ f13c9a_4:
 f13c9a_5:
 		moveq.l    #0,d7
 		rts
+
 f13c9a_6:
 		moveq.l    #-1,d7
 		rts
+
 f13c9a_7:
 		moveq.l    #TOK_CONST_ZERO-256,d0
 		bra.s      f13c9a_11
@@ -2414,7 +2297,7 @@ f13da6:
 		move.w     #TOK_CMD_CONTRL*2,o1364(a6)
 		lea.l      cmd_contrl(pc),a2
 f13da6_1:
-		lea.l      o1106(a6),a0
+		lea.l      general_buffer(a6),a0
 		moveq.l    #0,d1
 		move.b     (a2)+,d1
 		bsr        skip_spaces
@@ -2524,7 +2407,7 @@ f140fa:
 		move.w     #TOK_CMD_DIV_FLOAT*2,d0
 		lea.l      yDIV_args.l,a2
 f140fa_1:
-		lea.l      o1106(a6),a0
+		lea.l      general_buffer(a6),a0
 		lea.l      o1364(a6),a1
 		move.w     d0,(a1)+
 		movem.l    a0-a2,4(a7)
@@ -2572,75 +2455,6 @@ f14578_6:
 		movem.l    (a7)+,a0-a1
 		moveq.l    #-1,d7
 		rts
-
-/* 371: 574f4 */
-/* 372: 5862c */
-/* 373: 5944c */
-f14bde:
-		bsr        find_function
-		lea.l      offset_table_pf(pc),a2
-		move.w     d6,d0
-		bpl.s      f14bde_1
-#if GBE > 0
-		cmpi.w     #(TOK_SUBFUNC_208<<8)+255,d0
-		bls.s      f14bde_208
-		cmpi.w     #(TOK_SUBFUNC_209<<8)+255,d0
-		bls.s      f14bde_209
-		cmpi.w     #(TOK_SUBFUNC_210<<8)+255,d0
-		bls.s      f14bde_210
-		cmpi.w     #(TOK_SUBFUNC_211<<8)+255,d0
-		bls.s      f14bde_211
-		cmpi.w     #(TOK_SUBFUNC_212<<8)+255,d0
-		bls.s      f14bde_212
-		cmpi.w     #(TOK_SUBFUNC_213<<8)+255,d0
-		bls.s      f14bde_213
-		cmpi.w     #(TOK_SUBFUNC_214<<8)+255,d0
-		bhi        f13c9a_6
-f14bde_214:
-		lea.l      offset_table_sf214(pc),a2
-		move.b     #TOK_SUBFUNC_214,(a1)+ /* secondary function table */
-		bra.s      f14bde_subfunc
-f14bde_213:
-		lea.l      offset_table_sf213(pc),a2
-		move.b     #TOK_SUBFUNC_213,(a1)+ /* secondary function table */
-		bra.s      f14bde_subfunc
-f14bde_212:
-#if GBE >= 373
-		lea.l      offset_table_sf212(pc),a2
-#else
-		lea.l      offset_table_sf214(pc),a2
-#endif
-		move.b     #TOK_SUBFUNC_212,(a1)+ /* secondary function table */
-		bra.s      f14bde_subfunc
-f14bde_211:
-		lea.l      offset_table_sf211(pc),a2
-		move.b     #TOK_SUBFUNC_211,(a1)+ /* secondary function table */
-		bra.s      f14bde_subfunc
-f14bde_210:
-		lea.l      offset_table_sf210(pc),a2
-		move.b     #TOK_SUBFUNC_210,(a1)+ /* secondary function table */
-		bra.s      f14bde_subfunc
-f14bde_209:
-		lea.l      offset_table_sf209(pc),a2
-		move.b     #TOK_SUBFUNC_209,(a1)+ /* secondary function table */
-		bra.s      f14bde_subfunc
-#else
-		cmpi.w     #(TOK_SUBFUNC_208<<8)+255,d0 /* token in range? */
-		bhi        f13c9a_6
-#endif
-f14bde_208:
-		lea.l      offset_table_sf208(pc),a2
-		move.b     #TOK_SUBFUNC_208,(a1)+ /* secondary function table */
-f14bde_subfunc:
-		andi.w     #255,d0
-f14bde_1:
-		move.b     d0,(a1)+
-		move.b     0(a2,d0.w),d0
-		beq        f13c9a_6
-		lea.l      jmpbase(pc),a2
-		adda.w     x14c16(pc,d0.w),a2
-		addq.l     #4,a7
-		bra        parse_cmd_args0
 
 /* 371: 5807e */
 /* 372: 592a8 */
@@ -2692,210 +2506,6 @@ f15310_3:
 		beq.s      f15310_2
 		cmpi.b     #'*',d0
 		bra.s      f15310_1
-
-x15352:
-		bsr        skip_spaces
-		move.l     a0,d1
-		subi.l     #o1106,d1 /* ??? */
-		sub.l      a6,d1
-		move.b     (a0)+,d0
-		move.b     d0,8401(a6)
-		cmpi.b     #'A',d0
-		bcs        x15352_12
-		cmpi.b     #'Z',d0
-		bhi        x15352_12
-x15352_0:
-		moveq.l    #0,d3
-x15352_1:
-		addq.w     #1,d3
-		beq        x15352_12
-		move.b     (a0)+,d0
-		cmpi.b     #'_',d0
-		beq.s      x15352_1
-		cmpi.b     #'.',d0
-		beq.s      x15352_1
-		cmpi.b     #'A',d0
-		bcs.s      x15352_2
-		cmpi.b     #'Z',d0
-		bls.s      x15352_1
-		bra.s      x15352_3
-x15352_2:
-		cmpi.b     #'0',d0
-		bcs.s      x15352_3
-		cmpi.b     #'9',d0
-		bls.s      x15352_1
-x15352_3:
-		moveq.l    #TYPE_FLOAT,d2
-		cmpi.b     #'{',d0
-		beq.s      x15352_12
-		cmpi.b     #'%',d0
-		beq.s      x15352_7
-		cmpi.b     #'$',d0
-		beq.s      x15352_8
-		cmpi.b     #'&',d0
-		beq.s      x15352_5
-		cmpi.b     #'|',d0
-		beq.s      x15352_6
-		cmpi.b     #'!',d0
-		beq.s      x15352_4
-		cmpi.b     #'#',d0
-		beq.s      x15352_9
-		cmpi.l     #x15492_1,(a7) /* WTF; compares PC to caller */
-		bne.s      x15352_10
-		move.b     8401(a6),d2
-		move.b     deftype-'A'(pc,d2.w),d2
-		bra.s      x15352_10
-
-deftype:
-		.dc.b       TYPE_FLOAT,TYPE_FLOAT,TYPE_FLOAT,TYPE_FLOAT
-		.dc.b       TYPE_FLOAT,TYPE_FLOAT,TYPE_FLOAT,TYPE_FLOAT
-		.dc.b       TYPE_FLOAT,TYPE_FLOAT,TYPE_FLOAT,TYPE_FLOAT
-		.dc.b       TYPE_FLOAT,TYPE_FLOAT,TYPE_FLOAT,TYPE_FLOAT
-		.dc.b       TYPE_FLOAT,TYPE_FLOAT,TYPE_FLOAT,TYPE_FLOAT
-		.dc.b       TYPE_FLOAT,TYPE_FLOAT,TYPE_FLOAT,TYPE_FLOAT
-		.dc.b       TYPE_FLOAT,TYPE_FLOAT
-
-x15352_4:
-		moveq.l    #TYPE_BOOL,d2
-		bra.s      x15352_9
-x15352_5:
-		moveq.l    #TYPE_WORD,d2
-		bra.s      x15352_9
-x15352_6:
-		moveq.l    #TYPE_BYTE,d2
-		bra.s      x15352_9
-x15352_7:
-		moveq.l    #TYPE_INT,d2
-		bra.s      x15352_9
-x15352_8:
-		moveq.l    #TYPE_STRING,d2
-x15352_9:
-		move.b     (a0)+,d0
-x15352_10:
-		cmpi.b     #'(',d0
-		bne.s      x15352_11
-		addq.b     #TYPE_FLOAT_ARR-TYPE_FLOAT,d2
-		rts
-x15352_11:
-		subq.l     #1,a0
-		rts
-x15352_12:
-		moveq.l    #-1,d2
-		rts
-
-x15424:
-		bsr        skip_spaces
-		move.l     a0,d1
-		subi.l     #o1106,d1
-		sub.l      a6,d1
-		cmpi.b     #'9',(a0)
-		bhi        x15352
-		cmpi.b     #'0',(a0)+
-		bcc        x15352_0
-		bra.s      x15352_12
-
-f15444:
-		moveq.l    #-5,d7
-		bra.s      f15448_1
-
-f15448:
-		moveq.l    #-6,d7
-f15448_1:
-		bsr.s      x15424
-		bclr       #2,d2
-		beq.s      f15448_2
-		subq.l     #1,a0
-f15448_2:
-		tst.b      d2
-		bne        f13c9a_6
-		move.b     d7,(a1)+
-		move.b     d1,(a1)+
-		move.b     d3,(a1)+
-		moveq.l    #0,d7
-		rts
-
-expect_float:
-		moveq.l    #TYPE_FLOAT,d7
-		bra.s      x15492
-expect_string:
-		moveq.l    #TYPE_STRING,d7
-		bra.s      x15492
-expect_int:
-		moveq.l    #TYPE_INT,d7
-		bra.s      x15492
-expect_bool:
-		moveq.l    #TYPE_BOOL,d7
-		bra.s      x15492
-expect_float_arr:
-		moveq.l    #TYPE_FLOAT_ARR,d7
-		bra.s      x15492
-expect_string_arr:
-		moveq.l    #TYPE_STRING_ARR,d7
-		bra.s      x15492
-expect_int_arr:
-		moveq.l    #TYPE_INT_ARR,d7
-		bra.s      x15492
-expect_bool_arr:
-		moveq.l    #TYPE_BOOL_ARR,d7
-		bra.s      x15492
-expect_word:
-		moveq.l    #TYPE_WORD,d7
-		bra.s      x15492
-expect_byte:
-		moveq.l    #TYPE_BYTE,d7
-		bra.s      x15492
-expect_word_arr:
-		moveq.l    #TYPE_WORD_ARR,d7
-		bra.s      x15492
-expect_byte_arr:
-		moveq.l    #TYPE_BYTE_ARR,d7
-
-x15492:
-		bsr        x15352
-x15492_1:
-		cmp.b      d7,d2
-		bne        f13c9a_6
-x15492_2:
-		addi.b     #TOK_REF_FLOAT,d2
-		move.b     d2,(a1)+
-		move.b     d1,(a1)+
-		move.b     d3,(a1)+
-		moveq.l    #0,d7
-		rts
-
-f154aa:
-		bsr        x15352
-		bclr       #2,d2   /* array ref? */
-		beq.s      f154aa_1
-		subq.l     #1,a0
-f154aa_1:
-		tst.b      d2      /* TYPE_FLOAT? */
-		beq.s      x15492_2
-		cmpi.b     #TYPE_INT,d2
-		beq.s      x15492_2
-		bra        f13c9a_6
-
-f154c4:
-		bsr        x15352
-		bclr       #2,d2   /* array ref? */
-		beq.s      f154c4_1
-		subq.l     #1,a0
-f154c4_1:
-		tst.b      d2      /* TYPE_FLOAT? */
-		bne        f13c9a_6
-		moveq.l    #TYPE_FUNCTION,d2
-		bra.s      x15492_2
-
-f154da:
-		bsr        x15352
-		bclr       #2,d2   /* array ref? */
-		beq.s      f154da_1
-		subq.l     #1,a0
-f154da_1:
-		subq.b     #TYPE_STRING,d2
-		bne        f13c9a_6
-		moveq.l    #TYPE_FUNCTION_STR,d2
-		bra.s      x15492_2
 
 /* 371: 58288 */
 /* 372: 594b4 */
@@ -2999,7 +2609,7 @@ x154f0_15:
 x154f0_16:
 		moveq.l    #0,d1
 		move.b     (a0)+,d1
-		lea.l      o1106(a6),a2
+		lea.l      general_buffer(a6),a2
 		adda.w     d1,a2
 		move.b     (a0)+,d1
 		andi.w     #15,d0
@@ -3118,7 +2728,7 @@ x156dc: .ascii "][Ok|Error]"
 		.even
 
 x154f0_31:
-		moveq.l    #1,d0
+		moveq.l    #1,d0 /* overflow */
 		lea.l      5360(a6),a0
 		jsr        ERROR.l
 		subq.w     #1,d0
@@ -3844,9 +3454,16 @@ x15c52_46:
 		moveq.l    #0,d0
 		move.b     0(a3,d1.w),d0
 		bra.s      x15c52_14
+
+/* referenced in x16028 */
+/* referenced in x16294 */
+/* referenced in x162ac */
 x15c52_13:
 		moveq.l    #0,d0
 		move.b     (a1)+,d0
+/* referenced in x162fc */
+/* referenced in x16318 */
+/* referenced in x16338 */
 x15c52_14:
 		cmpi.b     #TOK_LINE_COMMENT,d0
 		beq.s      x15c52_19
@@ -3893,6 +3510,8 @@ x15c52_18:
 		beq.s      x15c52_13
 		move.b     #' ',(a0)+
 		bra.s      x15c52_13
+		
+/* referenced in x162ac */
 x15c52_19:
 		cmpi.b     #' ',-(a0)
 		beq.s      x15c52_20
@@ -4142,15 +3761,6 @@ x1607a:
 x1607a_1:
 		clr.w      (a0)+
 		dbf        d0,x1607a_1
-
-		lea.l      cmd_table_offsets(a6),a0
-		clr.w      TOK_CMD_LABEL*2(a0)
-		clr.w      TOK_CMD_GOSUB_IMP*2(a0)
-		adda.w     #TOK_CMD_ASSIGN_FLOAT*2,a0
-		moveq.l    #12-1,d0
-x1607a_11:
-		clr.w      (a0)+
-		dbf        d0,x1607a_11
 		rts
 
 x1612c:
@@ -4597,27 +4207,6 @@ x16534_3:
 		clr.l      (a0)
 		rts
 
-find_mtask:
-		moveq.l    #0,d1
-		movea.l    (0x000005A0).w,a0
-		move.l     a0,d0
-		beq.s      find_mtask2
-find_mtask1:
-		move.l     (a0)+,d1
-		move.l     (a0)+,d0
-		cmpi.l     #0x4D616758,d1 /* 'MagX' */
-		beq.s      find_mtask3
-		cmpi.l     #0x4D694E54,d1 /* 'MiNT' */
-		beq.s      find_mtask3
-		tst.l      d1
-		bne.s      find_mtask1
-find_mtask2:
-		moveq.l    #0,d0
-find_mtask3:
-		lea.l      mtask,a0
-		move.w     d0,(a0)
-		rts
-
 	.data
 
 newvar_msg:
@@ -4637,9 +4226,6 @@ error_str:
 		.dc.b 0
 stack_overflow_msg:
 		.ascii "Stack overflow"
-		.dc.b 0
-notalst_msg:
-		.ascii "This is not LST file"
 		.dc.b 0
 open_err_msg:
 		.ascii "Open error"

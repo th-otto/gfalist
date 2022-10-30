@@ -30,29 +30,6 @@
 #define TP_VARNAMES                0x80 /* list variables names */
 
 
-/*
- * variable types
- */
-#define TYPE_FLOAT          0
-#define TYPE_STRING         1
-#define TYPE_INT            2
-#define TYPE_BOOL           3
-#define TYPE_FLOAT_ARR      4
-#define TYPE_STRING_ARR     5
-#define TYPE_INT_ARR        6
-#define TYPE_BOOL_ARR       7
-#define TYPE_WORD           8
-#define TYPE_BYTE           9
-#define TYPE_LABEL         10
-#define TYPE_PROCEDURE     11
-#define TYPE_WORD_ARR      12
-#define TYPE_BYTE_ARR      13
-#define TYPE_FUNCTION      14
-#define TYPE_FUNCTION_STR  15
-
-#define MAX_TYPES          16
-
-
 struct gfahdr {
 	unsigned char type;                         /* List type/protection */
 #define TP_SAVE  0
