@@ -26,6 +26,8 @@ extern struct argdesc const x15155[];
 extern struct argdesc const x143ec[];
 
 static const char *x137b4;
+static int x137b2;
+static const char *longest_match;
 
 static const struct cmdname *cmd_index_table[26];
 static const struct cmdname *cmd_other_table;
@@ -492,14 +494,6 @@ static void f13de4(struct globals *G, struct funcparse *parse)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void f13bca(struct globals *G, struct funcparse *parse)
-{
-	UNUSED(G);
-	UNUSED(parse);
-}
-
-/*** ---------------------------------------------------------------------- ***/
-
 static void f152e6(struct globals *G, struct funcparse *parse)
 {
 	UNUSED(G);
@@ -524,10 +518,9 @@ static void execute_defint(struct globals *G, struct funcparse *parse)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void dummy_label(struct globals *G, struct funcparse *parse)
+static void gen_dummy_label(struct funcparse *parse)
 {
-	UNUSED(G);
-	parse->d7 = 0;
+	/* insert dummy label */
 	*parse->current.dst++ = 0;
 	*parse->current.dst++ = 0;
 	*parse->current.dst++ = 0;
@@ -536,10 +529,11 @@ static void dummy_label(struct globals *G, struct funcparse *parse)
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void f13b68(struct globals *G, struct funcparse *parse)
+static void dummy_label(struct globals *G, struct funcparse *parse)
 {
 	UNUSED(G);
-	UNUSED(parse);
+	parse->d7 = 0;
+	gen_dummy_label(parse);
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -548,10 +542,82 @@ static void f13b68(struct globals *G, struct funcparse *parse)
 # error "token error"
 #endif
 
-static void f13b6c(struct globals *G, struct funcparse *parse)
+static void handle_do_loop_while(struct globals *G, struct funcparse *parse, unsigned short cmd)
 {
-	UNUSED(G);
-	UNUSED(parse);
+	G->token_buffer.cmd = cmd;
+	gen_dummy_label(parse);
+	while (*parse->current.src++ == ' ')
+		;
+	if (*--parse->current.src == 'U')
+	{
+		parse->current.src++;
+		if (*parse->current.src++ == 'N' &&
+			*parse->current.src++ == 'T' &&
+			*parse->current.src++ == 'I' &&
+			*parse->current.src++ == 'L')
+		{
+			G->token_buffer.cmd += TOK_CMD_DO_UNTIL - TOK_CMD_DO_WHILE;
+			while (*parse->current.src++ == ' ')
+				;
+		}
+		parse->current.src--;
+	} else if (*parse->current.src++ == 'W')
+	{
+		if (*parse->current.src++ == 'H' &&
+			*parse->current.src++ == 'I' &&
+			*parse->current.src++ == 'L' &&
+			*parse->current.src++ == 'E')
+		{
+			while (*parse->current.src++ == ' ')
+				;
+		}
+		parse->current.src--;
+	} else
+	{
+		parse->d7 = -1;
+	}
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void handle_do_while(struct globals *G, struct funcparse *parse)
+{
+	handle_do_loop_while(G, parse, TOK_CMD_DO_WHILE);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void handle_loop_while(struct globals *G, struct funcparse *parse)
+{
+	handle_do_loop_while(G, parse, TOK_CMD_LOOP_WHILE);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void handle_rem(struct globals *G, struct funcparse *parse)
+{
+	const char *src;
+	int offset;
+	
+	src = parse->current.src;
+	if (src[-1] != ' ' && src[0] == ' ')
+	{
+		src++;
+		parse->current.src = src;
+	}
+	/*
+	 * copy the original input, not the uppercased temp buffer
+	 */
+	offset = (int)(src - G->general_buffer);
+	src = G->input_buffer + offset;
+	for (;;)
+	{
+		if (*src == CR || *src == NL || *src == '\0')
+			break;
+		*parse->current.dst++ = *src++;
+	}
+	*parse->current.dst++ = EOL;
+	parse->d7 = 0;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -753,7 +819,7 @@ static void expect_string_func(struct globals *G, struct funcparse *parse)
 
 
 static struct argdesc const REM_args[] = {
-	{ ARG_CALL_FUNC_(f13bca) },
+	{ ARG_CALL_FUNC_(handle_rem) },
 	{ ARG_END_ }
 };
 
@@ -964,7 +1030,7 @@ static struct argdesc const yGOSUB_args[] = {
 	{ ARG_END_ }
 };
 
-struct argdesc const LABEL_args[] = {
+static struct argdesc const LABEL_args[] = {
 	{ ARG_CALL_FUNC_(ref_label) },
 	{ TOK_LABEL, { 0 } },
 	{ TOK_LINE_COMMENT, { 0 } },
@@ -1673,7 +1739,7 @@ static struct argdesc const yDO_args[] = {
 	{ ARG_CALL_FUNC_(handle_double_ref) },
 	{ ARG_PUSH_(yWORD_args) },
 	{ ARG_POP_ },
-	{ ARG_CALL_FUNC_(f13b68) },
+	{ ARG_CALL_FUNC_(handle_do_while) },
 	{ ARG_PUSH_(x14b9a) },
 	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_END_ }
@@ -2395,7 +2461,7 @@ static struct argdesc const yLOOP_args[] = {
 	{ ARG_CALL_FUNC_(dummy_label) },
 	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_POP_ },
-	{ ARG_CALL_FUNC_(f13b6c) },
+	{ ARG_CALL_FUNC_(handle_loop_while) },
 	{ ARG_PUSH_(x14b9a) },
 	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_END_ }
@@ -9330,9 +9396,43 @@ cont:
 
 /*** ---------------------------------------------------------------------- ***/
 
-static void handle_function(struct globals *G, struct funcparse *parse, unsigned short token)
+static void handle_function(struct globals *G, struct funcparse *parse, unsigned short expected)
 {
-	find_function(G, &parse->current.src);
+	unsigned short token;
+	
+	token = find_function(G, &parse->current.src);
+	for (;;)
+	{
+		parse->d7 = token != expected ? -1 : 0;
+		if (parse->d7 != 0)
+		{
+			if (expected == TOK_LINE_COMMENT)
+			{
+				if ((parse->current.src[0] == '/' &&
+					 (parse->current.src[1] == '/' || parse->current.src[1] == '*')) ||
+					 parse->current.src[0] == '!')
+				{
+					if (G->token_buffer.cmd == TOK_CMD_INLINE)
+					{
+						break;
+					}
+					token = expected;
+					x137b4 = parse->current.src;
+					continue;
+				} else
+				{
+					break;
+				}
+			}
+			break;
+		}
+		if (token >= 256)
+			*parse->current.dst++ = token >> 8;
+		*parse->current.dst++ = token;
+		break;
+	}
+	if (parse->current.src >= longest_match)
+		longest_match = parse->current.src;
 }
 
 /*** ---------------------------------------------------------------------- ***/
@@ -9442,20 +9542,157 @@ static uint8_t *parse_cmd_args0(struct globals *G, struct funcparse *parse)
 
 /*** ---------------------------------------------------------------------- ***/
 
-uint8_t *parse_cmd_args(struct globals *G, const char *src, uint8_t *dst, const struct argdesc *table)
+uint8_t *parse_cmd_args(struct globals *G, const char **src, uint8_t *dst, const struct argdesc *table)
 {
 	struct funcparse _parse;
 	struct funcparse *parse = &_parse;
 	
 	x137b4 = NULL;
 	parse->current.table = NULL;
-	parse->current.src = src;
+	parse->current.src = *src;
 	parse->current.dst = dst;
 	G->function_find_start = NULL;
 	parse->stack[0] = parse->current;
 	parse->stackptr = 1;
 	parse->current.table = table;
-	return parse_cmd_args0(G, parse);
+	dst = parse_cmd_args0(G, parse);
+	*src = parse->current.src;
+	return dst;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static uint8_t *parse_cmd(struct globals *G, const char **src, unsigned short cmd, const struct argdesc *table)
+{
+	G->token_buffer.cmd = cmd;
+	return parse_cmd_args(G, src, G->token_buffer.buffer, table);
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+/*
+ * copy input line to general_buffer,
+ * making everything uppercase, and terminate it with EOL
+ */
+static void copy_input(struct globals *G)
+{
+	const char *src = G->input_buffer;
+	char *dst = G->general_buffer;
+	char c;
+	
+	for (;;)
+	{
+		c = *src++;
+		if (c == CR || c == NL || c == '\0')
+			break;
+		if (c >= 'a' && c <= 'z')
+			c -= 'a' - 'A';
+		*dst++ = c;
+	}
+	*dst = EOL;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static const struct argdesc *find_cmd(struct globals *G, const char **src)
+{
+	return 0;
+}
+
+/*** ---------------------------------------------------------------------- ***/
+
+static void check_line_comment(struct globals *G)
+{
+}
+
+static void x15982(struct globals *G)
+{
+}
+
+int parse_line(struct globals *G, const char *src)
+{
+	const struct argdesc *table;
+	uint8_t *dst;
+	const char *srcstart;
+	
+	longest_match = src;
+	G->token_buffer.cmd = 0;
+	G->token_buffer.buffer[0] = 0;
+	G->token_buffer.buffer[1] = 0;
+	x137b2 = 0;
+	copy_input(G);
+	src = G->general_buffer;
+	skip_spaces(&src);
+	srcstart = src;
+	table = find_cmd(G, &src);
+	dst = parse_cmd_args(G, &src, G->token_buffer.buffer, table);
+	if (dst == NULL)
+	{
+		src = srcstart;
+		dst = parse_cmd(G, &src, TOK_CMD_ASSIGN_FLOAT, yLET_args);
+		if (dst == NULL)
+		{
+			src = srcstart;
+			parse_cmd(G, &src, TOK_CMD_LABEL, LABEL_args);
+			if (dst == NULL)
+			{
+				src = srcstart;
+				dst = parse_cmd(G, &src, TOK_CMD_GOSUB_IMP, yGOSUB_args);
+				if (dst == NULL)
+				{
+					G->error_pos = (int)(longest_match - G->general_buffer);
+					return FALSE;
+				}
+			}
+		}
+	}
+	check_line_comment(G);
+	x15982(G);
+	
+	if (x137b4 != NULL)
+	{
+		int offset = (int)(x137b4 - G->general_buffer);
+		const char *scan;
+		const char *end;
+		int spaces;
+		
+		scan = G->input_buffer + offset;
+		if (dst != NULL)
+		{
+			/* pad to even address */
+			if ((intptr_t)dst & 1)
+				*dst++ = 0;
+			spaces = -1;
+			end = scan;
+			do
+			{
+				spaces++;
+			} while (end > G->input_buffer && *--end == ' ');
+			*dst++ = spaces;
+			if (*scan++ != '!')
+				scan++;
+			for (;;)
+			{
+				char c = *scan++;
+				if (c == CR || c == NL || c == '\0')
+					break;
+				*dst++ = c;
+			}
+			*dst++ = EOL;
+		}
+	}
+	if (dst == NULL)
+	{
+		G->token_buffer_len = 0;
+		return FALSE;
+	}
+	/* pad to even address */
+	if ((intptr_t)dst & 1)
+		*dst++ = 0;
+	G->token_buffer_len = dst - G->token_buffer.buffer + 2;
+	/* token value now index * 4 */
+	G->token_buffer.cmd <<= 2;
+	return TRUE;
 }
 
 /******************************************************************************/

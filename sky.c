@@ -1028,6 +1028,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 		switch (pft)
 		{
 		case TOK_LINE_COMMENT:
+			/* skip pad byte if any */
 			src += (src - gl->line) & 0x01;
 
 			if (src == srcend)

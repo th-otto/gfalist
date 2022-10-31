@@ -67,4 +67,5 @@ struct funcname {
 };
 
 void parse_init(struct globals *G);
-uint8_t *parse_cmd_args(struct globals *G, const char *src, uint8_t *dst, const struct argdesc *table);
+uint8_t *parse_cmd_args(struct globals *G, const char **src, uint8_t *dst, const struct argdesc *table);
+int parse_line(struct globals *G, const char *src);

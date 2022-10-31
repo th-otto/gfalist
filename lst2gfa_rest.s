@@ -985,7 +985,7 @@ x11480:
 		lea.l      already_exists_msg,a0
 		bsr        printstr
 		movea.l    (a7),a1
-		lea.l      o850(a6),a0
+		lea.l      line_buffer(a6),a0
 x11480_1:
 		move.b     (a1)+,(a0)+
 		bne.s      x11480_1
@@ -1017,7 +1017,7 @@ x11480_5:
 		move.b     #'k',(a0)+
 x11480_6:
 		clr.b      (a0)
-		pea.l      o850(a6)
+		pea.l      line_buffer(a6)
 		move.w     #65,-(a7) /* Fdelete */
 		trap       #1
 		addq.l     #2,a7
@@ -1025,7 +1025,7 @@ x11480_6:
 		bmi.s      x11480_7
 		lea.l      deleted_file_msg,a0
 		bsr        printstr
-		lea.l      o850(a6),a0
+		lea.l      line_buffer(a6),a0
 		bsr        printstr
 		bsr        printnl
 x11480_7:
@@ -1042,7 +1042,7 @@ x11480_7:
 		bsr        printstr
 		lea.l      to_msg,a0
 		bsr        printstr
-		lea.l      o850(a6),a0
+		lea.l      line_buffer(a6),a0
 		bsr        printstr
 		bsr        printnl
 x11480_8:
@@ -1125,9 +1125,9 @@ x1160e:
 		bsr        x101f0
 		move.w     d0,8434(a6)
 x1160e_1:
-		lea.l      o850(a6),a1
+		lea.l      line_buffer(a6),a1
 		bsr        x1181c
-		move.b     o850(a6),d0
+		move.b     line_buffer(a6),d0
 		cmpi.b     #CR,d0
 		beq.s      x1160e_1
 		cmpi.b     #NL,d0
@@ -1135,10 +1135,10 @@ x1160e_1:
 		cmpi.b     #' ',d0
 		bcs        x10194_1
 		bsr        x118e2
-		lea.l      o850(a6),a3
+		lea.l      line_buffer(a6),a3
 		bra.s      x1160e_4
 x1160e_2:
-		lea.l      o850(a6),a3
+		lea.l      line_buffer(a6),a3
 x1160e_3:
 		movea.l    a3,a1
 		bsr        x1181c
@@ -1151,7 +1151,7 @@ x1160e_4:
 x1160e_5:
 		cmpi.b     #' ',(a3)
 		bne.s      x1160e_6
-		lea.l      o850(a6),a2
+		lea.l      line_buffer(a6),a2
 		cmpa.l     a2,a3
 		beq.s      x1160e_3
 x1160e_6:
@@ -1164,7 +1164,7 @@ x1160e_6:
 x1160e_7:
 		cmpi.b     #13,(a3)+
 		bne.s      x1160e_3
-		lea.l      o850(a6),a0
+		lea.l      line_buffer(a6),a0
 		moveq.l    #32,d1
 		moveq.l    #13,d0
 x1160e_8:
@@ -1181,9 +1181,9 @@ x1160e_10:
 		beq.s      x1160e_10
 		move.b     d0,1(a0)
 		addq.l     #1,x10302
-		cmpi.b     #'>',o850(a6)
+		cmpi.b     #'>',line_buffer(a6)
 		bne.s      x1160e_12
-		move.b     #' ',o850(a6)
+		move.b     #' ',line_buffer(a6)
 		jsr        x137d2.l
 		cmpi.w     #TOK_CMD_FUNCTION*4,token_buffer(a6)
 		bne.s      x1160e_11
@@ -1216,23 +1216,23 @@ x1160e_14:
 		move.l     d0,0(a1,d1.w)
 x1160e_15:
 		addq.l     #1,(a0)
-		lea.l      o1362(a6),a1
+		lea.l      token_buffer_len(a6),a1
 		move.l     #464,(a1)+ /* also writes to token_buffer */
-		lea.l      o850(a6),a0
+		lea.l      line_buffer(a6),a0
 x1160e_16:
 		move.b     (a0),(a1)+
 		cmpi.b     #13,(a0)+
 		bne.s      x1160e_16
 		move.l     a1,d0
 		sub.l      a6,d0
-		subi.w     #o1362,d0
+		subi.w     #token_buffer_len,d0
 		addq.w     #1,d0
 		bclr       #0,d0
-		move.w     d0,o1362(a6)
+		move.w     d0,token_buffer_len(a6)
 x1160e_17:
 		moveq.l    #0,d0
 		lea.l      ptr_table+18*4(a6),a0
-		lea.l      o1362(a6),a1
+		lea.l      token_buffer_len(a6),a1
 		move.w     (a1)+,d0
 		cmpi.w     #1668,(a1)+
 		bne.s      x1160e_21
@@ -1249,7 +1249,7 @@ x1160e_18:
 		andi.w     #-2,d1
 		cmpi.l     #0x00007FF8,d1
 		bhi        x1160e_14
-		move.w     d1,o1362(a6)
+		move.w     d1,token_buffer_len(a6)
 		move.l     d0,-(a7)
 		move.l     d1,d0
 		bsr        ALLOT
@@ -1269,7 +1269,7 @@ x1160e_21:
 x1160e_22:
 		st         x11ae6
 		addq.l     #1,x11af6
-		lea.l      o1362(a6),a1
+		lea.l      token_buffer_len(a6),a1
 		lsr.w      #1,d0
 		subq.w     #1,d0
 x1160e_23:
@@ -1758,124 +1758,9 @@ x136d0:
 x136d0_end:
 		.even
 
-/*
- * copy input line to general_buffer,
- * making everything uppercase, and terminate it with EOL
- */
-copy_input:
-		lea.l      o850(a6),a4
-		lea.l      general_buffer(a6),a5
-x1377c_1:
-		move.b     (a4)+,d0
-		bne.s      x1377c_2
-		moveq.l    #EOL,d0
-x1377c_2:
-		cmpi.b     #'z',d0
-		bhi.s      x1377c_3
-		cmpi.b     #'a',d0
-		bcs.s      x1377c_3
-		subi.b     #' ',d0
-x1377c_3:
-		move.b     d0,(a5)+
-		cmpi.b     #CR,d0 /* FIXME: handle also LF */
-		bne.s      x1377c_1
-		lea.l      general_buffer(a6),a0
-		rts
-
 x137b2:        .dc.w 0
-x137b4:        .dc.l 0
-longest_match: .dc.l 0
-x137bc:        .dc.l 0
 
-/*
- * a2 = yLET_args/LABEL_args/yGOSUB_args
- */
-x137c0:
-		lea.l      token_buffer(a6),a1
-		move.w     d0,(a1)+
-		movea.l    x137bc(pc),a0
-		bsr        parse_cmd_args
-		move.l     a1,d0
-		rts
-
-x137d2:
-		sf         x137b2
-		move.l     a7,x13898
-		move.l     a0,longest_match
-		lea.l      token_buffer(a6),a1
-		clr.l      (a1)
-		bsr.s      copy_input
-		bsr.s      skip_spaces
-		move.l     a0,x137bc
-		bsr        x1389c
-		bsr        parse_cmd_args
-		move.l     a1,d0
-		bne.s      x137d2_1
-		lea.l      yLET_args(pc),a2
-		move.w     #TOK_CMD_ASSIGN_FLOAT*2,d0
-		bsr.s      x137c0
-		bne.s      x137d2_1
-		lea.l      LABEL_args(pc),a2
-		move.w     #TOK_CMD_LABEL*2,d0
-		bsr.s      x137c0
-		bne.s      x137d2_1
-		lea.l      yGOSUB_args(pc),a2
-		move.w     #TOK_CMD_GOSUB_IMP*2,d0
-		bsr.s      x137c0
-		beq.s      x137d2_5
-x137d2_1:
-		bmi.s      x137d2_6
-		pea.l      (a0)
-		bsr        x154f0
-		bsr        x15982
-		move.l     x137b4(pc),d0
-		beq.s      x137d2_4
-		movea.l    d0,a0
-		lea.l      -256(a0),a0
-		move.l     a1,d0
-		ble.s      x137d2_4
-		addq.l     #1,d0
-		bclr       #0,d0
-		movea.l    d0,a1
-		movea.l    a0,a2
-		moveq.l    #-1,d0
-x137d2_2:
-		addq.w     #1,d0
-		cmpi.b     #' ',-(a2)
-		beq.s      x137d2_2
-		move.b     d0,(a1)+
-		cmpi.b     #'!',(a0)+
-		beq.s      x137d2_3
-		addq.l     #1,a0
-x137d2_3:
-		move.b     (a0)+,d0
-		move.b     d0,(a1)+
-		cmpi.b     #13,d0
-		bne.s      x137d2_3
-x137d2_4:
-		movea.l    (a7)+,a0
-		move.l     a1,d0
-		lea.l      o1362(a6),a1
-		sub.l      a1,d0
-		addq.w     #1,d0
-		andi.w     #0xFFFE,d0
-		cmpi.w     #0x10FE,d0
-		bhi.s      x137d2_6
-		move.w     d0,(a1)
-		asl.w      2(a1)
-		rts
-x13886:
-		movea.l    x13898(pc),a7
-		suba.l     a1,a1
-x137d2_5:
-		movea.l    longest_match(pc),a0
-		rts
-x137d2_6:
-		lea.l      (-1).w,a1
-		rts
-
-x13898: .dc.l 0
-
+find_cmd:
 x1389c:
 		moveq.l    #0,d2
 		move.b     (a0),d2
@@ -1959,121 +1844,6 @@ ARG_END       = 252
 ARG_REPLACE   = 251
 ARG_BACK      = 250
 
-
-/*
- * function code in d0.w
- * bits 8-15: secondary table code
- */
-/* 371: 5629c */
-/* 372: 573b4 */
-/* 373: 581a4 */
-handle_function:
-		bsr        find_function
-handle_function_1:
-		cmp.w      d0,d6
-		sne        d7
-		beq.s      handle_function_2
-		cmpi.b     #TOK_LINE_COMMENT,d0
-		beq.s      handle_function_6
-		cmpa.l     longest_match(pc),a0
-		bcs.s      handle_function_5
-		move.l     a0,longest_match
-		rts
-handle_function_2:
-		cmpi.w     #255,d0
-		bls.s      handle_function_3
-		rol.w      #8,d0
-		move.b     d0,(a1)+
-		rol.w      #8,d0
-handle_function_3:
-		move.b     d0,(a1)+
-handle_function_4:
-		cmpa.l     longest_match(pc),a0
-		bcs.s      handle_function_5
-		move.l     a0,longest_match
-handle_function_5:
-		rts
-handle_function_6:
-		cmpi.b     #'/',(a0)
-		bne.s      handle_function_7
-		cmpi.b     #'/',1(a0)
-		beq.s      handle_function_8
-		cmpi.b     #'*',1(a0)
-		beq.s      handle_function_8
-handle_function_7:
-		cmpi.b     #'!',(a0)
-		bne.s      handle_function_4
-handle_function_8:
-		cmpi.w     #TOK_CMD_INLINE*2,token_buffer(a6)
-		beq.s      handle_function_4
-		move.w     d0,d6
-		move.l     a0,x137b4
-		bra.s      handle_function_1
-
-f13b62:
-		moveq.l    #0,d7
-		move.l     d7,(a1)+
-		rts
-
-f13b68:
-		moveq.l    #TOK_CMD_DO_WHILE*2,d0
-		bra.s      f13b6c_1
-f13b6c:
-		moveq.l    #TOK_CMD_LOOP_WHILE*2,d0
-f13b6c_1:
-		move.w     d0,token_buffer(a6)
-		clr.l      (a1)+
-f13b6c_2:
-		cmpi.b     #' ',(a0)+
-		beq.s      f13b6c_2
-		cmpi.b     #'U',-(a0)
-		beq.s      f13b6c_5
-		cmpi.b     #'W',(a0)+
-		bne.s      f13b6c_6
-		cmpi.b     #'H',(a0)+
-		bne.s      f13b6c_4
-		cmpi.b     #'I',(a0)+
-		bne.s      f13b6c_4
-		cmpi.b     #'L',(a0)+
-		bne.s      f13b6c_4
-		cmpi.b     #'E',(a0)+
-f13b6c_7:
-		bne.s      f13b6c_4
-f13b6c_3:
-		cmpi.b     #' ',(a0)+
-		beq.s      f13b6c_3
-f13b6c_4:
-		subq.l     #1,a0
-		rts
-f13b6c_5:
-		addq.w     #(TOK_CMD_DO_UNTIL-TOK_CMD_DO_WHILE)*2,token_buffer(a6)
-		addq.l     #1,a0
-		cmpi.b     #'N',(a0)+
-		bne.s      f13b6c_4
-		cmpi.b     #'T',(a0)+
-		bne.s      f13b6c_4
-		cmpi.b     #'I',(a0)+
-		bne.s      f13b6c_4
-		cmpi.b     #'L',(a0)+
-		bra.s      f13b6c_7
-f13b6c_6:
-		moveq.l    #-1,d7
-		rts
-
-f13bca:
-		cmpi.b     #' ',-1(a0)
-		beq.s      f13bca_1
-		cmpi.b     #' ',(a0)
-		bne.s      f13bca_1
-		addq.l     #1,a0
-f13bca_1:
-		lea.l      -256(a0),a3
-f13bca_2:
-		move.b     (a3)+,(a1)+
-		cmpi.b     #13,-1(a3)
-		bne.s      f13bca_2
-		moveq.l    #0,d7
-		rts
 
 x13bec:
 		addq.l     #1,a0
@@ -2454,6 +2224,7 @@ f15310_3:
 /* 371: 58288 */
 /* 372: 594b4 */
 /* 373: 5a398 */
+check_line_comment:
 x154f0:
 		lea.l      token_buffer(a6),a0
 		move.w     (a0)+,d0
@@ -3273,7 +3044,7 @@ x15c52:
 		move.w     (a1)+,d0
 		move.w     d0,-(a7)
 		pea.l      -4(a1,d7.w) /* start of next line */
-		lea.l      o850(a6),a0
+		lea.l      line_buffer(a6),a0
 		lsr.w      #1,d0
 		move.w     d0,d6
 		lea.l      cmd_table_offsets(a6),a3
