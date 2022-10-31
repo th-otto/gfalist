@@ -749,6 +749,7 @@ static void expect_string_func(struct globals *G, struct funcparse *parse)
 #define ARG_CALL_FUNC_(f)  ARG_CALL_FUNC, { (void *)f }
 #define ARG_PUSH_(x)       ARG_PUSH, { x }
 #define ARG_REPLACE_(x)    ARG_REPLACE, { (void *)x }
+#define ARG_INSERT_(x)     ARG_INSERT, { (void *)x }
 
 
 static struct argdesc const REM_args[] = {
@@ -848,7 +849,7 @@ static struct argdesc const x1529b[] = {
 	{ ARG_PUSH_(sexp) },
 	{ ARG_CALL_FUNC_(f152e6) },
 	{ ARG_POP_ },
-	{ ARG_INSERT, { (void *)55 } },
+	{ ARG_INSERT_(TOK_PRINTNUM) },
 	{ ARG_PUSH_(iexp) },
 	{ ARG_END_ }
 };
@@ -919,7 +920,7 @@ static struct argdesc const x1525b[] = {
 	{ ARG_CALL_FUNC_(f15310) },
 	{ ARG_PUSH_(x1525b) },
 	{ ARG_POP_ },
-	{ 163, { 0 } },
+	{ TOK_USING, { 0 } },
 	{ ARG_PUSH_(sexp) },
 	{ TOK_COMMA, { 0 } },
 	{ ARG_PUSH_(x15214) },
@@ -970,7 +971,10 @@ struct argdesc const LABEL_args[] = {
 	{ ARG_END_ }
 };
 
-static struct argdesc const x14319[] = {
+/*
+ * for ADD: treat +=
+ */
+static struct argdesc const cstyle_inc[] = {
 	{ TOK_COMMA, { 0 } },
 	{ ARG_POP_ },
 	{ TOK_ADD, { 0 } },
@@ -1140,12 +1144,12 @@ static struct argdesc const yINTIN_args[] = {
  */
 static struct argdesc const yADD_args[] = {
 	{ ARG_PUSH_(x143cb) },
-	{ ARG_PUSH_(x14319) },
+	{ ARG_PUSH_(cstyle_inc) },
 	{ ARG_PUSH_(x14b9a) },
 	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_POP_ },
 	{ ARG_PUSH_(x14336+4) },
-	{ ARG_PUSH_(x14319) },
+	{ ARG_PUSH_(cstyle_inc) },
 	{ ARG_PUSH_(yCLEARW_args) },
 	{ ARG_POP_ },
 	{ ARG_CALL_FUNC_(handle_addrin) },
@@ -1265,7 +1269,7 @@ static struct argdesc const x1480d[] = {
 	{ TOK_GOSUB, { 0 } },
 	{ ARG_REPLACE_(TOK_GOSUB_FUNC) },
 	{ ARG_POP_ },
-	{ ARG_INSERT, { (void *)TOK_GOSUB_FUNC } },
+	{ ARG_INSERT_(TOK_GOSUB_FUNC) },
 	{ ARG_END_ }
 };
 
@@ -1366,7 +1370,7 @@ static struct argdesc const x144ff[] = {
 
 static struct argdesc const x144f6[] = {
 	{ ARG_PUSH_(x144ff) },
-	{ ARG_INSERT, { (void *)77 } },
+	{ ARG_INSERT_(TOK_CHANNEL) },
 	{ ARG_PUSH_(iexp) },
 	{ ARG_END_ }
 };
@@ -1489,7 +1493,7 @@ static struct argdesc const yCONT_args[] = {
 
 static struct argdesc const yCHAR_args[] = {
 	{ ARG_PUSH_(iexp) },
-	{ 88, { 0 } },
+	{ TOK_RBRACE, { 0 } },
 	{ ARG_BACK, { 0 } },
 	{ TOK_EQ, { 0 } },
 	{ ARG_REPLACE_(TOK_REFEND) },
@@ -1623,7 +1627,7 @@ static struct argdesc const yCLIP_args[] = {
 static struct argdesc const x152dc[] = {
 	{ ARG_PUSH_(iexp) },
 	{ ARG_POP_ },
-	{ ARG_INSERT, { (void *)55 } },
+	{ ARG_INSERT_(TOK_PRINTNUM) },
 	{ ARG_PUSH_(sexp) },
 	{ ARG_END_ }
 };
@@ -1655,7 +1659,7 @@ static struct argdesc const yCALL_args[] = {
 
 static struct argdesc const yWORD_args[] = {
 	{ ARG_PUSH_(iexp) },
-	{ 88, { 0 } },
+	{ TOK_RBRACE, { 0 } },
 	{ ARG_BACK, { 0 } },
 	{ TOK_EQ, { 0 } },
 	{ ARG_REPLACE_(TOK_REFEND) },
@@ -1755,7 +1759,7 @@ static struct argdesc const x14951[] = {
 
 static struct argdesc const x14935[] = {
 	{ TOK_COMMA, { 0 } },
-	{ 50, { 0 } },
+	{ TOK_VAR, { 0 } },
 	{ ARG_PUSH_(x14947) },
 	{ ARG_PUSH_(x14951) },
 	{ ARG_POP_ },
@@ -1767,7 +1771,7 @@ static struct argdesc const x14935[] = {
 };
 
 static struct argdesc const x14926[] = {
-	{ 50, { 0 } },
+	{ TOK_VAR, { 0 } },
 	{ ARG_PUSH_(x14947) },
 	{ ARG_PUSH_(x14951) },
 	{ ARG_POP_ },
@@ -1777,7 +1781,7 @@ static struct argdesc const x14926[] = {
 };
 
 static struct argdesc const x14917[] = {
-	{ 35, { 0 } },
+	{ TOK_LPAREN, { 0 } },
 	{ ARG_PUSH_(x14926) },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP_ },
@@ -1812,10 +1816,10 @@ static struct argdesc const yDEC_args[] = {
 	{ ARG_END_ }
 };
 
-static struct argdesc const x14329[] = {
+static struct argdesc const cstyle_div[] = {
 	{ TOK_COMMA, { 0 } },
 	{ ARG_POP_ },
-	{ 8, { 0 } },
+	{ TOK_DIVIDE, { 0 } },
 	{ TOK_EQ, { 0 } },
 	{ ARG_BACK, { 0 } },
 	{ ARG_REPLACE_(TOK_COMMA) },
@@ -1827,12 +1831,12 @@ static struct argdesc const x14329[] = {
  */
 static struct argdesc const yDIV_args[] = {
 	{ ARG_PUSH_(x143cb) },
-	{ ARG_PUSH_(x14329) },
+	{ ARG_PUSH_(cstyle_div) },
 	{ ARG_PUSH_(x14b9a) },
 	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_POP_ },
 	{ ARG_PUSH_(x14336+4) },
-	{ ARG_PUSH_(x14329) },
+	{ ARG_PUSH_(cstyle_div) },
 	{ ARG_PUSH_(yCLEARW_args) },
 	{ ARG_END_ }
 };
@@ -1896,7 +1900,7 @@ static struct argdesc const tok_to[] = {
 	{ TOK_SEMI, { 0 } },
 	{ ARG_REPLACE_(TOK_TO) },
 	{ ARG_POP_ },
-	{ ARG_INSERT, { (void *)TOK_TO } },
+	{ ARG_INSERT_(TOK_TO) },
 	{ ARG_END_ }
 };
 
@@ -1950,9 +1954,9 @@ static struct argdesc const x146c0[] = {
 	{ ARG_POP_ },
 	{ TOK_SEMI, { 0 } },
 	{ ARG_POP_ },
-	{ 87, { 0 } },
+	{ TOK_PRINTSPACE, { 0 } },
 	{ ARG_POP_ },
-	{ ARG_INSERT, { (void *)33 } },
+	{ ARG_INSERT_(TOK_COMMA) },
 	{ ARG_END_ }
 };
 
@@ -1999,7 +2003,7 @@ static struct argdesc const yDEFINT_args[] = {
 	{ ARG_END_ }
 };
 
-static struct argdesc const x141b3[] = {
+static struct argdesc const maybe_if[] = {
 	{ TOK_IF, { 0 } },
 	{ ARG_BACK, { 0 } },
 	{ ARG_POP_ },
@@ -2012,7 +2016,7 @@ static struct argdesc const yELSE_args[] = {
 	{ ARG_POP_ },
 	{ ARG_REPLACE_(TOK_CMD_ELSEIF) },
 	{ ARG_CALL_FUNC_(dummy_label) },
-	{ ARG_PUSH_(x141b3) },
+	{ ARG_PUSH_(maybe_if) },
 	{ ARG_PUSH_(x14b9a) },
 	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_END_ }
@@ -2038,7 +2042,7 @@ static struct argdesc const yENDREPEAT_args[] = {
 
 static struct argdesc const yEXIT_IF_args[] = {
 	{ ARG_CALL_FUNC_(dummy_label) },
-	{ ARG_PUSH_(x141b3) },
+	{ ARG_PUSH_(maybe_if) },
 	{ ARG_PUSH_(x14b9a) },
 	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_END_ }
@@ -2104,7 +2108,7 @@ static struct argdesc const x1438e[] = {
 };
 
 static struct argdesc const x14213[] = {
-	{ 96, { 0 } },
+	{ TOK_INPUT3, { 0 } },
 	{ ARG_BACK, { 0 } },
 	{ ARG_POP_ },
 	{ ARG_END_ }
@@ -2113,7 +2117,7 @@ static struct argdesc const x14213[] = {
 static struct argdesc const x14217[] = {
 	{ TOK_COMMA, { 0 } },
 	{ ARG_POP_ },
-	{ 108, { 0 } },
+	{ TOK_AS, { 0 } },
 	{ ARG_POP_ },
 	{ TOK_SEMI, { 0 } },
 	{ ARG_REPLACE_(TOK_COMMA) },
@@ -2121,7 +2125,7 @@ static struct argdesc const x14217[] = {
 };
 
 static struct argdesc const x14245[] = {
-	{ 72, { 0 } },
+	{ TOK_STEP, { 0 } },
 	{ ARG_PUSH_(iexp) },
 	{ ARG_CALL_FUNC_(f15976) },
 	{ ARG_POP_ },
@@ -2141,7 +2145,7 @@ static struct argdesc const x14228[] = {
 	{ TOK_EQ, { 0 } },
 	{ ARG_REPLACE_(TOK_ASSIGN) },
 	{ ARG_PUSH_(iexp) },
-	{ 73, { 0 } },
+	{ TOK_DOWNTO, { 0 } },
 	{ ARG_PUSH_(yCLEARW_args) },
 	{ ARG_CALL_FUNC_(f15972) },
 	{ ARG_END_ }
@@ -2186,7 +2190,7 @@ static struct argdesc const x1421f[] = {
 	{ ARG_PUSH_(x14217) },
 	{ ARG_REPLACE_(TOK_AS) },
 	{ ARG_POP_ },
-	{ ARG_INSERT, { (void *)TOK_AS } },
+	{ ARG_INSERT_(TOK_AS) },
 	{ ARG_END_ }
 };
 
@@ -2196,7 +2200,7 @@ static struct argdesc const x146f8[] = {
 	{ ARG_CALL_FUNC_(expect_string) },
 	{ ARG_POP_ },
 	{ ARG_PUSH_(x14695) },
-	{ 89, { 0 } },
+	{ TOK_AT, { 0 } },
 	{ ARG_REPLACE_(TOK_AT2) },
 	{ ARG_PUSH_(iexp_rparen) },
 	{ ARG_END_ }
@@ -2404,6 +2408,10 @@ static struct argdesc const x14196[] = {
 	{ ARG_END_ }
 };
 
+/*
+ * RSET a$=b$
+ * LSET a$=b$
+ */
 static struct argdesc const yRSET_args[] = {
 	{ ARG_CALL_FUNC_(expect_string) },
 	{ ARG_PUSH_(x14196) },
@@ -2460,7 +2468,7 @@ static struct argdesc const yLET_args[] = {
 	{ ARG_CALL_FUNC_(f140ee) },
 	{ ARG_POP_ },
 	{ ARG_PUSH_(x1438e) },
-	{ 8, { 0 } },
+	{ TOK_DIVIDE, { 0 } },
 	{ TOK_EQ, { 0 } },
 	{ ARG_CALL_FUNC_(f140fa) },
 	{ ARG_POP_ },
@@ -2494,8 +2502,7 @@ static struct argdesc const x1442e[] = {
 };
 
 static struct argdesc const yLINE_args[] = {
-	{ ARG_BACK, { 0 } },
-	{ ARG_INSERT, { (void *)52 } },
+	{ ARG_REPLACE_(TOK_CMD_LINE_INPUT) },
 	{ ARG_PUSH_(x14213) },
 	{ ARG_PUSH_(print_channel_args) },
 	{ ARG_PUSH_(x143ec) },
@@ -2509,8 +2516,7 @@ static struct argdesc const yLINE_args[] = {
 	{ ARG_PUSH_(x1442e) },
 	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_POP_ },
-	{ ARG_BACK, { 0 } },
-	{ ARG_INSERT, { (void *)54 } },
+	{ ARG_REPLACE_(TOK_CMD_LINE) },
 	{ ARG_PUSH_(iexp_comma) },
 	{ ARG_PUSH_(iexp_comma) },
 	{ ARG_PUSH_(iexp_comma) },
@@ -2526,7 +2532,7 @@ static struct argdesc const yMONITOR_args[] = {
 	{ ARG_END_ }
 };
 
-static struct argdesc const x14321[] = {
+static struct argdesc const cstyle_mul[] = {
 	{ TOK_COMMA, { 0 } },
 	{ ARG_POP_ },
 	{ TOK_MUL, { 0 } },
@@ -2541,12 +2547,12 @@ static struct argdesc const x14321[] = {
  */
 static struct argdesc const yMUL_args[] = {
 	{ ARG_PUSH_(x143cb) },
-	{ ARG_PUSH_(x14321) },
+	{ ARG_PUSH_(cstyle_mul) },
 	{ ARG_PUSH_(x14b9a) },
 	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_POP_ },
 	{ ARG_PUSH_(x14336+4) },
-	{ ARG_PUSH_(x14321) },
+	{ ARG_PUSH_(cstyle_mul) },
 	{ ARG_PUSH_(yCLEARW_args) },
 	{ ARG_END_ }
 };
@@ -2569,7 +2575,7 @@ static struct argdesc const yMENU_args[] = {
 	{ ARG_CALL_FUNC_(inc_cmd) }, /* MENU -> MENU x,y */
 	{ ARG_PUSH_(yBMIRROR_args) },
 	{ ARG_POP_ },
-	{ ARG_INSERT, { (void *)55 } },
+	{ ARG_INSERT_(TOK_PRINTNUM) },
 	{ ARG_PUSH_(iexp) },
 	{ TOK_COMMA, { 0 } },
 	{ ARG_PUSH_(sexp) },
@@ -2625,7 +2631,7 @@ static struct argdesc const x145f0[] = {
 static struct argdesc const x144ef[] = {
 	{ ARG_PUSH_(comma_or_semi) },
 	{ ARG_POP_ },
-	{ ARG_INSERT, { (void *)33 } },
+	{ ARG_INSERT_(TOK_COMMA) },
 	{ ARG_END_ }
 };
 
@@ -2647,7 +2653,7 @@ static struct argdesc const yOPEN_args[] = {
 static struct argdesc const x1481f[] = {
 	{ TOK_GOSUB_FUNC, { 0 } },
 	{ ARG_POP_ },
-	{ 159, { 0 } },
+	{ TOK_GOSUB, { 0 } },
 	{ ARG_REPLACE_(TOK_GOSUB_FUNC) },
 	{ ARG_END_ }
 };
@@ -2678,9 +2684,7 @@ static struct argdesc const x148ca[] = {
  * ON BREAK GOSUB proc
  */
 static struct argdesc const yON_args[] = {
-	{ ARG_BACK, { 0 } },
 	{ ARG_REPLACE_(TOK_CMD_ON) },
-	{ ARG_INSERT, { (void *)0 } },
 	{ TOK_ERROR, { 0 } },
 	{ ARG_BACK, { 0 } },
 	{ TOK_LINE_COMMENT, { 0 } },
@@ -2774,9 +2778,7 @@ static struct argdesc const yON_args[] = {
 	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_POP_ },
 
-	{ ARG_BACK, { 0 } },
 	{ ARG_REPLACE_(TOK_CMD_ON) },
-	{ ARG_INSERT, { (void *)TOK_CMD_ON } },
 	{ ARG_PUSH_(iexp) },
 	{ ARG_PUSH_(x1480d) },
 	{ ARG_PUSH_(x148ca) },
@@ -2833,7 +2835,7 @@ static struct argdesc const yOB_TEXTs_args[] = {
 };
 
 static struct argdesc const x1491e[] = {
-	{ 35, { 0 } },
+	{ TOK_LPAREN, { 0 } },
 	{ ARG_BACK, { 0 } },
 	{ ARG_PUSH_(x14926) },
 	{ TOK_RPAREN, { 0 } },
@@ -2944,7 +2946,7 @@ static struct argdesc const x1405a[] = {
 };
 
 static struct argdesc const x1404d[] = {
-	{ 114, { 0 } },
+	{ TOK_WITH, { 0 } },
 	{ ARG_PUSH_(x1405a) },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP_ },
@@ -3204,7 +3206,7 @@ static struct argdesc const ySWAP_args[] = {
 	{ ARG_END_ }
 };
 
-static struct argdesc const x14311[] = {
+static struct argdesc const cstyle_dec[] = {
 	{ TOK_COMMA, { 0 } },
 	{ ARG_POP_ },
 	{ TOK_SUB, { 0 } },
@@ -3219,19 +3221,17 @@ static struct argdesc const x14311[] = {
  */
 static struct argdesc const ySUB_args[] = {
 	{ ARG_PUSH_(x143cb) },
-	{ ARG_PUSH_(x14311) },
+	{ ARG_PUSH_(cstyle_dec) },
 	{ ARG_PUSH_(x14b9a) },
 	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_POP_ },
 
 	{ ARG_PUSH_(x14336+4) },
-	{ ARG_PUSH_(x14311) },
+	{ ARG_PUSH_(cstyle_dec) },
 	{ ARG_PUSH_(yCLEARW_args) },
 	{ ARG_POP_ },
 
-	{ ARG_BACK, { 0 } },
 	{ ARG_REPLACE_(TOK_CMD_PROCEDURE) },
-	{ ARG_INSERT, { (void *)TOK_CMD_PROCEDURE } },
 	{ ARG_PUSH_(yPROCEDURE_args) },
 	{ ARG_END_ }
 };
@@ -3500,9 +3500,9 @@ static struct argdesc const x13fd3[] = {
 
 
 static struct argdesc const x15160[] = {
-	{ 158, { 0 } },
+	{ TOK_FNCALL, { 0 } },
 	{ ARG_POP_ },
-	{ 159, { 0 } },
+	{ TOK_GOSUB, { 0 } },
 	{ ARG_END_ }
 };
 
@@ -3911,18 +3911,18 @@ static struct argdesc const x14982[] = {
 
 
 struct argdesc const x14962[] = {
-	{ 35, { 0 } },
+	{ TOK_LPAREN, { 0 } },
 	{ ARG_PUSH_(iexp) },
 	{ ARG_PUSH_(x14982) },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP_ },
-	{ 35, { 0 } },
+	{ TOK_LPAREN, { 0 } },
 	{ ARG_REPLACE_(TOK_LPAREN2) },
 	{ ARG_PUSH_(sexp) },
 	{ ARG_PUSH_(x14982) },
 	{ TOK_RPAREN, { 0 } },
 	{ ARG_POP_ },
-	{ 35, { 0 } },
+	{ TOK_LPAREN, { 0 } },
 	{ ARG_PUSH_(any_arr) },
 	{ ARG_REPLACE_(TOK_RPAREN2) },
 	{ ARG_PUSH_(x14982) },
@@ -4014,18 +4014,18 @@ static struct argdesc const ymat_ABS_args[] = {
 	{ ARG_END_ }
 };
 
-static struct argdesc const x1402b[] = {
-	{ 184, { 0 } },
+static struct argdesc const zero_or_one[] = {
+	{ TOK_CONST_ZERO, { 0 } },
 	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_POP_ },
-	{ 185, { 0 } },
+	{ TOK_CONST_ONE, { 0 } },
 	{ TOK_LINE_COMMENT, { 0 } },
 	{ ARG_END_ }
 };
 
 static struct argdesc const ymat_BASE_args[] = {
 	{ ARG_REPLACE_(TOK_CMD_MAT_BASE) },
-	{ ARG_PUSH_(x1402b) },
+	{ ARG_PUSH_(zero_or_one) },
 	{ ARG_END_ }
 };
 
@@ -6255,7 +6255,7 @@ static struct argdesc const x14d03[] = {
 
 static struct argdesc const x14d0e[] = {
 	{ ARG_PUSH_(iexp) },
-	{ 88, { 0 } },
+	{ TOK_RBRACE, { 0 } },
 	{ ARG_END_ }
 };
 
@@ -6519,7 +6519,7 @@ static struct argdesc const x1501f[] = {
 
 static struct argdesc const x14ff3[] = {
 	{ ARG_REPLACE_(TOK_SUBFUNC_208) },
-	{ ARG_INSERT, { (void *)189 } }, /* -> ARRPTR2 */
+	{ ARG_INSERT_(189) }, /* -> ARRPTR */
 	{ ARG_PUSH_(x1501f) },
 	{ ARG_END_ }
 };
@@ -6530,17 +6530,17 @@ static struct argdesc const x14fee[] = {
 	{ ARG_END_ }
 };
 
-static struct argdesc const x1505b[] = {
-	{ 138, { 0 } },
+static struct argdesc const long_or_wordarg[] = {
+	{ TOK_LONGARG, { 0 } },
 	{ ARG_POP_ },
-	{ 139, { 0 } },
+	{ TOK_WORDARG, { 0 } },
 	{ ARG_POP_ },
 	{ ARG_END_ }
 };
 
 static struct argdesc const x1504d[] = {
 	{ ARG_PUSH_(comma_or_semi) },
-	{ ARG_PUSH_(x1505b) },
+	{ ARG_PUSH_(long_or_wordarg) },
 	{ ARG_PUSH_(iexp) },
 	{ ARG_PUSH_(x1504d) },
 	{ ARG_POP_ },
@@ -9404,9 +9404,13 @@ static uint8_t *parse_cmd_args0(struct globals *G, struct funcparse *parse)
 				parse->current.dst--;
 				continue;
 			
-			default:
+			case ARG_INSERT:
 				*parse->current.dst++ = parse->current.table[-1].u.value;
 				continue;
+
+			default:
+				assert(0);
+				break;
 			}
 		} else
 		{
