@@ -139,7 +139,7 @@ struct nameversion const gfalct[] = {
 	/* 133 */ { "ON MENU GOSUB ", 0, NULL },
 	/* 134 */ { "ON MENU MESSAGE GOSUB ", 0, NULL },
 	/* 135 */ { "ON MENU KEY GOSUB ", 0, NULL },
-	/* 136 */ { "ON MENU BUTTON ", 0, NULL },			/* todo */
+	/* 136 */ { "ON MENU BUTTON ", 0, NULL },
 	/* 137 */ { "ON MENU", 0, NULL },					/* no arguments */
 	/* 138 */ { "ON MENU ", 0, NULL },					/* ON MENU n */
 	/* 139 */ { "MENU ", 0, NULL },						/* MENU m$() */
@@ -374,7 +374,7 @@ struct nameversion const gfalct[] = {
 	/* 368 */ { "INPUT ", 0, NULL },					/* INPUT x */
 	/* 369 */ { "INPUT ", 0, NULL },					/* INPUT #n,x */
 	/* 370 */ { "DRAW ", 0, NULL },						/* DRAW x,y */
-	/* 371 */ { "DRAW ", 0, NULL },						/* todo */
+	/* 371 */ { "DRAW ", 0, NULL },						/* DRAW s$ */
 	/* 372 */ { "READ ", 0, NULL },
 	/* 373 */ { "", 0, NULL },							/* todo */
 	/* 374 */ { "SETMOUSE ", 0, NULL },
@@ -428,7 +428,7 @@ struct nameversion const gfalct[] = {
 	/* 422 */ { "CURVE ", 0, NULL },
 	/* 423 */ { "_DATA=", 0, NULL },
 	/* 424 */ { "MAT ADD ", 0, NULL },					/* MAT ADD a(),b() */
-	/* 425 */ { "MAT ADD ", 0, NULL },					/* MAT ADD A(),x */
+	/* 425 */ { "MAT ADD ", 0, NULL },					/* MAT ADD a(),x */
 	/* 426 */ { "MAT SUB ", 0, NULL },					/* MAT SUB a(),b() */
 	/* 427 */ { "MAT SUB ", 0, NULL },					/* MAT SUB a(),x */
 	/* 428 */ { "MAT CPY ", 0, NULL },
@@ -1033,9 +1033,9 @@ struct nameversion const gfasft_208[256] = {
 	/*   65 */ { "LPEEK(", 0, NULL },
 	/*   66 */ { "LEN(", 0, NULL },
 	/*   67 */ { "ASC(", 0, NULL },
-	/*   68 */ { "INSTR(", 0, NULL },
-	/*   69 */ { "INSTR(", 0, NULL },
-	/*   70 */ { "INSTR(", 0, NULL },
+	/*   68 */ { "INSTR(", 0, NULL }, /* INSTR(a$,b$) */
+	/*   69 */ { "INSTR(", 0, NULL }, /* INSTR(a$,b$,x) */
+	/*   70 */ { "INSTR(", 0, NULL }, /* INSTR(x,a$,b$) */
 	/*   71 */ { "FRE(", 0, NULL },
 	/*   72 */ { "POINT(", 0, NULL },
 	/*   73 */ { "VAL?(", 0, NULL },
@@ -1174,9 +1174,9 @@ struct nameversion const gfasft_208[256] = {
 	/*  206 */ { "STICK(", 0, NULL },
 	/*  207 */ { "STRIG(", 0, NULL },
 	/*  208 */ { "WORK_OUT(", 0, NULL },
-	/*  209 */ { "RINSTR(", 0, NULL },
-	/*  210 */ { "RINSTR(", 0, NULL },
-	/*  211 */ { "RINSTR(", 0, NULL },
+	/*  209 */ { "RINSTR(", 0, NULL }, /* RINSTR(a$,b$) */
+	/*  210 */ { "RINSTR(", 0, NULL }, /* RINSTR(a$,b$,x) */
+	/*  211 */ { "RINSTR(", 0, NULL }, /* RINSTR(x,a$,b$) */
 	/*  212 */ { "L~A", 0, NULL },
 	/*  213 */ { "V~H", 0, NULL },
 	/*  214 */ { "V_CLRWK()", 0, NULL },
@@ -1204,11 +1204,11 @@ struct nameversion const gfasft_208[256] = {
 	/*  236 */ { "_X", 0, NULL },
 	/*  237 */ { "_Y", 0, NULL },
 	/*  238 */ { "_C", 0, NULL },
-	/*  239 */ { "GETSIZE(", 0, NULL },
+	/*  239 */ { "GETSIZE(", 0, NULL }, /* GETSIZE(x1,y1,x2,y2) */
 	/*
 	 * below are new in 3.70 (GBE)
 	 */
-	/*  240 */ { "GETSIZE(", 0, NULL },
+	/*  240 */ { "GETSIZE(", 0, NULL }, /* GETSIZE(x1,y1,x2,y2,n) */
 	/*  241 */ { "_B", 0, NULL },
 	/*  242 */ { "_AES", 0, NULL },
 	/*  243 */ { "_TOS", 0, NULL },
@@ -1583,7 +1583,7 @@ struct nameversion const gfasft_210[256] = {
 	/*   89 */ { "FONT_INIT()", 0, NULL },
 	/*   90 */ { "FONT_SELECT(", 0, NULL },
 	/*   91 */ { "WEEKDAY(", TARGET_VER370, NULL }, /* parameter change in 3.71 */
-	/*   92 */ { NULL, 0, NULL }, /* unused */
+	/*   92 */ { "WEEKDAY(", TARGET_VER370, NULL },
 	/*   93 */ { "AV_INIT()", 0, NULL },
 	/*   94 */ { "AV_PROTOKOLL(", 0, NULL },
 	/*   95 */ { NULL, 0, NULL }, /* unused */
@@ -1745,15 +1745,15 @@ struct nameversion const gfasft_210[256] = {
 	/*  251 */ { "FPU?", 0, NULL },
 	/*  252 */ { "CPU020?", 0, NULL },
 	/*  253 */ { "DMASND?", 0, NULL },
-	/*  254 */ { "DAYNO(", 0, NULL },
-	/*  255 */ { NULL, 0, NULL } /* unused */
+	/*  254 */ { "DAYNO(", 0, NULL }, /* DAYNO(date) */
+	/*  255 */ { "DAYNO(", 0, NULL } /* DAYNO(year,month,day) */
 };
 
 /* Secondary function text */
 struct nameversion const gfasft_211[256] = {
 	/*    0 */ { "LEAP(", 0, NULL },
 	/*    1 */ { "WEEK(", 0, NULL },
-	/*    2 */ { NULL, 0, NULL }, /* unused */
+	/*    2 */ { "WEEK(", 0, NULL },
 	/*    3 */ { "HOUR12(", 0, NULL },
 	/*    4 */ { "MERIDIEM(", 0, NULL },
 	/*    5 */ { "JPEGD_INIT()", 0, NULL },

@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "tables.h"
+#include "parse.h"
 
 FILE *out;
 struct label {
@@ -43,20 +44,24 @@ static void scan_table(FILE *fp, int offset, int end)
 		c = fgetc(fp);
 		switch (c)
 		{
-		case 250:
+		case ARG_INSERT:
+			c2 = getc(fp);
+			offset += 2;
+			break;
+		case ARG_BACK:
 			offset += 1;
 			break;
-		case 251:
+		case ARG_REPLACE:
 			c = fgetc(fp);
 			offset += 2;
 			break;
-		case 252:
+		case ARG_END:
 			offset += 1;
 			break;
-		case 253:
+		case ARG_POP:
 			offset += 1;
 			break;
-		case 254:
+		case ARG_CALL_FUNC:
 			c = getc(fp);
 			c2 = getc(fp);
 			c = c * 256 + c2;
@@ -69,7 +74,7 @@ static void scan_table(FILE *fp, int offset, int end)
 			}
 			offset += 3;
 			break;
-		case 255:
+		case ARG_PUSH:
 			c = getc(fp);
 			c2 = getc(fp);
 			c = c * 256 + c2;
@@ -95,6 +100,9 @@ static void scan_table(FILE *fp, int offset, int end)
 		case 212:
 		case 213:
 		case 214:
+			c2 = getc(fp);
+			offset += 2;
+			break;
 		case 240:
 		case 241:
 		case 242:
@@ -104,7 +112,7 @@ static void scan_table(FILE *fp, int offset, int end)
 		case 246:
 		case 247:
 		case 248:
-		case 249:
+			fprintf(stderr, "warning: unknown arg command %d\n", c);
 			c2 = getc(fp);
 			offset += 2;
 			break;
@@ -135,24 +143,29 @@ static void dump_table(FILE *fp, int offset, int end)
 		c = fgetc(fp);
 		switch (c)
 		{
-		case 250:
-			fprintf(out, "\t\t.dc.b -6\n");
-			offset += 1;
-			break;
-		case 251:
-			c = fgetc(fp);
-			fprintf(out, "\t\t.dc.b -5,%d\n", c);
+		case ARG_INSERT:
+			c2 = getc(fp);
+			fprintf(out, "\t\t.dc.b ARG_INSERT,%d\n", c2);
 			offset += 2;
 			break;
-		case 252:
+		case ARG_BACK:
+			fprintf(out, "\t\t.dc.b ARG_BACK\n");
+			offset += 1;
+			break;
+		case ARG_REPLACE:
+			c2 = fgetc(fp);
+			fprintf(out, "\t\t.dc.b ARG_POP,%d\n", c2);
+			offset += 2;
+			break;
+		case ARG_END:
 			fprintf(out, "\t\t.dc.b ARG_END\n");
 			offset += 1;
 			break;
-		case 253:
+		case ARG_POP:
 			fprintf(out, "\t\t.dc.b ARG_POP\n");
 			offset += 1;
 			break;
-		case 254:
+		case ARG_CALL_FUNC:
 			c = getc(fp);
 			c2 = getc(fp);
 			c = c * 256 + c2;
@@ -164,7 +177,7 @@ static void dump_table(FILE *fp, int offset, int end)
 				fprintf(out, "\t\t.dc.b ARG_CALL_FUNC,((f%d-jmpbase)>>8)&255,(f%d-jmpbase)&255\n", funcused[dst], funcused[dst]);
 			offset += 3;
 			break;
-		case 255:
+		case ARG_PUSH:
 			c = getc(fp);
 			c2 = getc(fp);
 			c = c * 256 + c2;
@@ -176,37 +189,37 @@ static void dump_table(FILE *fp, int offset, int end)
 				fprintf(out, "\t\t.dc.b ARG_PUSH,((x%05x-jmpbase)>>8)&255,(x%05x-jmpbase)&255\n", dst, dst);
 			offset += 3;
 			break;
-		case 208:
+		case TOK_SUBFUNC_208:
 			c2 = getc(fp);
 			fprintf(out, "\t\t.dc.b TOK_SUBFUNC_208,%d\n", c2);
 			offset += 2;
 			break;
-		case 209:
+		case TOK_SUBFUNC_209:
 			c2 = getc(fp);
 			fprintf(out, "\t\t.dc.b TOK_SUBFUNC_209,%d\n", c2);
 			offset += 2;
 			break;
-		case 210:
+		case TOK_SUBFUNC_210:
 			c2 = getc(fp);
 			fprintf(out, "\t\t.dc.b TOK_SUBFUNC_210,%d\n", c2);
 			offset += 2;
 			break;
-		case 211:
+		case TOK_SUBFUNC_211:
 			c2 = getc(fp);
 			fprintf(out, "\t\t.dc.b TOK_SUBFUNC_211,%d\n", c2);
 			offset += 2;
 			break;
-		case 212:
+		case TOK_SUBFUNC_212:
 			c2 = getc(fp);
 			fprintf(out, "\t\t.dc.b TOK_SUBFUNC_212,%d\n", c2);
 			offset += 2;
 			break;
-		case 213:
+		case TOK_SUBFUNC_213:
 			c2 = getc(fp);
 			fprintf(out, "\t\t.dc.b TOK_SUBFUNC_213,%d\n", c2);
 			offset += 2;
 			break;
-		case 214:
+		case TOK_SUBFUNC_214:
 			c2 = getc(fp);
 			fprintf(out, "\t\t.dc.b TOK_SUBFUNC_214,%d\n", c2);
 			offset += 2;
@@ -220,7 +233,6 @@ static void dump_table(FILE *fp, int offset, int end)
 		case 246:
 		case 247:
 		case 248:
-		case 249:
 			c2 = getc(fp);
 			fprintf(out, "\t\t.dc.b %d,%d\n", c, c2);
 			offset += 2;

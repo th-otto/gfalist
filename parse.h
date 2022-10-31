@@ -34,7 +34,8 @@ struct argdesc {
 		ARG_POP = 253,
 		ARG_END = 252,
 		ARG_REPLACE = 251,
-		ARG_BACK = 250
+		ARG_BACK = 250,
+		ARG_INSERT = 249
 	} type;
 	union {
 		const struct argdesc *table;
