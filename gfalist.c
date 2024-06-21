@@ -271,6 +271,7 @@ static void usage(FILE *fp)
 	fprintf(fp, "  -v, --verbose             be verbose\n");
 	fprintf(fp, "  -c, --convert             convert charset to utf-8\n");
 	fprintf(fp, "  -i, --inlines             save inline data\n");
+	fprintf(fp, "  -n, --newlines            print newlines instead of CR/LF\n");
 	fprintf(fp, "      --capitals            print names in Upcase\n");
 	fprintf(fp, "      --postfix             omit default postfix from float variables\n");
 	fprintf(fp, "      --c-comments          print comments with /*\n");
@@ -286,6 +287,7 @@ enum {
 	OPT_OUTPUT = 'o',
 	OPT_CONVERT = 'c',
 	OPT_INLINES = 'i',
+	OPT_NEWLINES = 'n',
 	OPT_HELP = 'h',
 	OPT_VERSION = 'V',
 	
@@ -302,6 +304,7 @@ static struct option const longopts[] = {
 	{ "verbose", no_argument, NULL, OPT_VERBOSE },
 	{ "convert", no_argument, NULL, OPT_CONVERT },
 	{ "inlines", no_argument, NULL, OPT_INLINES },
+	{ "newlines", no_argument, NULL, OPT_NEWLINES },
 	{ "capitals", no_argument, NULL, OPT_CAPITALS },
 	{ "postfix", no_argument, NULL, OPT_POSTFIX },
 	{ "varnames", no_argument, NULL, OPT_VARNAMES },
@@ -321,7 +324,7 @@ int main(int argc, char *argv[])
 	gf4tp_init(output, rvsimp);
 	memset(&gi, 0, sizeof(gi));
 
-	while ((opt = getopt_long(argc, argv, "o:vcVih", longopts, NULL)) != -1)
+	while ((opt = getopt_long(argc, argv, "o:vcVinh", longopts, NULL)) != -1)
 	{
 		switch (opt)
 		{
@@ -344,6 +347,10 @@ int main(int argc, char *argv[])
 
 		case OPT_INLINES:				/* save INLINE data into .inl files */
 			gi.flags |= TP_SAVEINLINE;
+			break;
+
+		case OPT_NEWLINES:
+			gi.flags |= TP_NEWLINES;
 			break;
 
 		case OPT_CAPITALS:

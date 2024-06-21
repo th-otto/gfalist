@@ -20,14 +20,15 @@
 #define TP_MAGIW3 "A-BASIC WIN300\032\001\001\001" /* Magic for WIN BASIC files */
 
 /* gf4tp_tp flags */
-#define TP_CONV                    0x01 /* Convert charset */
-#define TP_VERB                    0x02 /* Be verbose */
-#define TP_SAVEINLINE              0x04 /* Save INLINE data into .inl files */
-#define TP_DEFLIST_CAPITALS        0x08 /* Capitalize names (DEFLIST bit 0) */
-#define TP_DEFLIST_POSTFIX         0x10 /* suppress postfix for float variables (!DEFLIST bit 1) */
-#define TP_DEFLIST_CPP_COMMENTS    0x20 /* comment marker is // (DEFLIST bit 2) */
-#define TP_DEFLIST_C_COMMENTS      0x40 /* comment marker is / * (DEFLIST bit 3) */
-#define TP_VARNAMES                0x80 /* list variables names */
+#define TP_CONV                    0x001 /* Convert charset */
+#define TP_VERB                    0x002 /* Be verbose */
+#define TP_SAVEINLINE              0x004 /* Save INLINE data into .inl files */
+#define TP_DEFLIST_CAPITALS        0x008 /* Capitalize names (DEFLIST bit 0) */
+#define TP_DEFLIST_POSTFIX         0x010 /* suppress postfix for float variables (!DEFLIST bit 1) */
+#define TP_DEFLIST_CPP_COMMENTS    0x020 /* comment marker is // (DEFLIST bit 2) */
+#define TP_DEFLIST_C_COMMENTS      0x040 /* comment marker is / * (DEFLIST bit 3) */
+#define TP_VARNAMES                0x080 /* list variables names */
+#define TP_NEWLINES                0x100 /* print newlines instead of CR/LF */
 
 
 /*

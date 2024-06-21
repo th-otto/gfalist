@@ -228,7 +228,7 @@ void gf4tp_init(int (*output)(const char *format, ...), char *(*resvar)(struct g
 
 static void gfa_putnl(struct gfainf *gi)
 {
-	if (gi->flags & TP_CONV)
+	if (gi->flags & (TP_CONV | TP_NEWLINES))
 	{
 		putc('\n', gi->ost);
 	} else
