@@ -1,6 +1,8 @@
 #ifndef TABLES_H
 #define TABLES_H
 
+#define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
+
 #define TARGET_VER36    0
 #define TARGET_VER370   370
 #define TARGET_VER371   371
@@ -9,6 +11,7 @@
 
 struct nameversion {
 	const char *name;
+	int min_ver;
 	int old_ver;
 	const char *old_name;
 };
@@ -21,11 +24,36 @@ extern struct nameversion const gfasft_209[256];
 extern struct nameversion const gfasft_210[256];
 extern struct nameversion const gfasft_211[256];
 extern struct nameversion const gfasft_212[256];
+extern struct nameversion const gfasft_213[256];
+extern struct nameversion const gfasft_214[256];
 struct gfaversinfo {
 	short len_magic;
 	short num_offsets;
 };
 extern struct gfaversinfo const gfarecl[71];
+
+/*
+ * variable types
+ */
+#define TYPE_FLOAT          0
+#define TYPE_STRING         1
+#define TYPE_INT            2
+#define TYPE_BOOL           3
+#define TYPE_FLOAT_ARR      4
+#define TYPE_STRING_ARR     5
+#define TYPE_INT_ARR        6
+#define TYPE_BOOL_ARR       7
+#define TYPE_WORD           8
+#define TYPE_BYTE           9
+#define TYPE_LABEL         10
+#define TYPE_PROCEDURE     11
+#define TYPE_WORD_ARR      12
+#define TYPE_BYTE_ARR      13
+#define TYPE_FUNCTION      14
+#define TYPE_FUNCTION_STR  15
+
+#define MAX_TYPES          16
+
 
 /*
  * line level commands

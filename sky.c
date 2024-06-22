@@ -570,11 +570,14 @@ static int subfunc_table(struct gfainf *gi, struct gfalin *gl, unsigned short pf
 	unsigned short sft = *src;
 	const char *str = table[sft].name;
 
+	if (table[sft].min_ver > gi->max_used_gbe_ver)
+		gi->max_used_gbe_ver = table[sft].min_ver;
+
 	if (table[sft].old_ver > 0)
 	{
 		if (gi->gbe_ver <= table[sft].old_ver)
 		{
-			if (gi->gbe_ver > 0 && table[sft].old_name != NULL)
+			if (gi->gbe_ver > TARGET_VER36 && table[sft].old_name != NULL)
 				str = table[sft].old_name;
 			else
 				gl->needs_check = TRUE;
@@ -584,6 +587,7 @@ static int subfunc_table(struct gfainf *gi, struct gfalin *gl, unsigned short pf
 	if (str == NULL)
 	{
 		gf4tp_output("Error at line %lu:%lu: %u/%u is an unknown sft code to me\n", gl->lineno, (unsigned long)(src - gl->line), pft, sft);
+		gl->has_errors = TRUE;
 		return FALSE;
 	} else
 	{
@@ -627,6 +631,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 
 	assert(sizeof(uint64_t) == 8);
 	gl->needs_check = FALSE;
+	gl->has_errors = FALSE;
 
 	pop16b(lcp, src);
 	lct = lcp / 4;
@@ -711,6 +716,9 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	/*
 	 * GBE version specific handling
 	 */
+	if (lct < size_lct && gfalct[lct].min_ver > gi->max_used_gbe_ver)
+		gi->max_used_gbe_ver = gfalct[lct].min_ver;
+
 	if (lct < size_lct && gfalct[lct].old_ver > 0)
 	{
 		if (gi->gbe_ver <= gfalct[lct].old_ver)
@@ -725,6 +733,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	if (str == NULL)
 	{
 		gf4tp_output("Error at line %lu:%lu: %u is an unknown control code to me\n", gl->lineno, (unsigned long)(src - 2 - gl->line), lcp);
+		gl->has_errors = TRUE;
 	} else
 	{
 		printname(gi, str, TRUE);
@@ -1328,7 +1337,11 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	
 	gfa_putnl(gi);
 
-	if (gl->needs_check)
+	if (gl->has_errors)
+	{
+		fprintf(gi->ost, "==> above line had decoding errors");
+		gfa_putnl(gi);
+	} else if (gl->needs_check)
 	{
 		fprintf(gi->ost, "==> above line needs checking");
 		gfa_putnl(gi);

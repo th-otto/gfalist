@@ -31,28 +31,6 @@
 #define TP_NEWLINES                0x100 /* print newlines instead of CR/LF */
 
 
-/*
- * variable types
- */
-#define TYPE_FLOAT          0
-#define TYPE_STRING         1
-#define TYPE_INT            2
-#define TYPE_BOOL           3
-#define TYPE_FLOAT_ARR      4
-#define TYPE_STRING_ARR     5
-#define TYPE_INT_ARR        6
-#define TYPE_BOOL_ARR       7
-#define TYPE_WORD           8
-#define TYPE_BYTE           9
-#define TYPE_LABEL         10
-#define TYPE_PROCEDURE     11
-#define TYPE_WORD_ARR      12
-#define TYPE_BYTE_ARR      13
-#define TYPE_FUNCTION      14
-#define TYPE_FUNCTION_STR  15
-
-#define MAX_TYPES          16
-
 
 struct gfahdr {
 	unsigned char type;                         /* List type/protection */
@@ -123,6 +101,7 @@ struct gfainf {
 	unsigned int flags;
 	uint32_t poolsize;
 	int gbe_ver;
+	int max_used_gbe_ver;
 	char inline_filename[256];
 };
 
@@ -132,6 +111,7 @@ struct gfalin {
 	unsigned char *line;                        /* Pointer to line buffer */
 	unsigned long lineno;
 	int needs_check;
+	int has_errors;
 };
 
 int gf4tp_tp(struct gfainf *gi, struct gfalin *gl);

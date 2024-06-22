@@ -13,6 +13,17 @@
 #include "version.h"
 
 static char const program_name[] = "gfalist";
+static struct {
+	const char *name;
+	int number;
+	int val;
+} const version_names[] = {
+	{ "3.6", 360, TARGET_VER36 },
+	{ "3.70", 370, TARGET_VER370 },
+	{ "3.71", 371, TARGET_VER371 },
+	{ "3.72", 372, TARGET_VER372 },
+	{ "3.73", 373, TARGET_VER373 }
+};
 
 
 __attribute__((format(printf, 1, 2)))
@@ -237,7 +248,21 @@ static int process(struct gfainf *gi)
 		}
 
 		if (gi->flags & TP_VERB)
+ 		{
+			const char *name = "???";
+			int i;
+
 			output("Maximum line size: %u\n", maxlinesize);
+			for (i = 0; i < (int)ARRAY_SIZE(version_names); i++)
+			{
+				if (version_names[i].val == gi->max_used_gbe_ver)
+				{
+					name = version_names[i].name;
+					break;
+				}
+			}
+			output("Maximum GFA version used: %s\n", name);
+ 		}
 	}
 	
 	free(gi->pool);
@@ -374,7 +399,25 @@ int main(int argc, char *argv[])
 			break;
 		
 		case OPT_GBEVERSION:
-			gi.gbe_ver = (int)strtol(optarg, NULL, 0);
+			{
+				int i;
+				int number;
+
+				number = (int)strtol(optarg, NULL, 10);
+				for (i = 0; i < (int)ARRAY_SIZE(version_names); i++)
+				{
+					if (strcmp(optarg, version_names[i].name) == 0 || number == version_names[i].number)
+					{
+						gi.gbe_ver = version_names[i].val;
+						break;
+					}
+				}
+				if (i >= (int)ARRAY_SIZE(version_names))
+				{
+					fprintf(stderr, "unknown GBE version %s\n", optarg);
+					return EXIT_FAILURE;
+				}
+			}
 			break;
 		
 		case OPT_HELP:					/* display short help and exit */
