@@ -22,7 +22,8 @@ static struct {
 	{ "3.70", 370, TARGET_VER370 },
 	{ "3.71", 371, TARGET_VER371 },
 	{ "3.72", 372, TARGET_VER372 },
-	{ "3.73", 373, TARGET_VER373 }
+	{ "3.73", 373, TARGET_VER373 },
+	{ "3.74", 374, TARGET_VER374 }
 };
 
 

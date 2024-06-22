@@ -8,6 +8,7 @@
 #define TARGET_VER371   371
 #define TARGET_VER372   372
 #define TARGET_VER373   373
+#define TARGET_VER374   374
 
 struct nameversion {
 	const char *name;

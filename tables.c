@@ -693,15 +693,31 @@ struct nameversion const gfalct[] = {
 	/* 675 */ { "CRASTER ", TARGET_VER373, 0, NULL },
 	/* 676 */ { "RC_REDRAW", TARGET_VER373, 0, NULL }, /* no arguments */
 	/* 677 */ { "RC_REDRAW", TARGET_VER373, 0, NULL }, /* 4 arguments */
-	/* 678 */ { NULL, 0, 0, NULL },
-	/* 679 */ { NULL, 0, 0, NULL },
+	/* 678 */ { "PWRITE #", TARGET_VER374, 0, NULL },
+	/* 679 */ { "PREAD #", TARGET_VER374, 0, NULL },
 	/* 680 */ { "ARRAY!(", TARGET_VER373, 0, NULL },
 	/* 681 */ { "ARRAY|(", TARGET_VER373, 0, NULL },
 	/* 682 */ { "ARRAY&(", TARGET_VER373, 0, NULL },
 	/* 683 */ { "ARRAY%(", TARGET_VER373, 0, NULL },
 	/* 684 */ { "ARRAY(", TARGET_VER373, 0, NULL },
+
+	/*
+	 * below are new in 3.74 (GBE)
+	 */
+	/* 685 */ { "CWRITE #", TARGET_VER374, 0, NULL },
+	/* 686 */ { "CREAD #", TARGET_VER374, 0, NULL },
+	/* 687 */ { "STEXT ", TARGET_VER374, 0, NULL },
+	/* 688 */ { "P3DBAR ", TARGET_VER374, 0, NULL },
+	/* 689 */ { "NYBLE{", TARGET_VER374, 0, NULL },
+	/* 690 */ { "HINYBLE{", TARGET_VER374, 0, NULL },
+	/* 691 */ { "KEYCLICK ", TARGET_VER374, 0, NULL },
+	/* 692 */ { "KEYREPEAT ", TARGET_VER374, 0, NULL },
+	/* 693 */ { "SYSBELL ", TARGET_VER374, 0, NULL },
+	/* 694 */ { "TRIANGLE ", TARGET_VER374, 0, NULL },
+	/* 695 */ { "PTRIANGLE ", TARGET_VER374, 0, NULL },
+	/* 696 */ { "OB_EXTYPE(", TARGET_VER374, 0, NULL },
 };
-unsigned int const size_lct = sizeof(gfalct) / sizeof(gfalct[0]);
+unsigned int const size_lct = (unsigned int)ARRAY_SIZE(gfalct);
 
 /* Primary function text */
 struct nameversion const gfapft[256] = {
@@ -1215,15 +1231,15 @@ struct nameversion const gfasft_208[256] = {
 	/*  244 */ { "A~I", TARGET_VER370, 0, NULL },
 	/*  245 */ { "CPU020()", TARGET_VER370, 0, NULL },
 	/*  246 */ { "FPU882()", TARGET_VER370, 0, NULL },
-	/*  247 */ { "GMOUSEK", TARGET_VER370, 0, NULL },
-	/*  248 */ { "GMOUSEX", TARGET_VER370, 0, NULL },
-	/*  249 */ { "GMOUSEY", TARGET_VER370, 0, NULL },
+	/*  247 */ { "GMOUSEX", TARGET_VER370, TARGET_VER373, "GMOUSEK" }, /* WTF: different token in 3.74 */
+	/*  248 */ { "GMOUSEY", TARGET_VER370, TARGET_VER373, "GMOUSEX" }, /* WTF: different token in 3.74 */
+	/*  249 */ { "GMOUSEK", TARGET_VER370, TARGET_VER373, "GMOUSEY" }, /* WTF: different token in 3.74 */
 	/*  250 */ { "GLOBAL(", TARGET_VER370, 0, NULL },
 	/*  251 */ { "GLOBAL", TARGET_VER370, 0, NULL },
 	/*  252 */ { "GETCOOKIE(", TARGET_VER370, 0, NULL },
 	/*  253 */ { "VS_COLOR(", TARGET_VER370, 0, NULL },
-	/*  254 */ { "EJP?", TARGET_VER370, TARGET_VER370, "HARDWARE?" },
-	/*  255 */ { "_P", TARGET_VER370, 0, NULL }
+	/*  254 */ { "EJP?", TARGET_VER370, TARGET_VER370, "HARDWARE?" }, /* WTF: swapped with _P in 3.74 */
+	/*  255 */ { "_P", TARGET_VER370, TARGET_VER373, "EJP?" } /* WTF: swapped with EJP? in 3.74 */
 };
 
 /* Secondary function text */
@@ -1319,8 +1335,8 @@ struct nameversion const gfasft_209[256] = {
 	/*   88 */ { "V_HIDE_C()", TARGET_VER370, 0, NULL },
 	/*   89 */ { "F_INPUT(", TARGET_VER370, 0, NULL },
 	/*   90 */ { "F_OUTPUT(", TARGET_VER370, 0, NULL },
-	/*   91 */ { "PREAD(", TARGET_VER370, TARGET_VER370, "F_PREAD(" },
-	/*   92 */ { "PWRITE(", TARGET_VER370, TARGET_VER370, "F_PWRITE(" },
+	/*   91 */ { "PWRITE(", TARGET_VER370, TARGET_VER370, "F_PWRITE(" }, /* WTF: F_PWRITE( again in 3.74 */
+	/*   92 */ { "PREAD(", TARGET_VER370, TARGET_VER370, "F_PREAD(" }, /* WTF: F_PREAD( again in 3.74 */
 	/*   93 */ { "JOYPAD(", TARGET_VER370, 0, NULL },
 	/*   94 */ { "UNPACK(", TARGET_VER370, 0, NULL },
 	/*   95 */ { "BINSTR(", TARGET_VER370, 0, NULL },
@@ -1940,8 +1956,8 @@ struct nameversion const gfasft_211[256] = {
 	 * below are new in 3.73 (GBE)
 	 */
 	/*  185 */ { "PIXEL24(", TARGET_VER373, 0, NULL },
-	/*  186 */ { "CWRITE(", TARGET_VER373, 0, NULL },
-	/*  187 */ { "CREAD(", TARGET_VER373, 0, NULL },
+	/*  186 */ { "F_CWRITE(", TARGET_VER373, TARGET_VER373, "CWRITE(" }, /* renamed to F_CWRITE( in 3.74 */
+	/*  187 */ { "F_CREAD(", TARGET_VER373, TARGET_VER373, "CREAD(" }, /* renamed to F_CREAD( in 3.74 */
 	/*  188 */ { "SUPER?", TARGET_VER373, 0, NULL },
 	/*  189 */ { "PIXEL32(", TARGET_VER373, 0, NULL },
 	/*  190 */ { "PIXEL16(", TARGET_VER373, 0, NULL },
@@ -2084,37 +2100,40 @@ struct nameversion const gfasft_212[256] = {
 	/*   67 */ { "V_EEOS()", TARGET_VER373, 0, NULL },
 	/*   68 */ { "V_RMCUR()", TARGET_VER373, 0, NULL },
 	/*   69 */ { "V_DSPCUR(", TARGET_VER373, 0, NULL },
-	/*   70 */ { NULL, 0, 0, NULL },
-	/*   71 */ { NULL, 0, 0, NULL },
-	/*   72 */ { NULL, 0, 0, NULL },
-	/*   73 */ { NULL, 0, 0, NULL },
-	/*   74 */ { NULL, 0, 0, NULL },
-	/*   75 */ { NULL, 0, 0, NULL },
-	/*   76 */ { NULL, 0, 0, NULL },
-	/*   77 */ { NULL, 0, 0, NULL },
-	/*   78 */ { NULL, 0, 0, NULL },
-	/*   79 */ { NULL, 0, 0, NULL },
-	/*   80 */ { NULL, 0, 0, NULL },
-	/*   81 */ { NULL, 0, 0, NULL },
-	/*   82 */ { NULL, 0, 0, NULL },
-	/*   83 */ { NULL, 0, 0, NULL },
-	/*   84 */ { NULL, 0, 0, NULL },
-	/*   85 */ { NULL, 0, 0, NULL },
-	/*   86 */ { NULL, 0, 0, NULL },
-	/*   87 */ { NULL, 0, 0, NULL },
-	/*   88 */ { NULL, 0, 0, NULL },
-	/*   89 */ { NULL, 0, 0, NULL },
-	/*   90 */ { NULL, 0, 0, NULL },
-	/*   91 */ { NULL, 0, 0, NULL },
-	/*   92 */ { NULL, 0, 0, NULL },
-	/*   93 */ { NULL, 0, 0, NULL },
-	/*   94 */ { NULL, 0, 0, NULL },
-	/*   95 */ { NULL, 0, 0, NULL },
-	/*   96 */ { NULL, 0, 0, NULL },
-	/*   97 */ { NULL, 0, 0, NULL },
-	/*   98 */ { NULL, 0, 0, NULL },
-	/*   99 */ { NULL, 0, 0, NULL },
-	/*  100 */ { NULL, 0, 0, NULL },
+	/*
+	 * below are new in 3.74 (GBE)
+	 */
+	/*   70 */ { "RGB64K(", TARGET_VER374, 0, NULL },
+	/*   71 */ { "CRC8(", TARGET_VER374, 0, NULL },
+	/*   72 */ { "PLUGIN_LOAD(", TARGET_VER374, 0, NULL },
+	/*   73 */ { "PLUGIN_UNLOAD(", TARGET_VER374, 0, NULL },
+	/*   74 */ { "PLUGIN_OPEN(", TARGET_VER374, 0, NULL },
+	/*   75 */ { "PLUGIN_RW(", TARGET_VER374, 0, NULL },
+	/*   76 */ { "PLUGIN_CLOSE(", TARGET_VER374, 0, NULL },
+	/*   77 */ { "PLUGIN_SET(", TARGET_VER374, 0, NULL },
+	/*   78 */ { "NYBLE{", TARGET_VER374, 0, NULL },
+	/*   79 */ { "HINYBLE{", TARGET_VER374, 0, NULL },
+	/*   80 */ { "GIST_INSTALL_INT()", TARGET_VER374, 0, NULL },
+	/*   81 */ { "GIST_REMOVE_INT()", TARGET_VER374, 0, NULL },
+	/*   82 */ { "GIST_INIT_SNDS()", TARGET_VER374, 0, NULL },
+	/*   83 */ { "GIST_SND_ON()", TARGET_VER374, 0, NULL },
+	/*   84 */ { "GIST_STOP_SND()", TARGET_VER374, 0, NULL },
+	/*   85 */ { "GIST_SND_OFF()", TARGET_VER374, 0, NULL },
+	/*   86 */ { "GIST_GET_PRIOR()", TARGET_VER374, 0, NULL },
+	/*   87 */ { "BPL(", TARGET_VER374, 0, NULL },
+	/*   88 */ { "BETWEEN(", TARGET_VER374, 0, NULL },
+	/*   89 */ { "WDWIDTH(", TARGET_VER374, 0, NULL },
+	/*   90 */ { "_NVDI", TARGET_VER374, 0, NULL },
+	/*   91 */ { "_NAES", TARGET_VER374, 0, NULL },
+	/*   92 */ { "DEXIST(", TARGET_VER374, 0, NULL },
+	/*   93 */ { "CLUT?", TARGET_VER374, 0, NULL },
+	/*   94 */ { "APPL.YIELD()", TARGET_VER374, 0, NULL },
+	/*   95 */ { "_PX_FORMAT", TARGET_VER374, 0, NULL },
+	/*   96 */ { "WORK.OUT(", TARGET_VER374, 0, NULL },
+	/*   97 */ { "OB_EXTYPE(", TARGET_VER374, 0, NULL },
+	/*   98 */ { "VDIPB", TARGET_VER374, 0, NULL },
+	/*   99 */ { "AESPB", TARGET_VER374, 0, NULL },
+	/*  100 */ { "TRNFM(", TARGET_VER374, 0, NULL },
 	/*  101 */ { NULL, 0, 0, NULL },
 	/*  102 */ { NULL, 0, 0, NULL },
 	/*  103 */ { NULL, 0, 0, NULL },
