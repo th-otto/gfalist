@@ -1,0 +1,86 @@
+v3.74 Change Log (Released 12/31/2022)
+
+-------------------------------------------------------------------------------
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! WARNING !!
+!! WARNING !! RGB256() & RGB1000 reverted some changes
+!! WARNING !! Does not require LST/Merge, but 1st parameter will need fixed
+!! WARNING !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Bumped version to 3.74 (all components)
+
+Misc function name changes (visual change only)
+
+GBE changes:
+  Fixed garbage entries showing up in Marks popup
+  Fixed global Rename popup showing wrong variable name on an INLINE
+  Holding shift at startup no longer invokes debug mode
+  Character '\' replaced in the 'New names' alert box with ASC 216
+  Fixed EXIT IF/ELSE IF/IF 1=2 compiler crash
+
+GFABASIC.HYP fixed typos, updates
+
+GBE_LIB.HYP fixed typos
+  RC_EQUAL description improved
+  SNDH new note
+
+DEFLIST mode added (capitalization of variables no longer tied to command style)
+        can be left in the code, ignored by the compiler
+
+PSYSCTL() missing from the library (caused a linker error)
+  Don't know how this happened, somehow the *.s include file was lost
+
+FPU882() no longer invokes a float-point divide or modulo
+  These changes were reverted, results were inconsistant with the editor
+  Caused additional problems on V4SA
+
+CPUFLUSH reworked, caused crash during QSORT if SNDH was active
+  It might cause SNDH playback to momentarily glitch if QSORT is called
+  Might require sorting arrays with custom code
+  Fixed crash on CT60
+
+ENDSEEK command, fixed potential bug (interpreter)
+
+GETSTR fixed possible string corruption (search var same as output var)
+
+BITBLT a%() fixed elements 19 to 21 not working when compiled
+  Removed unnecessary clearing of scratch area from interpreter
+
+Added commands PREAD, PWRITE, CREAD, CWRITE, STEXT, P3DBAR,
+  NYBLE{}, HINYBLE{},
+  KEYCLICK, KEYREPEAT, SYSBELL,
+  TRIANGLE, PTRIANGLE,
+  OB_EXTYPE()
+
+Added functions RGB64K(), CRC8(), BETWEEN(), _NVDI, _NAES, DEXIST(), CLUT?
+  PLUGIN_LOAD(), PLUGIN_UNLOAD(), PLUGIN_SET(),
+  PLUGIN_OPEN(), PLUGIN_RW(), PLUGIN_CLOSE(),
+  NYBLE{}, HINYBLE{},
+  GIST_INSTALL_INT(), GIST_REMOVE_INT(), GIST_INIT_SNDS(), GIST_SND_ON(),
+  GIST_STOP_SND(), GIST_SND_OFF(), GIST_GET_PRIOR(),
+  BPL(), WDWIDTH(), WORK.OUT(), _PX_FORMAT, TRNFM(),
+  APPL.YIELD(), OB_EXTYPE(),
+  AESPB, VDIPB
+
+RGB256() no longer processes 8-bit 0-255 values
+RGB1000() no longer processed VDI 0-1000 values
+
+RGB added option -24
+RGB() added option -24
+
+POPUP() disable item character "_" is now "~"
+
+SET.GCBITMAP calculated bytes per line wrong for 15bit screens
+
+BMPSIZE() slightly optimized
+
+FEXIST() will drop trailing backslash (failed on SingleTOS)
+
+FATRRIB() will drop trailing backslash (failed on SingleTOS)
+
+_BOOTDEV recoded
+
+
+*

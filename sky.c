@@ -12,7 +12,11 @@
 #include "charset.h"
 
 #ifndef O_BINARY
+#ifdef _O_BINARY
+#define O_BINARY _O_BINARY
+#else
 #define O_BINARY 0
+#endif
 #endif
 #ifndef S_IRGRP
 #define S_IRGRP 0
@@ -565,6 +569,22 @@ static void indent(struct gfainf *gi, int depth)
 }
 
 
+static const char *check_exceptions(struct gfainf *gi, struct gfalin *gl, const struct name_exception *exceptions, const char *default_str)
+{
+	if (gi->gbe_ver > TARGET_VER36)
+	{
+		while (exceptions->name != NULL)
+		{
+			if (gi->gbe_ver >= exceptions->from_ver && gi->gbe_ver <= exceptions->to_ver)
+				return exceptions->name;
+			exceptions++;
+		}
+	}
+	gl->needs_check = TRUE;
+	return default_str;
+}
+
+
 static int subfunc_table(struct gfainf *gi, struct gfalin *gl, unsigned short pft, const unsigned char *src, const struct nameversion *table)
 {
 	unsigned short sft = *src;
@@ -572,16 +592,12 @@ static int subfunc_table(struct gfainf *gi, struct gfalin *gl, unsigned short pf
 
 	if (table[sft].min_ver > gi->max_used_gbe_ver)
 		gi->max_used_gbe_ver = table[sft].min_ver;
+	if (gi->gbe_ver > TARGET_VER36 && table[sft].min_ver > gi->gbe_ver)
+		gl->needs_check = TRUE;
 
-	if (table[sft].old_ver > 0)
+	if (table[sft].exceptions != NULL)
 	{
-		if (gi->gbe_ver <= table[sft].old_ver)
-		{
-			if (gi->gbe_ver > TARGET_VER36 && table[sft].old_name != NULL)
-				str = table[sft].old_name;
-			else
-				gl->needs_check = TRUE;
-		}
+		str = check_exceptions(gi, gl, table[sft].exceptions, str);
 	}
 
 	if (str == NULL)
@@ -716,18 +732,17 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 	/*
 	 * GBE version specific handling
 	 */
-	if (lct < size_lct && gfalct[lct].min_ver > gi->max_used_gbe_ver)
-		gi->max_used_gbe_ver = gfalct[lct].min_ver;
-
-	if (lct < size_lct && gfalct[lct].old_ver > 0)
+	if (lct < size_lct)
 	{
-		if (gi->gbe_ver <= gfalct[lct].old_ver)
-		{
-			if (gi->gbe_ver > TARGET_VER36 && gfalct[lct].old_name != NULL)
-				str = gfalct[lct].old_name;
-			else
-				gl->needs_check = TRUE;
-		}
+		if (gfalct[lct].min_ver > gi->max_used_gbe_ver)
+			gi->max_used_gbe_ver = gfalct[lct].min_ver;
+		if (gi->gbe_ver > TARGET_VER36 && gfalct[lct].min_ver > gi->gbe_ver)
+			gl->needs_check = TRUE;
+	}
+
+	if (lct < size_lct && gfalct[lct].exceptions != NULL)
+	{
+		str = check_exceptions(gi, gl, gfalct[lct].exceptions, str);
 	}
 
 	if (str == NULL)
@@ -1037,6 +1052,7 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 		switch (pft)
 		{
 		case TOK_LINE_COMMENT:
+			/* skip pad byte if any */
 			src += (src - gl->line) & 0x01;
 
 			if (src == srcend)
@@ -1204,6 +1220,16 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 			src++;
 			break;
 
+		case TOK_SUBFUNC_213: /* currently unused; maybe later assigned to new function tables */
+			retcode &= subfunc_table(gi, gl, pft, src, gfasft_213);
+			src++;
+			break;
+
+		case TOK_SUBFUNC_214: /* currently unused; maybe later assigned to new function tables */
+			retcode &= subfunc_table(gi, gl, pft, src, gfasft_214);
+			src++;
+			break;
+
 		case TOK_OCT_DBL_CONST_PAD:
 			src++; /* skip filler byte at odd address */
 			/* FALLTROUGH */
@@ -1318,8 +1344,6 @@ int gf4tp_tp(struct gfainf *gi, struct gfalin *gl)
 		case 55:                                      /* NUMBER: */
 			break;
 
-		case 213: /* currently unused; maybe later assigned to new function tables */
-		case 214: /* currently unused; maybe later assigned to new function tables */
 		case 46: /* unknown */
 		case 64: /* unknown */
 		case 68: /* unknown */

@@ -1,0 +1,130 @@
+v3.73 Change Log (Released 11/9/2022 on my birthday)
+
+-------------------------------------------------------------------------------
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! WARNING !!
+!! WARNING !! Required: LST from old GBE -> Merge into new GBE
+!! WARNING !! Internal reorganization forced some token changes.
+!! WARNING !!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Bumped version to 3.73 (all components)
+
+GBE_LIB.HYP updated
+  Changed description of function _MINT
+  Fixed missing links
+  Updated credits
+
+GFABASIC.HYP
+  Corrected many typos
+  New memo at QUIT, END
+  New memo at FOR-NEXT
+  New memo about float exponents
+
+GBE changes:
+  Added Drag&Drop Protocol v1.1 (compatible with Atari's AES 4.1)
+  Added meta command #SUB (exclude unused subroutines)
+  ESCape shows entire 1st line of subroutine (dropped cpu/version info)
+  Fixed 2 typos in token tables
+  AES, BIOS, XBIOS, GEMDOS, VDI, and LINE-A system calls considered complete
+
+Added commands: PIXEL1M, PIXEL2P, PIXEL4P, PIXEL8P,
+  PIXEL8C, PIXEL15, PIXEL16, PIXEL24, PIXEL32,
+  STRUCT(), STRUCT!(), STRUCT|(), STRUCT&(), STRUCT%(), STRUCT$(),
+  MDPOKE, MLPOKE, MNAM, VER2STR, IKBD, RC_REDRAW,
+  USERDEF!(), USERDEF|(), USERDEF&(), USERDER%(),
+  ARRAY(), ARRAY!(), ARRAY|(), ARRAY&(), ARRAY%()
+
+Added functions: PIXEL1M(), PIXEL2P(), PIXEL4P(), PIXEL8P(),
+  PIXEL8C(), PIXEL15(), PIXEL16(), PIXEL24(), PIXEL32(),
+  STRUCT(), STRUCT!(), STRUCT|(), STRUCT&(), STRUCT%(), STRUCT$(),
+  MDPEEK(), MLPEEK(),
+  RC_EQUAL(), _BOOTDEV, _BMPSIZE,
+  USERDEF!(), USERDEF|(), USERDEF&(), USERDER%(),
+  USERDEFBIT, USERDEFBYT, USERDEFWRD, USERDERLNG,
+  ARRAY(), ARRAY!(), ARRAY|(), ARRAY&(), ARRAY%()
+
+Added Gemdos functions PUMASK(), FLINK(), FSYMLINK(), CREAD(), CWRITE(),
+  SUPER?, REALLOC(),
+  PSIGBLOCK(), PSIGSETMASK(), PSIGPENDING(), PSIGPAUSE(), PSIGACTION(),
+  PAUSE(), PTRACE(), TALARM(), TMALARM(), TSETITIMER(),
+  SYNC(), FSYNC(), SREALLOC(), PTERM(), PTERM0(),
+  PGETUID(), PSETUID(), PGETGID(), PSETGID(),
+  PWAIT(), PWAIT3(), PWAITPID(), PMSG(), PFORK(), PVFORK(), PSEMAPHORE(),
+  MADDALT(), FFCHMOD(), FFCHOWN(), FCHOWN16(), SVERSION(), DCNTL(), DCHROOT(),
+  CCONIN(), CCONOUT(), CAUXIN(), CAUXOUT(), CPRNOUT(),
+  CRAWIO(), CRAWCIN(), CNECIN(), FREADV(), FWRITEV(), FSTAT64(), FFSTAT64(),
+  CCONIS(), CCONOS(), CAUXIS(), CAUXOS(), CPRNOS(), CCONRS(),
+  PGETPGRP(), PSETPGRP(), PGETGROUPS(), PSETGROUPS(), PGETAUID(), PSETAUID(),
+  PGETEUID(), PSETEUID(), PGETEGID(), PSETEGID(), PSETREUID(), PSETREGID(),
+  TADJTIME(), TGETTIMEOFDAY(), TSETTIMEOFDAY(),
+  FCHDIR(), FFDOPENDIR(), FDIRFD()
+
+Added Gemdos command: SUPER
+
+Added Xbios functions: MFPINT(), XBTIMER(), PUNTAES(), SSBRK(), DBMSG()
+
+Added VDI functions V_BEZ_ON(), V_BEZ_OFF(), VQ_CHCELLS(),
+  V_CURADDRESS(), VQ_CURADDRESS(), V_RVON(), V_RVOFF(),
+  V_ENTER_CUR(), V_EXIT_CUR(),
+  V_CURUP(), V_CURDOWN(), V_CURRIGHT(), V_CURLEFT(), V_CURHOME(),
+  V_EEOL(), V_EEOS(), V_DSPCUR(), V_RMCUR(), VQ_TABSTATUS()
+
+Added VDI commands BAR, PBAR, RBAR, PRBAR, VPBAR
+
+Added AES function OB_XYWH(), _GLOBAL, MULTITASK?
+
+Added AES command _GLOBAL=
+
+Added Bios function GETMPB()
+
+Added Line-A command SFILL, CRASTER
+
+SCALL improved speed (no longer a library call)
+
+RunOnly: Program termination could leave the internal workstation handle open
+  Always close the internal workstation regardless of the contents of V~H
+
+WEEK() fixed ISO return values for special cases 0 & 53
+
+Previous changes to LDG calls reverted, proved to be unreliable
+  Back to requiring LDG.PRG, recommendation... avoid the LDG commands :(
+
+EVERY/AFTER fixed race condition without MiNT
+
+DWRITELABEL(), DREADLABEL() optimized, less stack use
+
+_MINT function returns MiNT version in hex
+
+SHEL_GET(-1,foo$) caused LEN(foo$) to go negative corrupting string ram
+  Fixed, foo$ will be returned as null ("")
+
+POPUP() limits bumped to 32 lines, 64 characters wide
+
+OB_TEXT$() both variants improved in compiler/library
+
+AV Protocol changes:
+  Added AV_DELFILE(), AV_COPYFILE(), AV_FILEINFO(), AV_OPENWIND()
+  AV_EXIT() fixed word #3
+
+CURDIR$ fixed double backslash at root of drive
+
+UNPACK supports header ID 'AU5!' (same as ICE! v2.4)
+  Added Speed Packer 3v support (SPv3)
+
+Command name changes:
+  _PID renamed P~I (tokens unchanged, visual change only)
+  AMOUSE renamed TMOUSE (tokens unchanged, visual change only)
+
+Fixed extra space following _DATA=
+
+Fixed F_LINE_INPUT() when error code is -11, string is now returned correctly
+
+Fixed float exponent of 1000 displaying as garbage (across all components)
+  Maximum exponent is 999
+
+Optimized VSGET/VSPUT
+
+
+*

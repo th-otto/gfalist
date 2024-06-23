@@ -1,0 +1,140 @@
+v3.72 Change Log (Released 12/9/2021)
+
+-------------------------------------------------------------------------------
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! WARNING !!
+!! WARNING !! Removed from all components:
+!! WARNING !! BFOBSPEC(), BITBLK(),  CICONBLK(), ICONBLK(), TEDINFO(), USERBLK()
+!! WARNING !!
+!! WARNING !! My apologies for flip flopping on these. To reduce the number of
+!! WARNING !! tokens these functions were introduced. At the time I had forgotten
+!! WARNING !! there were four more reserved function tables. These are replaced
+!! WARNING !! with easier to use functions that are far more readable.
+!! WARNING !!
+!! WARNING !! FSEL_EXINPUT() reworked parameter scheme (to matches aes docs)
+!!!!!!!!!!!!! MEMSAWP& and MEMSWAP% reworked parameter schemes
+!!
+!! If these were used, LST/merge the source, then hand edit all such lines.
+!! These lines must be corrected, RunOnly and the Compiler will likely crash.
+!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Bumped version to 3.72
+  Component: All
+
+GBE_LIB.HYP updated, corrected typos
+
+GFABASIC.HYP updated AES section
+
+GBE changes:
+  Merge no longer strips single LFs and TABs (test case, import monopoly.bas)
+  Small optimization in redraw routine
+  Add AP_TERM option if RunOnly or compiled code is already running
+  Rename symbol works on INLINE commands (was ignored)
+
+Added JPEGD API: (Atari/Brainstorm JPEGD DSP Decoder)
+  JPEGD_INIT(), JPEGD_OPENDRIVER(), JPEGD_CLOSEDRIVER(), JPEGD_GETSTRUCTSIZE(),
+  JPEGD_GETIMAGEINFO(), JPEGD_GETIMAGESIZE(), JPEGD_DECODEIMAGE()
+  Component: GBE, RunOnly, Compiler, Library
+
+Added 32 Xbios DSP_xxx() functions
+  Component: GBE, RunOnly, Compiler, Library
+
+Bumped CONTRL() array to 13 elements (0 to 12) per NVDI v5 limits
+  See NVDI v5 official 'C' bindings VR_TRANSFER_BITS()
+  Component: RunOnly, Library
+
+Added NVDI v5 functions:
+  VR_TRANSFER_BITS(), V_OPEN_BM(), V_RESIZE_BM(),
+  V_SETRGB(),
+  VS_CTAB(), VS_CTAB_ENTRY(), VS_DFLT_CTAB(),
+  VQ_CTAB(), VQ_CTAB_ENTRY(), VQ_CTAB_ID(), V_CTAB_IDX2VDI(),
+  V_CTAB_VDI2IDX(), V_CTAB_IDX2VALUE(), V_GET_CTAB_ID(), VQ_DFLT_CTAB(),
+  V_CREATE_CTAB(), V_DELETE_CTAB(), V_CREATE_ITAB(), V_DELETE_ITAB(),
+  VST_FG_COLOR(), VSF_FG_COLOR(), VSL_FG_COLOR(), VSM_FG_COLOR(), VSR_FG_COLOR(),
+  VQT_FG_COLOR(), VQF_FG_COLOR(), VQL_FG_COLOR(), VQM_FG_COLOR(), VQR_FG_COLOR(),
+  VST_BG_COLOR(), VSF_BG_COLOR(), VSL_BG_COLOR(), VSM_BG_COLOR(), VSR_BG_COLOR(),
+  VQT_BG_COLOR(), VQF_BG_COLOR(), VQL_BG_COLOR(), VQM_BG_COLOR(), VQR_BG_COLOR(),
+  VS_HILITE_COLOR(), VS_MIN_COLOR(), VS_MAX_COLOR(), VS_WEIGHT_COLOR(),
+  VQ_HILITE_COLOR(), VQ_MIN_COLOR(), VQ_MAX_COLOR(), VQ_WEIGHT_COLOR(),
+  V_COLOR2VALUE(), V_VALUE2COLOR(), V_COLOR2NEAREST(), VQ_PX_FORMAT(),
+  VR_CLIP_RECTS_BY_DST(), VR_CLIP_RECTS_BY_SRC()
+  Component: GBE, RunOnly, Compiler, Library
+
+Added NVDI v3 functions:
+  VST_NAME(), VST_WIDTH(),
+  VQT_EXT_NAME(), VQT_NAME_AND_ID(), VQT_XFNTINFO(), VQT_FONTHEADER()
+  Component: GBE, RunOnly, Compiler, Library
+
+Added VDI functions:
+  V_HARDCOPY(), V_CLEAR_DISP_LIST(),
+  VEX_TIMV(), VEX_BUTV(), VEX_MOTV(), VEX_CURV()
+  Component: GBE, RunOnly, Compiler, Library
+
+Added AES functions:
+  BI_PDATA(), BI_WB(), BI_HL(), BI_X(), BI_Y(), BI_COLOR(),
+  OB_SELECTED(), OB_CROSSED(), OB_CHECKED(), OB_DISABLED(), OB_OUTLINED(),
+  OB_SHADOWED(), OB_WHITEBAK(),
+  OB_SELECTABLE(), OB_DEFAULT(), OB_EXIT(), OB_EDITABLE(), OB_RBUTTON(),
+  OB_LASTOB(), OB_TOUCHEXIT(), OB_HIDETREE(), OB_INDIRECT(), OB_FL3DIND(),
+  OB_FL3DACT(), OB_SUBMENU(), OB_FL3DBAK(),
+  BF_OBSPEC(), BF_CHARACTER(), BF_FRAMESIZE(), BF_FRAMECOL(), BF_TEXTCOL(),
+  BF_TEXTMODE(), BF_FILLPATTERN(), BF_INTERIORCOL(),
+  TE_PTEXT(), TE_PTMPLT(), TE_PVALID(), TE_FONT(), TE_FONTID(), TE_JUST(),
+  TE_COLOR(), TE_FONTSIZE(), TE_THICKNESS(), TE_TXTLEN(), TE_TMPLEN(),
+  TE_FRAMECOL(), TE_TEXTCOL(), TE_TEXTMODE(), TE_FILLPATTERN(), TE_INTERIORCOL(),
+  IB_PMASK(), IB_PDATA(), IB_PTEXT(), IB_CHAR(), IB_XCHAR(), IB_YCHAR(),
+  IB_XICON(), IB_YICON(), IB_WICON(), IB_HICON(), IB_XTEXT(), IB_YTEXT(),
+  IB_WTEXT(), IB_HTEXT(), IB_FCOLOR(), IB_BCOLOR(), IB_LETTER(),
+  CI_MAINLIST(), CI_NUM_PLANES(), CI_COL_DATA(), CI_COL_MASK(), CI_SEL_DATA(),
+  CI_SEL_MASK(), CI_NEXT_RES(),
+  UB_CODE(), UB_PARM(),
+  INPUTRADIO()
+  Component: GBE, RunOnly, Compiler, Library
+
+Added function SUPERSCALAR()
+  Component: GBE, RunOnly, Compiler, Library
+
+Added commands:
+  C2P (supports 4 types),
+  SET.GCBITMAP, SET.RXYWH, SET.SXYXY, SET.DXYXY, SET.SXYWH, SET.DXYWH,
+  BMIRROR, MEMMIRROR&, MEMMIRROR%, MEMMIRROR3,
+  BEXG, MEMEXG&, MEMEXG%
+  Component: GBE, RunOnly, Compiler, Library
+
+Added Xbios function INITMOUS()
+  Component: GBE, RunOnly, Compiler, Library
+
+Added Gemdos function FREADLINK()
+  Component: GBE, RunOnly, Compiler, Library
+
+Optimized SET.PXYWH, VQ_SCRNINFO(), MIRROR$(), INPUTBOX()
+  Component: RunOnly, Library
+
+Compiler reached a point where no more commands could be added
+  Reorganized all jump tables and code
+  Component: Compiler
+
+Fixed F_INP%() syntax rule (possible crash)
+Fixed RGB command syntax rule again (accepted boolean return variables)
+  Component: GBE, RunOnly
+
+Fixed F_INP&() number not a word error
+  RunOnly, Library
+
+Fixed V_GET_PIXEL() return values (ext.l no longer applied internally)
+  RunOnly, Library
+
+LDG_xxx() functions reworked, LDG.PRG is no longer needed
+  Solves 32kb memory leak
+  RunOnly, Library
+
+Fixed BCOMPARE&() and BCOMPARE%() third parameter not handled correctly
+  Library
+
+Fixed POPUP() freezing with 1 entry
+  RunOnly, Library
+
+
+*

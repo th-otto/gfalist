@@ -31,7 +31,6 @@
 #define TP_NEWLINES                0x100 /* print newlines instead of CR/LF */
 
 
-
 struct gfahdr {
 	unsigned char type;                         /* List type/protection */
 #define TP_SAVE  0

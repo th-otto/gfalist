@@ -249,11 +249,13 @@ static int process(struct gfainf *gi)
 		}
 
 		if (gi->flags & TP_VERB)
- 		{
+			output("Maximum line size: %u\n", maxlinesize);
+
+		if (gi->flags & TP_VERB || (gi->gbe_ver > TARGET_VER36 && gi->max_used_gbe_ver > gi->gbe_ver))
+		{
 			const char *name = "???";
 			int i;
 
-			output("Maximum line size: %u\n", maxlinesize);
 			for (i = 0; i < (int)ARRAY_SIZE(version_names); i++)
 			{
 				if (version_names[i].val == gi->max_used_gbe_ver)
@@ -263,7 +265,7 @@ static int process(struct gfainf *gi)
 				}
 			}
 			output("Maximum GFA version used: %s\n", name);
- 		}
+		}
 	}
 	
 	free(gi->pool);
@@ -346,7 +348,7 @@ int main(int argc, char *argv[])
 	int opt;
 	int exitcode = EXIT_SUCCESS;
 	struct gfainf gi;
-	
+
 	gf4tp_init(output, rvsimp);
 	memset(&gi, 0, sizeof(gi));
 

@@ -1,0 +1,140 @@
+v3.71 Change Log (Released 5/17/2021)
+
+-------------------------------------------------------------------------------
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+!! WARNING !!
+!! WARNING !!  RGB256() and RGB1000() parameters schemes reworked
+!! WARNING !!  RGB and RGB() parameter schemes reworked
+!! WARNING !!  TIMESTAMP command removed
+!! WARNING !!  TIMESTAMP$() parameter scheme reworked
+!! WARNING !!  SYSTAB() indexes changed starting at offset 76
+!! WARNING !!  HARDWARE? removed, bits replaced by built in variables
+!!!!!!!!!!!!!  WEEKDAY() parameter scheme reworked
+!!
+!! If these were used, LST/merge the source, then hand edit all such lines.
+!! These must be corrected or the RunOnly and Compiler will likely crash.
+!!
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Bumped version to 3.71
+  Component: All
+
+GFABASIC.HYP changes
+  ACHAR, STICK pages updated, misc typos
+  Added G_SWBUTTON and SWINFO to the AES section (NAES)
+  Added G_POPUP and POPINFO to the AES section (NAES)
+  Added G_SHORTCUT to AES section (NAES)
+
+GBE_LIB.HYP fixed quite a few typos
+
+RGB command wouldn't accept byte return variables (fixed syntax rule)
+  Component: GBE, RunOnly
+
+Run fails under MagiC with no error message (fixed environment handling)
+  Component: RunOnly (tested under AtariX emulator)
+
+RunOnly crashed on 68000 based machine (fixed misaligned long access)
+  Component: RunOnly
+
+Corrected 2 table entires in the compiler. Nonfatal.
+  Component: Compiler
+
+Added C_VDI() and C_XBIOS()
+Added BCOUNT&() and BCOUNT%()
+Added MEMZERO& and MEMZERO%
+Added POPUP() and INPUTBOX()
+Added SETSTR()
+Added NEAREST_RGB(), AVERAGE_RGB, and GRAYSCALE()
+Added DATE() and TIME()
+Added YEAR(), MONTH(), DAY(), HOUR24(), MINUTE(), and SECOND()
+Added HOUR12(), MERIDIEM()
+Added DAYNO(), LEAP(), and WEEK()
+Added special variables _0 to _9 (read and write)
+Added variables _CW, _CH, _VERSION, _FPU, _MCH, _CF_, _BUILDINFO, and _CPUID
+Added variables _DX, _DY, _DW, and _DH
+Added variables M68K?, COMPILED?, ACC?, AUTO?, FPU?, CPU020?, EJP?, and DMASND?
+Added variables G~H and G~R
+Added BMPSIZE()
+  Component: GBE, RunOnly, Compiler, Library, GBE_LIB.HYP
+
+MEMSWAP&, MEMSWAP% reported linker error (fixed 2 more table entries)
+  Component: Compiler
+
+Improved parameter handling, smaller code size:
+  BZERO, BCRYPT, BXLATE, BINSTR(),
+  BCOUNT(),
+  BFILL, MEMFILL&, MEMFILL%,
+  BFIND(), BFIND&(), BFIND%(),
+  BCOMPARE(), BCOMPARE&(), BCOMPARE%(),
+  BREPLACE, MEMREPLACE&, MEMREPLACE%,
+  MEMAND, MEMOR, MEMXOR,
+  MEMSWAP&, MEMSWAP%,
+  MEMBTST|(), MEMBTST&(), MEMBTST%(),
+  MEMBSET|, MEMBSET&, MEMBSET%,
+  MEMBCLR|, MEMBCLR&, MEMBCLR%,
+  MEMBCHG|, MEMBCHG&, MEMBCHG%,
+  CHECKSUM(), CRC16(), CRC32(),
+  x=OB.FLAGS(), OB.FLAGS()=x,
+  x=OB.STATE(), OB.STATE()=x,
+  x=OB_RBUTTON(), OB_RBUTTON=x,
+  SET.MFDB, SET.MENU, SET.SOCKADDR_IN,
+  x=USERBLK(), USERBLK()=x,
+  x=BITBLK(), BITBLK()=x,
+  x=BFOBSPEC(), BFOBSPEC()=x,
+  x=TEDINFO(), TEDINFO()=x,
+  x=CICONBLK(), CICONBLK()=x,
+  x-ICONBLK(), ICONBLK()=x,
+  BOUND(), CONSTRAIN(),
+  RGB256(), RGB1000(),
+  MENU.TEXT(), SHEL.WRITE(), MENU_ATTACH(), MENU_POPUP(), MENU_ISTART(),
+  V_CONTOURFILL(), V_BAR(), V_RBOX(), V_RFBOX(), VR_RECFL(), V_JUSTIFIED(),
+  V_ARC(), V_CIRLCE(), v_ELLARC(), V_ELLPIE(), V_ELLIPSE(), V_PIESLICE(),
+  V_PLINE(), V_PMARKER(), V_FILLAREA(), V_GTEXT(), V_CURTEXT(),
+  DOPENDIR(), DPATHCONF(), F_BSAVE(), F_BLOAD(), F_OUTPUT(), PWRITE(),
+  F_LINE_OUTPUT(), LDG_FIND(),
+  VSGET, VSPUT
+    Component: Compiler, Library
+
+SUBSTR() renamed to GETSTR() - no need to LST/merge, visual change only
+RANGE() renamed to CONSTRAIN() - no need to LST/merge, visual change only
+OB_RBUTTON() renamed to OB_RADIO() - no need to LST/merge, visual change only
+  Component: GBE, RunOnly
+
+Fixed meta command #LG@ not working with INLINE and the data being zeroed
+Added meta command #DL0 (remove empty procedures that ara called)
+  Component: GBE
+
+OB_TEXT$() added support for object type 34 (G_SWBUTTON) and 38 (G_SHORTCUT)
+  Component: RunOnly, Library
+
+ENVIRON$() the equal sign (=) is now optional
+  Component: RunOnly, Library
+
+FSEL_EXINPUT() and DHST_ADD() fixed freeing of internal temporary strings
+  Component: RunOnly, Library
+
+VQT_EXTENT() null terminated string internally for no good reason
+  Component: RunOnly, Library
+
+Fixed tokenizer bug, caused certain extended functions to encode incorrectly
+Fixed detokenizer bug, caused certain extended functions to decode incorrectly
+  Component: GBE, RunOnly
+
+Activated 4 reserved function tables (required some additional code as well)
+Adds 1024 additional free token slots for future expansion
+This change brings GBE/GFA to it's maximum limit
+  Component: GBE, RunOnly, Compiler
+
+-------------------------------------------------------------------------------
+
+GBE refuses to run under MagiC with Magxdesk (missing AVSERVER error)
+  Requires installation of AV-Server - Version 1.3
+  https://alex.barton.de/computer/atari/download/ (avserv04.lzh)
+  ... or install a better desktop like Thing Desktop
+
+Context sensitive help and subroutine folding not working under AtariX/MagiC
+  Related to emulator key mapping. Where's the 'Help' key?
+
+
+*
